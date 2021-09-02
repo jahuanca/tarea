@@ -15,7 +15,6 @@ class DatePickerWidget {
   final DateTime minDate;
   final int maxYear;
   final int minYear;
-  final bool onlyDate;
   final BuildContext context;
 
   DatePickerWidget({
@@ -28,7 +27,6 @@ class DatePickerWidget {
     this.textInputType = TextInputType.name,
     this.onChanged,
     this.error,
-    this.onlyDate = true,
     this.dateSelected,
     this.maxYear = 2022,
     this.minYear = 2019,
@@ -42,28 +40,21 @@ class DatePickerWidget {
         initialDate: minDate ?? dateSelected,
         firstDate: minDate ?? DateTime(minYear),
         lastDate: DateTime(maxYear));
-    if (onlyDate) {
-      return picked;
-    } else {
-      if (picked != null && onChanged != null) {
-        return await selectTime(context, picked);
-      }
-      return null;
+
+    if (picked != null && onChanged != null) {
+      return await _selectTime(context, picked);
     }
-    
+    return null;
   }
 
-  Future<DateTime> selectTime(
-      BuildContext context, DateTime selectedDate) async {
+  Future<DateTime> _selectTime(BuildContext context, DateTime selectedDate) async {
     TimeOfDay picked;
     picked = await showTimePicker(
       context: context,
       initialTime:
           (minDate != null) ? TimeOfDay.fromDateTime(minDate) : TimeOfDay.now(),
     );
-    if(picked==null){
-      return selectedDate;
-    }
+
     selectedDate = new DateTime(
       selectedDate.year,
       selectedDate.month,

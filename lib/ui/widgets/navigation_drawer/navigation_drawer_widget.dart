@@ -7,7 +7,7 @@ import 'package:flutter_tareo/ui/widgets/navigation_drawer/navigation_drawer_con
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-Drawer getDrawer(Size size){
+Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey){
 
 
   return Drawer(
@@ -71,13 +71,13 @@ Drawer getDrawer(Size size){
             ),
             //TODO: tareador: todo menos aprobación
             //TODO: supervisor: todo
-            _itemDrawer(size, Icons.dehaze_sharp, 'Cuenta', _.goConfiguracion),
-            _itemDrawer(size, Icons.dehaze_sharp, 'Tareo', (){}),
-            _itemDrawer(size, Icons.dehaze_sharp, 'Aprobación', _.goMisEventos),
-            _itemDrawer(size, Icons.dehaze_sharp, 'Migrar', _.goMisEventos),
-            _itemDrawer(size, Icons.dehaze_sharp, 'Herramientas', _.goMisEventos),
+            _itemDrawer(size, Icons.person, 'Cuenta', _.goConfiguracion),
+            _itemDrawer(size, Icons.task, 'Tareas', ()=> _.goTareas(scaffoldKey)),
+            _itemDrawer(size, Icons.check, 'Aprobación', _.goMisEventos),
+            _itemDrawer(size, Icons.sync_rounded, 'Migrar', _.goMisEventos),
+            _itemDrawer(size, Icons.construction , 'Herramientas', _.goMisEventos),
             _itemDrawer(size, Icons.settings, 'Configuración', _.goMisEventos), 
-            _itemDrawer(size, Icons.dehaze_sharp, 'Cerrar sesión', _.cerrarSesion),
+            _itemDrawer(size, Icons.exit_to_app, 'Cerrar sesión', _.cerrarSesion),
           ],
         ),
       ),

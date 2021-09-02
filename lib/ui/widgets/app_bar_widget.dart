@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 
-AppBar getAppBar(String titulo, [bool bandera = false]) {
+AppBar getAppBar(String titulo, List<Widget> actions,[bool bandera = false]) {
   return AppBar(
     automaticallyImplyLeading: bandera,
     iconTheme: IconThemeData(
@@ -16,5 +16,6 @@ AppBar getAppBar(String titulo, [bool bandera = false]) {
     ),
     backgroundColor: PreferenciasUsuario().modoDark ? cardColorDark : cardColor,
     shadowColor: PreferenciasUsuario().modoDark ? borderColorDark : borderColor,
+    actions: actions,
   );
 }

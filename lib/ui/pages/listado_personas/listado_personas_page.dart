@@ -10,7 +10,7 @@ class ListadoPersonasPage extends StatelessWidget {
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: getAppBar('80 Personas', true),
+      appBar: getAppBar('80 Personas', [], true),
       backgroundColor: secondColor,
       body: ListView(
         children: [

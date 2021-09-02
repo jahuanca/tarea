@@ -18,6 +18,7 @@ class InputLabelWidget extends StatelessWidget {
   final TextEditingController textEditingController;
   final bool isTextArea;
   final void Function(String) onChanged;
+  final void Function() onTap;
 
   InputLabelWidget({
       @required this.hintText,
@@ -31,6 +32,7 @@ class InputLabelWidget extends StatelessWidget {
       this.label,
       this.onChanged,
       this.error,
+      this.onTap,
     }
   );
   
@@ -48,33 +50,36 @@ class InputLabelWidget extends StatelessWidget {
             style: primaryTextStyle(),
           ),
         ),
-        Container(
-          height: isTextArea ? size.height*inputDimension*1.5 : size.height*inputDimension,
-          width: size.width,
-          decoration: BoxDecoration(),
-          child: TextFormField(
-            enabled: enabled,
-            initialValue: initialValue,
-            maxLength: maxLength,
-            keyboardType: textInputType,
-            obscureText: isObscure,
-            maxLines: isTextArea ? 5 : 1,
-            decoration: InputDecoration(
-              border: error==null ? inputBorder() : inputBorderError(),
-              enabledBorder: error==null ? inputBorder() : inputBorderError(),
-              focusedBorder: error==null ? inputBorder() : inputBorderError(),
-              filled: true,
-              fillColor: enabled ? (PreferenciasUsuario().modoDark) ? cardColorDark : cardColor : cardColor.withAlpha(200),
-              contentPadding: isTextArea ? contentPaddingTextArea : contentPaddingInputs,
-              counterText: '',
-              counterStyle: TextStyle(fontSize: 0),
-              hintText: hintText,
-              hintStyle: primaryHintStyle(),
-            ),
-            controller: textEditingController,
-            onChanged: onChanged,
-            textAlign: TextAlign.left,
-          )
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            height: isTextArea ? size.height*inputDimension*1.5 : size.height*inputDimension,
+            width: size.width,
+            decoration: BoxDecoration(),
+            child: TextFormField(
+              enabled: enabled,
+              initialValue: initialValue,
+              maxLength: maxLength,
+              keyboardType: textInputType,
+              obscureText: isObscure,
+              maxLines: isTextArea ? 5 : 1,
+              decoration: InputDecoration(
+                border: error==null ? inputBorder() : inputBorderError(),
+                enabledBorder: error==null ? inputBorder() : inputBorderError(),
+                focusedBorder: error==null ? inputBorder() : inputBorderError(),
+                filled: true,
+                fillColor: enabled ? (PreferenciasUsuario().modoDark) ? cardColorDark : cardColor : cardColor.withAlpha(200),
+                contentPadding: isTextArea ? contentPaddingTextArea : contentPaddingInputs,
+                counterText: '',
+                counterStyle: TextStyle(fontSize: 0),
+                hintText: hintText,
+                hintStyle: primaryHintStyle(),
+              ),
+              controller: textEditingController,
+              onChanged: onChanged,
+              textAlign: TextAlign.left,
+            )
+          ),
         ),
       ],
     );

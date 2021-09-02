@@ -1,11 +1,15 @@
 import 'package:dropdown_below/dropdown_below.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/styles.dart';
+import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
+import 'package:flutter_tareo/ui/widgets/date_picker_widget.dart';
 import 'package:flutter_tareo/ui/widgets/dropdown_label_widget.dart';
+import 'package:flutter_tareo/ui/widgets/dropdown_search_widget.dart';
 import 'package:flutter_tareo/ui/widgets/input_label_widget.dart';
-import 'package:flutter_tareo/ui/widgets/separador_widget.dart';
 
 class NuevaTareaPage extends StatelessWidget {
   @override
@@ -13,7 +17,7 @@ class NuevaTareaPage extends StatelessWidget {
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      appBar: getAppBar('Nueva tarea', true),
+      appBar: getAppBar('Nueva tarea', [], true),
       backgroundColor: secondColor,
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
@@ -24,11 +28,24 @@ class NuevaTareaPage extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
           child: Column(
             children: [
-              InputLabelWidget(label: 'Fecha', hintText: 'Fecha'),
+              GestureDetector(
+                child: InputLabelWidget(
+                    onTap: () async {
+                      await DatePickerWidget(
+                        onlyDate: true,
+                        minDate: DateTime.now().subtract(Duration(days: 10)),
+                        dateSelected: DateTime.now(),
+                        onChanged: () {},
+                      ).selectDate(context);
+                    },
+                    label: 'Fecha',
+                    enabled: false,
+                    hintText: 'Fecha'),
+              ),
               SizedBox(
                 height: size.height * 0.01,
               ),
-              DropdownLabelWidget(
+              DropdownSearchWidget(
                   label: 'Sede',
                   labelText: 'name',
                   labelValue: '_id',
@@ -44,7 +61,7 @@ class NuevaTareaPage extends StatelessWidget {
                       '_id': '2',
                     },
                   ]),
-              DropdownLabelWidget(
+              DropdownSearchWidget(
                   label: 'Centro de costo',
                   labelText: 'name',
                   labelValue: '_id',
@@ -60,7 +77,7 @@ class NuevaTareaPage extends StatelessWidget {
                       '_id': '2',
                     },
                   ]),
-              DropdownLabelWidget(
+              DropdownSearchWidget(
                   label: 'Actividad',
                   labelText: 'name',
                   labelValue: '_id',
@@ -76,7 +93,7 @@ class NuevaTareaPage extends StatelessWidget {
                       '_id': '2',
                     },
                   ]),
-              DropdownLabelWidget(
+              DropdownSearchWidget(
                   label: 'Labor',
                   labelText: 'name',
                   labelValue: '_id',
@@ -92,7 +109,7 @@ class NuevaTareaPage extends StatelessWidget {
                       '_id': '2',
                     },
                   ]),
-              DropdownLabelWidget(
+              DropdownSearchWidget(
                   label: 'Supervisor',
                   labelText: 'name',
                   labelValue: '_id',
@@ -109,6 +126,15 @@ class NuevaTareaPage extends StatelessWidget {
                     },
                   ]),
               InputLabelWidget(
+                  enabled: false,
+                  onTap: ()async{
+                          await DatePickerWidget(
+                        onlyDate: true,
+                        minDate: DateTime.now().subtract(Duration(days: 10)),
+                        dateSelected: DateTime.now(),
+                        onChanged: () {},
+                      ).selectTime(context, new DateTime.now());
+                    },
                   label: 'Inicio de pausa', hintText: 'Inicio de pausa'),
               SizedBox(
                 height: size.height * 0.01,
