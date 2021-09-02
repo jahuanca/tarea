@@ -2,14 +2,15 @@ import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
 
-class HomePage extends StatelessWidget {
+class ListadoPersonasPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      //appBar: getAppBar('Inicio', true),
+      appBar: getAppBar('80 Personas', true),
       backgroundColor: secondColor,
       body: ListView(
         children: [
@@ -21,21 +22,16 @@ class HomePage extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: IconButton(onPressed: ()=> Navigator.of(context).pushNamed('nueva_tarea'), icon: Icon(Icons.add)),
+        child: IconButton(onPressed: ()=> Navigator.of(context).pushNamed('agregar_persona'), icon: Icon(Icons.add)),
       ),
     );
   }
 
   Widget itemActividad(Size size) {
     final items = [
-      {'key': 1, 'value': 'Continuar editando'},
-      {'key': 2, 'value': 'Agregar personas'},
-      {'key': 3, 'value': 'Seleccionar'},
-      {'key': 4, 'value': 'Sincronizar'},
-      {'key': 5, 'value': 'Copiar tarea'},
-      //TODO: se cambia la hora de inicio y hora fin
-      //aparece un formulario de nueva tarea con los datos cargados
-      {'key': 6, 'value': 'Eliminar'},
+      {'key': 1, 'value': 'Editar'},
+      {'key': 2, 'value': 'Seleccionar'},
+      {'key': 5, 'value': 'Eliminar'},
     ];
 
     return Container(
@@ -56,7 +52,7 @@ class HomePage extends StatelessWidget {
                     Flexible(
                       child: Container(
                         alignment: Alignment.centerLeft,
-                        child: Text('12/08/21 14:12'),
+                        child: Text('1'),
                       ),
                       flex: 10,
                     ),
@@ -64,7 +60,7 @@ class HomePage extends StatelessWidget {
                     Flexible(
                       child: Container(
                         alignment: Alignment.centerLeft,
-                        child: Text('Nombre de actvidad'),
+                        child: Text('Jose Antonio Huanca'),
                       ),
                       flex: 20,
                     ),
@@ -114,7 +110,7 @@ class HomePage extends StatelessWidget {
                     Flexible(
                       child: Container(
                         alignment: Alignment.centerLeft,
-                        child: Text('Nombre labor'),
+                        child: Text('75 UNDs'),
                       ),
                       flex: 10,
                     ),
@@ -122,7 +118,7 @@ class HomePage extends StatelessWidget {
                     Flexible(
                       child: Container(
                         alignment: Alignment.centerLeft,
-                        child: Text('Centro de costo'),
+                        child: Text('12:00 - 20:00'),
                       ),
                       flex: 10,
                     ),
@@ -140,23 +136,7 @@ class HomePage extends StatelessWidget {
                     Flexible(
                       child: Container(
                         alignment: Alignment.centerLeft,
-                        child: Text('5 personas'),
-                      ),
-                      flex: 10,
-                    ),
-                    Flexible(child: Container(), flex: 1),
-                    Flexible(
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text('SEDE'),
-                      ),
-                      flex: 10,
-                    ),
-                    Flexible(child: Container(), flex: 1),
-                    Flexible(
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text('Migrado'),
+                        child: Text('PAUSA:     13:00 - 14:00'),
                       ),
                       flex: 10,
                     ),

@@ -1,8 +1,8 @@
 
-import 'package:flutter_tareo/ui/pages/navigation/navigation_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/ui/pages/navigation/navigation_controller.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
+import 'package:flutter_tareo/ui/widgets/bottom_navigation/bottom_navigation_widget.dart';
 import 'package:flutter_tareo/ui/widgets/navigation_drawer/navigation_drawer_widget.dart';
 import 'package:get/get.dart';
 
@@ -23,13 +23,7 @@ class NavigationPage extends GetWidget<NavigationController> {
       builder: (_)=> SafeArea(
         child: Scaffold(
           key: _scaffoldKey,
-          appBar: AppBar(
-            actions: [
-              Container(
-                padding: EdgeInsets.only(right: 10),
-                child: Icon(Icons.search))
-            ],
-            title: Text('Inicio'),),
+          appBar: getAppBar('Inicio', true),
           drawer: getDrawer(size),
           /* bottomNavigationBar: GetBuilder<NavigationController>(
             id: 'bottom_navigation',

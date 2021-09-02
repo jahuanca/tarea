@@ -1,9 +1,8 @@
 
-
 import 'package:flutter_tareo/ui/pages/home/home_page.dart';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/ui/pages/home/home_page.dart';
 import 'package:get/get.dart';
 
 class NavigationController extends GetxController{
@@ -13,10 +12,12 @@ class NavigationController extends GetxController{
   final List<Widget> lista=[
     Container(),
     HomePage(),
-    null,
     Container(),
-    null,
-    Container()
+    Container(),
+    Container(),
+    Container(),
+    Container(),
+    Container(),
   ];
 
   int indexWidget=1;

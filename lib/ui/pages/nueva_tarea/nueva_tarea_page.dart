@@ -1,3 +1,4 @@
+import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/core/dimens.dart';
@@ -107,10 +108,12 @@ class NuevaTareaPage extends StatelessWidget {
                       '_id': '2',
                     },
                   ]),
+              InputLabelWidget(
+                  label: 'Inicio de pausa', hintText: 'Inicio de pausa'),
               SizedBox(
-                height: size.height * 0.05,
+                height: size.height * 0.01,
               ),
-              SeparadorWidget(size: size, titulo: 'Personas'),
+              InputLabelWidget(label: 'Fin de pausa', hintText: 'Fin de pausa'),
               SizedBox(
                 height: size.height * 0.05,
               ),
@@ -125,9 +128,150 @@ class NuevaTareaPage extends StatelessWidget {
     );
   }
 
+  Widget itemActividad(Size size) {
+    final items = [
+      {'key': 1, 'value': 'Editar'},
+      {'key': 2, 'value': 'Seleccionar'},
+      {'key': 4, 'value': 'Eliminar'},
+    ];
+
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: size.width * 0.025),
+      child: Container(
+        height: size.height * 0.2,
+        decoration: BoxDecoration(
+            color: cardColor,
+            border: Border.all(),
+            borderRadius: BorderRadius.circular(borderRadius)),
+        child: Column(
+          children: [
+            Flexible(
+              child: Container(
+                child: Row(
+                  children: [
+                    Flexible(child: Container(), flex: 1),
+                    Flexible(
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text('1'),
+                      ),
+                      flex: 5,
+                    ),
+                    Flexible(child: Container(), flex: 1),
+                    Flexible(
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text('Jose Antonio Huanca'),
+                      ),
+                      flex: 20,
+                    ),
+                    Flexible(child: Container(), flex: 1),
+                    Flexible(
+                        child: Container(
+                          child: DropdownBelow(
+                            itemWidth: 200,
+                            itemTextstyle: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black),
+                            boxTextstyle: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: cardColor),
+                            boxPadding: EdgeInsets.fromLTRB(13, 12, 0, 12),
+                            boxHeight: 45,
+                            boxWidth: 150,
+                            icon: Icon(
+                              Icons.more_horiz,
+                              color: primaryColor,
+                            ),
+                            value: 1,
+                            items: items == null
+                                ? []
+                                : items
+                                    .map((e) => DropdownMenuItem(
+                                        value: e['key'],
+                                        child: Text(e['value'])))
+                                    .toList(),
+                            onChanged: (value) {},
+                          ),
+                        ),
+                        flex: 5),
+                    Flexible(child: Container(), flex: 1),
+                  ],
+                ),
+              ),
+              flex: 1,
+            ),
+            Flexible(
+              child: Container(
+                child: Row(
+                  children: [
+                    Flexible(child: Container(), flex: 1),
+                    Flexible(
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text('Nombre labor'),
+                      ),
+                      flex: 10,
+                    ),
+                    Flexible(child: Container(), flex: 1),
+                    Flexible(
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text('Centro de costo'),
+                      ),
+                      flex: 10,
+                    ),
+                    Flexible(child: Container(), flex: 1),
+                  ],
+                ),
+              ),
+              flex: 1,
+            ),
+            Flexible(
+              child: Container(
+                child: Row(
+                  children: [
+                    Flexible(child: Container(), flex: 1),
+                    Flexible(
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text('5 personas'),
+                      ),
+                      flex: 10,
+                    ),
+                    Flexible(child: Container(), flex: 1),
+                    Flexible(
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text('SEDE'),
+                      ),
+                      flex: 10,
+                    ),
+                    Flexible(child: Container(), flex: 1),
+                    Flexible(
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text('Migrado'),
+                      ),
+                      flex: 10,
+                    ),
+                    Flexible(child: Container(), flex: 1),
+                  ],
+                ),
+              ),
+              flex: 1,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _agregarMultimedia(Size size, BuildContext context) {
     return GestureDetector(
-      onTap: ()=> Navigator.of(context).pushNamed('agregar_persona'),
+      onTap: () => Navigator.of(context).pushNamed('listado_personas'),
       child: Container(
         height: size.height * 0.1,
         decoration: BoxDecoration(
@@ -143,19 +287,34 @@ class NuevaTareaPage extends StatelessWidget {
             Flexible(
                 child: Container(
                   alignment: Alignment.center,
-                  child: Icon(
-                    Icons.person_add,
-                    size: 25,
-                  ),
+                  child: Text('80 PERSONAS'),
                 ),
                 flex: 2),
-            Flexible(child: Container(), flex: 1),
             Flexible(
-                child: Container(
-                  alignment: Alignment.center,
-                  child: Text('AÑADIR PERSONAS'),
-                ),
-                flex: 2),
+              flex: 2,
+              child: Row(
+                children: [
+                  Flexible(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.search,
+                          size: 25,
+                        ),
+                      ),
+                      flex: 1),
+                  Flexible(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.person_add,
+                          size: 25,
+                        ),
+                      ),
+                      flex: 1),
+                ],
+              ),
+            ),
             Flexible(child: Container(), flex: 1),
           ],
         ),
