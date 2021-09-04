@@ -66,9 +66,10 @@ class InputLabelWidget extends StatelessWidget {
               decoration: InputDecoration(
                 border: error==null ? inputBorder() : inputBorderError(),
                 enabledBorder: error==null ? inputBorder() : inputBorderError(),
+                disabledBorder: error==null ? inputBorder() : inputBorderError(),
                 focusedBorder: error==null ? inputBorder() : inputBorderError(),
                 filled: true,
-                fillColor: enabled ? (PreferenciasUsuario().modoDark) ? cardColorDark : cardColor : cardColor.withAlpha(200),
+                fillColor: (PreferenciasUsuario().modoDark) ? cardColorDark : cardColor,
                 contentPadding: isTextArea ? contentPaddingTextArea : contentPaddingInputs,
                 counterText: '',
                 counterStyle: TextStyle(fontSize: 0),

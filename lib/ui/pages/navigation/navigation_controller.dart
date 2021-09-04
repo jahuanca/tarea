@@ -3,6 +3,7 @@ import 'package:flutter_tareo/ui/pages/home/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/ui/pages/home/home_page.dart';
+import 'package:flutter_tareo/ui/pages/migrar/migrar_page.dart';
 import 'package:flutter_tareo/ui/pages/tareas/tareas_page.dart';
 import 'package:get/get.dart';
 
@@ -11,24 +12,32 @@ class NavigationController extends GetxController{
   NavigationController();
 
   final List<Widget> lista=[
-    TareasPage(),
     HomePage(),
+    TareasPage(),
     Container(),
-    Container(),
+    MigrarPage(),
     Container(),
     Container(),
     Container(),
     Container(),
   ];
 
-  int indexWidget=1;
+  int indexWidget=0;
   String titulo='Inicio';
 
   List<Widget> actions=[];
 
   void eventos(int index, GlobalKey<ScaffoldState> scaffoldKey){
+    actions.clear();
     switch (index) {
       case 0:
+        titulo='Inicio';
+        scaffoldKey.currentState.openEndDrawer();
+        indexWidget=index;
+        update(['bottom_navigation']);
+        break;
+      
+      case 1:
         //scaffoldKey.currentState.openDrawer();
         actions.add(
           IconButton(onPressed: (){}, icon: Icon(Icons.search))
@@ -40,13 +49,14 @@ class NavigationController extends GetxController{
         break;
 
       case 3:
-        /* Get.to(
-          ()=> NuevoEventoPage(),
-          duration: Duration(seconds: 1),
-          transition: Transition.downToUp
+        actions.add(
+          IconButton(onPressed: (){}, icon: Icon(Icons.search))
         );
-        NuevoEventoBinding().dependencies();
-        Get.to(()=> NuevoEventoPage()); */
+        titulo='Migrar';
+        scaffoldKey.currentState.openEndDrawer();
+        indexWidget=index;
+        update(['bottom_navigation']);
+        break;
         break;
 
       default:

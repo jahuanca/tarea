@@ -125,21 +125,77 @@ class NuevaTareaPage extends StatelessWidget {
                       '_id': '2',
                     },
                   ]),
+              DropdownSearchWidget(
+                  label: 'Turno',
+                  labelText: 'name',
+                  labelValue: '_id',
+                  initialValue: '1',
+                  onChanged: (value) {},
+                  items: [
+                    {
+                      'name': 'Mañana 1',
+                      '_id': '1',
+                    },
+                    {
+                      'name': 'Noche 2',
+                      '_id': '2',
+                    },
+                  ]),
+              
               InputLabelWidget(
                   enabled: false,
-                  onTap: ()async{
-                          await DatePickerWidget(
-                        onlyDate: true,
-                        minDate: DateTime.now().subtract(Duration(days: 10)),
-                        dateSelected: DateTime.now(),
-                        onChanged: () {},
-                      ).selectTime(context, new DateTime.now());
-                    },
-                  label: 'Inicio de pausa', hintText: 'Inicio de pausa'),
+                  onTap: () async {
+                    await DatePickerWidget(
+                      onlyDate: true,
+                      minDate: DateTime.now().subtract(Duration(days: 10)),
+                      dateSelected: DateTime.now(),
+                      onChanged: () {},
+                    ).selectTime(context, new DateTime.now());
+                  },
+                  label: 'Hora inicio',
+                  hintText: 'Hora inicio'),
               SizedBox(
                 height: size.height * 0.01,
               ),
-              InputLabelWidget(label: 'Fin de pausa', hintText: 'Fin de pausa'),
+              InputLabelWidget(
+                  enabled: false,
+                  onTap: () async {
+                    await DatePickerWidget(
+                      onlyDate: true,
+                      minDate: DateTime.now().subtract(Duration(days: 10)),
+                      dateSelected: DateTime.now(),
+                      onChanged: () {},
+                    ).selectTime(context, new DateTime.now());
+                  },
+                  label: 'Hora fin',
+                  hintText: 'Hora fin'),
+              InputLabelWidget(
+                  enabled: false,
+                  onTap: () async {
+                    await DatePickerWidget(
+                      onlyDate: true,
+                      minDate: DateTime.now().subtract(Duration(days: 10)),
+                      dateSelected: DateTime.now(),
+                      onChanged: () {},
+                    ).selectTime(context, new DateTime.now());
+                  },
+                  label: 'Inicio de pausa',
+                  hintText: 'Inicio de pausa'),
+              SizedBox(
+                height: size.height * 0.01,
+              ),
+              InputLabelWidget(
+                  enabled: false,
+                  onTap: () async {
+                    await DatePickerWidget(
+                      onlyDate: true,
+                      minDate: DateTime.now().subtract(Duration(days: 10)),
+                      dateSelected: DateTime.now(),
+                      onChanged: () {},
+                    ).selectTime(context, new DateTime.now());
+                  },
+                  label: 'Fin de pausa',
+                  hintText: 'Fin de pausa'),
               SizedBox(
                 height: size.height * 0.05,
               ),
@@ -296,10 +352,8 @@ class NuevaTareaPage extends StatelessWidget {
   }
 
   Widget _agregarMultimedia(Size size, BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.of(context).pushNamed('listado_personas'),
-      child: Container(
-        height: size.height * 0.1,
+    return Container(
+        height: size.height * 0.17,
         decoration: BoxDecoration(
             border: Border.all(
               color: primaryColor,
@@ -313,38 +367,46 @@ class NuevaTareaPage extends StatelessWidget {
             Flexible(
                 child: Container(
                   alignment: Alignment.center,
-                  child: Text('80 PERSONAS'),
+                  child: Text('80 personas',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
                 ),
                 flex: 2),
+            Flexible(child: Container(), flex: 1), 
             Flexible(
-              flex: 2,
+              flex: 3,
               child: Row(
                 children: [
+                  Flexible(child: Container(), flex: 1,),
                   Flexible(
                       child: Container(
                         alignment: Alignment.center,
-                        child: Icon(
-                          Icons.search,
-                          size: 25,
+                        child: IconButton(
+                          onPressed: () => Navigator.of(context).pushNamed('listado_personas'),
+                          icon: Icon(Icons.search, size: 40),
                         ),
                       ),
                       flex: 1),
+                  Flexible(child: Container(), flex: 1,),
                   Flexible(
                       child: Container(
                         alignment: Alignment.center,
-                        child: Icon(
-                          Icons.person_add,
-                          size: 25,
+                        child: IconButton(
+                          onPressed: () => Navigator.of(context).pushNamed('agregar_persona'),
+                          icon: Icon(Icons.person_add, size: 40),
                         ),
                       ),
                       flex: 1),
+                  Flexible(child: Container(), flex: 1,),
                 ],
               ),
             ),
             Flexible(child: Container(), flex: 1),
           ],
         ),
-      ),
     );
   }
 }

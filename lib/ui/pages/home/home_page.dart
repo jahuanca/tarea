@@ -4,6 +4,7 @@ import 'package:flutter_tareo/ui/widgets/input_label_widget.dart';
 import 'package:flutter_tareo/ui/widgets/radio_group_widget.dart';
 
 class HomePage extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
