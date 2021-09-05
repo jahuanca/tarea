@@ -113,6 +113,13 @@ TextStyle mensajeOpinionStyle() {
       fontWeight: FontWeight.w400);
 }
 
+TextStyle searchDropdownStyle() {
+  return TextStyle(
+      color: PreferenciasUsuario().modoDark ? Colors.white : Colors.black87,
+      fontSize: header1Dimen,
+      fontWeight: FontWeight.w400);
+}
+
 TextStyle metadataComentarioStyle() {
   return TextStyle(
       color: borderColor, fontSize: 14, fontWeight: FontWeight.w400);

@@ -7,6 +7,7 @@ import 'package:flutter_tareo/ui/pages/tareas/tareas_controller.dart';
 import 'package:get/get.dart';
 
 class TareasPage extends StatelessWidget {
+  
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;

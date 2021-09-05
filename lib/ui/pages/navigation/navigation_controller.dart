@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/ui/pages/home/home_page.dart';
 import 'package:flutter_tareo/ui/pages/migrar/migrar_page.dart';
+import 'package:flutter_tareo/ui/pages/search/search_page.dart';
 import 'package:flutter_tareo/ui/pages/tareas/tareas_page.dart';
 import 'package:get/get.dart';
 
@@ -40,7 +41,7 @@ class NavigationController extends GetxController{
       case 1:
         //scaffoldKey.currentState.openDrawer();
         actions.add(
-          IconButton(onPressed: (){}, icon: Icon(Icons.search))
+          IconButton(onPressed: ()=> Get.to(()=> SearchPage()), icon: Icon(Icons.search))
         );
         titulo='Tareas';
         scaffoldKey.currentState.openEndDrawer();

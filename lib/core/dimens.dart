@@ -13,4 +13,5 @@ final double header3Dimen=20;
 final double primaryTextSize=20;
 final double secondTextSize=18;
 final EdgeInsetsGeometry contentPaddingInputs=EdgeInsets.symmetric(vertical: 5, horizontal: 25);
+final EdgeInsetsGeometry contentPaddingInputsSimple=EdgeInsets.symmetric(vertical: 1, horizontal: 5);
 final EdgeInsetsGeometry contentPaddingTextArea=EdgeInsets.symmetric(vertical: 10, horizontal: 25);
