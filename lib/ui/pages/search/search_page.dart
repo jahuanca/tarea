@@ -15,7 +15,9 @@ class SearchPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.arrow_back, color: Colors.black54,),
+        iconTheme: IconThemeData(color: Colors.black),
+        //leading: Icon(Icons.arrow_back, color: Colors.black54,),
+        automaticallyImplyLeading: true,
         backgroundColor: cardColor,
         title: Row(
           children: [

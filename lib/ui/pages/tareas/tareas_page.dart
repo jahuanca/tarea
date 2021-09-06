@@ -302,6 +302,7 @@ class TareasPage extends StatelessWidget {
     final items = [
       {'key': 1, 'value': 'Seleccionar todos'},
       {'key': 4, 'value': 'Quitar todos'},
+      {'key': 1, 'value': 'Exportar en excel'},
     ];
 
     return GetBuilder<TareasController>(

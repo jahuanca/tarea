@@ -30,6 +30,11 @@ class NavigationDrawerController extends GetxController{
     Get.find<NavigationController>().eventos(3, scaffoldKey);
   }
 
+  void goAprobar(GlobalKey<ScaffoldState> scaffoldKey){
+    /* FavoritosBinding().dependencies();*/
+    Get.find<NavigationController>().eventos(2, scaffoldKey);
+  }
+
   void goHome(GlobalKey<ScaffoldState> scaffoldKey){
     /* FavoritosBinding().dependencies();*/
     Get.find<NavigationController>().eventos(0, scaffoldKey);

@@ -1,4 +1,5 @@
 
+import 'package:flutter_tareo/ui/pages/aprobar/aprobar_page.dart';
 import 'package:flutter_tareo/ui/pages/home/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class NavigationController extends GetxController{
   final List<Widget> lista=[
     HomePage(),
     TareasPage(),
-    Container(),
+    AprobarPage(),
     MigrarPage(),
     Container(),
     Container(),
@@ -49,11 +50,22 @@ class NavigationController extends GetxController{
         update(['bottom_navigation']);
         break;
 
+      case 2:
+        //scaffoldKey.currentState.openDrawer();
+        actions.add(
+          IconButton(onPressed: ()=> Get.to(()=> SearchPage()), icon: Icon(Icons.search))
+        );
+        titulo='Aprobación';
+        scaffoldKey.currentState.openEndDrawer();
+        indexWidget=index;
+        update(['bottom_navigation']);
+        break;
+
       case 3:
         actions.add(
           IconButton(onPressed: (){}, icon: Icon(Icons.search))
         );
-        titulo='Migrar';
+        titulo='Migración';
         scaffoldKey.currentState.openEndDrawer();
         indexWidget=index;
         update(['bottom_navigation']);
