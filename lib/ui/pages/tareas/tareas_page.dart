@@ -301,8 +301,8 @@ class TareasPage extends StatelessWidget {
   Widget _opcionesSeleccionados() {
     final items = [
       {'key': 1, 'value': 'Seleccionar todos'},
-      {'key': 4, 'value': 'Quitar todos'},
-      {'key': 1, 'value': 'Exportar en excel'},
+      {'key': 2, 'value': 'Quitar todos'},
+      {'key': 3, 'value': 'Exportar en excel'},
     ];
 
     return GetBuilder<TareasController>(
@@ -364,4 +364,5 @@ class TareasPage extends StatelessWidget {
       ),
     );
   }
+
 }
