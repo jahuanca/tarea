@@ -1,3 +1,3 @@
-final String serverUrlCorta='ibit-event-api.herokuapp.com:443';
-final String serverUrl='https://$serverUrlCorta/api/v1';
+final String serverUrlCorta='10.0.2.2:3000';
+final String serverUrl='http://$serverUrlCorta';
 final String rImages='assets/images/';

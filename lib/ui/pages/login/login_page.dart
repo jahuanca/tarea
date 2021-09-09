@@ -1,54 +1,60 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
+import 'package:flutter_tareo/ui/pages/login/login_controller.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/widgets/button_login_widget.dart';
 import 'package:flutter_tareo/ui/widgets/button_social_widget.dart';
-import 'package:flutter_tareo/ui/widgets/divider_widget.dart';
 import 'package:flutter_tareo/ui/widgets/input_login_widget.dart';
+import 'package:get/get.dart';
 
 class LoginPage extends StatelessWidget {
+
+  final LoginController controller=Get.find<LoginController>();
   
   @override
   Widget build(BuildContext context) {
 
     final Size size=MediaQuery.of(context).size;
 
-    return SafeArea(
-      child: Stack(
-          children: [
-            Scaffold(
-              backgroundColor: (PreferenciasUsuario().modoDark) ? cardColorDark : cardColor,
-                body: SingleChildScrollView(
-                  child: Container(
-                    width: size.width,
-                    height: size.height- MediaQuery.of(context).padding.top,
-                      child: Row(
-                        children: [
-                          Flexible(child: Container(), flex: 1),
-                          Flexible(child: Container(
-                            child: Column(
-                              children: [
-                                cabecera(),
-                                ingreso(context),
-                              ],
-                            ),
-                          ), flex: 8),
-                          Flexible(child: Container(), flex: 1),
-                        ],
+    return GetBuilder<LoginController>(
+      init: controller,
+      builder: (_) => SafeArea(
+        child: Stack(
+            children: [
+              Scaffold(
+                backgroundColor: (PreferenciasUsuario().modoDark) ? cardColorDark : cardColor,
+                  body: SingleChildScrollView(
+                    child: Container(
+                      width: size.width,
+                      height: size.height- MediaQuery.of(context).padding.top,
+                        child: Row(
+                          children: [
+                            Flexible(child: Container(), flex: 1),
+                            Flexible(child: Container(
+                              child: Column(
+                                children: [
+                                  cabecera(),
+                                  ingreso(context),
+                                ],
+                              ),
+                            ), flex: 8),
+                            Flexible(child: Container(), flex: 1),
+                          ],
+                      ),
                     ),
-                  ),
-                )
-              
-            ),
-            /* GetBuilder<LoginController>(
-              id: 'validando',
-              builder: (_)=> _.validando ? Container(
-                color: Colors.black45,
-                child: Center(child: CircularProgressIndicator()),
-              ) : Container(),
-            ), */
-          ],
+                  )
+                
+              ),
+              GetBuilder<LoginController>(
+                id: 'validando',
+                builder: (_)=> _.validando ? Container(
+                  color: Colors.black45,
+                  child: Center(child: CircularProgressIndicator()),
+                ) : Container(),
+              ),
+            ],
+        ),
       ),
     );
   }
@@ -120,22 +126,28 @@ class LoginPage extends StatelessWidget {
           Flexible(
             flex: 1,
             child: Center(
-              child: InputLoginWidget(
-                  texto: 'Usuario', 
-                  maxLength: 80,
-                  onChanged: null, 
-                  error: null,
-                  icon: Icons.mail),
+              child: GetBuilder<LoginController>(
+                id: 'usuario',
+                builder: (_) => InputLoginWidget(
+                    texto: 'Usuario', 
+                    maxLength: 80,
+                    onChanged: _.onValidationUsuario, 
+                    error: _.errorUsuario,
+                    icon: Icons.mail),
+              ),
               )),
           Flexible(
             flex: 1,
             child: Center(
-              child: InputLoginWidget(
-                  texto: 'Contraseña',
-                  isObscure: true,
-                  onChanged: null, 
-                  error: null,
-                  icon: Icons.lock),
+              child: GetBuilder<LoginController>(
+                id: 'password',
+                builder: (_) => InputLoginWidget(
+                    texto: 'Contraseña',
+                    isObscure: true,
+                    onChanged: _.onValidationPassword, 
+                    error: _.errorPassword,
+                    icon: Icons.lock),
+              ),
             )),
           Flexible(
             flex: 1,
@@ -150,9 +162,12 @@ class LoginPage extends StatelessWidget {
           Flexible(
             flex: 1,
             child: Center(
-              child: ButtonLogin(
-                  onTap: ()=> Navigator.of(context).pushNamed('navigation'),
-                  texto: 'Ingresar'),
+              child: GetBuilder<LoginController>(
+
+                builder: (_) => ButtonLogin(
+                    onTap: _.ingresar,
+                    texto: 'Ingresar'),
+              ),
               )
           ),
           Flexible(

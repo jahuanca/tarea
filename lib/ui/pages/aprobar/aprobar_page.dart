@@ -282,6 +282,7 @@ class AprobarPage extends StatelessWidget {
     final items = [
       {'key': 1, 'value': 'Seleccionar todos'},
       {'key': 2, 'value': 'Quitar todos'},
+      {'key': 2, 'value': 'Aprobar todos'},
       {'key': 3, 'value': 'Exportar en excel'},
     ];
 

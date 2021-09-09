@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
       title: 'Material App',
       initialRoute: 'login',
       routes: getAplicattionRoutes(),
+      /* home: LoginPage(), */
       initialBinding: MainBinding(),
-      home: LoginPage(),
     );
   }
 }
