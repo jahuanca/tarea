@@ -74,16 +74,6 @@ class LoginController extends GetxController{
       await _saveUserUseCase.execute(usuarioEntity);
       goHome();
     }
-    /* if(statusEntity.success ?? false){
-      await _saveTokenUseCase.execute(statusEntity.data?.token ?? '');
-      UsuarioEntity user =await _getProfileUseCase.execute(statusEntity.data?.account ?? '');
-
-      user.token=statusEntity.data?.token;
-      await _saveUserUseCase.execute(user);
-      goHome();
-    }else{
-      /* toastError('Error', statusEntity.title ?? ''); */
-    } */
   }
 
   void goHome(){

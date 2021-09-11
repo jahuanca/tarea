@@ -50,6 +50,12 @@ class DropdownSearchWidget extends StatelessWidget {
           height: size.height*inputDimension,
           width: size.width,
           child: DropdownSearch<String>(
+                  emptyBuilder: (context, searchEntry) => Material(
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text('No se encontraron resultados.'),
+                    ),
+                  ),
                   mode: Mode.BOTTOM_SHEET,
                   dropdownSearchDecoration: InputDecoration(
               border: inputBorder(),

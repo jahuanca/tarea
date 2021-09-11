@@ -14,8 +14,9 @@ class ListadoPersonasPage extends StatelessWidget {
 
     return GetBuilder<ListadoPersonasController>(
       init: ListadoPersonasController(),
+      id: 'personal',
       builder: (_) => Scaffold(
-        appBar: getAppBar('80 Personas', [
+        appBar: getAppBar('${_.personal.length} Personas', [
           IconButton(onPressed: (){}, icon: Icon(Icons.qr_code)),
           IconButton(onPressed: (){}, icon: Icon(Icons.search)),
         ], true),
@@ -35,7 +36,7 @@ class ListadoPersonasPage extends StatelessWidget {
                   flex: 8,
                   child: Container(
                     child: ListView.builder(
-                      itemCount: 5,
+                      itemCount: _.personal.length,
                       itemBuilder: (BuildContext context, int index) =>
                           itemActividad(size, context, index),
                     ),
@@ -87,7 +88,7 @@ class ListadoPersonasPage extends StatelessWidget {
                       Flexible(
                         child: Container(
                           alignment: Alignment.centerLeft,
-                          child: Text('1'),
+                          child: Text(_.personal[index].codigoempresa),
                         ),
                         flex: 10,
                       ),
@@ -95,9 +96,9 @@ class ListadoPersonasPage extends StatelessWidget {
                       Flexible(
                         child: Container(
                           alignment: Alignment.centerLeft,
-                          child: Text('Jose Antonio Huanca'),
+                          child: Text(_.personal[index].nombreCompleto),
                         ),
-                        flex: 20,
+                        flex: 25,
                       ),
                       Flexible(child: Container(), flex: 1),
                       Flexible(

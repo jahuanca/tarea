@@ -23,9 +23,8 @@ class MyApp extends StatelessWidget {
       ],
       debugShowCheckedModeBanner: false,
       title: 'Material App',
-      initialRoute: 'login',
+      initialRoute: '/',
       routes: getAplicattionRoutes(),
-      /* home: LoginPage(), */
       initialBinding: MainBinding(),
     );
   }

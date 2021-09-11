@@ -14,38 +14,42 @@ class TareasPage extends StatelessWidget {
 
     return GetBuilder<TareasController>(
       init: TareasController(),
-      builder: (_) => Scaffold(
-        //appBar: getAppBar('Inicio', true),
-        backgroundColor: secondColor,
-        body: GetBuilder<TareasController>(
-          id: 'seleccionado',
-          builder: (_) => Column(
-            children: [
-              if (_.seleccionados.length > 0)
-                Flexible(
-                  flex: 1,
-                  child: AnimatedContainer(
-                      child: _opcionesSeleccionados(),
-                      duration: Duration(seconds: 1)),
-                ),
-              Flexible(
-                flex: 8,
-                child: Container(
-                  child: ListView.builder(
-                    itemCount: 5,
-                    itemBuilder: (BuildContext context, int index) =>
-                        itemActividad(size, context, index),
+      builder: (_) => Stack(
+        children: [
+          Scaffold(
+            //appBar: getAppBar('Inicio', true),
+            backgroundColor: secondColor,
+            body: GetBuilder<TareasController>(
+              id: 'seleccionado',
+              builder: (_) => Column(
+                children: [
+                  if (_.seleccionados.length > 0)
+                    Flexible(
+                      flex: 1,
+                      child: AnimatedContainer(
+                          child: _opcionesSeleccionados(),
+                          duration: Duration(seconds: 1)),
+                    ),
+                  Flexible(
+                    flex: 8,
+                    child: Container(
+                      child: ListView.builder(
+                        itemCount: 5,
+                        itemBuilder: (BuildContext context, int index) =>
+                            itemActividad(size, context, index),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              child: IconButton(
+                  onPressed: _.goNuevaTarea,
+                  icon: Icon(Icons.add)),
+            ),
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: IconButton(
-              onPressed: () => Navigator.of(context).pushNamed('nueva_tarea'),
-              icon: Icon(Icons.add)),
-        ),
+        ],
       ),
     );
   }
@@ -271,8 +275,7 @@ class TareasPage extends StatelessWidget {
                             child: CircleAvatar(
                               backgroundColor: alertColor,
                               child: IconButton(
-                                onPressed: () => Navigator.of(context)
-                                    .pushNamed('nueva_tarea'),
+                                onPressed: _.goNuevaTarea,
                                 icon: Icon(Icons.edit),
                                 color: Colors.white,
                               ),

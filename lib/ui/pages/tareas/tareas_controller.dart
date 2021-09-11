@@ -1,4 +1,6 @@
 
+import 'package:flutter_tareo/di/nueva_tarea_binding.dart';
+import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
 import 'package:get/get.dart';
 
 class TareasController extends GetxController{
@@ -13,5 +15,10 @@ class TareasController extends GetxController{
       seleccionados.removeAt(i);
     }
     update(['seleccionado']);
+  }
+
+  void goNuevaTarea(){
+    NuevaTareaBinding().dependencies();
+    Get.to(() => NuevaTareaPage());
   }
 }

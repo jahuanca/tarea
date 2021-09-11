@@ -64,8 +64,6 @@ class LoginPage extends StatelessWidget {
       child: Column(
         children: [
           Flexible(child: logoWithTexto(), flex: 3,),
-          //Flexible(child: loginSociales(), flex: 3,),
-          //Flexible(child: DividerWidget(), flex: 1,)
         ],
       ),
       flex: 2,
@@ -101,23 +99,6 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
-
-  /* Widget loginSociales(){
-    return Container(
-      child: Column(
-        children: [
-          Flexible(
-            flex: 1,
-            child: Center(child: ButtonSocialWidget(
-              onTap: (){},
-              texto: 'Conectate con google', icon: Icons.golf_course))),
-          Flexible(
-            flex: 1,
-            child: Center(child: ButtonSocialWidget(texto: 'Conectate con outlook', icon: Icons.golf_course_outlined))),
-        ],
-      ),
-    );
-  } */
 
   Widget formulario(BuildContext context){
     return Container(
