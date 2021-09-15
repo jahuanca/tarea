@@ -40,9 +40,7 @@ class AgregarPersonaPage extends StatelessWidget {
                           labelValue: 'codigoempresa',
                           initialValue: '1',
                           onChanged: _.changePersonal,
-                          items: controller.personalEmpresa.length==0 ? [
-                                  {'codigoempresa': '', 'name': 'Apelllido',}
-                                ] : controller.personalEmpresa.map((PersonalEmpresaEntity e) => {
+                          items: controller.personalEmpresa.length==0 ? [] : controller.personalEmpresa.map((PersonalEmpresaEntity e) => {
                                   'name': '${e.apellidopaterno} ${e.apellidomaterno}, ${e.nombres}',
                                   'codigoempresa': e.codigoempresa,
                                 }).toList()),
@@ -52,7 +50,7 @@ class AgregarPersonaPage extends StatelessWidget {
                       padding: EdgeInsets.only(top: 30, bottom: 30),
                       child: InputLabelWidget(
                         enabled: false,
-                        hintText: '4 personas',
+                        hintText: '${controller.personalEmpresa.length} personas',
                       ),
                     ),
                     InputLabelWidget(

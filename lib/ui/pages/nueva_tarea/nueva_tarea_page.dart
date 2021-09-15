@@ -23,7 +23,7 @@ class NuevaTareaPage extends StatelessWidget {
           appBar: getAppBar('Nueva tarea', [], true),
           backgroundColor: secondColor,
           floatingActionButton: FloatingActionButton(
-            onPressed: () {},
+            onPressed: controller.goBack,
             child: Icon(Icons.check),
           ),
           body: SingleChildScrollView(
@@ -33,9 +33,9 @@ class NuevaTareaPage extends StatelessWidget {
                 children: [
                   GetBuilder<NuevaTareaController>(
                     id: 'fecha',
-                    builder: (_) =>  InputLabelWidget(
+                    builder: (_) => InputLabelWidget(
                         onTap: () async {
-                          _.fecha=await DatePickerWidget(
+                          _.fecha = await DatePickerWidget(
                             onlyDate: true,
                             minDate:
                                 DateTime.now().subtract(Duration(days: 10)),
@@ -44,7 +44,8 @@ class NuevaTareaPage extends StatelessWidget {
                           ).selectDate(context);
                           _.changeFecha();
                         },
-                        textEditingController: TextEditingController( text: formatoFecha(_.fecha)),
+                        textEditingController:
+                            TextEditingController(text: formatoFecha(_.fecha)),
                         label: 'Fecha',
                         enabled: false,
                         hintText: 'Fecha'),
@@ -55,17 +56,20 @@ class NuevaTareaPage extends StatelessWidget {
                   GetBuilder<NuevaTareaController>(
                     id: 'subdivisions',
                     builder: (_) => DropdownSearchWidget(
-                        label: 'Sede',
-                        labelText: 'name',
-                        labelValue: '_id',
-                        initialValue: '1',
-                        onChanged: (value) {},
-                        items: controller.subdivisions.length==0 ? [
-                                  {'_id': 1, 'name': 'General',}
-                                ] : controller.subdivisions.map((e) => {
-                                  'name': e.detallesubdivision,
-                                  '_id': e.idsubdivision,
-                                }).toList(),),
+                      label: 'Sede',
+                      labelText: 'name',
+                      labelValue: '_id',
+                      initialValue: '1',
+                      onChanged: (value) async => await _.getSupervisors(int.parse(value)),
+                      items: controller.subdivisions.length == 0
+                          ? []
+                          : controller.subdivisions
+                              .map((e) => {
+                                    'name': e.detallesubdivision,
+                                    '_id': e.idsubdivision,
+                                  })
+                              .toList(),
+                    ),
                   ),
                   DropdownSearchWidget(
                       label: 'Centro',
@@ -85,50 +89,68 @@ class NuevaTareaPage extends StatelessWidget {
                       ]),
                   GetBuilder<NuevaTareaController>(
                     id: 'actividades',
-                    builder: (_) =>  DropdownSearchWidget(
-                        label: 'Actividad',
-                        labelText: 'name',
-                        labelValue: '_id',
-                        initialValue: '1',
-                        onChanged: (value) {},
-                        items: controller.actividades.length==0 ? [
-                                {'_id': '1', 'name': 'General',}
-                              ] : controller.actividades.map((e) => {
-                                'name': '${e.descAct} ${e.sociedad}',
-                                '_id': e.actividad,
-                              }).toList(),),
+                    builder: (_) => DropdownSearchWidget(
+                      label: 'Actividad',
+                      labelText: 'name',
+                      labelValue: '_id',
+                      initialValue: '1',
+                      onChanged: _.changeActividad,
+                      items: controller.actividades.length == 0
+                          ? [
+                              {
+                                '_id': '1',
+                                'name': 'General',
+                              }
+                            ]
+                          : controller.actividades
+                              .map((e) => {
+                                    'name': '${e.descAct} ${e.sociedad}',
+                                    '_id': e.actividad,
+                                  })
+                              .toList(),
+                    ),
                   ),
                   GetBuilder<NuevaTareaController>(
                     id: 'labores',
-                    builder: (_) =>  DropdownSearchWidget(
-                        label: 'Labor',
-                        labelText: 'name',
-                        labelValue: '_id',
-                        initialValue: '1',
-                        onChanged: (value) {},
-                        items: controller.labores.length==0 ? [
-                                {'_id': '1', 'name': 'General',}
-                              ] : controller.labores.map((e) => {
-                                'name': '${e.descLabor} ${e.sociedad}',
-                                '_id': e.labor,
-                              }).toList(),),
-                  ),
-                  DropdownSearchWidget(
-                      label: 'Supervisor',
+                    builder: (_) => DropdownSearchWidget(
+                      label: 'Labor',
                       labelText: 'name',
                       labelValue: '_id',
                       initialValue: '1',
                       onChanged: (value) {},
-                      items: [
-                        {
-                          'name': 'Centro 1',
-                          '_id': '1',
-                        },
-                        {
-                          'name': 'Centro 2',
-                          '_id': '2',
-                        },
-                      ]),
+                      items: controller.labores.length == 0
+                          ? [
+                              {
+                                '_id': '1',
+                                'name': 'General',
+                              }
+                            ]
+                          : controller.labores
+                              .map((e) => {
+                                    'name': '${e.descLabor} ${e.sociedad}',
+                                    '_id': e.labor,
+                                  })
+                              .toList(),
+                    ),
+                  ),
+                  GetBuilder<NuevaTareaController>(
+                    id: 'supervisors',
+                    builder: (_) => DropdownSearchWidget(
+                        label: 'Supervisor',
+                        labelText: 'name',
+                        labelValue: 'codigoempresa',
+                        initialValue: '1',
+                        onChanged: _.changeSupervisor,
+                        items: _.supervisors.length == 0
+                            ? []
+                            : _.supervisors
+                                .map((e) => {
+                                      'name':
+                                          '${e.apellidopaterno} ${e.apellidomaterno}, ${e.nombres}',
+                                      'codigoempresa': e.codigoempresa,
+                                    })
+                                .toList()),
+                  ),
                   DropdownSearchWidget(
                       label: 'Turno',
                       labelText: 'name',
@@ -150,15 +172,17 @@ class NuevaTareaPage extends StatelessWidget {
                     builder: (_) => InputLabelWidget(
                         enabled: false,
                         onTap: () async {
-                          _.horaInicio=await DatePickerWidget(
+                          _.horaInicio = await DatePickerWidget(
                             onlyDate: true,
-                            minDate: DateTime.now().subtract(Duration(days: 10)),
+                            minDate:
+                                DateTime.now().subtract(Duration(days: 10)),
                             dateSelected: DateTime.now(),
                           ).selectTime(context, new DateTime.now());
                           _.changeHoraInicio();
                         },
                         label: 'Hora inicio',
-                        textEditingController: TextEditingController( text: formatoHora(_.horaInicio, 'Hora Inicio')),
+                        textEditingController: TextEditingController(
+                            text: formatoHora(_.horaInicio, 'Hora Inicio')),
                         hintText: 'Hora inicio'),
                   ),
                   SizedBox(
@@ -169,36 +193,40 @@ class NuevaTareaPage extends StatelessWidget {
                     builder: (_) => InputLabelWidget(
                         enabled: false,
                         onTap: () async {
-                          _.horaFin=await DatePickerWidget(
+                          _.horaFin = await DatePickerWidget(
                             onlyDate: true,
-                            minDate: DateTime.now().subtract(Duration(days: 10)),
+                            minDate:
+                                DateTime.now().subtract(Duration(days: 10)),
                             dateSelected: DateTime.now(),
                             onChanged: () {},
                           ).selectTime(context, new DateTime.now());
                           _.changeHoraFin();
                         },
                         label: 'Hora fin',
-                        textEditingController: TextEditingController( text: formatoHora(_.horaFin, 'Hora Fin')),
+                        textEditingController: TextEditingController(
+                            text: formatoHora(_.horaFin, 'Hora Fin')),
                         hintText: 'Hora fin'),
                   ),
                   GetBuilder<NuevaTareaController>(
                     id: 'inicio_pausa',
-                    builder: (_) =>  InputLabelWidget(
+                    builder: (_) => InputLabelWidget(
                         enabled: false,
                         onTap: () async {
-                          _.inicioPausa=await DatePickerWidget(
+                          _.inicioPausa = await DatePickerWidget(
                             onlyDate: true,
-                            minDate: DateTime.now().subtract(Duration(days: 10)),
+                            minDate:
+                                DateTime.now().subtract(Duration(days: 10)),
                             dateSelected: DateTime.now(),
-                            onChanged: (){},
+                            onChanged: () {},
                           ).selectTime(context, new DateTime.now());
                           _.changeInicioPausa();
                           print('inicio');
                         },
-                        textEditingController: TextEditingController( text: formatoHora(_.inicioPausa, 'Inicio de pausa')),
+                        textEditingController: TextEditingController(
+                            text:
+                                formatoHora(_.inicioPausa, 'Inicio de pausa')),
                         label: 'Inicio de pausa',
                         hintText: 'Inicio de pausa'),
-                        
                   ),
                   SizedBox(
                     height: size.height * 0.01,
@@ -208,14 +236,16 @@ class NuevaTareaPage extends StatelessWidget {
                     builder: (_) => InputLabelWidget(
                         enabled: false,
                         onTap: () async {
-                          _.finPausa= await DatePickerWidget(
+                          _.finPausa = await DatePickerWidget(
                             onlyDate: true,
-                            minDate: DateTime.now().subtract(Duration(days: 10)),
+                            minDate:
+                                DateTime.now().subtract(Duration(days: 10)),
                             dateSelected: DateTime.now(),
                           ).selectTime(context, new DateTime.now());
                           _.changeFinPausa();
                         },
-                        textEditingController: TextEditingController( text: formatoHora(_.finPausa, 'Fin de pausa')),
+                        textEditingController: TextEditingController(
+                            text: formatoHora(_.finPausa, 'Fin de pausa')),
                         label: 'Fin de pausa',
                         hintText: 'Fin de pausa'),
                   ),
@@ -263,7 +293,7 @@ class NuevaTareaPage extends StatelessWidget {
                 builder: (_) => Container(
                   alignment: Alignment.center,
                   child: Text(
-                    '${_.personal.length} personas',
+                    '${_.nuevaTarea.personal.length} personas',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w300,

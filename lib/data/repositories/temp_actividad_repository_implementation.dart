@@ -6,7 +6,7 @@ class TempActividadRepositoryImplementation extends TempActividadRepository {
   final urlModule = '/temp_actividad';
 
   @override
-  Future<List<TempActividadEntity>> getTempActividads() async{
+  Future<List<TempActividadEntity>> getAll() async{
     final AppHttpManager http = AppHttpManager();
 
     final res = await http.get(

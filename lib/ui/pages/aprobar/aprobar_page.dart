@@ -6,13 +6,15 @@ import 'package:flutter_tareo/ui/pages/aprobar/aprobar_controller.dart';
 import 'package:get/get.dart';
 
 class AprobarPage extends StatelessWidget {
+
+  AprobarController controller=AprobarController();
   
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
     return GetBuilder<AprobarController>(
-      init: AprobarController(),
+      init: controller,
       builder: (_) => Scaffold(
         backgroundColor: secondColor,
         body: GetBuilder<AprobarController>(
@@ -236,7 +238,7 @@ class AprobarPage extends StatelessWidget {
                             child: CircleAvatar(
                               backgroundColor: infoColor,
                               child: IconButton(
-                                  onPressed: null,//() => Navigator.of(context).pushNamed('listado_personas'),
+                                  onPressed: controller.goAprobar,
                                   icon: Icon(
                                     Icons.check,
                                     color: Colors.white,

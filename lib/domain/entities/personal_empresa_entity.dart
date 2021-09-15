@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:flutter_tareo/domain/entities/personal_empresa_subdivision_entity.dart';
+
 List<PersonalEmpresaEntity> personalEmpresaEntityFromJson(String str) => List<PersonalEmpresaEntity>.from(json.decode(str).map((x) => PersonalEmpresaEntity.fromJson(x)));
 
 String personalEmpresaEntityToJson(List<PersonalEmpresaEntity> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
@@ -21,6 +23,7 @@ class PersonalEmpresaEntity {
         this.bloqueado,
         this.fechacese,
         this.idusuario,
+        this.personalEmpresaSubdivision,
     });
 
     String codigoempresa;
@@ -34,6 +37,7 @@ class PersonalEmpresaEntity {
     bool bloqueado;
     DateTime fechacese;
     int idusuario;
+    PersonalEmpresaSubdivisionEntity personalEmpresaSubdivision;
 
     factory PersonalEmpresaEntity.fromJson(Map<String, dynamic> json) => PersonalEmpresaEntity(
         codigoempresa: json["codigoempresa"],
@@ -45,8 +49,9 @@ class PersonalEmpresaEntity {
         idtipodocumento: json["idtipodocumento"],
         fechaingreso: DateTime?.parse(json["fechaingreso"]),
         bloqueado: json["bloqueado"],
-        fechacese: DateTime?.parse(json["fechacese"]),
+        fechacese: json['fechacese']==null ? null : DateTime?.parse(json["fechacese"]),
         idusuario: json["idusuario"],
+        personalEmpresaSubdivision: json["PersonalEmpresa_Subdivision"]==null ? null : PersonalEmpresaSubdivisionEntity.fromJson(json["PersonalEmpresa_Subdivision"]),
     );
 
     String get nombreCompleto{
@@ -65,5 +70,6 @@ class PersonalEmpresaEntity {
         "bloqueado": bloqueado,
         "fechacese": "${fechacese.year.toString().padLeft(4, '0')}-${fechacese.month.toString().padLeft(2, '0')}-${fechacese.day.toString().padLeft(2, '0')}",
         "idusuario": idusuario,
+        "PersonalEmpresa_Subdivision": personalEmpresaSubdivision.toJson(),
     };
 }

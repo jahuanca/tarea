@@ -8,7 +8,7 @@ class GetSubdivisonsUseCase{
   GetSubdivisonsUseCase(this._subdivisionRepository);
 
   Future<List<SubdivisionEntity>> execute() async{
-    return await _subdivisionRepository.getSubdivisions();
+    return await _subdivisionRepository.getAll();
   }
   
 }

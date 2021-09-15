@@ -8,7 +8,7 @@ class SubdivisionRepositoryImplementation extends SubdivisionRepository {
 
 
   @override
-  Future<List<SubdivisionEntity>> getSubdivisions() async{
+  Future<List<SubdivisionEntity>> getAll() async{
     final AppHttpManager http = AppHttpManager();
 
     final res = await http.get(

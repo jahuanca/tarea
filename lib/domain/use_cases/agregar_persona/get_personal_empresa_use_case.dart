@@ -12,6 +12,6 @@ class GetPersonalsEmpresaUseCase{
   GetPersonalsEmpresaUseCase(this._personalEmpresaRepository);
 
   Future<List<PersonalEmpresaEntity>> execute() async{
-    return await _personalEmpresaRepository.getPersonalsEmpresa();
+    return await _personalEmpresaRepository.getAll();
   }
 }

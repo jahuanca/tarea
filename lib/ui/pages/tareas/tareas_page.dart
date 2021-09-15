@@ -32,11 +32,14 @@ class TareasPage extends StatelessWidget {
                     ),
                   Flexible(
                     flex: 8,
-                    child: Container(
-                      child: ListView.builder(
-                        itemCount: 5,
-                        itemBuilder: (BuildContext context, int index) =>
-                            itemActividad(size, context, index),
+                    child: GetBuilder<TareasController>(
+                      id: 'tareas',
+                      builder: (_) => Container(
+                        child: ListView.builder(
+                          itemCount: _.tareas.length,
+                          itemBuilder: (BuildContext context, int index) =>
+                              itemActividad(size, context, index),
+                        ),
                       ),
                     ),
                   ),
@@ -121,7 +124,7 @@ class TareasPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Nombre de actividad',
+                              _.tareas[index].actividad?.descAct,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                               ),

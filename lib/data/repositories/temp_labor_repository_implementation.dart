@@ -6,7 +6,7 @@ class TempLaborRepositoryImplementation extends TempLaborRepository {
   final urlModule = '/temp_labor';
 
   @override
-  Future<List<TempLaborEntity>> getTempLabors() async{
+  Future<List<TempLaborEntity>> getAll() async{
     final AppHttpManager http = AppHttpManager();
 
     final res = await http.get(

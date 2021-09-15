@@ -14,10 +14,10 @@ class ListadoPersonasPage extends StatelessWidget {
 
     return GetBuilder<ListadoPersonasController>(
       init: ListadoPersonasController(),
-      id: 'personal',
+      id: 'personal_seleccionado',
       builder: (_) => Scaffold(
-        appBar: getAppBar('${_.personal.length} Personas', [
-          IconButton(onPressed: (){}, icon: Icon(Icons.qr_code)),
+        appBar: getAppBar('${_.personalSeleccionado.length} Personas', [
+          IconButton(onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
           IconButton(onPressed: (){}, icon: Icon(Icons.search)),
         ], true),
         backgroundColor: secondColor,
@@ -36,7 +36,7 @@ class ListadoPersonasPage extends StatelessWidget {
                   flex: 8,
                   child: Container(
                     child: ListView.builder(
-                      itemCount: _.personal.length,
+                      itemCount: _.personalSeleccionado.length,
                       itemBuilder: (BuildContext context, int index) =>
                           itemActividad(size, context, index),
                     ),
@@ -46,7 +46,7 @@ class ListadoPersonasPage extends StatelessWidget {
             ),
           ),
         floatingActionButton: FloatingActionButton(
-          child: IconButton(onPressed: ()=> Navigator.of(context).pushNamed('agregar_persona'), icon: Icon(Icons.add)),
+          child: IconButton(onPressed: _.goNuevoPersonaTareaProceso, icon: Icon(Icons.add)),
         ),
       ),
     );
@@ -62,7 +62,8 @@ class ListadoPersonasPage extends StatelessWidget {
     return GetBuilder<ListadoPersonasController>(
       id: 'seleccionado',
       builder: (_) => GestureDetector(
-        onLongPress: () => _.seleccionar(index),
+        onLongPress: _.seleccionados.length>0 ? null : () => _.seleccionar(index),
+        onTap: _.seleccionados.length>0 ? () => _.seleccionar(index) : null,
         child: Container(
           decoration: BoxDecoration(
             color:
@@ -88,7 +89,7 @@ class ListadoPersonasPage extends StatelessWidget {
                       Flexible(
                         child: Container(
                           alignment: Alignment.centerLeft,
-                          child: Text(_.personal[index].codigoempresa),
+                          child: Text(_.personalSeleccionado[index].personal?.codigoempresa),
                         ),
                         flex: 10,
                       ),
@@ -96,7 +97,7 @@ class ListadoPersonasPage extends StatelessWidget {
                       Flexible(
                         child: Container(
                           alignment: Alignment.centerLeft,
-                          child: Text(_.personal[index].nombreCompleto),
+                          child: Text(_.personalSeleccionado[index].personal.nombreCompleto),
                         ),
                         flex: 25,
                       ),

@@ -8,7 +8,7 @@ class GetTempActividadsUseCase{
   GetTempActividadsUseCase(this._tempActividadRepository);
 
   Future<List<TempActividadEntity>> execute() async{
-    return await _tempActividadRepository.getTempActividads();
+    return await _tempActividadRepository.getAll();
   }
   
 }

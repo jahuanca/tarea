@@ -8,11 +8,22 @@ class PersonalEmpresaRepositoryImplementation extends PersonalEmpresaRepository 
 
 
   @override
-  Future<List<PersonalEmpresaEntity>> getPersonalsEmpresa() async{
+  Future<List<PersonalEmpresaEntity>> getAll() async{
     final AppHttpManager http = AppHttpManager();
 
     final res = await http.get(
       url: urlModule,
+    );
+
+    return personalEmpresaEntityFromJson((res));
+  }
+
+  @override
+  Future<List<PersonalEmpresaEntity>> getAllBySubdivision(int idSubdivision) async{
+    final AppHttpManager http = AppHttpManager();
+
+    final res = await http.get(
+      url: '$urlModule/subdivision/$idSubdivision',
     );
 
     return personalEmpresaEntityFromJson((res));

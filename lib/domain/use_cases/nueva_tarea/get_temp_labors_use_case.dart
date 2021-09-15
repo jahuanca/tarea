@@ -11,7 +11,7 @@ class GetTempLaborsUseCase{
   GetTempLaborsUseCase(this._tempLaborRepository);
 
   Future<List<TempLaborEntity>> execute() async{
-    return await _tempLaborRepository.getTempLabors();
+    return await _tempLaborRepository.getAll();
   }
   
 }
