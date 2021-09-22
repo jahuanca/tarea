@@ -8,45 +8,61 @@ import 'package:get/get.dart';
 
 class ListadoPersonasPage extends StatelessWidget {
 
+  final ListadoPersonasController controller=Get.find<ListadoPersonasController>();
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
     return GetBuilder<ListadoPersonasController>(
-      init: ListadoPersonasController(),
+      init: controller,
       id: 'personal_seleccionado',
-      builder: (_) => Scaffold(
-        appBar: getAppBar('${_.personalSeleccionado.length} Personas', [
-          IconButton(onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
-          IconButton(onPressed: (){}, icon: Icon(Icons.search)),
-        ], true),
-        backgroundColor: secondColor,
-        body: GetBuilder<ListadoPersonasController>(
-            id: 'seleccionado',
-            builder: (_) => Column(
-              children: [
-                if (_.seleccionados.length > 0)
-                  Flexible(
-                    flex: 1,
-                    child: AnimatedContainer(
-                        child: _opcionesSeleccionados(),
-                        duration: Duration(seconds: 1)),
-                  ),
-                Flexible(
-                  flex: 8,
-                  child: Container(
-                    child: ListView.builder(
-                      itemCount: _.personalSeleccionado.length,
-                      itemBuilder: (BuildContext context, int index) =>
-                          itemActividad(size, context, index),
-                    ),
+      builder: (_) => WillPopScope(
+        onWillPop: _.onWillPop,
+        child: Stack(
+          children: [
+            Scaffold(
+              appBar: getAppBar('${_.personalSeleccionado.length} Personas', [
+                IconButton(onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
+                IconButton(onPressed: (){}, icon: Icon(Icons.search)),
+              ], true),
+              backgroundColor: secondColor,
+              body: GetBuilder<ListadoPersonasController>(
+                  id: 'seleccionado',
+                  builder: (_) => Column(
+                    children: [
+                      if (_.seleccionados.length > 0)
+                        Flexible(
+                          flex: 1,
+                          child: AnimatedContainer(
+                              child: _opcionesSeleccionados(),
+                              duration: Duration(seconds: 1)),
+                        ),
+                      Flexible(
+                        flex: 8,
+                        child: Container(
+                          child: ListView.builder(
+                            itemCount: _.personalSeleccionado.length,
+                            itemBuilder: (BuildContext context, int index) =>
+                                itemActividad(size, context, index),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              floatingActionButton: FloatingActionButton(
+                child: IconButton(onPressed: _.goNuevoPersonaTareaProceso, icon: Icon(Icons.add)),
+              ),
             ),
-          ),
-        floatingActionButton: FloatingActionButton(
-          child: IconButton(onPressed: _.goNuevoPersonaTareaProceso, icon: Icon(Icons.add)),
+            GetBuilder<ListadoPersonasController>(
+                  id: 'validando',
+                  builder: (_)=> _.validando ? Container(
+                    color: Colors.black45,
+                    child: Center(child: CircularProgressIndicator()),
+                  ) : Container(),
+                ),
+          ],
         ),
       ),
     );
@@ -55,8 +71,7 @@ class ListadoPersonasPage extends StatelessWidget {
   Widget itemActividad(Size size, context, index) {
     final items = [
       {'key': 1, 'value': 'Editar'},
-      {'key': 2, 'value': 'Seleccionar'},
-      {'key': 5, 'value': 'Eliminar'},
+      {'key': 2, 'value': 'Eliminar'},
     ];
 
     return GetBuilder<ListadoPersonasController>(
@@ -89,7 +104,7 @@ class ListadoPersonasPage extends StatelessWidget {
                       Flexible(
                         child: Container(
                           alignment: Alignment.centerLeft,
-                          child: Text(_.personalSeleccionado[index].personal?.codigoempresa),
+                          child: Text(_.personalSeleccionado[index].personal?.codigoempresa ?? ''),
                         ),
                         flex: 10,
                       ),
@@ -97,7 +112,7 @@ class ListadoPersonasPage extends StatelessWidget {
                       Flexible(
                         child: Container(
                           alignment: Alignment.centerLeft,
-                          child: Text(_.personalSeleccionado[index].personal.nombreCompleto),
+                          child: Text(_.personalSeleccionado[index].personal?.nombreCompleto ?? ''),
                         ),
                         flex: 25,
                       ),

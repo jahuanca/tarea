@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/ui/pages/navigation/navigation_controller.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
-import 'package:flutter_tareo/ui/widgets/bottom_navigation/bottom_navigation_widget.dart';
 import 'package:flutter_tareo/ui/widgets/navigation_drawer/navigation_drawer_widget.dart';
 import 'package:get/get.dart';
 

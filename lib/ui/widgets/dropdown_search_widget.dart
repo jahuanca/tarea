@@ -9,11 +9,11 @@ class DropdownSearchWidget extends StatelessWidget {
   final int maxLength;
   final TextInputType textInputType;
   final bool isObscure;
-  final String initialValue;
   final String label;
   final String labelText;
   final String labelValue;
   final List<Map<String, dynamic>> items;
+  final Map<String, dynamic> selectedItem;
   final void Function(String) onChanged;
 
   DropdownSearchWidget({
@@ -24,7 +24,7 @@ class DropdownSearchWidget extends StatelessWidget {
     this.maxLength = 20,
     this.textInputType = TextInputType.name,
     this.isObscure = false,
-    this.initialValue = '',
+    this.selectedItem,
     this.label,
     this.onChanged,
   });
@@ -72,7 +72,11 @@ class DropdownSearchWidget extends StatelessWidget {
               itemAsString: (item) => item[labelText],
               hint: "Sin ${label.toLowerCase()}",
               onChanged: (data) => onChanged(data[labelValue].toString()),
-              selectedItem: items.length==0 ? null : items.first),
+              selectedItem: selectedItem != null
+                  ? selectedItem
+                  : items.length == 0
+                      ? null
+                      : items.first),
         ),
       ],
     );

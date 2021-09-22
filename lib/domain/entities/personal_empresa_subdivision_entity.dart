@@ -3,13 +3,13 @@
 //     final personalEmpresaSubdivisionEntity = personalEmpresaSubdivisionEntityFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:hive/hive.dart';
 
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 
-List<PersonalEmpresaSubdivisionEntity> personalEmpresaSubdivisionEntityFromJson(String str) => List<PersonalEmpresaSubdivisionEntity>.from(json.decode(str).map((x) => PersonalEmpresaSubdivisionEntity.fromJson(x)));
+part 'personal_empresa_subdivision_entity.g.dart';
 
-String personalEmpresaSubdivisionEntityToJson(List<PersonalEmpresaSubdivisionEntity> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
+@HiveType(typeId : 6)
 class PersonalEmpresaSubdivisionEntity {
     PersonalEmpresaSubdivisionEntity({
         this.codigoempresa,
@@ -22,13 +22,21 @@ class PersonalEmpresaSubdivisionEntity {
         this.personalEmpresa,
     });
 
+    @HiveField(0)
     String codigoempresa;
+    @HiveField(1)
     int idsubdivision;
+    @HiveField(2)
     DateTime fechadesde;
+    @HiveField(3)
     DateTime fechahasta;
+    @HiveField(4)
     bool activo;
+    @HiveField(5)
     DateTime fechamod;
+    @HiveField(6)
     int idusuario;
+    @HiveField(7)
     PersonalEmpresaEntity personalEmpresa;
 
     factory PersonalEmpresaSubdivisionEntity.fromJson(Map<String, dynamic> json) => PersonalEmpresaSubdivisionEntity(
@@ -53,3 +61,7 @@ class PersonalEmpresaSubdivisionEntity {
         "Personal_Empresa": personalEmpresa?.toJson(),
     };
 }
+
+List<PersonalEmpresaSubdivisionEntity> personalEmpresaSubdivisionEntityFromJson(String str) => List<PersonalEmpresaSubdivisionEntity>.from(json.decode(str).map((x) => PersonalEmpresaSubdivisionEntity.fromJson(x)));
+
+String personalEmpresaSubdivisionEntityToJson(List<PersonalEmpresaSubdivisionEntity> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));

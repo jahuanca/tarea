@@ -103,6 +103,6 @@ String formatoFechaHora(DateTime value) {
 }
 
 String formatoHora(DateTime value, [String key='Hora']) {
-  if (value == null) return key;
+  if (value == null) return null;
   return DateFormat('hh:mm a').format(value);
 }

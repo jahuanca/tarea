@@ -27,6 +27,16 @@ class HomePage extends StatelessWidget {
                   hintText: '1.1.0'),
               ),
               flex: 1),
+          //TODO: AUTODETECTAR INTERNET, VERIFICAR CON EL SERVIDOR
+          Flexible(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: size.width*0.1),
+                child: InputLabelWidget(
+                  enabled: false,
+                  label: 'Ultima Sincronización',
+                  hintText: '15/09/21 10:24 am'),
+              ),
+              flex: 1),
           Flexible(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: size.width*0.1),

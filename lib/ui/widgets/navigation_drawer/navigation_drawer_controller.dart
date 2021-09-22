@@ -2,6 +2,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/data/repositories/storage_repository_implementation.dart';
+import 'package:flutter_tareo/di/tareas_binding.dart';
 import 'package:flutter_tareo/ui/pages/login/login_page.dart';
 import 'package:flutter_tareo/ui/pages/navigation/navigation_controller.dart';
 import 'package:flutter_tareo/ui/pages/tareas/tareas_page.dart';
@@ -21,7 +23,7 @@ class NavigationDrawerController extends GetxController{
   }
 
   void goTareas(GlobalKey<ScaffoldState> scaffoldKey){
-    /* FavoritosBinding().dependencies();*/
+    TareasBinding().dependencies();
     Get.find<NavigationController>().eventos(1, scaffoldKey);
   }
 
@@ -56,7 +58,7 @@ class NavigationDrawerController extends GetxController{
       'No', 
       (){
         Get.back();
-        /* LocalStorageRepository().clearAllData(); */
+        StorageRepositoryImplementation().clearAllData(); 
         Get.offAll(()=> LoginPage());
       }, 
       ()=> Get.back(),

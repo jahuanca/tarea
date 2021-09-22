@@ -179,13 +179,14 @@ class LoginPage extends StatelessWidget {
               ),
             ),
           ), flex: 1),
+          //TODO: agregar en un RICHTEXT
           Flexible(child: GestureDetector(
               onTap: null,
               child: Container(
-                child: Text('12/05/2021',
+                child: Text('Ult. Sincronización: 12/05/2021 12:20 am',
                   style: TextStyle(
                     color: Colors.blue,
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.w400,
                   ),
                 ),

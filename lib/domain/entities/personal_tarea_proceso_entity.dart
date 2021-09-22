@@ -1,6 +1,10 @@
 
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
+import 'package:hive/hive.dart';
 
+part 'personal_tarea_proceso_entity.g.dart';
+
+@HiveType(typeId : 5)
 class PersonalTareaProcesoEntity{
 
   PersonalTareaProcesoEntity({
@@ -26,25 +30,44 @@ class PersonalTareaProcesoEntity{
     this.personal,
   });
 
+  @HiveField(0)
   int item;
+  @HiveField(1)
   int itemtareoproceso;
+  @HiveField(2)
   String codigoempresa;
+  @HiveField(3)
   bool transferidosap;
+  @HiveField(4)
   DateTime horainicio;
+  @HiveField(5)
   DateTime horafin;
+  @HiveField(6)
   DateTime pausainicio;
+  @HiveField(7)
   DateTime pausafin;
+  @HiveField(8)
   DateTime fechainicio;
+  @HiveField(9)
   DateTime fechafin;
+  @HiveField(10)
   String turno;
+  @HiveField(11)
   bool diasiguiente;
+  @HiveField(12)
   DateTime fechamod;
+  @HiveField(13)
   double cantidadHoras;
+  @HiveField(14)
   double cantidadrendimiento;
+  @HiveField(15)
   double cantidadavance;
+  @HiveField(16)
   int idestado;
+  @HiveField(17)
   int idusuario;
 
+  @HiveField(18)
   PersonalEmpresaEntity personal;
 
   factory PersonalTareaProcesoEntity.fromJson(Map<String, dynamic> json) => PersonalTareaProcesoEntity(

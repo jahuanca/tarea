@@ -7,13 +7,15 @@ import 'package:flutter_tareo/ui/pages/tareas/tareas_controller.dart';
 import 'package:get/get.dart';
 
 class TareasPage extends StatelessWidget {
+
+  final TareasController controller=Get.find<TareasController>();
   
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
     return GetBuilder<TareasController>(
-      init: TareasController(),
+      init: controller,
       builder: (_) => Stack(
         children: [
           Scaffold(
@@ -59,12 +61,12 @@ class TareasPage extends StatelessWidget {
 
   Widget itemActividad(Size size, BuildContext context, int index) {
     final items = [
-      {'key': 1, 'value': 'Seleccionar'},
-      {'key': 4, 'value': 'Sincronizar'},
-      {'key': 5, 'value': 'Copiar tarea'},
+      /* {'key': 1, 'value': 'Seleccionar'}, */
+      {'key': 1, 'value': 'Sincronizar'},
+      {'key': 2, 'value': 'Copiar tarea'},
       //TODO: se cambia la hora de inicio y hora fin
       //aparece un formulario de nueva tarea con los datos cargados
-      {'key': 6, 'value': 'Eliminar'},
+      {'key': 3, 'value': 'Eliminar'},
     ];
 
     return GetBuilder<TareasController>(
@@ -160,7 +162,7 @@ class TareasPage extends StatelessWidget {
                                             value: e['key'],
                                             child: Text(e['value'])))
                                         .toList(),
-                                onChanged: (value) {},
+                                onChanged: (value) => _.onChangedMenu(value, index)
                               ),
                             ),
                             flex: 5),
@@ -178,7 +180,7 @@ class TareasPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text('Nombre labor'),
+                            child: Text(_.tareas[index].labor.descLabor),
                           ),
                           flex: 10,
                         ),
@@ -209,7 +211,7 @@ class TareasPage extends StatelessWidget {
                                 Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text('5')),
+                                    child: Text(_.tareas[index].personal.length.toString())),
                                 Icon(
                                   Icons.people,
                                   color: Colors.black45,
@@ -223,7 +225,7 @@ class TareasPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text('SEDE'),
+                            child: Text(_.tareas[index].sede?.detallesubdivision),
                           ),
                           flex: 10,
                         ),
@@ -245,8 +247,7 @@ class TareasPage extends StatelessWidget {
                             child: CircleAvatar(
                               backgroundColor: infoColor,
                               child: IconButton(
-                                  onPressed: () => Navigator.of(context)
-                                      .pushNamed('listado_personas'),
+                                  onPressed: () => _.goListadoPersonas(index) ,
                                   icon: Icon(
                                     Icons.search,
                                     color: Colors.white,
@@ -262,8 +263,7 @@ class TareasPage extends StatelessWidget {
                             child: CircleAvatar(
                               backgroundColor: successColor,
                               child: IconButton(
-                                onPressed: () => Navigator.of(context)
-                                    .pushNamed('agregar_persona'),
+                                onPressed: () => _.goAgregarPersona(index) ,
                                 icon: Icon(Icons.person_add),
                                 color: Colors.white,
                               ),
@@ -278,7 +278,7 @@ class TareasPage extends StatelessWidget {
                             child: CircleAvatar(
                               backgroundColor: alertColor,
                               child: IconButton(
-                                onPressed: _.goNuevaTarea,
+                                onPressed: ()=> _.goEditTarea(index),
                                 icon: Icon(Icons.edit),
                                 color: Colors.white,
                               ),

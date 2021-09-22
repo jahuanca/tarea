@@ -1,4 +1,4 @@
-import 'package:dropdown_below/dropdown_below.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/core/dimens.dart';
@@ -20,7 +20,7 @@ class NuevaTareaPage extends StatelessWidget {
     return Stack(
       children: [
         Scaffold(
-          appBar: getAppBar('Nueva tarea', [], true),
+          appBar: getAppBar(controller.editando ? 'Editando tarea': 'Nueva tarea', [], true),
           backgroundColor: secondColor,
           floatingActionButton: FloatingActionButton(
             onPressed: controller.goBack,
@@ -59,8 +59,11 @@ class NuevaTareaPage extends StatelessWidget {
                       label: 'Sede',
                       labelText: 'name',
                       labelValue: '_id',
-                      initialValue: '1',
-                      onChanged: (value) async => await _.getSupervisors(int.parse(value)),
+                      selectedItem: _.nuevaTarea?.sede == null ? null : {
+                        'name' : _.nuevaTarea.sede.detallesubdivision,
+                        '_id' : _.nuevaTarea.sede.idsubdivision,
+                      },
+                      onChanged: _.changeSede,
                       items: controller.subdivisions.length == 0
                           ? []
                           : controller.subdivisions
@@ -75,7 +78,6 @@ class NuevaTareaPage extends StatelessWidget {
                       label: 'Centro',
                       labelText: 'name',
                       labelValue: '_id',
-                      initialValue: '1',
                       onChanged: (value) {},
                       items: [
                         {
@@ -93,7 +95,10 @@ class NuevaTareaPage extends StatelessWidget {
                       label: 'Actividad',
                       labelText: 'name',
                       labelValue: '_id',
-                      initialValue: '1',
+                      selectedItem: _.nuevaTarea?.actividad == null ? null : {
+                        'name' : '${_.nuevaTarea.actividad.descAct} ${_.nuevaTarea.actividad.sociedad}',
+                        '_id' : _.nuevaTarea.actividad.actividad,
+                      },
                       onChanged: _.changeActividad,
                       items: controller.actividades.length == 0
                           ? [
@@ -116,8 +121,11 @@ class NuevaTareaPage extends StatelessWidget {
                       label: 'Labor',
                       labelText: 'name',
                       labelValue: '_id',
-                      initialValue: '1',
                       onChanged: (value) {},
+                      selectedItem: _.nuevaTarea?.labor == null ? null : {
+                        'name' : '${_.nuevaTarea.labor.descLabor} ${_.nuevaTarea.labor.sociedad}',
+                        '_id' : _.nuevaTarea.labor.labor,
+                      },
                       items: controller.labores.length == 0
                           ? [
                               {
@@ -139,8 +147,11 @@ class NuevaTareaPage extends StatelessWidget {
                         label: 'Supervisor',
                         labelText: 'name',
                         labelValue: 'codigoempresa',
-                        initialValue: '1',
                         onChanged: _.changeSupervisor,
+                        selectedItem: _.nuevaTarea?.supervisor == null ? null : {
+                        'name' : '${_.nuevaTarea.supervisor.apellidopaterno} ${_.nuevaTarea.supervisor.apellidomaterno}, ${_.nuevaTarea.supervisor.nombres}',
+                        '_id' : _.nuevaTarea.supervisor.codigoempresa,
+                      },
                         items: _.supervisors.length == 0
                             ? []
                             : _.supervisors
@@ -155,7 +166,6 @@ class NuevaTareaPage extends StatelessWidget {
                       label: 'Turno',
                       labelText: 'name',
                       labelValue: '_id',
-                      initialValue: '1',
                       onChanged: (value) {},
                       items: [
                         {

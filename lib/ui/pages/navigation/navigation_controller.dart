@@ -1,4 +1,3 @@
-
 import 'package:flutter_tareo/ui/pages/aprobar/aprobar_page.dart';
 import 'package:flutter_tareo/ui/pages/home/home_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,12 +7,12 @@ import 'package:flutter_tareo/ui/pages/migrar/migrar_page.dart';
 import 'package:flutter_tareo/ui/pages/search/search_page.dart';
 import 'package:flutter_tareo/ui/pages/tareas/tareas_page.dart';
 import 'package:get/get.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class NavigationController extends GetxController{
-
+class NavigationController extends GetxController {
   NavigationController();
 
-  final List<Widget> lista=[
+  final List<Widget> lista = [
     HomePage(),
     TareasPage(),
     AprobarPage(),
@@ -24,63 +23,70 @@ class NavigationController extends GetxController{
     Container(),
   ];
 
-  int indexWidget=0;
-  String titulo='Inicio';
+  int indexWidget = 0;
+  String titulo = 'Inicio';
 
-  List<Widget> actions=[];
+  List<Widget> actions = [];
 
-  void eventos(int index, GlobalKey<ScaffoldState> scaffoldKey){
+  void eventos(int index, GlobalKey<ScaffoldState> scaffoldKey) {
     actions.clear();
     switch (index) {
       case 0:
-        titulo='Inicio';
+        titulo = 'Inicio';
         scaffoldKey.currentState.openEndDrawer();
-        indexWidget=index;
+        indexWidget = index;
         update(['bottom_navigation']);
         break;
-      
+
       case 1:
         //scaffoldKey.currentState.openDrawer();
-        actions.add(
-          IconButton(onPressed: ()=> Get.to(()=> SearchPage()), icon: Icon(Icons.search))
-        );
-        titulo='Tareas';
+        actions.add(IconButton(
+            //onPressed: () => Get.to(() => SearchPage()),
+            onPressed: showSearch,
+            icon: Icon(Icons.search)));
+        titulo = 'Tareas';
         scaffoldKey.currentState.openEndDrawer();
-        indexWidget=index;
+        indexWidget = index;
         update(['bottom_navigation']);
         break;
 
       case 2:
         //scaffoldKey.currentState.openDrawer();
-        actions.add(
-          IconButton(onPressed: ()=> Get.to(()=> SearchPage()), icon: Icon(Icons.search))
-        );
-        titulo='Aprobación';
+        actions.add(IconButton(
+            onPressed: () => Get.to(() => SearchPage()),
+            icon: Icon(Icons.search)));
+        titulo = 'Aprobación';
         scaffoldKey.currentState.openEndDrawer();
-        indexWidget=index;
+        indexWidget = index;
         update(['bottom_navigation']);
         break;
 
       case 3:
-        actions.add(
-          IconButton(onPressed: (){}, icon: Icon(Icons.search))
-        );
-        titulo='Migración';
+        actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
+        titulo = 'Migración';
         scaffoldKey.currentState.openEndDrawer();
-        indexWidget=index;
+        indexWidget = index;
         update(['bottom_navigation']);
         break;
         break;
 
       default:
-        indexWidget=index;
+        indexWidget = index;
         update(['bottom_navigation']);
         break;
     }
-
   }
 
-  void change(){
+  void showSearch() {
+    showMaterialModalBottomSheet(
+      context: Get.overlayContext,
+      backgroundColor: Colors.black12,
+      isDismissible: true,
+      builder: (context) => SearchPage(),
+    );
+  }
+
+  void change() {
     update(['modo']);
   }
 }

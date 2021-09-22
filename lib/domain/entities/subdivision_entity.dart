@@ -5,10 +5,11 @@
 
 import 'dart:convert';
 
-List<SubdivisionEntity> subdivisionEntityFromJson(String str) => List<SubdivisionEntity>.from(json.decode(str).map((x) => SubdivisionEntity.fromJson(x)));
+import 'package:hive/hive.dart';
 
-String subdivisionEntityToJson(List<SubdivisionEntity> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+part 'subdivision_entity.g.dart';
 
+@HiveType(typeId : 4)
 class SubdivisionEntity {
     SubdivisionEntity({
         this.idsubdivision,
@@ -17,9 +18,13 @@ class SubdivisionEntity {
         this.subdivision,
     });
 
+    @HiveField(0)
     int idsubdivision;
+    @HiveField(1)
     String detallesubdivision;
+    @HiveField(2)
     int iddivision;
+    @HiveField(3)
     String subdivision;
 
     factory SubdivisionEntity.fromJson(Map<String, dynamic> json) => SubdivisionEntity(
@@ -36,3 +41,7 @@ class SubdivisionEntity {
         "subdivision": subdivision,
     };
 }
+
+List<SubdivisionEntity> subdivisionEntityFromJson(String str) => List<SubdivisionEntity>.from(json.decode(str).map((x) => SubdivisionEntity.fromJson(x)));
+
+String subdivisionEntityToJson(List<SubdivisionEntity> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));

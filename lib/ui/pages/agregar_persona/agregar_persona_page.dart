@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_controller.dart';
+import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
 import 'package:flutter_tareo/ui/widgets/button_login_widget.dart';
 import 'package:flutter_tareo/ui/widgets/date_picker_widget.dart';
@@ -38,7 +39,6 @@ class AgregarPersonaPage extends StatelessWidget {
                           label: 'Personal',
                           labelText: 'name',
                           labelValue: 'codigoempresa',
-                          initialValue: '1',
                           onChanged: _.changePersonal,
                           items: controller.personalEmpresa.length==0 ? [] : controller.personalEmpresa.map((PersonalEmpresaEntity e) => {
                                   'name': '${e.apellidopaterno} ${e.apellidomaterno}, ${e.nombres}',
@@ -53,76 +53,113 @@ class AgregarPersonaPage extends StatelessWidget {
                         hintText: '${controller.personalEmpresa.length} personas',
                       ),
                     ),
-                    InputLabelWidget(
-                      enabled: false,
-                      onTap: () async {
-                        await DatePickerWidget(
-                          onlyDate: true,
-                          minDate: DateTime.now().subtract(Duration(days: 10)),
-                          dateSelected: DateTime.now(),
-                          onChanged: () {},
-                        ).selectTime(context, new DateTime.now());
-                      },
-                      hintText: 'Hora inicio',
-                      label: 'Hora inicio',
-                    ),
-                    InputLabelWidget(
-                      enabled: false,
-                        onTap: ()async{
-                                await DatePickerWidget(
-                              onlyDate: true,
-                              minDate: DateTime.now().subtract(Duration(days: 10)),
-                              dateSelected: DateTime.now(),
-                              onChanged: () {},
-                            ).selectTime(context, new DateTime.now());
-                          },
-                      hintText: 'Hora fin',
-                      label: 'Hora fin',
-                    ),
-                    InputLabelWidget(
-                      enabled: false,
-                        onTap: ()async{
-                                await DatePickerWidget(
-                              onlyDate: true,
-                              minDate: DateTime.now().subtract(Duration(days: 10)),
-                              dateSelected: DateTime.now(),
-                              onChanged: () {},
-                            ).selectTime(context, new DateTime.now());
-                          },
-                        label: 'Inicio de pausa', hintText: 'Inicio de pausa'),
-
-                    InputLabelWidget(
-                      enabled: false,
-                        onTap: ()async{
-                                await DatePickerWidget(
-                              onlyDate: true,
-                              minDate: DateTime.now().subtract(Duration(days: 10)),
-                              dateSelected: DateTime.now(),
-                              onChanged: () {},
-                            ).selectTime(context, new DateTime.now());
-                          },
-                      label: 'Fin de pausa', hintText: 'Fin de pausa'),
-                    InputLabelWidget(
-                      hintText: 'Cantidad',
-                      textInputType: TextInputType.number,
-                      label: 'Cantidad',
+                    GetBuilder<AgregarPersonaController>(
+                    id: 'hora_inicio',
+                    builder: (_) => InputLabelWidget(
+                        enabled: false,
+                        onTap: () async {
+                          _.horaInicio = await DatePickerWidget(
+                            onlyDate: true,
+                            minDate:
+                                DateTime.now().subtract(Duration(days: 10)),
+                            dateSelected: DateTime.now(),
+                          ).selectTime(context, new DateTime.now());
+                          _.changeHoraInicio();
+                        },
+                        label: 'Hora inicio',
+                        textEditingController: TextEditingController(
+                            text: formatoHora(_.horaInicio, 'Hora Inicio')),
+                        hintText: 'Hora inicio'),
+                  ),
+                  SizedBox(
+                    height: size.height * 0.01,
+                  ),
+                  GetBuilder<AgregarPersonaController>(
+                    id: 'hora_fin',
+                    builder: (_) => InputLabelWidget(
+                        enabled: false,
+                        onTap: () async {
+                          _.horaFin = await DatePickerWidget(
+                            onlyDate: true,
+                            minDate:
+                                DateTime.now().subtract(Duration(days: 10)),
+                            dateSelected: DateTime.now(),
+                            onChanged: () {},
+                          ).selectTime(context, new DateTime.now());
+                          _.changeHoraFin();
+                        },
+                        label: 'Hora fin',
+                        textEditingController: TextEditingController(
+                            text: formatoHora(_.horaFin, 'Hora Fin')),
+                        hintText: 'Hora fin'),
+                  ),
+                  GetBuilder<AgregarPersonaController>(
+                    id: 'inicio_pausa',
+                    builder: (_) => InputLabelWidget(
+                        enabled: false,
+                        onTap: () async {
+                          _.inicioPausa = await DatePickerWidget(
+                            onlyDate: true,
+                            minDate:
+                                DateTime.now().subtract(Duration(days: 10)),
+                            dateSelected: DateTime.now(),
+                            onChanged: () {},
+                          ).selectTime(context, new DateTime.now());
+                          _.changeInicioPausa();
+                        },
+                        textEditingController: TextEditingController(
+                            text:
+                                formatoHora(_.inicioPausa, 'Inicio de pausa')),
+                        label: 'Inicio de pausa',
+                        hintText: 'Inicio de pausa'),
+                  ),
+                  SizedBox(
+                    height: size.height * 0.01,
+                  ),
+                  GetBuilder<AgregarPersonaController>(
+                    id: 'fin_pausa',
+                    builder: (_) => InputLabelWidget(
+                        enabled: false,
+                        onTap: () async {
+                          _.finPausa = await DatePickerWidget(
+                            onlyDate: true,
+                            minDate:
+                                DateTime.now().subtract(Duration(days: 10)),
+                            dateSelected: DateTime.now(),
+                          ).selectTime(context, new DateTime.now());
+                          _.changeFinPausa();
+                        },
+                        textEditingController: TextEditingController(
+                            text: formatoHora(_.finPausa, 'Fin de pausa')),
+                        label: 'Fin de pausa',
+                        hintText: 'Fin de pausa'),
+                  ),
+                    GetBuilder<AgregarPersonaController>(
+                      id: 'cantidad',
+                      builder: (_) => InputLabelWidget(
+                        hintText: 'Cantidad',
+                        textInputType: TextInputType.number,
+                        label: 'Cantidad',
+                      ),
                     ),              
-                    DropdownSearchWidget(
-                        label: 'Unidad de avance',
-                        labelText: 'name',
-                        labelValue: '_id',
-                        initialValue: '1',
-                        onChanged: (value) {},
-                        items: [
-                          {
-                            'name': 'Unidad 1',
-                            '_id': '1',
-                          },
-                          {
-                            'name': 'Unidad 2',
-                            '_id': '2',
-                          },
-                        ]),
+                    GetBuilder<AgregarPersonaController>(
+                      id: 'unidad_avance',
+                      builder: (_) => DropdownSearchWidget(
+                          label: 'Unidad de avance',
+                          labelText: 'name',
+                          labelValue: '_id',
+                          onChanged: (value) {},
+                          items: [
+                            {
+                              'name': 'Unidad 1',
+                              '_id': '1',
+                            },
+                            {
+                              'name': 'Unidad 2',
+                              '_id': '2',
+                            },
+                          ]),
+                    ),
                     SizedBox(
                       height: size.height * 0.05,
                     ),
