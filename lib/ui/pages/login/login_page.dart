@@ -5,6 +5,7 @@ import 'package:flutter_tareo/ui/pages/login/login_controller.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/widgets/button_login_widget.dart';
 import 'package:flutter_tareo/ui/widgets/button_social_widget.dart';
+import 'package:flutter_tareo/ui/widgets/dropdown_search_widget.dart';
 import 'package:flutter_tareo/ui/widgets/input_login_widget.dart';
 import 'package:get/get.dart';
 
@@ -133,12 +134,26 @@ class LoginPage extends StatelessWidget {
           Flexible(
             flex: 1,
             child: Center(
-              child: InputLoginWidget(
-                  texto: 'Sede', 
-                  maxLength: 80,
-                  onChanged: null, 
-                  error: null,
-                  icon: Icons.mail),
+              child: GetBuilder<LoginController>(
+                    id: 'sedes',
+                    builder: (_) => DropdownSearchWidget(
+                      labelText: 'name',
+                      labelValue: '_id',
+                      selectedItem: _.sedeSelected == null ? null : {
+                        'name' : _.sedeSelected.detallesubdivision,
+                        '_id' : _.sedeSelected.idsubdivision,
+                      },
+                      //onChanged: _.changeSede,
+                      items: controller.sedes.length == 0
+                          ? []
+                          : controller.sedes
+                              .map((e) => {
+                                    'name': e.detallesubdivision,
+                                    '_id': e.idsubdivision,
+                                  })
+                              .toList(),
+                    ),
+                  ),
               )),
           Flexible(
             flex: 1,
@@ -156,7 +171,7 @@ class LoginPage extends StatelessWidget {
             child: Center(
               child: ButtonSocialWidget(
 
-                  onTap: (){},
+                  onTap: controller.goSincronizar,
                   texto: 'Sincronizar'),
               )
           )
@@ -166,33 +181,36 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget registrate(){
-    return Container(
-      child: Column(
-        children: [
-          Flexible(child: Container(
-            alignment: Alignment.center,
-            child: Text('Version 1.0.0',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ), flex: 1),
-          //TODO: agregar en un RICHTEXT
-          Flexible(child: GestureDetector(
-              onTap: null,
-              child: Container(
-                child: Text('Ult. Sincronización: 12/05/2021 12:20 am',
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                  ),
+    return GetBuilder<LoginController>(
+      id: 'version',
+      builder: (_) => Container(
+        child: Column(
+          children: [
+            Flexible(child: Container(
+              alignment: Alignment.center,
+              child: Text('Version ${_.version}',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
-          ), flex: 1),
-        ],
+            ), flex: 1),
+            //TODO: agregar en un RICHTEXT
+            Flexible(child: GestureDetector(
+                onTap: null,
+                child: Container(
+                  child: Text('Ult. Sincronización: 12/05/2021 12:20 am',
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+            ), flex: 1),
+          ],
+        ),
       ),
     );
   }

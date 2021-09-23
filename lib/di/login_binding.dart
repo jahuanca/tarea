@@ -2,11 +2,14 @@
 
 import 'package:flutter_tareo/data/repositories/auth_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/storage_repository_implementation.dart';
+import 'package:flutter_tareo/data/repositories/subdivision_repository_implementation.dart';
 import 'package:flutter_tareo/domain/repositories/auth_repository.dart';
 import 'package:flutter_tareo/domain/repositories/storage_repository.dart';
+import 'package:flutter_tareo/domain/repositories/subdivision_repository.dart';
 import 'package:flutter_tareo/domain/use_cases/login/save_token_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/login/save_user_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/login/sign_in_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/ui/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 
@@ -18,12 +21,14 @@ class LoginBinding extends Bindings{
 
     Get.lazyPut<AuthRepository>(() => AuthRepositoryImplementation());
     Get.lazyPut<StorageRepository>(() => StorageRepositoryImplementation());
+    Get.lazyPut<SubdivisionRepository>(() => SubdivisionRepositoryImplementation());
 
     Get.lazyPut<SignInUseCase>(() => SignInUseCase(Get.find()));
     Get.lazyPut<SaveTokenUseCase>(() => SaveTokenUseCase(Get.find()));
     Get.lazyPut<SaveUserUseCase>(() => SaveUserUseCase(Get.find()));
+    Get.lazyPut<GetSubdivisonsUseCase>(() => GetSubdivisonsUseCase(Get.find()));
 
-    Get.lazyPut<LoginController>(() => LoginController(Get.find(), Get.find(), Get.find()));
+    Get.lazyPut<LoginController>(() => LoginController(Get.find(), Get.find(), Get.find(), Get.find()));
     
   }
 

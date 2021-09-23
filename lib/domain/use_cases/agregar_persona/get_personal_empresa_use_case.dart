@@ -1,8 +1,4 @@
 
-
-
-
-
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/repositories/personal_empresa_repository.dart';
 

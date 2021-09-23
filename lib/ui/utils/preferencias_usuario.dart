@@ -33,6 +33,14 @@ class PreferenciasUsuario {
     _prefs.setBool('permanentSession', value);
   }
 
+  get offLine {
+    return _prefs.getBool('offLine') ?? false;
+  }
+
+  set offLine(bool value) {
+    _prefs.setBool('offLine', value);
+  }
+
   get modoDark {
     return _prefs?.getBool('modoDark') ?? false;
   }

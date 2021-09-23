@@ -45,7 +45,9 @@ dependencies:
     git: 
       url: https://github.com/jahuanca/image_editor_pro_layer360.git
   flutter_local_notifications: 
-  flutter_barcode_scanner:  
+  flutter_barcode_scanner: 
+  flutter_offline: 
+  package_info: ^2.0.2
 
 
   # The following adds the Cupertino Icons font to your application.

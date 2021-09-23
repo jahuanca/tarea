@@ -70,7 +70,7 @@ class DropdownSearchWidget extends StatelessWidget {
               showSearchBox: true,
               items: items,
               itemAsString: (item) => item[labelText],
-              hint: "Sin ${label.toLowerCase()}",
+              hint: label==null ? 'Sin datos' : "Sin ${label.toLowerCase()}",
               onChanged: (data) => onChanged(data[labelValue].toString()),
               selectedItem: selectedItem != null
                   ? selectedItem
