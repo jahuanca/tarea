@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/ui/pages/login/login_controller.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/button_login_widget.dart';
 import 'package:flutter_tareo/ui/widgets/button_social_widget.dart';
 import 'package:flutter_tareo/ui/widgets/dropdown_search_widget.dart';
@@ -200,7 +201,7 @@ class LoginPage extends StatelessWidget {
             Flexible(child: GestureDetector(
                 onTap: null,
                 child: Container(
-                  child: Text('Ult. Sincronización: 12/05/2021 12:20 am',
+                  child: Text('Ult. Sincronización: '+ (_.ultimaSincronizacion==null ? '----' : formatoFechaHora(_.ultimaSincronizacion)),
                     style: TextStyle(
                       color: Colors.blue,
                       fontSize: 16,

@@ -95,7 +95,7 @@ String formatoFechaHora(DateTime value) {
   if (value == null) return '';
   return DateFormat('dd').format(value) +
       "/" +
-      DateFormat('MMMM', 'es').format(value) +
+      DateFormat('MM', 'es').format(value) +
       "/" +
       DateFormat('yyyy').format(value) +
       "  " +

@@ -1,5 +1,6 @@
 
 import 'package:flutter_tareo/di/sincronizar_binding.dart';
+import 'package:flutter_tareo/domain/entities/log_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/login/save_token_use_case.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_tareo/ui/pages/sincronizar/sincronizar_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:package_info/package_info.dart';
 
 
@@ -18,6 +20,7 @@ class LoginController extends GetxController{
 
   String errorUsuario, errorPassword;
   String version='x.x.x';
+  DateTime ultimaSincronizacion;
   
   UsuarioEntity loginEntity= new UsuarioEntity();
   
@@ -45,10 +48,19 @@ class LoginController extends GetxController{
   @override
   void onReady()async{
     super.onReady();
+    await getLogs();
+
+  }
+
+  Future<void> getLogs()async{
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     version = packageInfo.version;
+    var logHive=await Hive.openBox<LogEntity>('log_sincronizar');
+    if(logHive.values.isNotEmpty){
+      ultimaSincronizacion=logHive.values.last.fecha;
+    }
     update(['version']);
-
+    logHive.close();
   }
 
   String validar(){
@@ -109,8 +121,11 @@ class LoginController extends GetxController{
     Get.offAndToNamed('navigation');
   }
 
-  void goSincronizar(){
+  Future<void> goSincronizar() async{
     SincronizarBinding().dependencies();
-    Get.to( ()=> SincronizarPage());
+    await Get.to( ()=> SincronizarPage());
+    await getLogs();
   }
+
+
 }

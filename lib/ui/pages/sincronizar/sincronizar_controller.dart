@@ -1,4 +1,5 @@
 
+import 'package:flutter_tareo/domain/entities/log_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_labor_entity.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_temp_actividads_u
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_temp_labors_use_case.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:package_info/package_info.dart';
 
 class SincronizarController extends GetxController{
 
@@ -43,6 +45,7 @@ class SincronizarController extends GetxController{
     await getLabores();
     validando=false;
     update(['validando']);
+    await setLog();
 
   }
 
@@ -74,6 +77,19 @@ class SincronizarController extends GetxController{
     update(['labores']);
   }
 
+  Future<void> setLog()async{
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String version = packageInfo.version;
+    var logs = await Hive.openBox<LogEntity>('log_sincronizar');
+    logs.add(
+      new LogEntity(
+        id: DateTime.now().microsecond,
+        fecha: DateTime.now(),
+        version: version,
+      )
+    );
+  }
+
   Future<void> getUsuarios()async{
     usuarios= await _getUsuariosUseCase.execute();
     var usuariosSincronizadas = await Hive.openBox<UsuarioEntity>('usuarios_sincronizar');
@@ -81,6 +97,7 @@ class SincronizarController extends GetxController{
     await usuariosSincronizadas.addAll(usuarios);
     await usuariosSincronizadas.close();
     update(['usuarios']);
+
   }
 
 
