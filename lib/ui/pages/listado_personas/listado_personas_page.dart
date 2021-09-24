@@ -22,7 +22,7 @@ class ListadoPersonasPage extends StatelessWidget {
         child: Stack(
           children: [
             Scaffold(
-              appBar: getAppBar('${_.personalSeleccionado.length} Personas', [
+              appBar: getAppBar('${_.personalSeleccionado.length}', [
                 IconButton(onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
                 IconButton(onPressed: (){}, icon: Icon(Icons.search)),
               ], true),

@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/di/main_binding.dart';
-import 'package:flutter_tareo/ui/pages/login/login_page.dart';
 import 'package:flutter_tareo/ui/utils/routes.dart';
 import 'package:get/get.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

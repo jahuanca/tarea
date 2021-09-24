@@ -99,7 +99,7 @@ String formatoFechaHora(DateTime value) {
       "/" +
       DateFormat('yyyy').format(value) +
       "  " +
-      DateFormat('HH:mm').format(value);
+      DateFormat('hh:mm a').format(value);
 }
 
 String formatoHora(DateTime value, [String key='Hora']) {

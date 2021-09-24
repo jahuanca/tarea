@@ -377,8 +377,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
-      resolved-ref: "49222cc2dcb54d295bf85e9d58b80866d11de548"
+      ref: developer
+      resolved-ref: d29eb7989f0af96f76cadff9c44f0f13efccb14d
       url: "https://github.com/jahuanca/image_editor_pro_layer360.git"
     source: git
     version: "1.0.6"

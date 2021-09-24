@@ -5,7 +5,6 @@ import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 
 AppBar getAppBar(String titulo, List<Widget> actions,[bool bandera = false]) {
 
-
   return AppBar(
     automaticallyImplyLeading: bandera,
     iconTheme: IconThemeData(
@@ -25,10 +24,9 @@ AppBar getAppBar(String titulo, List<Widget> actions,[bool bandera = false]) {
           alignment: Alignment.bottomLeft,
           padding: EdgeInsets.only(left: 10),
           child: Text(
-            'v1.0.0 - 15/02/21 12:00 am',
+            '${PreferenciasUsuario().lastVersion} - ${PreferenciasUsuario().lastVersionDate}',
             style: TextStyle(
                 fontSize: 11,
-
                 color: PreferenciasUsuario().modoDark ? Colors.white : Colors.grey),
           ),
         ),

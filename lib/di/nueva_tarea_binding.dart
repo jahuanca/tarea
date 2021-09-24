@@ -7,7 +7,6 @@ import 'package:flutter_tareo/domain/repositories/personal_empresa_repository.da
 import 'package:flutter_tareo/domain/repositories/subdivision_repository.dart';
 import 'package:flutter_tareo/domain/repositories/temp_actividad_repository.dart';
 import 'package:flutter_tareo/domain/repositories/temp_labor_repository.dart';
-import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_Tarea/get_temp_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_Tarea/get_temp_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
@@ -26,10 +25,10 @@ class NuevaTareaBinding extends Bindings{
     Get.lazyPut<SubdivisionRepository>(() => SubdivisionRepositoryImplementation());
     Get.lazyPut<PersonalEmpresaRepository>(() => PersonalEmpresaRepositoryImplementation());
 
-    Get.lazyPut<GetTempActividadsUseCase>(() => GetTempActividadsUseCase(Get.find()));
-    Get.lazyPut<GetTempLaborsUseCase>(() => GetTempLaborsUseCase(Get.find()));
-    Get.lazyPut<GetSubdivisonsUseCase>(() => GetSubdivisonsUseCase(Get.find()));
-    Get.lazyPut<GetPersonalsEmpresaBySubdivisionUseCase>(() => GetPersonalsEmpresaBySubdivisionUseCase(Get.find()));
+    Get.lazyReplace<GetTempActividadsUseCase>(() => GetTempActividadsUseCase(Get.find()));
+    Get.lazyReplace<GetTempLaborsUseCase>(() => GetTempLaborsUseCase(Get.find()));
+    Get.lazyReplace<GetSubdivisonsUseCase>(() => GetSubdivisonsUseCase(Get.find()));
+    Get.lazyReplace<GetPersonalsEmpresaBySubdivisionUseCase>(() => GetPersonalsEmpresaBySubdivisionUseCase(Get.find()));
 
     Get.lazyPut<NuevaTareaController>(() => NuevaTareaController(Get.find(), Get.find(), Get.find(), Get.find()));
     

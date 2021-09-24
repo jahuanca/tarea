@@ -20,6 +20,11 @@ class AgregarPersonaController extends GetxController {
 
   AgregarPersonaController(this._getPersonalsEmpresaBySubdivisionUseCase);
 
+
+  //TODO: horaInicio, horaFin, inicioPausa y finPausa se heredan de la tarea.
+  //TODO:  agregar check de dia siguiente
+  //TODO: cantidad se autocalculada: horaFin - horaInicio - (finPausa - inicioPausa) en horas
+
   @override
   void onInit() async {
     super.onInit();

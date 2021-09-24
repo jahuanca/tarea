@@ -13,6 +13,7 @@ class SincronizarPage extends StatelessWidget {
 
     return GetBuilder<SincronizarController>(
       init: controller,
+      id: 'version',
       builder: (_) => Stack(
         children: [
           Scaffold(

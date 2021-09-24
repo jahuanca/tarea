@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/data/repositories/storage_repository_implementation.dart';
+import 'package:flutter_tareo/di/home_binding.dart';
 import 'package:flutter_tareo/di/tareas_binding.dart';
 import 'package:flutter_tareo/ui/pages/login/login_page.dart';
 import 'package:flutter_tareo/ui/pages/navigation/navigation_controller.dart';
@@ -38,7 +39,7 @@ class NavigationDrawerController extends GetxController{
   }
 
   void goHome(GlobalKey<ScaffoldState> scaffoldKey){
-    /* FavoritosBinding().dependencies();*/
+    HomeBinding().dependencies();
     Get.find<NavigationController>().eventos(0, scaffoldKey);
   }
 

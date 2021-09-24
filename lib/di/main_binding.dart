@@ -1,6 +1,7 @@
 
 import 'package:flutter_tareo/di/login_binding.dart';
 import 'package:flutter_tareo/di/navigation_binding.dart';
+import 'package:flutter_tareo/di/nueva_tarea_binding.dart';
 import 'package:flutter_tareo/di/sincronizar_binding.dart';
 import 'package:flutter_tareo/di/splash_binding.dart';
 import 'package:get/get.dart';
@@ -15,17 +16,9 @@ class MainBinding extends Bindings{
 
     LoginBinding().dependencies(); 
 
-
     SincronizarBinding().dependencies(); 
 
-    //RegisterBinding().dependencies();
-
     NavigationBinding().dependencies();
-
-    /* HomeBinding().dependencies();
-
-    ExploreBinding().dependencies(); */
-    //NuevoEventoBinding().dependencies();
     
   }
 

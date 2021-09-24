@@ -44,6 +44,7 @@ dependencies:
   image_editor_pro: 
     git: 
       url: https://github.com/jahuanca/image_editor_pro_layer360.git
+      ref: developer
   flutter_local_notifications: 
   flutter_barcode_scanner: 
   flutter_offline: 

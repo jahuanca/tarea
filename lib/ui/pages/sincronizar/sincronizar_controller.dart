@@ -8,6 +8,8 @@ import 'package:flutter_tareo/domain/sincronizar/get_usuarios_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_temp_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_temp_labors_use_case.dart';
+import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:package_info/package_info.dart';
@@ -81,6 +83,8 @@ class SincronizarController extends GetxController{
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String version = packageInfo.version;
     var logs = await Hive.openBox<LogEntity>('log_sincronizar');
+    PreferenciasUsuario().lastVersion=version;
+    PreferenciasUsuario().lastVersionDate=formatoFechaHora(DateTime.now());
     logs.add(
       new LogEntity(
         id: DateTime.now().microsecond,

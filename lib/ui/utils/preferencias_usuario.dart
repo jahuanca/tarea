@@ -33,12 +33,36 @@ class PreferenciasUsuario {
     _prefs.setBool('permanentSession', value);
   }
 
+  get lastVersion {
+    return 'v'+(_prefs.getString('lastVersion') ?? 'X.X.X');
+  }
+
+  set lastVersion(String value) {
+    _prefs.setString('lastVersion', value);
+  }
+
+  get lastVersionDate {
+    return _prefs.getString('lastVersionDate') ?? '-----';
+  }
+
+  set lastVersionDate(String value) {
+    _prefs.setString('lastVersionDate', value);
+  }
+
   get offLine {
-    return _prefs.getBool('offLine') ?? false;
+    return _prefs.getBool('offLine') ?? true;
   }
 
   set offLine(bool value) {
     _prefs.setBool('offLine', value);
+  }
+
+  get sede {
+    return _prefs.getInt('sede');
+  }
+
+  set sede(int value) {
+    _prefs.setInt('sede', value);
   }
 
   get modoDark {

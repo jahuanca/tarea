@@ -1,5 +1,4 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_labor_entity.dart';
-import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_Tarea/get_temp_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_Tarea/get_temp_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
@@ -96,7 +94,7 @@ class NuevaTareaController extends GetxController{
     update(['validando']);
     supervisors=await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
     if(supervisors.length>0){
-      nuevaTarea.supervisor=supervisors.first;
+      nuevaTarea.supervisor=supervisors[1];
     }
     update(['supervisors']);
     validando=false;
@@ -207,8 +205,9 @@ class NuevaTareaController extends GetxController{
     //if(nuevaTarea.turno==null) return 'Debe seleccionar un supervisor';
     if(nuevaTarea.horainicio==null) return 'Debe elegir una hora de inicio';
     if(nuevaTarea.horafin==null) return 'Debe elegir una hora fin';
-    if(nuevaTarea.pausainicio==null) return 'Debe elegir un inicio de pausa';
-    if(nuevaTarea.pausafin==null) return 'Debe elegir un fin de pausa';
+    //TODO: en caso de haber inicio de pausa validar que esten dentro de horafin y horainicio
+    /* if(nuevaTarea.pausainicio==null) return 'Debe elegir un inicio de pausa';
+    if(nuevaTarea.pausafin==null) return 'Debe elegir un fin de pausa'; */
     return null;
   }
 
