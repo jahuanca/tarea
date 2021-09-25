@@ -4,6 +4,7 @@ import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_labor_entity.dart';
+import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:hive/hive.dart';
 
 part 'tarea_proceso_entity.g.dart';
@@ -68,9 +69,6 @@ class TareaProcesoEntity{
   DateTime pausainicio;
   @HiveField(15)
   DateTime pausafin;
-  @HiveField(21)
-  bool diasiguiente;
-
   @HiveField(16)
   ActividadEntity actividad;
   @HiveField(17)
@@ -81,6 +79,10 @@ class TareaProcesoEntity{
   SubdivisionEntity sede;
   @HiveField(20)
   List<PersonalTareaProcesoEntity> personal;
+  @HiveField(21)
+  bool diasiguiente;
+  @HiveField(22)
+  CentroCostoEntity centroCosto;
 
   factory TareaProcesoEntity.fromJson(Map<String, dynamic> json) => TareaProcesoEntity(
         itemtareoproceso: json['itemtareoproceso'],

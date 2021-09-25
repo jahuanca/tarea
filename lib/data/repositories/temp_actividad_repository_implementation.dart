@@ -14,7 +14,7 @@ class TempActividadRepositoryImplementation extends TempActividadRepository {
       Box dataHive = await Hive.openBox<TempActividadEntity>('actividades_sincronizar');
       List<TempActividadEntity> local=[];
       dataHive.toMap().forEach((key, value)=> local.add(value));
-      dataHive.close();
+      await dataHive.close();
       return local;
     }
 

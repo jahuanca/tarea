@@ -7,8 +7,8 @@ class GetActividadsByKeyUseCase{
 
   GetActividadsByKeyUseCase(this._actividadRepository);
 
-  Future<List<ActividadEntity>> execute(String value, dynamic key) async{
-    return await _actividadRepository.getAllByValue(value, key);
+  Future<List<ActividadEntity>> execute(Map<String,dynamic> valores) async{
+    return await _actividadRepository.getAllByValue(valores);
   }
   
 }

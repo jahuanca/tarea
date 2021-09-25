@@ -8,13 +8,13 @@ class ActividadRepositoryImplementation extends ActividadRepository {
   final urlModule = '/actividad';
 
   @override
-  Future<List<ActividadEntity>> getAll() async{
-
-    if(PreferenciasUsuario().offLine){
-      Box dataHive = await Hive.openBox<ActividadEntity>('actividades_sincronizar');
-      List<ActividadEntity> local=[];
-      dataHive.toMap().forEach((key, value)=> local.add(value));
-      dataHive.close();
+  Future<List<ActividadEntity>> getAll() async {
+    if (PreferenciasUsuario().offLine) {
+      Box dataHive =
+          await Hive.openBox<ActividadEntity>('actividades_sincronizar');
+      List<ActividadEntity> local = [];
+      dataHive.toMap().forEach((key, value) => local.add(value));
+      await dataHive.close();
       return local;
     }
 
@@ -28,20 +28,27 @@ class ActividadRepositoryImplementation extends ActividadRepository {
   }
 
   @override
-  Future<List<ActividadEntity>> getAllByValue(String key, dynamic value) async{
-    if(PreferenciasUsuario().offLine){
-      Box<ActividadEntity> dataHive = await Hive.openBox<ActividadEntity>('actividades_sincronizar');
-      List<ActividadEntity> local=[];
-      dataHive.toMap().forEach((k, v){
-        if(v.toJson()[key]==value){
-          local.add(v);
-        }
+  Future<List<ActividadEntity>> getAllByValue(
+      Map<String, dynamic> valores) async {
+    if (PreferenciasUsuario().offLine) {
+      Box<ActividadEntity> dataHive =
+          await Hive.openBox<ActividadEntity>('actividades_sincronizar');
+      List<ActividadEntity> local = [];
+
+
+      dataHive.values.forEach((e) {
+        bool guardar = true;
+        valores.forEach((key, value) {
+          if (e.toJson()[key] != value) {
+            guardar = false;
+          }
+        });
+        if (guardar) local.add(e);
       });
-      dataHive.close();
+      await dataHive.close();
       return local;
-    } 
+    }
 
     return [];
   }
 }
- 

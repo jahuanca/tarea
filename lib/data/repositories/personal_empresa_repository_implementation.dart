@@ -15,7 +15,7 @@ class PersonalEmpresaRepositoryImplementation
           await Hive.openBox<PersonalEmpresaEntity>('personal_sincronizar');
       List<PersonalEmpresaEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
-      dataHive.close();
+      await dataHive.close();
       return local;
     }
 
@@ -40,7 +40,7 @@ class PersonalEmpresaRepositoryImplementation
           local.add(element);
         }
        });
-      dataHive.close();
+      await dataHive.close();
       return local;
     }
 

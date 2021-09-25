@@ -1,5 +1,6 @@
 
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
+import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/log_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
@@ -9,8 +10,9 @@ import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_usuarios_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_temp_actividads_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/others/get_temp_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_temp_labors_use_case.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
@@ -25,14 +27,16 @@ class SincronizarController extends GetxController{
   List<SubdivisionEntity> sedes=[];
   List<UsuarioEntity> usuarios=[];
   List<PersonalEmpresaEntity> personal=[];
+  List<CentroCostoEntity> centrosCosto=[];
 
   GetActividadsUseCase _getActividadsUseCase;
   GetSubdivisonsUseCase _getSubdivisonsUseCase;
   GetTempLaborsUseCase _getTempLaborsUseCase;
   GetUsuariosUseCase _getUsuariosUseCase;
   GetPersonalsEmpresaUseCase _getPersonalsEmpresaUseCase;
+  GetCentroCostosUseCase _getCentroCostosUseCase;
 
-  SincronizarController(this._getActividadsUseCase, this._getSubdivisonsUseCase, this._getTempLaborsUseCase, this._getUsuariosUseCase, this._getPersonalsEmpresaUseCase);
+  SincronizarController(this._getActividadsUseCase, this._getSubdivisonsUseCase, this._getTempLaborsUseCase, this._getUsuariosUseCase, this._getPersonalsEmpresaUseCase, this._getCentroCostosUseCase);
 
   bool validando=false;
 
@@ -52,6 +56,7 @@ class SincronizarController extends GetxController{
     await getSedes();
     await getUsuarios();
     await getLabores();
+    await getCentrosCosto();
     await getPersonal();
     validando=false;
     update(['validando']);
@@ -123,7 +128,15 @@ class SincronizarController extends GetxController{
     await personalSincronizadas.addAll(personal);
     await personalSincronizadas.close();
     update(['personal_empresa']);
+  }
 
+  Future<void> getCentrosCosto()async{
+    centrosCosto= await _getCentroCostosUseCase.execute();
+    Box<PersonalEmpresaEntity> centrosCostoSincronizados = await Hive.openBox<PersonalEmpresaEntity>('centros_costo_sincronizar');
+    await centrosCostoSincronizados.clear();
+    await centrosCostoSincronizados.addAll(personal);
+    await centrosCostoSincronizados.close();
+    update(['centro_costo']);
   }
 
 

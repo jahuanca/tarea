@@ -5,6 +5,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter_tareo/domain/entities/division_entity.dart';
 import 'package:hive/hive.dart';
 
 part 'subdivision_entity.g.dart';
@@ -16,6 +17,7 @@ class SubdivisionEntity {
         this.detallesubdivision,
         this.iddivision,
         this.subdivision,
+        this.division,
     });
 
     @HiveField(0)
@@ -26,12 +28,15 @@ class SubdivisionEntity {
     int iddivision;
     @HiveField(3)
     String subdivision;
+    @HiveField(4)
+    DivisionEntity division;
 
     factory SubdivisionEntity.fromJson(Map<String, dynamic> json) => SubdivisionEntity(
         idsubdivision: json["idsubdivision"],
         detallesubdivision: json["detallesubdivision"],
         iddivision: json["iddivision"],
         subdivision: json["subdivision"],
+        division: json["Division"]==null ? null : DivisionEntity.fromJson(json['Division']),
     );
 
     Map<String, dynamic> toJson() => {
@@ -39,6 +44,7 @@ class SubdivisionEntity {
         "detallesubdivision": detallesubdivision,
         "iddivision": iddivision,
         "subdivision": subdivision,
+        "division": division?.toJson(),
     };
 }
 

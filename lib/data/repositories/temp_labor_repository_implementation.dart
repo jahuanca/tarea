@@ -14,7 +14,7 @@ class TempLaborRepositoryImplementation extends TempLaborRepository {
       Box dataHive = await Hive.openBox<TempLaborEntity>('labores_sincronizar');
       List<TempLaborEntity> local=[];
       dataHive.toMap().forEach((key, value)=> local.add(value));
-      dataHive.close();
+      await dataHive.close();
       return local;
     }
 

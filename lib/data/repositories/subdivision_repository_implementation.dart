@@ -16,7 +16,7 @@ class SubdivisionRepositoryImplementation extends SubdivisionRepository {
       Box sedesHive = await Hive.openBox<SubdivisionEntity>('sedes_sincronizar');
       List<SubdivisionEntity> local=[];
       sedesHive.toMap().forEach((key, value)=> local.add(value));
-      sedesHive.close();
+      await sedesHive.close();
       return local;
     }
 

@@ -57,12 +57,20 @@ class PreferenciasUsuario {
     _prefs.setBool('offLine', value);
   }
 
-  get sede {
-    return _prefs.getInt('sede');
+  get idSede {
+    return _prefs.getInt('id_sede');
   }
 
-  set sede(int value) {
-    _prefs.setInt('sede', value);
+  set idSede(int value) {
+    _prefs.setInt('id_sede', value);
+  }
+
+  get idSociedad {
+    return _prefs.getInt('id_sociedad');
+  }
+
+  set idSociedad(int value) {
+    _prefs.setInt('id_sociedad', value);
   }
 
   get modoDark {

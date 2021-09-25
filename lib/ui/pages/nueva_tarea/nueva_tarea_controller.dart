@@ -2,16 +2,15 @@
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
+import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
-import 'package:flutter_tareo/domain/entities/temp_actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_labor_entity.dart';
-import 'package:flutter_tareo/domain/use_cases/nueva_Tarea/get_temp_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_Tarea/get_temp_labors_use_case.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_actividads_by_key_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
@@ -26,6 +25,7 @@ class NuevaTareaController extends GetxController{
   GetTempLaborsUseCase _getTempLaborsUseCase;
   GetSubdivisonsUseCase _getSubdivisonsUseCase;
   GetPersonalsEmpresaBySubdivisionUseCase _getPersonalsEmpresaBySubdivisionUseCase;
+  GetCentroCostosUseCase _getCentroCostosUseCase;
   
   DateTime horaInicio, horaFin, inicioPausa, finPausa;
   DateTime fecha=new DateTime.now();
@@ -38,11 +38,12 @@ class NuevaTareaController extends GetxController{
 
   List<ActividadEntity> actividades=[];
   List<TempLaborEntity> labores=[];
+  List<CentroCostoEntity> centrosCosto=[];
   List<SubdivisionEntity> subdivisions=[];
   List<PersonalEmpresaEntity> supervisors=[];
 
 
-  NuevaTareaController(this._getActividadsByKeyUseCase, this._getTempLaborsUseCase, this._getSubdivisonsUseCase, this._getPersonalsEmpresaBySubdivisionUseCase);
+  NuevaTareaController(this._getActividadsByKeyUseCase, this._getTempLaborsUseCase, this._getSubdivisonsUseCase, this._getPersonalsEmpresaBySubdivisionUseCase, this._getCentroCostosUseCase);
 
   @override
   void onInit(){
@@ -72,7 +73,8 @@ class NuevaTareaController extends GetxController{
     update(['validando']);
     await getActividades(rendimiento ? 'esrendimiento' : 'esjornal', true);
     await getLabores();
-    await getSupervisors(PreferenciasUsuario().sede);
+    await getCentrosCosto();
+    await getSupervisors(PreferenciasUsuario().idSede);
     validando=false;
     update(['validando']);
 
@@ -80,7 +82,12 @@ class NuevaTareaController extends GetxController{
   }
 
   Future<void> getActividades(String key, dynamic value)async{
-    actividades=await _getActividadsByKeyUseCase.execute(key, value);
+    actividades=await _getActividadsByKeyUseCase.execute(
+      {
+        key: value,
+        'idsociedad': PreferenciasUsuario().idSociedad
+      }
+    );
     if(actividades.length>0){
       nuevaTarea.actividad=actividades?.first;
     }
@@ -105,6 +112,13 @@ class NuevaTareaController extends GetxController{
     if(!editando)
     nuevaTarea.labor=labores.first;
     update(['labores']);
+  }
+
+  Future<void> getCentrosCosto()async{
+    centrosCosto=await _getCentroCostosUseCase.execute();
+    if(!editando)
+    nuevaTarea.centroCosto=centrosCosto.first;
+    update(['centro_costo']);
   }
 
   void changeHoraInicio(){
@@ -146,6 +160,14 @@ class NuevaTareaController extends GetxController{
       nuevaTarea.actividad=actividades[index];
     }
     nuevaTarea.idactividad=int.parse(id);
+  }
+
+  void changeCentroCosto(String id){
+    int index=centrosCosto.indexWhere((e) => e.idcentrocosto==int.parse(id));
+    if(index!=-1){
+      nuevaTarea.centroCosto=centrosCosto[index];
+    }
+    nuevaTarea.idcentrocosto=int.parse(id);
   }
 
   Future<void> goAgregarPersona() async{

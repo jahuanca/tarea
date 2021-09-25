@@ -39,13 +39,14 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       ..actividad = fields[16] as ActividadEntity
       ..labor = fields[17] as TempLaborEntity
       ..supervisor = fields[18] as PersonalEmpresaEntity
-      ..sede = fields[19] as SubdivisionEntity;
+      ..sede = fields[19] as SubdivisionEntity
+      ..centroCosto = fields[22] as CentroCostoEntity;
   }
 
   @override
   void write(BinaryWriter writer, TareaProcesoEntity obj) {
     writer
-      ..writeByte(22)
+      ..writeByte(23)
       ..writeByte(0)
       ..write(obj.itemtareoproceso)
       ..writeByte(1)
@@ -78,8 +79,6 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       ..write(obj.pausainicio)
       ..writeByte(15)
       ..write(obj.pausafin)
-      ..writeByte(21)
-      ..write(obj.diasiguiente)
       ..writeByte(16)
       ..write(obj.actividad)
       ..writeByte(17)
@@ -89,7 +88,11 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       ..writeByte(19)
       ..write(obj.sede)
       ..writeByte(20)
-      ..write(obj.personal);
+      ..write(obj.personal)
+      ..writeByte(21)
+      ..write(obj.diasiguiente)
+      ..writeByte(22)
+      ..write(obj.centroCosto);
   }
 
   @override

@@ -56,21 +56,27 @@ class NuevaTareaPage extends StatelessWidget {
                     SizedBox(
                       height: size.height * 0.01,
                     ),
-                    DropdownSearchWidget(
-                        label: 'Centro',
-                        labelText: 'name',
-                        labelValue: '_id',
-                        onChanged: (value) {},
-                        items: [
-                          {
-                            'name': 'Centro de Costo',
-                            '_id': '1',
-                          },
-                          {
-                            'name': 'Centro de Costo - Fundo',
-                            '_id': '2',
-                          },
-                        ]),
+                    GetBuilder<NuevaTareaController>(
+                      id: 'centro_costo',
+                      builder: (_) => DropdownSearchWidget(
+                          label: 'Centro',
+                          labelText: 'name',
+                          labelValue: '_id',
+                          selectedItem: _.nuevaTarea?.centroCosto == null ? null : {
+                          'name' : '${_.nuevaTarea.centroCosto.detallecentrocosto.trim()} ${_.nuevaTarea.centroCosto.codigoempresa}',
+                          '_id' : _.nuevaTarea.centroCosto.idcentrocosto,
+                        },
+                        onChanged: _.changeCentroCosto,
+                        items: controller.centrosCosto.length == 0
+                            ? []
+                            : controller.centrosCosto
+                                .map((e) => {
+                                      'name' : '${e.detallecentrocosto.trim()} ${e.codigoempresa}',
+                                      '_id' : e.idcentrocosto,
+                                    })
+                                .toList(),
+                      ),
+                    ),
                     GetBuilder<NuevaTareaController>(
                       id: 'rendimiento',
                       builder: (_) => ItemConfiguracionSwitchWidget(
@@ -89,7 +95,7 @@ class NuevaTareaPage extends StatelessWidget {
                         labelText: 'name',
                         labelValue: '_id',
                         selectedItem: _.nuevaTarea?.actividad == null ? null : {
-                          'name' : '${_.nuevaTarea.actividad.descripcion.trim()} ${_.nuevaTarea.actividad.idsociedad}',
+                          'name' : _.nuevaTarea.actividad.descripcion.trim(),
                           '_id' : _.nuevaTarea.actividad.actividad,
                         },
                         onChanged: _.changeActividad,
@@ -97,7 +103,7 @@ class NuevaTareaPage extends StatelessWidget {
                             ? []
                             : controller.actividades
                                 .map((e) => {
-                                      'name': '${e.descripcion.trim()} ${e.idsociedad}',
+                                      'name': e.descripcion.trim(),
                                       '_id': e.actividad,
                                     })
                                 .toList(),
