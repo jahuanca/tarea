@@ -144,7 +144,7 @@ class LoginPage extends StatelessWidget {
                         'name' : _.sedeSelected.detallesubdivision,
                         '_id' : _.sedeSelected.idsubdivision,
                       },
-                      //onChanged: _.changeSede,
+                      onChanged: _.changeSede,
                       items: controller.sedes.length == 0
                           ? []
                           : controller.sedes

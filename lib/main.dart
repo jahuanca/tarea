@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/log_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_subdivision_entity.dart';
@@ -24,6 +25,7 @@ void main() async{
   Hive.registerAdapter(LogEntityAdapter());
   Hive.registerAdapter(TareaProcesoEntityAdapter());
   Hive.registerAdapter(TempActividadEntityAdapter());
+  Hive.registerAdapter(ActividadEntityAdapter());
   Hive.registerAdapter(TempLaborEntityAdapter());
   Hive.registerAdapter(PersonalEmpresaEntityAdapter());
   Hive.registerAdapter(SubdivisionEntityAdapter());

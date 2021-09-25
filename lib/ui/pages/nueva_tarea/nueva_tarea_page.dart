@@ -8,6 +8,7 @@ import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
 import 'package:flutter_tareo/ui/widgets/date_picker_widget.dart';
 import 'package:flutter_tareo/ui/widgets/dropdown_search_widget.dart';
 import 'package:flutter_tareo/ui/widgets/input_label_widget.dart';
+import 'package:flutter_tareo/ui/widgets/item_configuracion_swicth_widget.dart';
 import 'package:get/get.dart';
 
 class NuevaTareaPage extends StatelessWidget {
@@ -55,28 +56,6 @@ class NuevaTareaPage extends StatelessWidget {
                     SizedBox(
                       height: size.height * 0.01,
                     ),
-                    /* GetBuilder<NuevaTareaController>(
-                      id: 'subdivisions',
-                      builder: (_) => DropdownSearchWidget(
-                        label: 'Sede',
-                        labelText: 'name',
-                        labelValue: '_id',
-                        selectedItem: _.nuevaTarea?.sede == null ? null : {
-                          'name' : _.nuevaTarea.sede.detallesubdivision,
-                          '_id' : _.nuevaTarea.sede.idsubdivision,
-                        },
-                        onChanged: _.changeSede,
-                        items: controller.subdivisions.length == 0
-                            ? []
-                            : controller.subdivisions
-                                .map((e) => {
-                                      'name': e.detallesubdivision,
-                                      '_id': e.idsubdivision,
-                                    })
-                                .toList(),
-                      ),
-                    ), */
-                    //TODO: agregar un indicador de DIA SIGUIENTE (CHECK BOX)
                     DropdownSearchWidget(
                         label: 'Centro',
                         labelText: 'name',
@@ -93,13 +72,24 @@ class NuevaTareaPage extends StatelessWidget {
                           },
                         ]),
                     GetBuilder<NuevaTareaController>(
+                      id: 'rendimiento',
+                      builder: (_) => ItemConfiguracionSwitchWidget(
+                        onChanged: _.changeRendimiento,
+                        size: size,
+                        label: 'Rendimiento/Jornal',
+                        tituloTrue: 'Es jornal',
+                        tituloFalse: 'Es rendimiento',
+                        value: _.rendimiento ?? false,
+                      ),
+                    ),
+                    GetBuilder<NuevaTareaController>(
                       id: 'actividades',
                       builder: (_) => DropdownSearchWidget(
                         label: 'Actividad',
                         labelText: 'name',
                         labelValue: '_id',
                         selectedItem: _.nuevaTarea?.actividad == null ? null : {
-                          'name' : '${_.nuevaTarea.actividad.descAct} ${_.nuevaTarea.actividad.sociedad}',
+                          'name' : '${_.nuevaTarea.actividad.actividad} ${_.nuevaTarea.actividad.idsociedad}',
                           '_id' : _.nuevaTarea.actividad.actividad,
                         },
                         onChanged: _.changeActividad,
@@ -112,7 +102,7 @@ class NuevaTareaPage extends StatelessWidget {
                               ]
                             : controller.actividades
                                 .map((e) => {
-                                      'name': '${e.descAct} ${e.sociedad}',
+                                      'name': '${e.actividad} ${e.idsociedad}',
                                       '_id': e.actividad,
                                     })
                                 .toList(),
@@ -181,6 +171,17 @@ class NuevaTareaPage extends StatelessWidget {
                           },
                         ]),
                     GetBuilder<NuevaTareaController>(
+                      id: 'dia_siguiente',
+                      builder: (_) => ItemConfiguracionSwitchWidget(
+                        onChanged: _.changeDiaSiguiente,
+                        size: size,
+                        label: 'Dia siguiente',
+                        tituloTrue: 'Es dia siguiente',
+                        tituloFalse: 'No es dia siguiente',
+                        value: _.nuevaTarea.diasiguiente ?? false,
+                      ),
+                    ),
+                    GetBuilder<NuevaTareaController>(
                       id: 'hora_inicio',
                       builder: (_) => InputLabelWidget(
                           enabled: false,
@@ -195,7 +196,7 @@ class NuevaTareaPage extends StatelessWidget {
                           },
                           label: 'Hora inicio',
                           textEditingController: TextEditingController(
-                              text: formatoHora(_.horaInicio, 'Hora Inicio')),
+                              text: formatoHora(_.nuevaTarea.horainicio, 'Hora Inicio')),
                           hintText: 'Hora inicio'),
                     ),
                     SizedBox(

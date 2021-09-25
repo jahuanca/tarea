@@ -2,7 +2,7 @@
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
-import 'package:flutter_tareo/domain/entities/temp_actividad_entity.dart';
+import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_labor_entity.dart';
 import 'package:hive/hive.dart';
 
@@ -29,6 +29,7 @@ class TareaProcesoEntity{
     this.pausainicio,
     this.pausafin,
     this.personal,
+    this.diasiguiente,
   }){
     if(personal==null){
       personal=[];
@@ -67,9 +68,11 @@ class TareaProcesoEntity{
   DateTime pausainicio;
   @HiveField(15)
   DateTime pausafin;
+  @HiveField(21)
+  bool diasiguiente;
 
   @HiveField(16)
-  TempActividadEntity actividad;
+  ActividadEntity actividad;
   @HiveField(17)
   TempLaborEntity labor;
   @HiveField(18)
@@ -92,6 +95,7 @@ class TareaProcesoEntity{
         idestado: json['idestado'],
         escampo: json['escampo'],
         espacking: json['espacking'],
+        diasiguiente: json['diasiguiente'],
         horainicio: DateTime.parse(json['horainicio']),
         horafin: DateTime.parse(json['horafin']),
         pausainicio: DateTime.parse(json['pausainicio']),
@@ -111,6 +115,7 @@ class TareaProcesoEntity{
         'idestado' : idestado,
         'escampo' : escampo,
         'espacking' : espacking,
+        'diasiguiente' : diasiguiente,
         'horainicio' : horainicio?.toIso8601String(),
         'horafin' : horafin?.toIso8601String(),
         'pausainicio' : pausainicio?.toIso8601String(),

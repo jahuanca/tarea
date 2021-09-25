@@ -10,6 +10,8 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    print(PreferenciasUsuario().lastVersion);
+    print(PreferenciasUsuario().lastVersionDate);
   }
 
   @override

@@ -34,8 +34,9 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       pausainicio: fields[14] as DateTime,
       pausafin: fields[15] as DateTime,
       personal: (fields[20] as List)?.cast<PersonalTareaProcesoEntity>(),
+      diasiguiente: fields[21] as bool,
     )
-      ..actividad = fields[16] as TempActividadEntity
+      ..actividad = fields[16] as ActividadEntity
       ..labor = fields[17] as TempLaborEntity
       ..supervisor = fields[18] as PersonalEmpresaEntity
       ..sede = fields[19] as SubdivisionEntity;
@@ -44,7 +45,7 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
   @override
   void write(BinaryWriter writer, TareaProcesoEntity obj) {
     writer
-      ..writeByte(21)
+      ..writeByte(22)
       ..writeByte(0)
       ..write(obj.itemtareoproceso)
       ..writeByte(1)
@@ -77,6 +78,8 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       ..write(obj.pausainicio)
       ..writeByte(15)
       ..write(obj.pausafin)
+      ..writeByte(21)
+      ..write(obj.diasiguiente)
       ..writeByte(16)
       ..write(obj.actividad)
       ..writeByte(17)

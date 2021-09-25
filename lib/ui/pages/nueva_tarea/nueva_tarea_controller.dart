@@ -1,6 +1,7 @@
 
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
+import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
@@ -9,16 +10,18 @@ import 'package:flutter_tareo/domain/entities/temp_actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_labor_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_Tarea/get_temp_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_Tarea/get_temp_labors_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
+import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
 
 class NuevaTareaController extends GetxController{
 
-  GetTempActividadsUseCase _getTemActividadsUseCase;
+  GetActividadsUseCase _getActividadsUseCase;
   GetTempLaborsUseCase _getTempLaborsUseCase;
   GetSubdivisonsUseCase _getSubdivisonsUseCase;
   GetPersonalsEmpresaBySubdivisionUseCase _getPersonalsEmpresaBySubdivisionUseCase;
@@ -30,14 +33,15 @@ class NuevaTareaController extends GetxController{
 
   bool validando=false;
   bool editando=false;
+  bool rendimiento=true;
 
-  List<TempActividadEntity> actividades=[];
+  List<ActividadEntity> actividades=[];
   List<TempLaborEntity> labores=[];
   List<SubdivisionEntity> subdivisions=[];
   List<PersonalEmpresaEntity> supervisors=[];
 
 
-  NuevaTareaController(this._getTemActividadsUseCase, this._getTempLaborsUseCase, this._getSubdivisonsUseCase, this._getPersonalsEmpresaBySubdivisionUseCase);
+  NuevaTareaController(this._getActividadsUseCase, this._getTempLaborsUseCase, this._getSubdivisonsUseCase, this._getPersonalsEmpresaBySubdivisionUseCase);
 
   @override
   void onInit(){
@@ -56,8 +60,7 @@ class NuevaTareaController extends GetxController{
       horaFin=nuevaTarea.horafin;
       inicioPausa=nuevaTarea.pausainicio;
       finPausa=nuevaTarea.pausafin;
-      
-      update(['hora_inicio','editando', 'hora_fin', 'pausa_inicio', 'pausa_fin', 'subdivisions']);
+      update(['hora_inicio','editando', 'hora_fin', 'pausa_inicio', 'pausa_fin']);
     }
   }
 
@@ -68,7 +71,7 @@ class NuevaTareaController extends GetxController{
     update(['validando']);
     await getActividades();
     await getLabores();
-    await getSubdivisions();
+    await getSupervisors(PreferenciasUsuario().sede);
     validando=false;
     update(['validando']);
 
@@ -76,23 +79,16 @@ class NuevaTareaController extends GetxController{
   }
 
   Future<void> getActividades()async{
-    actividades=await _getTemActividadsUseCase.execute();
+    actividades=await _getActividadsUseCase.execute();
     nuevaTarea.actividad=actividades?.first;
     update(['actividades']);
   }
 
-  Future<void> getSubdivisions()async{
-    subdivisions=await _getSubdivisonsUseCase.execute();
-    if(!editando)
-    nuevaTarea.sede=subdivisions?.first;
-    update(['subdivisions']);
-    await getSupervisors(nuevaTarea.sede.idsubdivision ?? 0);
-  }
-
   Future<void> getSupervisors(int idSubdivision)async{
+    nuevaTarea.sede=(await _getSubdivisonsUseCase.execute()).firstWhere((e) => e.idsubdivision==idSubdivision);
     validando=true;
     update(['validando']);
-    supervisors=await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
+    supervisors=await _getPersonalsEmpresaBySubdivisionUseCase.execute(5);
     if(supervisors.length>0){
       nuevaTarea.supervisor=supervisors[1];
     }
@@ -141,16 +137,6 @@ class NuevaTareaController extends GetxController{
     nuevaTarea.codigoempresa=id;
   }
 
-  Future<void> changeSede(String id)async{
-    int index=subdivisions.indexWhere((e) => e.idsubdivision==int.parse(id));
-    if(index!=-1){
-      nuevaTarea.sede=subdivisions[index];
-      await getSupervisors(int.parse(id));
-    }
-    return;
-    /* nuevaTarea.=int.parse(id); */
-  }
-
   void changeActividad(String id){
     int index=actividades.indexWhere((e) => e.actividad==id);
     if(index!=-1){
@@ -170,6 +156,7 @@ class NuevaTareaController extends GetxController{
     final result= await Get.to<PersonalTareaProcesoEntity>(() => AgregarPersonaPage(), 
     arguments: {
       'personal' : supervisors,
+      'tarea': nuevaTarea,
     } );
     if(result!=null){
       print('regreso');
@@ -195,6 +182,16 @@ class NuevaTareaController extends GetxController{
     if(resultados!=null){
       nuevaTarea.personal=resultados;
     }
+  }
+
+  Future<void> changeDiaSiguiente(bool value){
+    nuevaTarea.diasiguiente=value;
+    update(['dia_siguiente']);
+  }
+
+  Future<void> changeRendimiento(bool value){
+    rendimiento=value;
+    update(['rendimiento']);
   }
 
   String validar(){

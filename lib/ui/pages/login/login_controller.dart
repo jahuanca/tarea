@@ -9,6 +9,7 @@ import 'package:flutter_tareo/domain/use_cases/login/sign_in_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/ui/pages/sincronizar/sincronizar_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
+import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -42,6 +43,9 @@ class LoginController extends GetxController{
     super.onInit();
 
     sedes=await _getSubdivisonsUseCase.execute();
+    if(sedes.length>0){
+      sedeSelected=sedes.first;
+    }
     update(['sedes']);
   }
 
@@ -113,8 +117,17 @@ class LoginController extends GetxController{
     if(usuarioEntity!=null){
       await _saveTokenUseCase.execute(usuarioEntity.token);
       await _saveUserUseCase.execute(usuarioEntity);
+      PreferenciasUsuario().sede=sedeSelected.idsubdivision;
       goHome();
     }
+  }
+
+  Future<void> changeSede(String id)async{
+    int index=sedes.indexWhere((e) => e.idsubdivision==int.parse(id));
+    if(index!=-1){
+      sedeSelected=sedes[index];
+    }
+    return;
   }
 
   void goHome(){

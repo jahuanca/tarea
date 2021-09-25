@@ -1,10 +1,14 @@
 
+import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/log_entity.dart';
+import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_usuarios_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_temp_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_temp_labors_use_case.dart';
@@ -16,23 +20,26 @@ import 'package:package_info/package_info.dart';
 
 class SincronizarController extends GetxController{
 
-  List<TempActividadEntity> actividades=[];
+  List<ActividadEntity> actividades=[];
   List<TempLaborEntity> labores=[];
   List<SubdivisionEntity> sedes=[];
   List<UsuarioEntity> usuarios=[];
+  List<PersonalEmpresaEntity> personal=[];
 
-  GetTempActividadsUseCase _getTempActividadsUseCase;
+  GetActividadsUseCase _getActividadsUseCase;
   GetSubdivisonsUseCase _getSubdivisonsUseCase;
   GetTempLaborsUseCase _getTempLaborsUseCase;
   GetUsuariosUseCase _getUsuariosUseCase;
+  GetPersonalsEmpresaUseCase _getPersonalsEmpresaUseCase;
 
-  SincronizarController(this._getTempActividadsUseCase, this._getSubdivisonsUseCase, this._getTempLaborsUseCase, this._getUsuariosUseCase);
+  SincronizarController(this._getActividadsUseCase, this._getSubdivisonsUseCase, this._getTempLaborsUseCase, this._getUsuariosUseCase, this._getPersonalsEmpresaUseCase);
 
   bool validando=false;
 
   @override
   void onInit(){
     super.onInit();
+    PreferenciasUsuario().offLine=false;
     validando=true;
     update(['validando']);
 
@@ -45,20 +52,23 @@ class SincronizarController extends GetxController{
     await getSedes();
     await getUsuarios();
     await getLabores();
+    await getPersonal();
     validando=false;
     update(['validando']);
     await setLog();
-
+    PreferenciasUsuario().offLine=true;
   }
 
 
-  Future<void> getActividades()async{
-    actividades= await _getTempActividadsUseCase.execute();
-    var actividadesSincronizadas = await Hive.openBox<TempActividadEntity>('actividades_sincronizar');
-    await actividadesSincronizadas.clear();
+  Future<bool> getActividades()async{
+    actividades=await _getActividadsUseCase.execute();
+    Box<ActividadEntity> actividadesSincronizadas = await Hive.openBox<ActividadEntity>('actividades_sincronizar');
+    
+    await actividadesSincronizadas?.clear();
     await actividadesSincronizadas.addAll(actividades);
     await actividadesSincronizadas.close();
     update(['actividades']);
+    return true;
   }
 
   Future<void> getSedes()async{
@@ -85,6 +95,8 @@ class SincronizarController extends GetxController{
     var logs = await Hive.openBox<LogEntity>('log_sincronizar');
     PreferenciasUsuario().lastVersion=version;
     PreferenciasUsuario().lastVersionDate=formatoFechaHora(DateTime.now());
+    print(PreferenciasUsuario().lastVersion);
+    print(PreferenciasUsuario().lastVersionDate);
     logs.add(
       new LogEntity(
         id: DateTime.now().microsecond,
@@ -101,6 +113,16 @@ class SincronizarController extends GetxController{
     await usuariosSincronizadas.addAll(usuarios);
     await usuariosSincronizadas.close();
     update(['usuarios']);
+
+  }
+
+  Future<void> getPersonal()async{
+    personal= await _getPersonalsEmpresaUseCase.execute();
+    var personalSincronizadas = await Hive.openBox<PersonalEmpresaEntity>('personal_sincronizar');
+    await personalSincronizadas.clear();
+    await personalSincronizadas.addAll(personal);
+    await personalSincronizadas.close();
+    update(['personal_empresa']);
 
   }
 

@@ -68,7 +68,7 @@ class AgregarPersonaPage extends StatelessWidget {
                         },
                         label: 'Hora inicio',
                         textEditingController: TextEditingController(
-                            text: formatoHora(_.horaInicio, 'Hora Inicio')),
+                            text: formatoHora(_.personalTareaProcesoEntity.horainicio, 'Hora Inicio')),
                         hintText: 'Hora inicio'),
                   ),
                   SizedBox(
@@ -90,7 +90,7 @@ class AgregarPersonaPage extends StatelessWidget {
                         },
                         label: 'Hora fin',
                         textEditingController: TextEditingController(
-                            text: formatoHora(_.horaFin, 'Hora Fin')),
+                            text: formatoHora(_.personalTareaProcesoEntity.horafin, 'Hora Fin')),
                         hintText: 'Hora fin'),
                   ),
                   GetBuilder<AgregarPersonaController>(
@@ -109,7 +109,7 @@ class AgregarPersonaPage extends StatelessWidget {
                         },
                         textEditingController: TextEditingController(
                             text:
-                                formatoHora(_.inicioPausa, 'Inicio de pausa')),
+                                formatoHora(_.personalTareaProcesoEntity.pausainicio, 'Inicio de pausa')),
                         label: 'Inicio de pausa',
                         hintText: 'Inicio de pausa'),
                   ),
@@ -130,7 +130,7 @@ class AgregarPersonaPage extends StatelessWidget {
                           _.changeFinPausa();
                         },
                         textEditingController: TextEditingController(
-                            text: formatoHora(_.finPausa, 'Fin de pausa')),
+                            text: formatoHora(_.personalTareaProcesoEntity.pausafin, 'Fin de pausa')),
                         label: 'Fin de pausa',
                         hintText: 'Fin de pausa'),
                   ),

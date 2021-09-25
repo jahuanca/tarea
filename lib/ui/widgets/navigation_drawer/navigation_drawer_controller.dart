@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/data/repositories/storage_repository_implementation.dart';
 import 'package:flutter_tareo/di/home_binding.dart';
+import 'package:flutter_tareo/di/login_binding.dart';
 import 'package:flutter_tareo/di/tareas_binding.dart';
 import 'package:flutter_tareo/ui/pages/login/login_page.dart';
 import 'package:flutter_tareo/ui/pages/navigation/navigation_controller.dart';
@@ -60,6 +61,7 @@ class NavigationDrawerController extends GetxController{
       (){
         Get.back();
         StorageRepositoryImplementation().clearAllData(); 
+        LoginBinding().dependencies();
         Get.offAll(()=> LoginPage());
       }, 
       ()=> Get.back(),

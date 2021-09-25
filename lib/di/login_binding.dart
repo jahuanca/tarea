@@ -23,10 +23,10 @@ class LoginBinding extends Bindings{
     Get.lazyPut<StorageRepository>(() => StorageRepositoryImplementation());
     Get.lazyPut<SubdivisionRepository>(() => SubdivisionRepositoryImplementation());
 
-    Get.lazyPut<SignInUseCase>(() => SignInUseCase(Get.find()));
-    Get.lazyPut<SaveTokenUseCase>(() => SaveTokenUseCase(Get.find()));
-    Get.lazyPut<SaveUserUseCase>(() => SaveUserUseCase(Get.find()));
-    Get.lazyPut<GetSubdivisonsUseCase>(() => GetSubdivisonsUseCase(Get.find()));
+    Get.lazyReplace<SignInUseCase>(() => SignInUseCase(Get.find()));
+    Get.lazyReplace<SaveTokenUseCase>(() => SaveTokenUseCase(Get.find()));
+    Get.lazyReplace<SaveUserUseCase>(() => SaveUserUseCase(Get.find()));
+    Get.lazyReplace<GetSubdivisonsUseCase>(() => GetSubdivisonsUseCase(Get.find()));
 
     Get.lazyPut<LoginController>(() => LoginController(Get.find(), Get.find(), Get.find(), Get.find()));
     

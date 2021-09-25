@@ -126,7 +126,7 @@ class TareasPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              _.tareas[index].actividad?.descAct,
+                              _.tareas[index].actividad?.actividad,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                               ),

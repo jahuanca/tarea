@@ -7,8 +7,6 @@ import 'package:flutter_tareo/domain/repositories/usuario_repository.dart';
 class UsuarioRepositoryImplementation extends UsuarioRepository {
   final urlModule = '/usuario';
 
-  
-
   @override
   Future<List<UsuarioEntity>> getAll() async {
     final AppHttpManager http = AppHttpManager();
