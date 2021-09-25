@@ -50,7 +50,7 @@ class AgregarPersonaPage extends StatelessWidget {
                       padding: EdgeInsets.only(top: 30, bottom: 30),
                       child: InputLabelWidget(
                         enabled: false,
-                        hintText: '${controller.personalEmpresa.length} personas',
+                        hintText: '${controller.cantidadEnviada} personas',
                       ),
                     ),
                     GetBuilder<AgregarPersonaController>(

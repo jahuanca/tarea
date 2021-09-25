@@ -5,10 +5,8 @@ import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
-import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
-import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:get/get.dart';
 
 class ListadoPersonasController extends GetxController {
@@ -78,11 +76,13 @@ class ListadoPersonasController extends GetxController {
     switch (index) {
       case 3:
         AgregarPersonaBinding().dependencies();
-        final result = await Get.to<PersonalTareaProcesoEntity>(
+        final result = await Get.to<List<PersonalTareaProcesoEntity>>(
             () => AgregarPersonaPage(),
             arguments: {'cantidad': seleccionados.length, 'personal' : personal});
         if (result != null) {
-          personalSeleccionado.add(result);
+          for(int i=0; i<seleccionados.length; i++){
+            personalSeleccionado[seleccionados[i]]=result[i];
+          }
           update(['personal_seleccionado']);
           seleccionados.clear();
           update(['seleccionados']);

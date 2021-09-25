@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/core/dimens.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_controller.dart';
+import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
 import 'package:get/get.dart';
 
@@ -172,7 +173,9 @@ class ListadoPersonasPage extends StatelessWidget {
                       Flexible(
                         child: Container(
                           alignment: Alignment.centerLeft,
-                          child: Text('12:00 - 20:00'),
+                          child: Text(
+                            formatoFechaOnlyHoras(_.personalSeleccionado[index].horainicio, _.personalSeleccionado[index].horafin,)
+                          ),
                         ),
                         flex: 10,
                       ),
@@ -190,7 +193,7 @@ class ListadoPersonasPage extends StatelessWidget {
                       Flexible(
                         child: Container(
                           alignment: Alignment.centerLeft,
-                          child: Text('PAUSA:     13:00 - 14:00'),
+                          child: Text('PAUSA:   '+formatoFechaOnlyHoras(_.personalSeleccionado[index].pausainicio, _.personalSeleccionado[index].pausafin,)),
                         ),
                         flex: 10,
                       ),
