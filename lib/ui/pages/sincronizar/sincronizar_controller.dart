@@ -8,7 +8,7 @@ import 'package:flutter_tareo/domain/entities/temp_labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_usuarios_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_actividads_use_case.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_temp_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_temp_labors_use_case.dart';

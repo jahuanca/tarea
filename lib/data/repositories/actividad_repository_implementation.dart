@@ -26,5 +26,22 @@ class ActividadRepositoryImplementation extends ActividadRepository {
 
     return actividadEntityFromJson((res));
   }
+
+  @override
+  Future<List<ActividadEntity>> getAllByValue(String key, dynamic value) async{
+    if(PreferenciasUsuario().offLine){
+      Box<ActividadEntity> dataHive = await Hive.openBox<ActividadEntity>('actividades_sincronizar');
+      List<ActividadEntity> local=[];
+      dataHive.toMap().forEach((k, v){
+        if(v.toJson()[key]==value){
+          local.add(v);
+        }
+      });
+      dataHive.close();
+      return local;
+    } 
+
+    return [];
+  }
 }
  

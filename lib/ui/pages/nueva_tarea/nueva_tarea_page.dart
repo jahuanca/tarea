@@ -89,20 +89,15 @@ class NuevaTareaPage extends StatelessWidget {
                         labelText: 'name',
                         labelValue: '_id',
                         selectedItem: _.nuevaTarea?.actividad == null ? null : {
-                          'name' : '${_.nuevaTarea.actividad.actividad} ${_.nuevaTarea.actividad.idsociedad}',
+                          'name' : '${_.nuevaTarea.actividad.descripcion.trim()} ${_.nuevaTarea.actividad.idsociedad}',
                           '_id' : _.nuevaTarea.actividad.actividad,
                         },
                         onChanged: _.changeActividad,
                         items: controller.actividades.length == 0
-                            ? [
-                                {
-                                  '_id': '1',
-                                  'name': 'General',
-                                }
-                              ]
+                            ? []
                             : controller.actividades
                                 .map((e) => {
-                                      'name': '${e.actividad} ${e.idsociedad}',
+                                      'name': '${e.descripcion.trim()} ${e.idsociedad}',
                                       '_id': e.actividad,
                                     })
                                 .toList(),

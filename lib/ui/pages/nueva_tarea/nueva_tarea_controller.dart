@@ -10,7 +10,8 @@ import 'package:flutter_tareo/domain/entities/temp_actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_labor_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_Tarea/get_temp_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_Tarea/get_temp_labors_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_actividads_use_case.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_actividads_by_key_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
@@ -21,7 +22,7 @@ import 'package:get/get.dart';
 
 class NuevaTareaController extends GetxController{
 
-  GetActividadsUseCase _getActividadsUseCase;
+  GetActividadsByKeyUseCase _getActividadsByKeyUseCase;
   GetTempLaborsUseCase _getTempLaborsUseCase;
   GetSubdivisonsUseCase _getSubdivisonsUseCase;
   GetPersonalsEmpresaBySubdivisionUseCase _getPersonalsEmpresaBySubdivisionUseCase;
@@ -41,7 +42,7 @@ class NuevaTareaController extends GetxController{
   List<PersonalEmpresaEntity> supervisors=[];
 
 
-  NuevaTareaController(this._getActividadsUseCase, this._getTempLaborsUseCase, this._getSubdivisonsUseCase, this._getPersonalsEmpresaBySubdivisionUseCase);
+  NuevaTareaController(this._getActividadsByKeyUseCase, this._getTempLaborsUseCase, this._getSubdivisonsUseCase, this._getPersonalsEmpresaBySubdivisionUseCase);
 
   @override
   void onInit(){
@@ -69,7 +70,7 @@ class NuevaTareaController extends GetxController{
     super.onReady();
     validando=true;
     update(['validando']);
-    await getActividades();
+    await getActividades(rendimiento ? 'esrendimiento' : 'esjornal', true);
     await getLabores();
     await getSupervisors(PreferenciasUsuario().sede);
     validando=false;
@@ -78,9 +79,11 @@ class NuevaTareaController extends GetxController{
     setEditValues();
   }
 
-  Future<void> getActividades()async{
-    actividades=await _getActividadsUseCase.execute();
-    nuevaTarea.actividad=actividades?.first;
+  Future<void> getActividades(String key, dynamic value)async{
+    actividades=await _getActividadsByKeyUseCase.execute(key, value);
+    if(actividades.length>0){
+      nuevaTarea.actividad=actividades?.first;
+    }
     update(['actividades']);
   }
 
@@ -189,9 +192,10 @@ class NuevaTareaController extends GetxController{
     update(['dia_siguiente']);
   }
 
-  Future<void> changeRendimiento(bool value){
+  Future<void> changeRendimiento(bool value)async{
     rendimiento=value;
-    update(['rendimiento']);
+    await getActividades(rendimiento ? 'esrendimiento' : 'esjornal', true);
+    update(['rendimiento', 'actividades']);
   }
 
   String validar(){
