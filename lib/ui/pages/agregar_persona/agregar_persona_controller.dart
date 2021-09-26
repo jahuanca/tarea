@@ -13,6 +13,7 @@ class AgregarPersonaController extends GetxController {
   List<PersonalEmpresaEntity> personalEmpresa = [];
   bool validando = false;
   bool actualizando = false;
+  bool rendimiento=false;
 
   DateTime horaInicio, horaFin, inicioPausa, finPausa;
   TareaProcesoEntity tareaSeleccionada;
@@ -25,7 +26,10 @@ class AgregarPersonaController extends GetxController {
 
   //TODO: horaInicio, horaFin, inicioPausa y finPausa se heredan de la tarea.
   //TODO:  agregar check de dia siguiente
-  //TODO: cantidad se autocalculada: horaFin - horaInicio - (finPausa - inicioPausa) en horas
+  //TODO: cantidadHoras se autocalculada: horaFin - horaInicio - (finPausa - inicioPausa) en horas
+  //TODO: filtrar personal, si el personal se encuentra en la lista mostrar persona
+  //TODO: heredados agruparlos en otro lado
+
 
   @override
   void onInit() async {
@@ -99,6 +103,16 @@ class AgregarPersonaController extends GetxController {
       return;
     }
     Get.back(result: personalTareaProcesoEntity);
+  }
+
+  Future<void> changeRendimiento(bool value)async{
+    rendimiento=value;
+    update(['rendimiento', 'actividades']);
+  }
+
+  Future<void> changeDiaSiguiente(bool value){
+    //nuevaTarea.diasiguiente=value;
+    update(['dia_siguiente']);
   }
 
   void changeHoraInicio() {

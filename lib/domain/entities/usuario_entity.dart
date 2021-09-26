@@ -57,7 +57,7 @@ class UsuarioEntity {
         area: json["area"],
         activo: json["activo"],
         token: json["token"],
-        fechamod: DateTime.parse(json["fechamod"]),
+        fechamod: DateTime?.parse(json["fechamod"]),
     );
 
     Map<String, dynamic> toJson() => {

@@ -1,1 +1,1 @@
-lastAdapter: 11;
+lastAdapter: 12;

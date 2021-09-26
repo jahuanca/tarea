@@ -180,7 +180,7 @@ class TareasPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.tareas[index].labor.descLabor),
+                            child: Text(_.tareas[index].labor.descripcion),
                           ),
                           flex: 10,
                         ),

@@ -117,19 +117,14 @@ class NuevaTareaPage extends StatelessWidget {
                         labelValue: '_id',
                         onChanged: (value) {},
                         selectedItem: _.nuevaTarea?.labor == null ? null : {
-                          'name' : '${_.nuevaTarea.labor.descLabor} ${_.nuevaTarea.labor.sociedad}',
+                          'name' : '${_.nuevaTarea.labor.descripcion}',
                           '_id' : _.nuevaTarea.labor.labor,
                         },
                         items: controller.labores.length == 0
-                            ? [
-                                {
-                                  '_id': '1',
-                                  'name': 'General',
-                                }
-                              ]
+                            ? []
                             : controller.labores
                                 .map((e) => {
-                                      'name': '${e.descLabor} ${e.sociedad}',
+                                      'name': '${e.descripcion}',
                                       '_id': e.labor,
                                     })
                                 .toList(),

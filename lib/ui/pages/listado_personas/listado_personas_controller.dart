@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
@@ -15,6 +17,8 @@ class ListadoPersonasController extends GetxController {
   List<PersonalTareaProcesoEntity> personalSeleccionado = [];
   GetPersonalsEmpresaBySubdivisionUseCase _getPersonalsEmpresaBySubdivisionUseCase;
   bool validando=false;
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   ListadoPersonasController(this._getPersonalsEmpresaBySubdivisionUseCase);
 
@@ -41,7 +45,38 @@ class ListadoPersonasController extends GetxController {
         update(['validando']);
       }
     }
-    print(personal.length);
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    final android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    final iOS = IOSInitializationSettings();
+    final initSettings = InitializationSettings(android: android, iOS: iOS);
+
+    await flutterLocalNotificationsPlugin.initialize(initSettings, onSelectNotification: _onSelectNotification);
+  }
+
+  Future<void> _showNotification(bool success, String mensaje) async {
+    final android = AndroidNotificationDetails(
+      'channel id',
+      'channel name',
+      'channel description',
+      priority: Priority.high,
+      importance: Importance.max
+    );
+    final iOS = IOSNotificationDetails();
+    final platform = NotificationDetails(android: android, iOS: iOS);
+    false;
+    final isSuccess = true;
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      success ? 'Exito' : 'Error',
+      mensaje,
+      platform,
+      payload: '',
+    );
+  }
+
+  Future<dynamic> _onSelectNotification(String json) async {
+    return;
   }
 
   void seleccionar(int index) {
@@ -94,27 +129,26 @@ class ListadoPersonasController extends GetxController {
 
   void goLectorCode() {
     FlutterBarcodeScanner.getBarcodeStreamReceiver(
-            "#ff6666", "Cancelar", false, ScanMode.BARCODE)
+            "#ff6666", "Cancelar", false, ScanMode.DEFAULT)
         .listen((barcode) {
       print(barcode);
 
-      /// barcode to be used
       if (barcode != null) {
         int indexEncontrado=personalSeleccionado.indexWhere((e) => e.personal.codigoempresa == barcode.toString());
         if(indexEncontrado!=-1){
-          log('ya se encuentra registrado');
+          _showNotification(false, 'Ya se encuentra registrado');
           return;
         }
         int index = personal.indexWhere((e) => e.codigoempresa == barcode.toString());
         if (index != -1) {
-          log('se agrego');
+          _showNotification(true, 'Registrado con exito');
           personalSeleccionado.add(new PersonalTareaProcesoEntity(
             personal: personal[index],
           ));
           update(['personal_seleccionado']);
         }
         else{
-          log('no se eucnetra en la lista');
+          _showNotification(false, 'No se encuentra en la lista');
         }
       }
     });

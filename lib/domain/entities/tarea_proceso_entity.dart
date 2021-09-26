@@ -3,7 +3,7 @@ import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
-import 'package:flutter_tareo/domain/entities/temp_labor_entity.dart';
+import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:hive/hive.dart';
 
@@ -72,7 +72,7 @@ class TareaProcesoEntity{
   @HiveField(16)
   ActividadEntity actividad;
   @HiveField(17)
-  TempLaborEntity labor;
+  LaborEntity labor;
   @HiveField(18)
   PersonalEmpresaEntity supervisor;
   @HiveField(19)

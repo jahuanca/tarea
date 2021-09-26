@@ -4,16 +4,14 @@ import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/log_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
-import 'package:flutter_tareo/domain/entities/temp_actividad_entity.dart';
-import 'package:flutter_tareo/domain/entities/temp_labor_entity.dart';
+import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_usuarios_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/others/get_temp_actividads_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_temp_labors_use_case.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:get/get.dart';
@@ -23,7 +21,7 @@ import 'package:package_info/package_info.dart';
 class SincronizarController extends GetxController{
 
   List<ActividadEntity> actividades=[];
-  List<TempLaborEntity> labores=[];
+  List<LaborEntity> labores=[];
   List<SubdivisionEntity> sedes=[];
   List<UsuarioEntity> usuarios=[];
   List<PersonalEmpresaEntity> personal=[];
@@ -31,12 +29,12 @@ class SincronizarController extends GetxController{
 
   GetActividadsUseCase _getActividadsUseCase;
   GetSubdivisonsUseCase _getSubdivisonsUseCase;
-  GetTempLaborsUseCase _getTempLaborsUseCase;
+  GetLaborsUseCase _getLaborsUseCase;
   GetUsuariosUseCase _getUsuariosUseCase;
   GetPersonalsEmpresaUseCase _getPersonalsEmpresaUseCase;
   GetCentroCostosUseCase _getCentroCostosUseCase;
 
-  SincronizarController(this._getActividadsUseCase, this._getSubdivisonsUseCase, this._getTempLaborsUseCase, this._getUsuariosUseCase, this._getPersonalsEmpresaUseCase, this._getCentroCostosUseCase);
+  SincronizarController(this._getActividadsUseCase, this._getSubdivisonsUseCase, this._getLaborsUseCase, this._getUsuariosUseCase, this._getPersonalsEmpresaUseCase, this._getCentroCostosUseCase);
 
   bool validando=false;
 
@@ -86,8 +84,8 @@ class SincronizarController extends GetxController{
   }
 
   Future<void> getLabores()async{
-    labores= await _getTempLaborsUseCase.execute();
-    var laboresSincronizadas = await Hive.openBox<TempLaborEntity>('labores_sincronizar');
+    labores= await _getLaborsUseCase.execute();
+    var laboresSincronizadas = await Hive.openBox<LaborEntity>('labores_sincronizar');
     await laboresSincronizadas.clear();
     await laboresSincronizadas.addAll(labores);
     await laboresSincronizadas.close();

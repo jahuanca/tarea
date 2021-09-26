@@ -174,7 +174,10 @@ class ListadoPersonasPage extends StatelessWidget {
                         child: Container(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            formatoFechaOnlyHoras(_.personalSeleccionado[index].horainicio, _.personalSeleccionado[index].horafin,)
+                            formatoFechaOnlyHoras(_.personalSeleccionado[index].horainicio, _.personalSeleccionado[index].horafin,) ?? '-Sin horas-',
+                            style: TextStyle(
+                              color: (_.personalSeleccionado[index].pausainicio==null || _.personalSeleccionado[index].pausainicio==null) ? dangerColor : Colors.black54
+                            )
                           ),
                         ),
                         flex: 10,
@@ -189,15 +192,27 @@ class ListadoPersonasPage extends StatelessWidget {
                 child: Container(
                   child: Row(
                     children: [
-                      Flexible(child: Container(), flex: 1),
-                      Flexible(
+                      Expanded(child: Container(), flex: 1),
+                      Expanded(
                         child: Container(
                           alignment: Alignment.centerLeft,
-                          child: Text('PAUSA:   '+formatoFechaOnlyHoras(_.personalSeleccionado[index].pausainicio, _.personalSeleccionado[index].pausafin,)),
+                          child: Text('PAUSA:'),
                         ),
-                        flex: 10,
+                        flex: 4,
                       ),
-                      Flexible(child: Container(), flex: 1),
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            (formatoFechaOnlyHoras(_.personalSeleccionado[index].pausainicio, _.personalSeleccionado[index].pausafin,) ?? '-Sin pausas-'),
+                              style: TextStyle(
+                                color: (_.personalSeleccionado[index].pausainicio==null || _.personalSeleccionado[index].pausainicio==null) ? dangerColor : Colors.black54
+                              ),
+                            ),
+                        ),
+                        flex: 8,
+                      ),
+                      Expanded(child: Container(), flex: 1),
                     ],
                   ),
                 ),

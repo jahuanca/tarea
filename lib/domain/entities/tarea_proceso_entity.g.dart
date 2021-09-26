@@ -37,7 +37,7 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       diasiguiente: fields[21] as bool,
     )
       ..actividad = fields[16] as ActividadEntity
-      ..labor = fields[17] as TempLaborEntity
+      ..labor = fields[17] as LaborEntity
       ..supervisor = fields[18] as PersonalEmpresaEntity
       ..sede = fields[19] as SubdivisionEntity
       ..centroCosto = fields[22] as CentroCostoEntity;
