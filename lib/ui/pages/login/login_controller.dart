@@ -115,10 +115,12 @@ class LoginController extends GetxController{
     validando=false;
     update(['validando']);
     if(usuarioEntity!=null){
+
       await _saveTokenUseCase.execute(usuarioEntity.token);
       await _saveUserUseCase.execute(usuarioEntity);
       PreferenciasUsuario().idSede=sedeSelected.idsubdivision;
       PreferenciasUsuario().idSociedad=sedeSelected.division?.idsociedad;
+      PreferenciasUsuario().idUsuario=usuarioEntity.idusuario;
       goHome();
     }
   }

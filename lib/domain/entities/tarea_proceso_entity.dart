@@ -1,17 +1,16 @@
-
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
+import 'package:intl/intl.dart';
 import 'package:hive/hive.dart';
 
 part 'tarea_proceso_entity.g.dart';
 
-@HiveType(typeId : 0)
-class TareaProcesoEntity{
-
+@HiveType(typeId: 0)
+class TareaProcesoEntity {
   TareaProcesoEntity({
     this.itemtareoproceso,
     this.codigoempresa,
@@ -19,7 +18,7 @@ class TareaProcesoEntity{
     this.idactividad,
     this.idlabor,
     this.idcentrocosto,
-    this.idturno,
+    this.turnotareo,
     this.fechamod,
     this.idusuario,
     this.idestado,
@@ -31,9 +30,13 @@ class TareaProcesoEntity{
     this.pausafin,
     this.personal,
     this.diasiguiente,
-  }){
-    if(personal==null){
-      personal=[];
+    this.esjornal,
+    this.esrendimiento,
+    this.fileUrl,
+    this.estadoLocal,
+  }) {
+    if (personal == null) {
+      personal = [];
     }
   }
 
@@ -50,7 +53,7 @@ class TareaProcesoEntity{
   @HiveField(5)
   int idcentrocosto;
   @HiveField(6)
-  int idturno;
+  String turnotareo;
   @HiveField(7)
   DateTime fechamod;
   @HiveField(8)
@@ -83,45 +86,77 @@ class TareaProcesoEntity{
   bool diasiguiente;
   @HiveField(22)
   CentroCostoEntity centroCosto;
+  @HiveField(23)
+  bool esjornal;
+  @HiveField(24)
+  bool esrendimiento;
+  @HiveField(25)
+  String fileUrl;
+  @HiveField(26)
+  String estadoLocal;
 
-  factory TareaProcesoEntity.fromJson(Map<String, dynamic> json) => TareaProcesoEntity(
+  String get fechaHora{
+    if(fecha==null || horainicio==null){
+      fecha=DateTime.now();
+      horainicio=DateTime.now();
+    }
+    return DateFormat('dd').format(fecha) +
+      "/" +
+      DateFormat('MM', 'es').format(fecha) +
+      "/" +
+      DateFormat('yyyy').format(fecha) +
+      "  " +
+      DateFormat('hh:mm a').format(horainicio);
+  }
+
+  factory TareaProcesoEntity.fromJson(Map<String, dynamic> json) =>
+      TareaProcesoEntity(
         itemtareoproceso: json['itemtareoproceso'],
         codigoempresa: json['codigoempresa'],
         fecha: DateTime.parse(json['fecha']),
         idactividad: json['idactividad'],
         idlabor: json['idlabor'],
         idcentrocosto: json['idcentrocosto'],
-        idturno: json['idturno'],
+        turnotareo: json['turnotareo'],
         fechamod: DateTime.parse(json['fechamod']),
         idusuario: json['idusuario'],
         idestado: json['idestado'],
         escampo: json['escampo'],
         espacking: json['espacking'],
         diasiguiente: json['diasiguiente'],
+        esjornal: json['esjornal'],
+        esrendimiento: json['esrendimiento'],
+        fileUrl: json['fileUrl'],
         horainicio: DateTime.parse(json['horainicio']),
         horafin: DateTime.parse(json['horafin']),
         pausainicio: DateTime.parse(json['pausainicio']),
         pausafin: DateTime.parse(json['pausafin']),
-    );
+        estadoLocal: json['estadoLocal'],
+        personal: json['personal']==null ? null : List<PersonalTareaProcesoEntity>.from(json["personal"].map((x) => PersonalTareaProcesoEntity.fromJson(x))),
+      );
 
-    Map<String, dynamic> toJson() => {
-        'itemtareoproceso' : itemtareoproceso,
-        'codigoempresa' : codigoempresa,
-        'fecha' : fecha?.toIso8601String(),
-        'idactividad' : idactividad,
-        'idlabor' : idlabor,
-        'idcentrocosto' : idcentrocosto,
-        'idturno' : idturno,
-        'fechamod' : fechamod?.toIso8601String(),
-        'idusuario' : idusuario,
-        'idestado' : idestado,
-        'escampo' : escampo,
-        'espacking' : espacking,
-        'diasiguiente' : diasiguiente,
-        'horainicio' : horainicio?.toIso8601String(),
-        'horafin' : horafin?.toIso8601String(),
-        'pausainicio' : pausainicio?.toIso8601String(),
-        'pausafin' : pausafin?.toIso8601String(),
-    };
-  
+  Map<String, dynamic> toJson() => {
+        'itemtareoproceso': itemtareoproceso,
+        'codigoempresa': codigoempresa,
+        'estadoLocal': estadoLocal,
+        'fecha': fecha?.toIso8601String(),
+        'idactividad': idactividad,
+        'idlabor': idlabor,
+        'idcentrocosto': idcentrocosto,
+        'turnotareo': turnotareo,
+        'fechamod': fechamod?.toIso8601String(),
+        'idusuario': idusuario,
+        'idestado': idestado,
+        'escampo': escampo,
+        'espacking': espacking,
+        'diasiguiente': diasiguiente,
+        'esjornal': esjornal,
+        'esrendimiento': esrendimiento,
+        'fileUrl': fileUrl,
+        'horainicio': horainicio?.toIso8601String(),
+        'horafin': horafin?.toIso8601String(),
+        'pausainicio': pausainicio?.toIso8601String(),
+        'pausafin': pausafin?.toIso8601String(),
+        "personal": personal == null ? null : List<dynamic>.from(personal.map((x) => x.toJson())),
+      };
 }

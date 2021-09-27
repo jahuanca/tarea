@@ -23,7 +23,7 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       idactividad: fields[3] as int,
       idlabor: fields[4] as int,
       idcentrocosto: fields[5] as int,
-      idturno: fields[6] as int,
+      turnotareo: fields[6] as String,
       fechamod: fields[7] as DateTime,
       idusuario: fields[8] as int,
       idestado: fields[9] as int,
@@ -35,6 +35,10 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       pausafin: fields[15] as DateTime,
       personal: (fields[20] as List)?.cast<PersonalTareaProcesoEntity>(),
       diasiguiente: fields[21] as bool,
+      esjornal: fields[23] as bool,
+      esrendimiento: fields[24] as bool,
+      fileUrl: fields[25] as String,
+      estadoLocal: fields[26] as String,
     )
       ..actividad = fields[16] as ActividadEntity
       ..labor = fields[17] as LaborEntity
@@ -46,7 +50,7 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
   @override
   void write(BinaryWriter writer, TareaProcesoEntity obj) {
     writer
-      ..writeByte(23)
+      ..writeByte(27)
       ..writeByte(0)
       ..write(obj.itemtareoproceso)
       ..writeByte(1)
@@ -60,7 +64,7 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       ..writeByte(5)
       ..write(obj.idcentrocosto)
       ..writeByte(6)
-      ..write(obj.idturno)
+      ..write(obj.turnotareo)
       ..writeByte(7)
       ..write(obj.fechamod)
       ..writeByte(8)
@@ -92,7 +96,15 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       ..writeByte(21)
       ..write(obj.diasiguiente)
       ..writeByte(22)
-      ..write(obj.centroCosto);
+      ..write(obj.centroCosto)
+      ..writeByte(23)
+      ..write(obj.esjornal)
+      ..writeByte(24)
+      ..write(obj.esrendimiento)
+      ..writeByte(25)
+      ..write(obj.fileUrl)
+      ..writeByte(26)
+      ..write(obj.estadoLocal);
   }
 
   @override

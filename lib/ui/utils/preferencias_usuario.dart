@@ -65,6 +65,14 @@ class PreferenciasUsuario {
     _prefs.setInt('id_sede', value);
   }
 
+  get idUsuario {
+    return _prefs.getInt('id_usuario');
+  }
+
+  set idUsuario(int value) {
+    _prefs.setInt('id_usuario', value);
+  }
+
   get idSociedad {
     return _prefs.getInt('id_sociedad');
   }

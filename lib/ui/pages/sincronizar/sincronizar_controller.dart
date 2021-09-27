@@ -27,12 +27,12 @@ class SincronizarController extends GetxController{
   List<PersonalEmpresaEntity> personal=[];
   List<CentroCostoEntity> centrosCosto=[];
 
-  GetActividadsUseCase _getActividadsUseCase;
-  GetSubdivisonsUseCase _getSubdivisonsUseCase;
-  GetLaborsUseCase _getLaborsUseCase;
-  GetUsuariosUseCase _getUsuariosUseCase;
-  GetPersonalsEmpresaUseCase _getPersonalsEmpresaUseCase;
-  GetCentroCostosUseCase _getCentroCostosUseCase;
+  final GetActividadsUseCase _getActividadsUseCase;
+  final GetSubdivisonsUseCase _getSubdivisonsUseCase;
+  final GetLaborsUseCase _getLaborsUseCase;
+  final GetUsuariosUseCase _getUsuariosUseCase;
+  final GetPersonalsEmpresaUseCase _getPersonalsEmpresaUseCase;
+  final GetCentroCostosUseCase _getCentroCostosUseCase;
 
   SincronizarController(this._getActividadsUseCase, this._getSubdivisonsUseCase, this._getLaborsUseCase, this._getUsuariosUseCase, this._getPersonalsEmpresaUseCase, this._getCentroCostosUseCase);
 
@@ -130,9 +130,9 @@ class SincronizarController extends GetxController{
 
   Future<void> getCentrosCosto()async{
     centrosCosto= await _getCentroCostosUseCase.execute();
-    Box<PersonalEmpresaEntity> centrosCostoSincronizados = await Hive.openBox<PersonalEmpresaEntity>('centros_costo_sincronizar');
+    Box<CentroCostoEntity> centrosCostoSincronizados = await Hive.openBox<CentroCostoEntity>('centros_costo_sincronizar');
     await centrosCostoSincronizados.clear();
-    await centrosCostoSincronizados.addAll(personal);
+    await centrosCostoSincronizados.addAll(centrosCosto);
     await centrosCostoSincronizados.close();
     update(['centro_costo']);
   }

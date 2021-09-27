@@ -1,11 +1,9 @@
-
 import 'package:hive/hive.dart';
 
 part 'log_entity.g.dart';
 
-@HiveType(typeId : 8)
-class LogEntity{
-
+@HiveType(typeId: 8)
+class LogEntity {
   LogEntity({
     this.id,
     this.version,
@@ -23,12 +21,11 @@ class LogEntity{
         id: json["id"],
         version: json["version"],
         fecha: json["fecha"],
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "id": id,
         "version": version,
         "fecha": fecha,
-    };
-
+      };
 }

@@ -5,6 +5,7 @@ import 'package:flutter_tareo/core/dimens.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
+import 'package:flutter_tareo/ui/widgets/button_login_widget.dart';
 import 'package:flutter_tareo/ui/widgets/date_picker_widget.dart';
 import 'package:flutter_tareo/ui/widgets/dropdown_search_widget.dart';
 import 'package:flutter_tareo/ui/widgets/input_label_widget.dart';
@@ -85,7 +86,7 @@ class NuevaTareaPage extends StatelessWidget {
                         label: 'Rendimiento/Jornal',
                         tituloTrue: 'Es jornal',
                         tituloFalse: 'Es rendimiento',
-                        value: _.rendimiento ?? false,
+                        value: _.nuevaTarea.esjornal ?? false,
                       ),
                     ),
                     GetBuilder<NuevaTareaController>(
@@ -96,7 +97,7 @@ class NuevaTareaPage extends StatelessWidget {
                         labelValue: '_id',
                         selectedItem: _.nuevaTarea?.actividad == null ? null : {
                           'name' : _.nuevaTarea.actividad.descripcion.trim(),
-                          '_id' : _.nuevaTarea.actividad.actividad,
+                          '_id' : _.nuevaTarea.actividad.idactividad,
                         },
                         onChanged: _.changeActividad,
                         items: controller.actividades.length == 0
@@ -104,7 +105,7 @@ class NuevaTareaPage extends StatelessWidget {
                             : controller.actividades
                                 .map((e) => {
                                       'name': e.descripcion.trim(),
-                                      '_id': e.actividad,
+                                      '_id': e.idactividad,
                                     })
                                 .toList(),
                       ),
@@ -115,7 +116,7 @@ class NuevaTareaPage extends StatelessWidget {
                         label: 'Labor',
                         labelText: 'name',
                         labelValue: '_id',
-                        onChanged: (value) {},
+                        onChanged: _.changeLabor,
                         selectedItem: _.nuevaTarea?.labor == null ? null : {
                           'name' : '${_.nuevaTarea.labor.descripcion}',
                           '_id' : _.nuevaTarea.labor.labor,
@@ -151,21 +152,28 @@ class NuevaTareaPage extends StatelessWidget {
                                       })
                                   .toList()),
                     ),
-                    DropdownSearchWidget(
-                        label: 'Turno',
-                        labelText: 'name',
-                        labelValue: '_id',
-                        onChanged: (value) {},
-                        items: [
-                          {
-                            'name': 'Dia',
-                            '_id': '1',
+                    GetBuilder<NuevaTareaController>(
+                      id: 'turno',
+                      builder: (_) => DropdownSearchWidget(
+                          label: 'Turno',
+                          labelText: 'name',
+                          labelValue: '_id',
+                          selectedItem: {
+                            'name': _.nuevaTarea.turnotareo=='D' ? 'Dia' : 'Noche',
+                            '_id': _.nuevaTarea.turnotareo
                           },
-                          {
-                            'name': 'Noche',
-                            '_id': '2',
-                          },
-                        ]),
+                          onChanged: _.changeTurno,
+                          items: [
+                            {
+                              'name': 'Dia',
+                              '_id': 'D',
+                            },
+                            {
+                              'name': 'Noche',
+                              '_id': 'N',
+                            },
+                          ]),
+                    ),
                     GetBuilder<NuevaTareaController>(
                       id: 'dia_siguiente',
                       builder: (_) => ItemConfiguracionSwitchWidget(
@@ -266,6 +274,11 @@ class NuevaTareaPage extends StatelessWidget {
                     SizedBox(
                       height: size.height * 0.05,
                     ),
+                    ButtonLogin(texto: 'Terminar tarea'),
+                    SizedBox(
+                      height: size.height * 0.05,
+                    ),
+
                   ],
                 ),
               ),

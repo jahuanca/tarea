@@ -3,9 +3,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/data/repositories/storage_repository_implementation.dart';
+import 'package:flutter_tareo/di/aprobar_binding.dart';
 import 'package:flutter_tareo/di/home_binding.dart';
 import 'package:flutter_tareo/di/login_binding.dart';
+import 'package:flutter_tareo/di/migrar_binding.dart';
 import 'package:flutter_tareo/di/tareas_binding.dart';
+import 'package:flutter_tareo/ui/pages/aprobar/aprobar_controller.dart';
 import 'package:flutter_tareo/ui/pages/login/login_page.dart';
 import 'package:flutter_tareo/ui/pages/navigation/navigation_controller.dart';
 import 'package:flutter_tareo/ui/pages/tareas/tareas_page.dart';
@@ -30,12 +33,12 @@ class NavigationDrawerController extends GetxController{
   }
 
   void goMigrar(GlobalKey<ScaffoldState> scaffoldKey){
-    /* FavoritosBinding().dependencies();*/
+    MigrarBinding().dependencies();
     Get.find<NavigationController>().eventos(3, scaffoldKey);
   }
 
   void goAprobar(GlobalKey<ScaffoldState> scaffoldKey){
-    /* FavoritosBinding().dependencies();*/
+    AprobarBinding().dependencies();
     Get.find<NavigationController>().eventos(2, scaffoldKey);
   }
 

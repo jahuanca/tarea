@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/core/dimens.dart';
 import 'package:flutter_tareo/ui/pages/tareas/tareas_controller.dart';
+import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:get/get.dart';
 
 class TareasPage extends StatelessWidget {
@@ -113,9 +114,10 @@ class TareasPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              '12/08/21 14:12',
+                              _.tareas[index].fechaHora,
                               style: TextStyle(
                                 fontWeight: FontWeight.normal,
+                                fontSize: 14
                               ),
                             ),
                           ),
@@ -126,7 +128,7 @@ class TareasPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              _.tareas[index].actividad?.actividad,
+                              _.tareas[index].actividad.descripcion,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                               ),
@@ -188,7 +190,7 @@ class TareasPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text('Centro de costo'),
+                            child: Text(_.tareas[index].centroCosto.detallecentrocosto),
                           ),
                           flex: 10,
                         ),

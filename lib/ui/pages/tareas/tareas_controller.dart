@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/di/nueva_tarea_binding.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_tareo/domain/use_cases/tareas/update_tarea_proceso_use_c
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
+import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
 
 class TareasController extends GetxController {
@@ -54,6 +57,7 @@ class TareasController extends GetxController {
         () => AgregarPersonaPage(),
         arguments: {
           'personal_seleccionado': tareas[index].personal,
+          'tarea': tareas[index],
           'sede': tareas[index].sede
         });
     if (resultado != null) {
@@ -112,8 +116,10 @@ class TareasController extends GetxController {
     final result = await Get.to<TareaProcesoEntity>(() => NuevaTareaPage(),
         arguments: {'tarea': tareas[index]});
     if (result != null) {
+      log(result.toJson().toString());
+      result.idusuario=PreferenciasUsuario().idUsuario;
       tareas[index] = result;
-      //await _createTareaProcesoUseCase.execute(result);
+      await _updateTareaProcesoUseCase.execute(tareas[index], index);
       update(['tareas']);
     }
   }

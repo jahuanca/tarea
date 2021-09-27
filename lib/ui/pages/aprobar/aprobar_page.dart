@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 
 class AprobarPage extends StatelessWidget {
 
-  AprobarController controller=AprobarController();
+  final AprobarController controller=Get.find<AprobarController>();
   
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,7 @@ class AprobarPage extends StatelessWidget {
                 flex: 8,
                 child: Container(
                   child: ListView.builder(
-                    itemCount: 5,
+                    itemCount: _.tareas.length,
                     itemBuilder: (BuildContext context, int index) =>
                         itemActividad(size, context, index),
                   ),
@@ -97,7 +97,7 @@ class AprobarPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              '12/08/21 14:12',
+                              _.tareas[index].fechaHora,
                               style: TextStyle(
                                 fontWeight: FontWeight.normal,
                               ),
@@ -110,7 +110,7 @@ class AprobarPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Nombre de actividad',
+                              _.tareas[index].actividad.descripcion,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                               ),
@@ -164,7 +164,7 @@ class AprobarPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text('Nombre labor'),
+                            child: Text(_.tareas[index].labor.descripcion),
                           ),
                           flex: 10,
                         ),
@@ -172,7 +172,7 @@ class AprobarPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text('Centro de costo'),
+                            child: Text(_.tareas[index].centroCosto.detallecentrocosto),
                           ),
                           flex: 10,
                         ),
@@ -194,7 +194,7 @@ class AprobarPage extends StatelessWidget {
                               children: [
                                 Container(
                                     padding: EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text('5')),
+                                    child: Text(_.tareas[index].personal.length.toString())),
                                 Icon(
                                   Icons.people,
                                   color: Colors.black45,
@@ -208,7 +208,7 @@ class AprobarPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text('SEDE'),
+                            child: Text(_.tareas[index].sede.detallesubdivision),
                           ),
                           flex: 10,
                         ),
@@ -232,13 +232,14 @@ class AprobarPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Flexible(child: Container(), flex: 1),
+                        if(_.tareas[index].estadoLocal!='A')
                         Flexible(
                           child: Container(
                             alignment: Alignment.center,
                             child: CircleAvatar(
                               backgroundColor: infoColor,
                               child: IconButton(
-                                  onPressed: controller.goAprobar,
+                                  onPressed: ()=> controller.goAprobar(index),
                                   icon: Icon(
                                     Icons.check,
                                     color: Colors.white,
@@ -247,6 +248,7 @@ class AprobarPage extends StatelessWidget {
                           ),
                           flex: 7,
                         ),
+                        if(_.tareas[index].estadoLocal!='A')
                         Flexible(child: Container(), flex: 1),
                         Flexible(
                           child: Container(

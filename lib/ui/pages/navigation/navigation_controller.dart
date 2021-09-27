@@ -2,7 +2,6 @@ import 'package:flutter_tareo/ui/pages/aprobar/aprobar_page.dart';
 import 'package:flutter_tareo/ui/pages/home/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/ui/pages/home/home_page.dart';
 import 'package:flutter_tareo/ui/pages/migrar/migrar_page.dart';
 import 'package:flutter_tareo/ui/pages/search/search_page.dart';
 import 'package:flutter_tareo/ui/pages/tareas/tareas_page.dart';

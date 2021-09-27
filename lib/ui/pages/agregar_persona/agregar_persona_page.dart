@@ -153,7 +153,7 @@ class AgregarPersonaPage extends StatelessWidget {
                         label: 'Rendimiento/Jornal',
                         tituloTrue: 'Es jornal',
                         tituloFalse: 'Es rendimiento',
-                        value: _.rendimiento ?? false,
+                        value: _.personalTareaProcesoEntity.esjornal ?? false,
                       ),
                     ),
                     GetBuilder<AgregarPersonaController>(
@@ -164,24 +164,31 @@ class AgregarPersonaPage extends StatelessWidget {
                         label: 'Dia siguiente',
                         tituloTrue: 'Es dia siguiente',
                         tituloFalse: 'No es dia siguiente',
-                        value: false,
+                        value: _.personalTareaProcesoEntity.diasiguiente ?? false,
                       ),
                     ),
-                    DropdownSearchWidget(
-                        label: 'Turno',
-                        labelText: 'name',
-                        labelValue: '_id',
-                        onChanged: (value) {},
-                        items: [
-                          {
-                            'name': 'Dia',
-                            '_id': '1',
+                    GetBuilder<AgregarPersonaController>(
+                      id: 'turno',
+                      builder: (_) => DropdownSearchWidget(
+                          label: 'Turno',
+                          labelText: 'name',
+                          labelValue: '_id',
+                          selectedItem: {
+                              'name': 'Dia',
+                              '_id': '1',
                           },
-                          {
-                            'name': 'Noche',
-                            '_id': '2',
-                          },
-                        ]),
+                          onChanged: _.changeTurno,
+                          items: [
+                            {
+                              'name': 'Dia',
+                              '_id': '1',
+                            },
+                            {
+                              'name': 'Noche',
+                              '_id': '2',
+                            },
+                          ]),
+                    ),
                     GetBuilder<AgregarPersonaController>(
                       id: 'cantidad_horas',
                       builder: (_) => InputLabelWidget(
@@ -206,24 +213,6 @@ class AgregarPersonaPage extends StatelessWidget {
                         textInputType: TextInputType.number,
                         label: 'Cantidad avance',
                       ),
-                    ),
-                    GetBuilder<AgregarPersonaController>(
-                      id: 'unidad_avance',
-                      builder: (_) => DropdownSearchWidget(
-                          label: 'Unidad de avance',
-                          labelText: 'name',
-                          labelValue: '_id',
-                          onChanged: (value) {},
-                          items: [
-                            {
-                              'name': 'Unidad 1',
-                              '_id': '1',
-                            },
-                            {
-                              'name': 'Unidad 2',
-                              '_id': '2',
-                            },
-                          ]),
                     ),
                     SizedBox(
                       height: size.height * 0.05,

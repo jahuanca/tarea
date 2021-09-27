@@ -6,12 +6,15 @@ import 'package:flutter_tareo/ui/pages/migrar/migrar_controller.dart';
 import 'package:get/get.dart';
 
 class MigrarPage extends StatelessWidget {
+
+  final MigrarController controller=Get.find<MigrarController>();
+
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
     return GetBuilder<MigrarController>(
-      init: MigrarController(),
+      init: controller,
       builder: (_) => Scaffold(
           backgroundColor: secondColor,
           body: GetBuilder<MigrarController>(
@@ -29,7 +32,7 @@ class MigrarPage extends StatelessWidget {
                   flex: 8,
                   child: Container(
                     child: ListView.builder(
-                      itemCount: 5,
+                      itemCount: _.tareas.length,
                       itemBuilder: (BuildContext context, int index) =>
                           itemActividad(size, context, index),
                     ),
@@ -93,7 +96,7 @@ class MigrarPage extends StatelessWidget {
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    '12/08/21 14:12',
+                                    _.tareas[index].fechaHora,
                                     style: TextStyle(
                                       fontWeight: FontWeight.normal,
                                     ),
@@ -106,7 +109,7 @@ class MigrarPage extends StatelessWidget {
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    'Nombre de actividad',
+                                    _.tareas[index].actividad.descripcion,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -161,7 +164,7 @@ class MigrarPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text('Nombre labor'),
+                                  child: Text(_.tareas[index].labor.descripcion),
                                 ),
                                 flex: 10,
                               ),
@@ -169,7 +172,7 @@ class MigrarPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text('Centro de costo'),
+                                  child: Text(_.tareas[index].centroCosto.detallecentrocosto),
                                 ),
                                 flex: 10,
                               ),
@@ -192,7 +195,7 @@ class MigrarPage extends StatelessWidget {
                                       Container(
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 5),
-                                          child: Text('5')),
+                                          child: Text(_.tareas[index].personal.length.toString())),
                                       Icon(
                                         Icons.people,
                                         color: Colors.black45,
@@ -206,7 +209,7 @@ class MigrarPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text('SEDE'),
+                                  child: Text(_.tareas[index].sede.detallesubdivision),
                                 ),
                                 flex: 10,
                               ),
@@ -229,7 +232,7 @@ class MigrarPage extends StatelessWidget {
                                     backgroundColor: infoColor,
                                     child: IconButton(
                                         onPressed:
-                                            null, //() => Navigator.of(context).pushNamed('listado_personas'),
+                                            () => _.goAprobar(index),
                                         icon: Icon(
                                           Icons.sync_rounded,
                                           color: Colors.white,
@@ -245,8 +248,7 @@ class MigrarPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: successColor,
                                     child: IconButton(
-                                      onPressed: () => Navigator.of(context)
-                                          .pushNamed('nueva_tarea'),
+                                      onPressed: null,
                                       icon: Icon(Icons.remove_red_eye),
                                       color: Colors.white,
                                     ),

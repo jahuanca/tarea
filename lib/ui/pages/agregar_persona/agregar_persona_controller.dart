@@ -11,9 +11,9 @@ class AgregarPersonaController extends GetxController {
       _getPersonalsEmpresaBySubdivisionUseCase;
   int cantidadEnviada = 0;
   List<PersonalEmpresaEntity> personalEmpresa = [];
+  List<PersonalTareaProcesoEntity> personalSeleccionado = [];
   bool validando = false;
   bool actualizando = false;
-  bool rendimiento=false;
 
   DateTime horaInicio, horaFin, inicioPausa, finPausa;
   TareaProcesoEntity tareaSeleccionada;
@@ -24,11 +24,12 @@ class AgregarPersonaController extends GetxController {
 
   AgregarPersonaController(this._getPersonalsEmpresaBySubdivisionUseCase);
 
-  //TODO: horaInicio, horaFin, inicioPausa y finPausa se heredan de la tarea.
-  //TODO:  agregar check de dia siguiente
   //TODO: cantidadHoras se autocalculada: horaFin - horaInicio - (finPausa - inicioPausa) en horas
-  //TODO: filtrar personal, si el personal se encuentra en la lista mostrar persona
+  //TODO: filtrar personal, si el personal se encuentra en la lista mostrar alert color
   //TODO: heredados agruparlos en otro lado
+  //TODO: CAMPOS NULOS: inicioPausa y finPausa (00:00), cantidadRendimiento (0), cantidadAvance
+  //TODO_ AGREGAR PERSONA se puede OBVIAR EL CAMPO horaFin
+
 
 
   @override
@@ -37,22 +38,32 @@ class AgregarPersonaController extends GetxController {
     if (Get.arguments != null) {
       if (Get.arguments['tarea'] != null) {
         tareaSeleccionada = Get.arguments['tarea'] as TareaProcesoEntity;
+        personalTareaProcesoEntity.turno = tareaSeleccionada.turnotareo;
+        personalTareaProcesoEntity.esjornal = tareaSeleccionada.esjornal;
+        personalTareaProcesoEntity.esrendimiento = tareaSeleccionada.esrendimiento;
+        personalTareaProcesoEntity.diasiguiente = tareaSeleccionada.diasiguiente;
         personalTareaProcesoEntity.horainicio = tareaSeleccionada.horainicio;
         personalTareaProcesoEntity.horafin = tareaSeleccionada.horafin;
         personalTareaProcesoEntity.pausainicio = tareaSeleccionada.pausainicio;
         personalTareaProcesoEntity.pausafin = tareaSeleccionada.pausafin;
-        update(['hora_inicio', 'hora_fin', 'pausa_inicio', 'pausa_fin']);
+        update(['hora_inicio', 'hora_fin', 'pausa_inicio', 'pausa_fin', 'turno', 'dia_siguiente', 'rendimiento']);
       }
       if (Get.arguments['cantidad'] != null) {
         cantidadEnviada = Get.arguments['cantidad'] as int;
         actualizando = true;
       }
+
+      if (Get.arguments['personal_seleccionado'] != null) {
+        personalSeleccionado = Get.arguments['personal_seleccionado'] as List<PersonalTareaProcesoEntity>;
+      }
+
       if (Get.arguments['personal'] != null) {
         personalEmpresa =
             Get.arguments['personal'] as List<PersonalEmpresaEntity>;
         if (personalEmpresa.length > 0) {
           personaSeleccionada = personalEmpresa.first;
           personalTareaProcesoEntity.personal = personaSeleccionada;
+          changePersonal(personaSeleccionada.codigoempresa);
         }
       } else {
         if (Get.arguments['sede'] != null) {
@@ -73,27 +84,32 @@ class AgregarPersonaController extends GetxController {
     update(['personal', 'validando']);
   }
 
-  void changePersonal(String id) {
+  Future<void> changePersonal(String id) async{
     personaSeleccionada =
         personalEmpresa.firstWhere((e) => e.codigoempresa == id);
-    personalTareaProcesoEntity.personal = personaSeleccionada;
+    int index=personalSeleccionado.indexWhere((e) => e.codigoempresa==id);
+    if(index!=-1){
+      //toastError('Error', 'Ya encuentra en la lista');
+      print('registrado anteriormente');
+    }else{
+      personalTareaProcesoEntity.personal = personaSeleccionada;
+      personalTareaProcesoEntity.personal.codigoempresa = personaSeleccionada.codigoempresa;
+    }
   }
 
   void guardar() {
     if (actualizando) {
-      List<PersonalTareaProcesoEntity> personalRespuesta=[];
+      List<PersonalTareaProcesoEntity> personalRespuesta = [];
       for (final p in personalEmpresa) {
-        personalRespuesta.add(
-          PersonalTareaProcesoEntity(
-            personal: p,
-            horainicio: personalTareaProcesoEntity.horainicio, 
-            horafin: personalTareaProcesoEntity.horafin, 
-            pausainicio: personalTareaProcesoEntity.pausainicio, 
-            pausafin: personalTareaProcesoEntity.pausafin,
-          )
-        );
+        personalRespuesta.add(PersonalTareaProcesoEntity(
+          personal: p,
+          codigoempresa: p.codigoempresa,
+          horainicio: personalTareaProcesoEntity.horainicio,
+          horafin: personalTareaProcesoEntity.horafin,
+          pausainicio: personalTareaProcesoEntity.pausainicio,
+          pausafin: personalTareaProcesoEntity.pausafin,
+        ));
       }
-
       Get.back(result: personalRespuesta);
       return;
     }
@@ -102,22 +118,34 @@ class AgregarPersonaController extends GetxController {
       toastError('Error', 'No existe persona seleccionada');
       return;
     }
+    personalTareaProcesoEntity.codigoempresa=personalTareaProcesoEntity.personal.codigoempresa;
     Get.back(result: personalTareaProcesoEntity);
   }
 
-  Future<void> changeRendimiento(bool value)async{
-    rendimiento=value;
+  Future<void> changeRendimiento(bool value) async {
+    if(value){
+      personalTareaProcesoEntity.esjornal = true;
+      personalTareaProcesoEntity.esrendimiento = false;
+    }else{
+      personalTareaProcesoEntity.esjornal = false;
+      personalTareaProcesoEntity.esrendimiento = true;
+    }
     update(['rendimiento', 'actividades']);
   }
 
-  Future<void> changeDiaSiguiente(bool value){
-    //nuevaTarea.diasiguiente=value;
+  Future<void> changeDiaSiguiente(bool value) {
+    personalTareaProcesoEntity.diasiguiente=value;
     update(['dia_siguiente']);
   }
 
   void changeHoraInicio() {
     personalTareaProcesoEntity.horainicio = horaInicio;
     update(['hora_inicio']);
+  }
+
+  void changeTurno(String value) {
+    personalTareaProcesoEntity.turno =value;
+    update(['turno']);
   }
 
   void changeHoraFin() {
