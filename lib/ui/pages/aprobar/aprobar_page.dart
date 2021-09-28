@@ -110,7 +110,7 @@ class AprobarPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              _.tareas[index].actividad.descripcion,
+                              _.tareas[index].actividad?.descripcion ?? '',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                               ),
@@ -164,7 +164,7 @@ class AprobarPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.tareas[index].labor.descripcion),
+                            child: Text(_.tareas[index].labor.descripcion ?? ''),
                           ),
                           flex: 10,
                         ),
@@ -172,7 +172,7 @@ class AprobarPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.tareas[index].centroCosto.detallecentrocosto),
+                            child: Text(_.tareas[index].centroCosto.detallecentrocosto ?? ''),
                           ),
                           flex: 10,
                         ),

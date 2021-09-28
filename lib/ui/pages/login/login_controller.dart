@@ -129,6 +129,7 @@ class LoginController extends GetxController{
     int index=sedes.indexWhere((e) => e.idsubdivision==int.parse(id));
     if(index!=-1){
       sedeSelected=sedes[index];
+      loginEntity.idsubdivision=sedeSelected.idsubdivision;
     }
     return;
   }

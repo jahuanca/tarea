@@ -16,6 +16,7 @@ import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart
 import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 
 class NuevaTareaController extends GetxController {
@@ -28,12 +29,12 @@ class NuevaTareaController extends GetxController {
 
   DateTime horaInicio, horaFin, inicioPausa, finPausa;
   DateTime fecha = new DateTime.now();
+  String errorActividad, errorLabor, errorCentroCosto, errorSupervisor;
 
   TareaProcesoEntity nuevaTarea = new TareaProcesoEntity();
 
   bool validando = false;
   bool editando = false;
-  bool rendimiento = true;
 
   List<ActividadEntity> actividades = [];
   List<LaborEntity> labores = [];
@@ -60,7 +61,7 @@ class NuevaTareaController extends GetxController {
     nuevaTarea.fechamod = fecha;
     nuevaTarea.escampo = true;
     nuevaTarea.espacking = true;
-    nuevaTarea.idestado= 1;
+    nuevaTarea.idestado = 1;
   }
 
   void setEditValues() {
@@ -79,7 +80,8 @@ class NuevaTareaController extends GetxController {
     super.onReady();
     validando = true;
     update(['validando']);
-    await getActividades(rendimiento ? 'esrendimiento' : 'esjornal', true);
+    await getActividades(
+        nuevaTarea.esrendimiento ?? false ? 'esjornal' : 'esrendimiento', true);
     await getLabores();
     await getCentrosCosto();
     await getSupervisors(PreferenciasUsuario().idSede);
@@ -93,9 +95,10 @@ class NuevaTareaController extends GetxController {
   Future<void> getActividades(String key, dynamic value) async {
     actividades = await _getActividadsByKeyUseCase
         .execute({key: value, 'idsociedad': PreferenciasUsuario().idSociedad});
+    print(actividades.length);
     if (actividades.length > 0) {
       nuevaTarea.actividad = actividades?.first;
-      await changeActividad(nuevaTarea.actividad.idactividad.toString());
+      await changeActividad(nuevaTarea.actividad?.idactividad.toString());
       await getLabores();
     }
     update(['actividades']);
@@ -117,26 +120,25 @@ class NuevaTareaController extends GetxController {
   }
 
   Future<void> getLabores() async {
-    if(nuevaTarea.idactividad==null){
+    if (nuevaTarea.idactividad == null) {
       return;
     }
     labores = await _getLaborsByKeyUseCase
-        .execute({
-          'idactividad': nuevaTarea.idactividad
-        });
-    if (!editando){
-      if(labores.isNotEmpty){
-        nuevaTarea.labor = labores.first;
-      }
+        .execute({'idactividad': nuevaTarea.idactividad});
+    print(labores.length);
+    if (labores.isNotEmpty) {
+      nuevaTarea.labor = labores.first;
+      nuevaTarea.idlabor = nuevaTarea.labor.idlabor;
     }
-    changeLabor(nuevaTarea.labor.idlabor.toString());
+
+    changeLabor(nuevaTarea.labor?.idlabor.toString());
     update(['labores']);
   }
 
   Future<void> getCentrosCosto() async {
     centrosCosto = await _getCentroCostosUseCase.execute();
     if (!editando) {
-      if(centrosCosto.isNotEmpty){
+      if (centrosCosto.isNotEmpty) {
         nuevaTarea.centroCosto = centrosCosto.first;
       }
     }
@@ -145,7 +147,7 @@ class NuevaTareaController extends GetxController {
   }
 
   void changeTurno(String id) {
-    nuevaTarea.turnotareo =id;
+    nuevaTarea.turnotareo = id;
     update(['turno']);
   }
 
@@ -175,38 +177,69 @@ class NuevaTareaController extends GetxController {
   }
 
   void changeSupervisor(String id) {
-    int index = supervisors.indexWhere((e) => e.codigoempresa == id);
-    if (index != -1) {
+    errorSupervisor = validatorUtilText(id, 'Supervisor', {
+      'required': '',
+    });
+    int index = supervisors.indexWhere((e) => e.codigoempresa.toString()== id);
+    if (errorSupervisor == null && index != -1) {
       nuevaTarea.supervisor = supervisors[index];
+      nuevaTarea.codigoempresa = nuevaTarea.supervisor.codigoempresa;
+      
+    } else {
+      nuevaTarea.supervisor = null;
+      nuevaTarea.codigoempresa = null;
     }
-    nuevaTarea.codigoempresa = id;
+
+    update(['supervisors']);
   }
 
-  Future<void> changeActividad(String id) async{
-    int index = actividades.indexWhere((e) => e.actividad == id);
-    if (index != -1) {
+  Future<void> changeActividad(String id) async {
+    errorActividad = validatorUtilText(id, 'Actividad', {
+      'required': '',
+    });
+    int index = actividades.indexWhere((e) => e.idactividad == int.parse(id));
+    if (errorActividad == null && index != -1) {
       nuevaTarea.actividad = actividades[index];
       nuevaTarea.idactividad = int.parse(id);
+      await getLabores();
+    } else {
+      nuevaTarea.actividad = null;
+      nuevaTarea.idactividad = null;
     }
-    await getLabores();
+
+    update(['actividades']);
   }
 
   void changeCentroCosto(String id) {
+    errorCentroCosto = validatorUtilText(id, 'Centro de costo', {
+      'required': '',
+    });
     int index =
         centrosCosto.indexWhere((e) => e.idcentrocosto == int.parse(id));
-    if (index != -1) {
+    if (errorCentroCosto == null && index != -1) {
       nuevaTarea.centroCosto = centrosCosto[index];
       nuevaTarea.idcentrocosto = int.parse(id);
+    } else {
+      nuevaTarea.centroCosto = null;
+      nuevaTarea.idcentrocosto = null;
     }
+    update(['centro_costo']);
   }
 
   void changeLabor(String id) {
-    int index =
-        labores.indexWhere((e) => e.idlabor == int.parse(id));
-    if (index != -1) {
+    errorLabor = validatorUtilText(id, 'Labor', {
+      'required': '',
+    });
+    int index = labores?.indexWhere((e) => e.idlabor.toString() == id);
+    
+    if (errorLabor == null && index != -1) {
       nuevaTarea.labor = labores[index];
-      nuevaTarea.idlabor = int.parse(id);
+      nuevaTarea.idlabor = nuevaTarea.labor.idlabor;
+    } else {
+      nuevaTarea.labor = null;
+      nuevaTarea.idlabor = null;
     }
+    update(['labores']);
   }
 
   Future<void> goAgregarPersona() async {
@@ -244,7 +277,7 @@ class NuevaTareaController extends GetxController {
     final resultados = await Get.to<List<PersonalTareaProcesoEntity>>(
         () => ListadoPersonasPage(),
         arguments: {
-          'personal_seleccionado': nuevaTarea.personal,
+          'tarea': nuevaTarea,
           'personal': supervisors
         });
 
@@ -253,39 +286,47 @@ class NuevaTareaController extends GetxController {
     }
   }
 
-  Future<void> changeDiaSiguiente(bool value) {
+  void changeDiaSiguiente(bool value) {
     nuevaTarea.diasiguiente = value;
     update(['dia_siguiente']);
   }
 
   Future<void> changeRendimiento(bool value) async {
-    if(value){
-      nuevaTarea.esjornal=true;
-      nuevaTarea.esrendimiento=false;
-    }else{
-      nuevaTarea.esjornal=false;
-      nuevaTarea.esrendimiento=true;
+    if (value) {
+      nuevaTarea.esjornal = true;
+      nuevaTarea.esrendimiento = false;
+    } else {
+      nuevaTarea.esjornal = false;
+      nuevaTarea.esrendimiento = true;
     }
-    await getActividades(value ? 'esrendimiento' : 'esjornal', true);
+    await getActividades(value ? 'esjornal' : 'esrendimiento', true);
     update(['rendimiento', 'actividades']);
   }
 
   String validar() {
-    if (nuevaTarea.sede == null) return 'Debe seleccionar una sede';
-    if (nuevaTarea.actividad == null) return 'Debe seleccionar una actividad';
-    if (nuevaTarea.labor == null) return 'Debe seleccionar una labor';
-    if (nuevaTarea.supervisor == null) return 'Debe seleccionar un supervisor';
-    //if(nuevaTarea.turno==null) return 'Debe seleccionar un supervisor';
+    changeActividad(nuevaTarea.idcentrocosto.toString());
+    changeLabor(nuevaTarea.idlabor.toString());
+    changeCentroCosto(nuevaTarea.idcentrocosto.toString());
+    changeSupervisor(nuevaTarea.codigoempresa.toString());
+
+    if (errorActividad != null) return errorActividad;
+    if (errorLabor != null) return errorLabor;
+    if (errorSupervisor != null) return errorSupervisor;
     if (nuevaTarea.horainicio == null) return 'Debe elegir una hora de inicio';
     if (nuevaTarea.horafin == null) return 'Debe elegir una hora fin';
+    if (nuevaTarea.fecha == null) return 'Ingrese una fecha';
 
-    //PARAMETROS: 
+    /* if (nuevaTarea.supervisor == null || nuevaTarea.codigoempresa == null)
+      return 'Debe seleccionar un supervisor';
+    if (nuevaTarea.turnotareo == null) return 'Debe seleccionar un turno';
+    if (nuevaTarea.esrendimiento == null) return 'Falta dato de rendimiento';
+    if (nuevaTarea.esjornal == null) return 'Falta dato de jornal';
+    if (nuevaTarea.diasiguiente == null) return 'Falta dato día siguiente';
+     */
+    //PARAMETROS:
     //PUEDEN SER NULOS: inicioPausa y finPausa (00:00:00)
-    //A LA HORA DE CREAR NO SE NECESITA: horaFin
 
     //TODO: en caso de haber inicio de pausa validar que esten dentro de horafin y horainicio
-    /* if(nuevaTarea.pausainicio==null) return 'Debe elegir un inicio de pausa';
-    if(nuevaTarea.pausafin==null) return 'Debe elegir un fin de pausa'; */
     return null;
   }
 }

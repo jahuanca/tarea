@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 
 class DatePickerWidget {
   final Size size;
@@ -8,7 +9,6 @@ class DatePickerWidget {
   final TextEditingController textEditingController;
   final String texto;
   final TextInputType textInputType;
-  /* final void Function(DateTime, TimeOfDay) onChanged; */
   final void Function() onChanged;
   final String error;
   final DateTime dateSelected;
@@ -50,29 +50,33 @@ class DatePickerWidget {
       }
       return null;
     }
-    
   }
 
   Future<DateTime> selectTime(
       BuildContext context, DateTime selectedDate) async {
     TimeOfDay picked;
     picked = await showTimePicker(
-      
       context: context,
       initialTime:
           (minDate != null) ? TimeOfDay.fromDateTime(minDate) : TimeOfDay.now(),
     );
-    if(picked==null){
+    if (picked == null) {
       return selectedDate;
     }
-    selectedDate = new DateTime(
+    selectedDate = DateTime(
       selectedDate.year,
       selectedDate.month,
       selectedDate.day,
       picked.hour,
       picked.minute,
     );
-    return selectedDate;
+
+    if (toDouble(picked) > toDouble(TimeOfDay.fromDateTime(minDate))) {
+      return selectedDate;
+    } else {
+      toastError('Error', 'Fecha debe ser mayor');
+      return dateSelected;
+    }
     //onChanged(selectedDate, picked);
   }
 

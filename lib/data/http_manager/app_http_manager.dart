@@ -5,6 +5,8 @@ import 'dart:io';
 
 
 import 'package:flutter_tareo/core/strings.dart';
+import 'package:flutter_tareo/domain/entities/message_entity.dart';
+import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_tareo/data/http_manager/http_manager.dart';
@@ -126,21 +128,32 @@ class AppHttpManager implements HttpManager {
   dynamic _returnResponse(http.Response response) {
     /* final responseJson = json.decode(response.body); */
     final responseJson = response.body;
-    /* if (response.statusCode >= 200 && response.statusCode <= 299) { */
-      print('Api response success with ');
-      log(responseJson);
-      return responseJson;
-    /* } */
-    /* print('Api response error with ${response.statusCode} + ${response.body}');
+    if (response.statusCode >= 200 && response.statusCode <= 299) { 
+        print('Api response success with ');
+        log(responseJson);
+        return responseJson;
+    }
+    
+    MessageEntity mensaje= MessageEntity.fromJson(jsonDecode(responseJson));
+    toastError('Error', mensaje.message);
+
     switch (response.statusCode) {
       case 400:
-        throw BadRequestException();
+        //throw BadRequestException();
+        //return null;
       case 401:
       case 403:
-        throw UnauthorisedException();
+        //throw UnauthorisedException();
+        return null;
       case 500:
+        return null;
       default:      
-        throw ServerException();
-    } */
+        return null;
+        //throw ServerException();
+    } 
+    
+    /* } */
+    /* print('Api response error with ${response.statusCode} + ${response.body}');
+    */
   }
 }

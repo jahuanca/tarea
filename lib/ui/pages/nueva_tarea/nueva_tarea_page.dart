@@ -61,6 +61,7 @@ class NuevaTareaPage extends StatelessWidget {
                       id: 'centro_costo',
                       builder: (_) => DropdownSearchWidget(
                           label: 'Centro',
+                          error: _.errorCentroCosto,
                           labelText: 'name',
                           labelValue: '_id',
                           selectedItem: _.nuevaTarea?.centroCosto == null ? null : {
@@ -94,6 +95,7 @@ class NuevaTareaPage extends StatelessWidget {
                       builder: (_) => DropdownSearchWidget(
                         label: 'Actividad',
                         labelText: 'name',
+                        error: _.errorActividad,
                         labelValue: '_id',
                         selectedItem: _.nuevaTarea?.actividad == null ? null : {
                           'name' : _.nuevaTarea.actividad.descripcion.trim(),
@@ -116,17 +118,18 @@ class NuevaTareaPage extends StatelessWidget {
                         label: 'Labor',
                         labelText: 'name',
                         labelValue: '_id',
+                        error: _.errorLabor,
                         onChanged: _.changeLabor,
                         selectedItem: _.nuevaTarea?.labor == null ? null : {
                           'name' : '${_.nuevaTarea.labor.descripcion}',
-                          '_id' : _.nuevaTarea.labor.labor,
+                          '_id' : _.nuevaTarea.labor.idlabor,
                         },
                         items: controller.labores.length == 0
                             ? []
                             : controller.labores
                                 .map((e) => {
                                       'name': '${e.descripcion}',
-                                      '_id': e.labor,
+                                      '_id': e.idlabor,
                                     })
                                 .toList(),
                       ),
@@ -137,6 +140,7 @@ class NuevaTareaPage extends StatelessWidget {
                           label: 'Supervisor',
                           labelText: 'name',
                           labelValue: 'codigoempresa',
+                          error: _.errorSupervisor,
                           onChanged: _.changeSupervisor,
                           selectedItem: _.nuevaTarea?.supervisor == null ? null : {
                           'name' : '${_.nuevaTarea.supervisor.apellidopaterno} ${_.nuevaTarea.supervisor.apellidomaterno}, ${_.nuevaTarea.supervisor.nombres}',
@@ -192,15 +196,13 @@ class NuevaTareaPage extends StatelessWidget {
                           onTap: () async {
                             _.horaInicio = await DatePickerWidget(
                               onlyDate: true,
-                              minDate:
-                                  DateTime.now().subtract(Duration(days: 10)),
                               dateSelected: DateTime.now(),
                             ).selectTime(context, new DateTime.now());
                             _.changeHoraInicio();
                           },
                           label: 'Hora inicio',
                           textEditingController: TextEditingController(
-                              text: formatoHora(_.nuevaTarea.horainicio, 'Hora Inicio')),
+                              text: formatoHora(_.nuevaTarea.horainicio)),
                           hintText: 'Hora inicio'),
                     ),
                     SizedBox(
@@ -213,16 +215,15 @@ class NuevaTareaPage extends StatelessWidget {
                           onTap: () async {
                             _.horaFin = await DatePickerWidget(
                               onlyDate: true,
-                              minDate:
-                                  DateTime.now().subtract(Duration(days: 10)),
-                              dateSelected: DateTime.now(),
+                              minDate: _.horaInicio,
+                              dateSelected: _.horaFin ?? DateTime.now(),
                               onChanged: () {},
                             ).selectTime(context, new DateTime.now());
                             _.changeHoraFin();
                           },
                           label: 'Hora fin',
                           textEditingController: TextEditingController(
-                              text: formatoHora(_.horaFin, 'Hora Fin')),
+                              text: formatoHora(_.horaFin)),
                           hintText: 'Hora fin'),
                     ),
                     GetBuilder<NuevaTareaController>(
@@ -242,7 +243,7 @@ class NuevaTareaPage extends StatelessWidget {
                           },
                           textEditingController: TextEditingController(
                               text:
-                                  formatoHora(_.inicioPausa, 'Inicio de pausa')),
+                                  formatoHora(_.inicioPausa)),
                           label: 'Inicio de pausa',
                           hintText: 'Inicio de pausa'),
                     ),
@@ -263,7 +264,7 @@ class NuevaTareaPage extends StatelessWidget {
                             _.changeFinPausa();
                           },
                           textEditingController: TextEditingController(
-                              text: formatoHora(_.finPausa, 'Fin de pausa')),
+                              text: formatoHora(_.finPausa)),
                           label: 'Fin de pausa',
                           hintText: 'Fin de pausa'),
                     ),

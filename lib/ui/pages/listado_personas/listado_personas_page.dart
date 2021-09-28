@@ -145,9 +145,7 @@ class ListadoPersonasPage extends StatelessWidget {
                                           value: e['key'],
                                           child: Text(e['value'])))
                                       .toList(),
-                              onChanged: (value) {
-                                
-                              },
+                              onChanged: _.changeOptions,
                             ),
                           ),
                           flex: 5),

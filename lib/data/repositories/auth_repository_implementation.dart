@@ -18,7 +18,7 @@ class AuthRepositoryImplementation extends AuthRepository {
       body: usuarioEntity.toJson(),
     );
 
-    return UsuarioEntity.fromJson(jsonDecode(res));
+    return res!=null ? UsuarioEntity.fromJson(jsonDecode(res)) : null;
   }
 
   

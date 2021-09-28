@@ -12,6 +12,7 @@ import 'package:flutter_tareo/domain/use_cases/tareas/update_tarea_proceso_use_c
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
+import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
 
@@ -39,12 +40,11 @@ class TareasController extends GetxController {
   }
 
   void onChangedMenu(dynamic value, int index) async {
-    switch (value.toInt()) {
+    switch (value.toInt()){
       case 1:
         break;
       case 3:
-        await delete(index);
-        update(['tareas']);
+        goEliminar(index);
         break;
       default:
         break;
@@ -72,7 +72,8 @@ class TareasController extends GetxController {
     final resultados = await Get.to<List<PersonalTareaProcesoEntity>>(
         () => ListadoPersonasPage(),
         arguments: {
-          'personal_seleccionado': tareas[index].personal,
+          'tarea': tareas[index],
+          'index': index,
           'sede': tareas[index].sede
         });
 
@@ -122,5 +123,22 @@ class TareasController extends GetxController {
       await _updateTareaProcesoUseCase.execute(tareas[index], index);
       update(['tareas']);
     }
+  }
+
+  void goEliminar(int index){
+
+    basicDialog(
+      Get.overlayContext, 
+      'Alerta', 
+      '¿Esta seguro de eliminar esta tarea?', 
+      'Si', 
+      'No', 
+      () async{
+        await delete(index);
+        update(['tareas']);
+        Get.back();
+      }, 
+      ()=> Get.back(),
+    );
   }
 }

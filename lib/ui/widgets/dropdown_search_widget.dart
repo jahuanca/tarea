@@ -12,6 +12,7 @@ class DropdownSearchWidget extends StatelessWidget {
   final String label;
   final String labelText;
   final String labelValue;
+  final String error;
   final List<Map<String, dynamic>> items;
   final Map<String, dynamic> selectedItem;
   final void Function(String) onChanged;
@@ -26,6 +27,7 @@ class DropdownSearchWidget extends StatelessWidget {
     this.isObscure = false,
     this.selectedItem,
     this.label,
+    this.error,
     this.onChanged,
   });
 
@@ -55,9 +57,9 @@ class DropdownSearchWidget extends StatelessWidget {
                   ),
               mode: Mode.BOTTOM_SHEET,
               dropdownSearchDecoration: InputDecoration(
-                border: inputBorder(),
-                enabledBorder: inputBorder(),
-                focusedBorder: inputBorder(),
+                border: error==null ? inputBorder() : inputBorderError(),
+                enabledBorder: error==null ? inputBorder() : inputBorderError(),
+                focusedBorder: error==null ? inputBorder() : inputBorderError(),
                 filled: true,
                 fillColor: cardColor,
                 contentPadding: contentPaddingInputs,

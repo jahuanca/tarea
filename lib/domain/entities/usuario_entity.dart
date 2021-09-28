@@ -21,6 +21,7 @@ class UsuarioEntity {
     this.activo,
     this.fechamod,
     this.token,
+    this.idsubdivision,
   });
 
   @HiveField(0)
@@ -43,6 +44,8 @@ class UsuarioEntity {
   int activo;
   @HiveField(9)
   DateTime fechamod;
+  @HiveField(10)
+  int idsubdivision;
 
   String token;
 
@@ -57,6 +60,7 @@ class UsuarioEntity {
         area: json["area"],
         activo: json["activo"],
         token: json["token"],
+        idsubdivision: json["idsubdivision"],
         fechamod: DateTime?.parse(json["fechamod"]),
       );
 
@@ -70,6 +74,7 @@ class UsuarioEntity {
         "email": email,
         "area": area,
         "activo": activo,
+        "idsubdivision": idsubdivision,
         "fechamod": fechamod?.toIso8601String(),
       };
 }
