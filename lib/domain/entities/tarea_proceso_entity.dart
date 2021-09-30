@@ -34,7 +34,7 @@ class TareaProcesoEntity {
     this.diasiguiente,
     this.esjornal,
     this.esrendimiento,
-    this.fileUrl,
+    this.pathUrl,
     this.estadoLocal,
   }) {
     if (personal == null) {
@@ -94,9 +94,11 @@ class TareaProcesoEntity {
   @HiveField(24)
   bool esrendimiento;
   @HiveField(25)
-  String fileUrl;
+  String pathUrl;
   @HiveField(26)
   String estadoLocal;
+  @HiveField(27)
+  String firmaSupervisor;
 
   String get fechaHora{
     if(fecha==null || horainicio==null){
@@ -146,7 +148,7 @@ class TareaProcesoEntity {
         diasiguiente: json['diasiguiente'],
         esjornal: json['esjornal'],
         esrendimiento: json['esrendimiento'],
-        fileUrl: json['fileUrl'],
+        pathUrl: json['fileUrl'],
         horainicio: DateTime.parse(json['horainicio']),
         horafin: DateTime.parse(json['horafin']),
         pausainicio: DateTime.parse(json['pausainicio']),
@@ -172,7 +174,7 @@ class TareaProcesoEntity {
         'diasiguiente': diasiguiente,
         'esjornal': esjornal,
         'esrendimiento': esrendimiento,
-        'fileUrl': fileUrl,
+        'fileUrl': pathUrl,
         'horainicio': horainicio?.toIso8601String(),
         'horafin': horafin?.toIso8601String(),
         'pausainicio': pausainicio?.toIso8601String(),

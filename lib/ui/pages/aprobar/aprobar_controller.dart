@@ -57,7 +57,7 @@ class AprobarController extends GetxController {
       if (geteditimage != null) {
         File _image = geteditimage[0];
 
-        tareas[index].fileUrl = _image.path;
+        tareas[index].pathUrl = _image.path;
         tareas[index].estadoLocal = 'A';
         await _updateTareaProcesoUseCase.execute(tareas[index], index);
 

@@ -57,7 +57,6 @@ class AprobarPage extends StatelessWidget {
   Widget itemActividad(Size size, BuildContext context, int index) {
     final items = [
       {'key': 1, 'value': 'Seleccionar'},
-      //aparece un formulario de nueva tarea con los datos cargados
       {'key': 6, 'value': 'Eliminar'},
     ];
 
@@ -96,7 +95,7 @@ class AprobarPage extends StatelessWidget {
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: 5),
                               child: Container(
-                                color: primaryColor,
+                                color: _.tareas[index].colorEstado,
                               ),
                             ),
                             flex: 1),
@@ -129,7 +128,7 @@ class AprobarPage extends StatelessWidget {
                         Flexible(child: Container(), flex: 1),
                         Flexible(
                             child: Container(
-                              child: DropdownBelow(
+                              /* child: DropdownBelow(
                                 itemWidth: 200,
                                 itemTextstyle: TextStyle(
                                     fontSize: 14,
@@ -155,7 +154,7 @@ class AprobarPage extends StatelessWidget {
                                             child: Text(e['value'])))
                                         .toList(),
                                 onChanged: (value) {},
-                              ),
+                              ), */
                             ),
                             flex: 5),
                         Flexible(child: Container(), flex: 1),

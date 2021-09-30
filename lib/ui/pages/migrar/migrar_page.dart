@@ -15,47 +15,57 @@ class MigrarPage extends StatelessWidget {
 
     return GetBuilder<MigrarController>(
       init: controller,
-      builder: (_) => Scaffold(
-          backgroundColor: secondColor,
-          body: GetBuilder<MigrarController>(
-            id: 'seleccionado',
-            builder: (_) => Column(
-              children: [
-                if (_.seleccionados.length > 0)
-                  Flexible(
-                    flex: 1,
-                    child: AnimatedContainer(
-                        child: _opcionesSeleccionados(),
-                        duration: Duration(seconds: 1)),
-                  ),
-                Flexible(
-                  flex: 8,
-                  child: RefreshIndicator(
-                    onRefresh: _.getTareas,
-                    child: GetBuilder<MigrarController>(
-                      id: 'tareas',
-                      builder: (_) => _.tareas.isEmpty
-                          ? EmptyDataWidget(
-                            size: size,
-                              titulo: 'No existen tareas por migrar.', onPressed: _.getTareas,)
-                          : ListView.builder(
-                              itemCount: _.tareas.length,
-                              itemBuilder: (BuildContext context, int index) =>
-                                  itemActividad(size, context, index),
-                            ),
+      builder: (_) => Stack(
+        children: [
+          Scaffold(
+              backgroundColor: secondColor,
+              body: GetBuilder<MigrarController>(
+                id: 'seleccionado',
+                builder: (_) => Column(
+                  children: [
+                    if (_.seleccionados.length > 0)
+                      Flexible(
+                        flex: 1,
+                        child: AnimatedContainer(
+                            child: _opcionesSeleccionados(),
+                            duration: Duration(seconds: 1)),
+                      ),
+                    Flexible(
+                      flex: 8,
+                      child: RefreshIndicator(
+                        onRefresh: _.getTareas,
+                        child: GetBuilder<MigrarController>(
+                          id: 'tareas',
+                          builder: (_) => _.tareas.isEmpty
+                              ? EmptyDataWidget(
+                                size: size,
+                                  titulo: 'No existen tareas por migrar.', onPressed: _.getTareas,)
+                              : ListView.builder(
+                                  itemCount: _.tareas.length,
+                                  itemBuilder: (BuildContext context, int index) =>
+                                      itemActividad(size, context, index),
+                                ),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          )),
+              )),
+          GetBuilder<MigrarController>(
+                id: 'validando',
+                builder: (_)=> _.validando ? Container(
+                  color: Colors.black45,
+                  child: Center(child: CircularProgressIndicator()),
+                ) : Container(),
+              ),
+        ],
+      ),
     );
   }
 
   Widget itemActividad(Size size, BuildContext context, int index) {
     final items = [
       {'key': 1, 'value': 'Seleccionar'},
-      //aparece un formulario de nueva tarea con los datos cargados
       {'key': 6, 'value': 'Eliminar'},
     ];
 
@@ -95,7 +105,7 @@ class MigrarPage extends StatelessWidget {
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(vertical: 5),
                                     child: Container(
-                                      color: primaryColor,
+                                      color: _.tareas[index].colorEstado,
                                     ),
                                   ),
                                   flex: 1),
@@ -129,7 +139,7 @@ class MigrarPage extends StatelessWidget {
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                   child: Container(
-                                    child: DropdownBelow(
+                                    /* child: DropdownBelow(
                                       itemWidth: 200,
                                       itemTextstyle: TextStyle(
                                           fontSize: 14,
@@ -156,7 +166,7 @@ class MigrarPage extends StatelessWidget {
                                                   child: Text(e['value'])))
                                               .toList(),
                                       onChanged: (value) {},
-                                    ),
+                                    ), */
                                   ),
                                   flex: 5),
                               Flexible(child: Container(), flex: 1),

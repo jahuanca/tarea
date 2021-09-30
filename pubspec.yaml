@@ -47,6 +47,7 @@ dependencies:
       ref: developer
   flutter_barcode_scanner: 
   flutter_offline: 
+  mime_type: ^0.3.2
   package_info: ^2.0.2
   flutter_local_notifications: 
 
