@@ -27,13 +27,15 @@ class UsuarioEntityAdapter extends TypeAdapter<UsuarioEntity> {
       area: fields[7] as String,
       activo: fields[8] as int,
       fechamod: fields[9] as DateTime,
+      idsubdivision: fields[10] as int,
+      usuarioPerfils: (fields[11] as List)?.cast<UsuarioPerfilEntity>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, UsuarioEntity obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.idusuario)
       ..writeByte(1)
@@ -53,7 +55,11 @@ class UsuarioEntityAdapter extends TypeAdapter<UsuarioEntity> {
       ..writeByte(8)
       ..write(obj.activo)
       ..writeByte(9)
-      ..write(obj.fechamod);
+      ..write(obj.fechamod)
+      ..writeByte(10)
+      ..write(obj.idsubdivision)
+      ..writeByte(11)
+      ..write(obj.usuarioPerfils);
   }
 
   @override

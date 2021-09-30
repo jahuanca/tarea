@@ -5,12 +5,12 @@ import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/core/dimens.dart';
 import 'package:flutter_tareo/ui/pages/tareas/tareas_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
+import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
 
 class TareasPage extends StatelessWidget {
+  final TareasController controller = Get.find<TareasController>();
 
-  final TareasController controller=Get.find<TareasController>();
-  
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -35,14 +35,18 @@ class TareasPage extends StatelessWidget {
                     ),
                   Flexible(
                     flex: 8,
-                    child: GetBuilder<TareasController>(
-                      id: 'tareas',
-                      builder: (_) => Container(
-                        child: ListView.builder(
-                          itemCount: _.tareas.length,
-                          itemBuilder: (BuildContext context, int index) =>
-                              itemActividad(size, context, index),
-                        ),
+                    child: RefreshIndicator(
+                      onRefresh: _.getTareas,
+                      child: GetBuilder<TareasController>(
+                        id: 'tareas',
+                        builder: (_) => _.tareas.isEmpty
+                            ? EmptyDataWidget(titulo: 'No existen tareas.', size: size, onPressed: _.getTareas)
+                            : ListView.builder(
+                                itemCount: _.tareas.length,
+                                itemBuilder:
+                                    (BuildContext context, int index) =>
+                                        itemActividad(size, context, index),
+                              ),
                       ),
                     ),
                   ),
@@ -50,9 +54,8 @@ class TareasPage extends StatelessWidget {
               ),
             ),
             floatingActionButton: FloatingActionButton(
-              child: IconButton(
-                  onPressed: _.goNuevaTarea,
-                  icon: Icon(Icons.add)),
+              child:
+                  IconButton(onPressed: _.goNuevaTarea, icon: Icon(Icons.add)),
             ),
           ),
         ],
@@ -105,7 +108,7 @@ class TareasPage extends StatelessWidget {
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: 5),
                               child: Container(
-                                color: primaryColor,
+                                color: _.tareas[index].colorEstado,
                               ),
                             ),
                             flex: 1),
@@ -116,9 +119,7 @@ class TareasPage extends StatelessWidget {
                             child: Text(
                               _.tareas[index].fechaHora,
                               style: TextStyle(
-                                fontWeight: FontWeight.normal,
-                                fontSize: 14
-                              ),
+                                  fontWeight: FontWeight.normal, fontSize: 14),
                             ),
                           ),
                           flex: 10,
@@ -140,32 +141,33 @@ class TareasPage extends StatelessWidget {
                         Flexible(
                             child: Container(
                               child: DropdownBelow(
-                                itemWidth: 200,
-                                itemTextstyle: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w400,
-                                    color: Colors.black),
-                                boxTextstyle: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: cardColor),
-                                boxPadding: EdgeInsets.fromLTRB(13, 12, 0, 12),
-                                boxHeight: 45,
-                                boxWidth: 150,
-                                icon: Icon(
-                                  Icons.more_horiz,
-                                  color: primaryColor,
-                                ),
-                                value: 1,
-                                items: items == null
-                                    ? []
-                                    : items
-                                        .map((e) => DropdownMenuItem(
-                                            value: e['key'],
-                                            child: Text(e['value'])))
-                                        .toList(),
-                                onChanged: (value) => _.onChangedMenu(value, index)
-                              ),
+                                  itemWidth: 200,
+                                  itemTextstyle: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.black),
+                                  boxTextstyle: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: cardColor),
+                                  boxPadding:
+                                      EdgeInsets.fromLTRB(13, 12, 0, 12),
+                                  boxHeight: 45,
+                                  boxWidth: 150,
+                                  icon: Icon(
+                                    Icons.more_horiz,
+                                    color: primaryColor,
+                                  ),
+                                  value: 1,
+                                  items: items == null
+                                      ? []
+                                      : items
+                                          .map((e) => DropdownMenuItem(
+                                              value: e['key'],
+                                              child: Text(e['value'])))
+                                          .toList(),
+                                  onChanged: (value) =>
+                                      _.onChangedMenu(value, index)),
                             ),
                             flex: 5),
                         Flexible(child: Container(), flex: 1),
@@ -182,7 +184,8 @@ class TareasPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.tareas[index].labor?.descripcion ?? ''),
+                            child:
+                                Text(_.tareas[index].labor?.descripcion ?? ''),
                           ),
                           flex: 10,
                         ),
@@ -190,7 +193,9 @@ class TareasPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.tareas[index].centroCosto.detallecentrocosto),
+                            child: Text(_.tareas[index].centroCosto
+                                    ?.detallecentrocosto ??
+                                ''),
                           ),
                           flex: 10,
                         ),
@@ -213,7 +218,8 @@ class TareasPage extends StatelessWidget {
                                 Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text(_.tareas[index].personal.length.toString())),
+                                    child: Text(_.tareas[index].personal.length
+                                        .toString())),
                                 Icon(
                                   Icons.people,
                                   color: Colors.black45,
@@ -227,7 +233,8 @@ class TareasPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.tareas[index].sede?.detallesubdivision),
+                            child: Text(
+                                _.tareas[index].sede?.detallesubdivision ?? ''),
                           ),
                           flex: 10,
                         ),
@@ -249,7 +256,7 @@ class TareasPage extends StatelessWidget {
                             child: CircleAvatar(
                               backgroundColor: infoColor,
                               child: IconButton(
-                                  onPressed: () => _.goListadoPersonas(index) ,
+                                  onPressed: () => _.goListadoPersonas(index),
                                   icon: Icon(
                                     Icons.search,
                                     color: Colors.white,
@@ -265,7 +272,7 @@ class TareasPage extends StatelessWidget {
                             child: CircleAvatar(
                               backgroundColor: successColor,
                               child: IconButton(
-                                onPressed: () => _.goAgregarPersona(index) ,
+                                onPressed: () => _.goAgregarPersona(index),
                                 icon: Icon(Icons.person_add),
                                 color: Colors.white,
                               ),
@@ -280,7 +287,7 @@ class TareasPage extends StatelessWidget {
                             child: CircleAvatar(
                               backgroundColor: alertColor,
                               child: IconButton(
-                                onPressed: ()=> _.goEditTarea(index),
+                                onPressed: () => _.goEditTarea(index),
                                 icon: Icon(Icons.edit),
                                 color: Colors.white,
                               ),
@@ -325,10 +332,7 @@ class TareasPage extends StatelessWidget {
               child: Container(
                 child: Text(
                   '${_.seleccionados.length} seleccionados',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
               ),
               flex: 12,
@@ -372,5 +376,4 @@ class TareasPage extends StatelessWidget {
       ),
     );
   }
-
 }

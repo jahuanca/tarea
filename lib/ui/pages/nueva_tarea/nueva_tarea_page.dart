@@ -38,6 +38,7 @@ class NuevaTareaPage extends StatelessWidget {
                     GetBuilder<NuevaTareaController>(
                       id: 'fecha',
                       builder: (_) => InputLabelWidget(
+                          error: _.errorFecha,
                           onTap: () async {
                             _.fecha = await DatePickerWidget(
                               onlyDate: true,
@@ -193,11 +194,12 @@ class NuevaTareaPage extends StatelessWidget {
                       id: 'hora_inicio',
                       builder: (_) => InputLabelWidget(
                           enabled: false,
+                          error: _.errorHoraInicio,
                           onTap: () async {
                             _.horaInicio = await DatePickerWidget(
                               onlyDate: true,
                               dateSelected: DateTime.now(),
-                            ).selectTime(context, new DateTime.now());
+                            ).selectTime(context, _.horaInicio);
                             _.changeHoraInicio();
                           },
                           label: 'Hora inicio',
@@ -212,13 +214,14 @@ class NuevaTareaPage extends StatelessWidget {
                       id: 'hora_fin',
                       builder: (_) => InputLabelWidget(
                           enabled: false,
+                          error: _.errorHoraFin,
                           onTap: () async {
                             _.horaFin = await DatePickerWidget(
                               onlyDate: true,
                               minDate: _.horaInicio,
                               dateSelected: _.horaFin ?? DateTime.now(),
                               onChanged: () {},
-                            ).selectTime(context, new DateTime.now());
+                            ).selectTime(context, _.nuevaTarea.horafin);
                             _.changeHoraFin();
                           },
                           label: 'Hora fin',
@@ -275,7 +278,6 @@ class NuevaTareaPage extends StatelessWidget {
                     SizedBox(
                       height: size.height * 0.05,
                     ),
-                    ButtonLogin(texto: 'Terminar tarea'),
                     SizedBox(
                       height: size.height * 0.05,
                     ),

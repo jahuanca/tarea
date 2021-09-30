@@ -1,9 +1,11 @@
 
 
 import 'package:flutter_tareo/data/repositories/auth_repository_implementation.dart';
+import 'package:flutter_tareo/data/repositories/current_time_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/storage_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/subdivision_repository_implementation.dart';
 import 'package:flutter_tareo/domain/repositories/auth_repository.dart';
+import 'package:flutter_tareo/domain/repositories/current_time_repository.dart';
 import 'package:flutter_tareo/domain/repositories/storage_repository.dart';
 import 'package:flutter_tareo/domain/repositories/subdivision_repository.dart';
 import 'package:flutter_tareo/domain/use_cases/login/save_token_use_case.dart';
@@ -29,7 +31,6 @@ class LoginBinding extends Bindings{
     Get.lazyReplace<GetSubdivisonsUseCase>(() => GetSubdivisonsUseCase(Get.find()));
 
     Get.lazyPut<LoginController>(() => LoginController(Get.find(), Get.find(), Get.find(), Get.find()));
-    
   }
 
 }

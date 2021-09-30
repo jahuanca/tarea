@@ -3,6 +3,7 @@
 //     final usuarioEntity = usuarioEntityFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:flutter_tareo/domain/entities/usuario_perfil_entity.dart';
 import 'package:hive/hive.dart';
 
 part 'usuario_entity.g.dart';
@@ -22,6 +23,7 @@ class UsuarioEntity {
     this.fechamod,
     this.token,
     this.idsubdivision,
+    this.usuarioPerfils,
   });
 
   @HiveField(0)
@@ -46,6 +48,10 @@ class UsuarioEntity {
   DateTime fechamod;
   @HiveField(10)
   int idsubdivision;
+  @HiveField(11)
+  List<UsuarioPerfilEntity> usuarioPerfils;
+
+  
 
   String token;
 
@@ -62,6 +68,7 @@ class UsuarioEntity {
         token: json["token"],
         idsubdivision: json["idsubdivision"],
         fechamod: DateTime?.parse(json["fechamod"]),
+        usuarioPerfils: json["Usuario_Perfils"] == null ? null : List<UsuarioPerfilEntity>.from(json["Usuario_Perfils"].map((x) => UsuarioPerfilEntity.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -76,6 +83,7 @@ class UsuarioEntity {
         "activo": activo,
         "idsubdivision": idsubdivision,
         "fechamod": fechamod?.toIso8601String(),
+        "Usuario_Perfils": usuarioPerfils == null ? null : List<dynamic>.from(usuarioPerfils.map((x) => x.toJson())),
       };
 }
 

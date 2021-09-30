@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/core/dimens.dart';
 import 'package:flutter_tareo/ui/pages/migrar/migrar_controller.dart';
+import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
 
 class MigrarPage extends StatelessWidget {
-
-  final MigrarController controller=Get.find<MigrarController>();
+  final MigrarController controller = Get.find<MigrarController>();
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +30,19 @@ class MigrarPage extends StatelessWidget {
                   ),
                 Flexible(
                   flex: 8,
-                  child: Container(
-                    child: ListView.builder(
-                      itemCount: _.tareas.length,
-                      itemBuilder: (BuildContext context, int index) =>
-                          itemActividad(size, context, index),
+                  child: RefreshIndicator(
+                    onRefresh: _.getTareas,
+                    child: GetBuilder<MigrarController>(
+                      id: 'tareas',
+                      builder: (_) => _.tareas.isEmpty
+                          ? EmptyDataWidget(
+                            size: size,
+                              titulo: 'No existen tareas por migrar.', onPressed: _.getTareas,)
+                          : ListView.builder(
+                              itemCount: _.tareas.length,
+                              itemBuilder: (BuildContext context, int index) =>
+                                  itemActividad(size, context, index),
+                            ),
                     ),
                   ),
                 ),
@@ -109,7 +117,8 @@ class MigrarPage extends StatelessWidget {
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    _.tareas[index].actividad.descripcion,
+                                    _.tareas[index].actividad?.descripcion ??
+                                        '',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -164,7 +173,8 @@ class MigrarPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(_.tareas[index].labor.descripcion),
+                                  child: Text(
+                                      _.tareas[index].labor?.descripcion ?? ''),
                                 ),
                                 flex: 10,
                               ),
@@ -172,7 +182,9 @@ class MigrarPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(_.tareas[index].centroCosto.detallecentrocosto),
+                                  child: Text(_.tareas[index].centroCosto
+                                          ?.detallecentrocosto ??
+                                      ''),
                                 ),
                                 flex: 10,
                               ),
@@ -195,7 +207,9 @@ class MigrarPage extends StatelessWidget {
                                       Container(
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 5),
-                                          child: Text(_.tareas[index].personal.length.toString())),
+                                          child: Text(_
+                                              .tareas[index].personal.length
+                                              .toString())),
                                       Icon(
                                         Icons.people,
                                         color: Colors.black45,
@@ -209,7 +223,9 @@ class MigrarPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(_.tareas[index].sede.detallesubdivision),
+                                  child: Text(_.tareas[index].sede
+                                          ?.detallesubdivision ??
+                                      ''),
                                 ),
                                 flex: 10,
                               ),
@@ -225,23 +241,24 @@ class MigrarPage extends StatelessWidget {
                           child: Row(
                             children: [
                               Flexible(child: Container(), flex: 1),
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: infoColor,
-                                    child: IconButton(
-                                        onPressed:
-                                            () => _.goAprobar(index),
-                                        icon: Icon(
-                                          Icons.sync_rounded,
-                                          color: Colors.white,
-                                        )),
+                              if (_.tareas[index].estadoLocal != 'M')
+                                Flexible(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: CircleAvatar(
+                                      backgroundColor: infoColor,
+                                      child: IconButton(
+                                          onPressed: () => _.goAprobar(index),
+                                          icon: Icon(
+                                            Icons.sync_rounded,
+                                            color: Colors.white,
+                                          )),
+                                    ),
                                   ),
+                                  flex: 7,
                                 ),
-                                flex: 7,
-                              ),
-                              Flexible(child: Container(), flex: 1),
+                              if (_.tareas[index].estadoLocal != 'M')
+                                Flexible(child: Container(), flex: 1),
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.center,

@@ -20,7 +20,12 @@ class MigrarController extends GetxController{
   @override
   void onInit() async{
     super.onInit();
+    await getTareas();
+  }
+
+  Future<void> getTareas()async{
     tareas= await _getAllTareaProcesoUseCase.execute();
+    update(['tareas']);
   }
 
   @override
@@ -51,12 +56,18 @@ class MigrarController extends GetxController{
         Get.back();
         await migrar(index);
         
-      }, 
+      },
       ()=> Get.back(),
     );
   }
 
   Future<void> migrar(int index)async{
-    await _migrarAllTareaUseCase.execute(tareas[index]);
+    TareaProcesoEntity tareaMigrada=await _migrarAllTareaUseCase.execute(tareas[index]);
+    if(tareaMigrada!=null){
+      toastExito('Exito', 'Tarea migrada con exito');
+    }
+    tareas[index].estadoLocal='M';
+    await _updateTareaProcesoUseCase.execute(tareas[index], index);
+    update(['seleccionado']);
   }
 }

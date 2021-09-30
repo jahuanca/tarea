@@ -12,6 +12,7 @@ import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
+import 'package:flutter_tareo/domain/entities/usuario_perfil_entity.dart';
 import 'package:flutter_tareo/ui/app.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -38,7 +39,7 @@ void main() async{
   Hive.registerAdapter(CentroCostoEntityAdapter());
   Hive.registerAdapter(DivisionEntityAdapter());
   Hive.registerAdapter(LaborEntityAdapter());
+  Hive.registerAdapter(UsuarioPerfilEntityAdapter());
   
   runApp(MyApp());
 }
-

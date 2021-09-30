@@ -7,7 +7,7 @@ class MigrarAllTareaUseCase{
 
   MigrarAllTareaUseCase(this._tareaProcesoRepository);
 
-  Future<void> execute(TareaProcesoEntity tareaProcesoEntity)async{
+  Future<TareaProcesoEntity> execute(TareaProcesoEntity tareaProcesoEntity)async{
     return await _tareaProcesoRepository.migrar(tareaProcesoEntity);
   } 
 }

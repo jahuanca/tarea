@@ -123,7 +123,7 @@ class ListadoPersonasController extends GetxController {
       personalSeleccionado.add(result);
       update(['personal_seleccionado']);
       seleccionados.clear();
-      update(['seleccionados']);
+      update(['listado']);
     }
   }
 

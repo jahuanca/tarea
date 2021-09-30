@@ -19,9 +19,13 @@ class InputLabelWidget extends StatelessWidget {
   final bool isTextArea;
   final void Function(String) onChanged;
   final void Function() onTap;
+  final void Function() onPressedIconOverlay;
+  final IconData iconOverlay;
 
   InputLabelWidget({
       @required this.hintText,
+      this.iconOverlay,
+      this.onPressedIconOverlay,
       this.enabled=true,
       this.maxLength=20,
       this.textInputType=TextInputType.name,
@@ -55,30 +59,42 @@ class InputLabelWidget extends StatelessWidget {
           child: Container(
             height: isTextArea ? size.height*inputDimension*1.5 : size.height*inputDimension,
             width: size.width,
+            
             decoration: BoxDecoration(),
-            child: TextFormField(
-              enabled: enabled,
-              initialValue: initialValue,
-              maxLength: maxLength,
-              keyboardType: textInputType,
-              obscureText: isObscure,
-              maxLines: isTextArea ? 5 : 1,
-              decoration: InputDecoration(
-                border: error==null ? inputBorder() : inputBorderError(),
-                enabledBorder: error==null ? inputBorder() : inputBorderError(),
-                disabledBorder: error==null ? inputBorder() : inputBorderError(),
-                focusedBorder: error==null ? inputBorder() : inputBorderError(),
-                filled: true,
-                fillColor: (PreferenciasUsuario().modoDark) ? cardColorDark : cardColor,
-                contentPadding: isTextArea ? contentPaddingTextArea : contentPaddingInputs,
-                counterText: '',
-                counterStyle: TextStyle(fontSize: 0),
-                hintText: hintText,
-                hintStyle: primaryHintStyle(),
-              ),
-              controller: textEditingController,
-              onChanged: onChanged,
-              textAlign: TextAlign.left,
+            child: Stack(
+              children: [
+                TextFormField(
+                  enabled: enabled,
+                  initialValue: initialValue,
+                  maxLength: maxLength,
+                  keyboardType: textInputType,
+                  obscureText: isObscure,
+                  maxLines: isTextArea ? 5 : 1,
+                  decoration: InputDecoration(
+                    border: error==null ? inputBorder() : inputBorderError(),
+                    enabledBorder: error==null ? inputBorder() : inputBorderError(),
+                    disabledBorder: error==null ? inputBorder() : inputBorderError(),
+                    focusedBorder: error==null ? inputBorder() : inputBorderError(),
+                    filled: true,
+                    fillColor: (PreferenciasUsuario().modoDark) ? cardColorDark : cardColor,
+                    contentPadding: isTextArea ? contentPaddingTextArea : contentPaddingInputs,
+                    counterText: '',
+                    counterStyle: TextStyle(fontSize: 0),
+                    hintText: hintText,
+                    hintStyle: primaryHintStyle(),
+                  ),
+                  controller: textEditingController,
+                  onChanged: onChanged,
+                  textAlign: TextAlign.left,
+                ),
+                
+                if(iconOverlay!=null)
+                Container(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    onPressed: onPressedIconOverlay, 
+                  icon: Icon(iconOverlay, color: infoColor,)))
+              ],
             )
           ),
         ),

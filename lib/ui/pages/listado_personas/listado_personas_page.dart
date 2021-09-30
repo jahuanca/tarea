@@ -5,11 +5,12 @@ import 'package:flutter_tareo/core/dimens.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
+import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
 
 class ListadoPersonasPage extends StatelessWidget {
-
-  final ListadoPersonasController controller=Get.find<ListadoPersonasController>();
+  final ListadoPersonasController controller =
+      Get.find<ListadoPersonasController>();
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +24,18 @@ class ListadoPersonasPage extends StatelessWidget {
         child: Stack(
           children: [
             Scaffold(
-              appBar: getAppBar('${_.personalSeleccionado.length}', [
-                IconButton(onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
-                IconButton(onPressed: (){}, icon: Icon(Icons.search)),
-              ], true),
+              appBar: getAppBar(
+                  '${_.personalSeleccionado.length}',
+                  [
+                    IconButton(
+                        onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
+                    IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+                  ],
+                  true),
               backgroundColor: secondColor,
-              body: GetBuilder<ListadoPersonasController>(
+              body: RefreshIndicator(
+                onRefresh: () async => _.update(['listado']),
+                child: GetBuilder<ListadoPersonasController>(
                   id: 'seleccionado',
                   builder: (_) => Column(
                     children: [
@@ -41,28 +48,40 @@ class ListadoPersonasPage extends StatelessWidget {
                         ),
                       Flexible(
                         flex: 8,
-                        child: Container(
-                          child: ListView.builder(
-                            itemCount: _.personalSeleccionado.length,
-                            itemBuilder: (BuildContext context, int index) =>
-                                itemActividad(size, context, index),
-                          ),
+                        child: GetBuilder<ListadoPersonasController>(
+                          id: 'listado',
+                          builder: (_) => _.personalSeleccionado.isEmpty
+                              ? EmptyDataWidget(
+                                  titulo: 'No existe equipo asociado.',
+                                  onPressed: () => _.update(['listado']),
+                                  size: size)
+                              : ListView.builder(
+                                  itemCount: _.personalSeleccionado.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) =>
+                                          itemActividad(size, context, index),
+                                ),
                         ),
                       ),
                     ],
                   ),
                 ),
+              ),
               floatingActionButton: FloatingActionButton(
-                child: IconButton(onPressed: _.goNuevoPersonaTareaProceso, icon: Icon(Icons.add)),
+                child: IconButton(
+                    onPressed: _.goNuevoPersonaTareaProceso,
+                    icon: Icon(Icons.add)),
               ),
             ),
             GetBuilder<ListadoPersonasController>(
-                  id: 'validando',
-                  builder: (_)=> _.validando ? Container(
-                    color: Colors.black45,
-                    child: Center(child: CircularProgressIndicator()),
-                  ) : Container(),
-                ),
+              id: 'validando',
+              builder: (_) => _.validando
+                  ? Container(
+                      color: Colors.black45,
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  : Container(),
+            ),
           ],
         ),
       ),
@@ -76,151 +95,184 @@ class ListadoPersonasPage extends StatelessWidget {
     ];
 
     return GetBuilder<ListadoPersonasController>(
-      id: 'seleccionado',
-      builder: (_) => GestureDetector(
-        onLongPress: _.seleccionados.length>0 ? null : () => _.seleccionar(index),
-        onTap: _.seleccionados.length>0 ? () => _.seleccionar(index) : null,
-        child: Container(
-          decoration: BoxDecoration(
-            color:
-                (_.seleccionados.contains(index)) ? Colors.blue : secondColor,
-            border: (_.seleccionados.contains(index))
-                ? Border.all()
-                : Border.all(color: Colors.transparent),
-          ),
-        padding: EdgeInsets.all(size.width * 0.05),
-        child: Container(
-          height: size.height * 0.2,
-          decoration: BoxDecoration(
-              color: cardColor,
-              border: Border.all(),
-              borderRadius: BorderRadius.circular(borderRadius)),
-          child: Column(
-            children: [
-              Flexible(
-                child: Container(
-                  child: Row(
-                    children: [
-                      Flexible(child: Container(), flex: 1),
-                      Flexible(
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(_.personalSeleccionado[index].personal?.codigoempresa ?? ''),
-                        ),
-                        flex: 10,
-                      ),
-                      Flexible(child: Container(), flex: 1),
-                      Flexible(
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(_.personalSeleccionado[index].personal?.nombreCompleto ?? ''),
-                        ),
-                        flex: 25,
-                      ),
-                      Flexible(child: Container(), flex: 1),
-                      Flexible(
-                          child: Container(
-                            child: DropdownBelow(
-                              itemWidth: 200,
-                              itemTextstyle: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black),
-                              boxTextstyle: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  color: cardColor),
-                              boxPadding: EdgeInsets.fromLTRB(13, 12, 0, 12),
-                              boxHeight: 45,
-                              boxWidth: 150,
-                              icon: Icon(
-                                Icons.more_horiz,
-                                color: primaryColor,
-                              ),
-                              value: 1,
-                              items: items == null
-                                  ? []
-                                  : items
-                                      .map((e) => DropdownMenuItem(
-                                          value: e['key'],
-                                          child: Text(e['value'])))
-                                      .toList(),
-                              onChanged: _.changeOptions,
-                            ),
-                          ),
-                          flex: 5),
-                      Flexible(child: Container(), flex: 1),
-                    ],
-                  ),
+        id: 'seleccionado',
+        builder: (_) => GestureDetector(
+              onLongPress: _.seleccionados.length > 0
+                  ? null
+                  : () => _.seleccionar(index),
+              onTap: _.seleccionados.length > 0
+                  ? () => _.seleccionar(index)
+                  : null,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: (_.seleccionados.contains(index))
+                      ? Colors.blue
+                      : secondColor,
+                  border: (_.seleccionados.contains(index))
+                      ? Border.all()
+                      : Border.all(color: Colors.transparent),
                 ),
-                flex: 1,
-              ),
-              Flexible(
+                padding: EdgeInsets.all(size.width * 0.05),
                 child: Container(
-                  child: Row(
+                  height: size.height * 0.2,
+                  decoration: BoxDecoration(
+                      color: cardColor,
+                      border: Border.all(),
+                      borderRadius: BorderRadius.circular(borderRadius)),
+                  child: Column(
                     children: [
-                      Flexible(child: Container(), flex: 1),
                       Flexible(
                         child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text('75 UNDs'),
-                        ),
-                        flex: 10,
-                      ),
-                      Flexible(child: Container(), flex: 1),
-                      Flexible(
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            formatoFechaOnlyHoras(_.personalSeleccionado[index].horainicio, _.personalSeleccionado[index].horafin,) ?? '-Sin horas-',
-                            style: TextStyle(
-                              color: (_.personalSeleccionado[index].pausainicio==null || _.personalSeleccionado[index].pausainicio==null) ? dangerColor : Colors.black54
-                            )
+                          child: Row(
+                            children: [
+                              Flexible(child: Container(), flex: 1),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(_.personalSeleccionado[index]
+                                          .personal?.codigoempresa ??
+                                      ''),
+                                ),
+                                flex: 10,
+                              ),
+                              Flexible(child: Container(), flex: 1),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(_.personalSeleccionado[index]
+                                          .personal?.nombreCompleto ??
+                                      ''),
+                                ),
+                                flex: 25,
+                              ),
+                              Flexible(child: Container(), flex: 1),
+                              Flexible(
+                                  child: Container(
+                                    child: DropdownBelow(
+                                      itemWidth: 200,
+                                      itemTextstyle: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black),
+                                      boxTextstyle: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: cardColor),
+                                      boxPadding:
+                                          EdgeInsets.fromLTRB(13, 12, 0, 12),
+                                      boxHeight: 45,
+                                      boxWidth: 150,
+                                      icon: Icon(
+                                        Icons.more_horiz,
+                                        color: primaryColor,
+                                      ),
+                                      value: 1,
+                                      items: items == null
+                                          ? []
+                                          : items
+                                              .map((e) => DropdownMenuItem(
+                                                  value: e['key'],
+                                                  child: Text(e['value'])))
+                                              .toList(),
+                                      onChanged: _.changeOptions,
+                                    ),
+                                  ),
+                                  flex: 5),
+                              Flexible(child: Container(), flex: 1),
+                            ],
                           ),
                         ),
-                        flex: 10,
+                        flex: 1,
                       ),
-                      Flexible(child: Container(), flex: 1),
-                    ],
-                  ),
-                ),
-                flex: 1,
-              ),
-              Flexible(
-                child: Container(
-                  child: Row(
-                    children: [
-                      Expanded(child: Container(), flex: 1),
-                      Expanded(
+                      Flexible(
                         child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text('PAUSA:'),
-                        ),
-                        flex: 4,
-                      ),
-                      Expanded(
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            (formatoFechaOnlyHoras(_.personalSeleccionado[index].pausainicio, _.personalSeleccionado[index].pausafin,) ?? '-Sin pausas-'),
-                              style: TextStyle(
-                                color: (_.personalSeleccionado[index].pausainicio==null || _.personalSeleccionado[index].pausainicio==null) ? dangerColor : Colors.black54
+                          child: Row(
+                            children: [
+                              Flexible(child: Container(), flex: 1),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text('75 UNDs'),
+                                ),
+                                flex: 10,
                               ),
-                            ),
+                              Flexible(child: Container(), flex: 1),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                      formatoFechaOnlyHoras(
+                                            _.personalSeleccionado[index]
+                                                .horainicio,
+                                            _.personalSeleccionado[index]
+                                                .horafin,
+                                          ) ??
+                                          '-Sin horas-',
+                                      style: TextStyle(
+                                          color: (_.personalSeleccionado[index]
+                                                          .horainicio ==
+                                                      null ||
+                                                  _.personalSeleccionado[index]
+                                                          .horafin ==
+                                                      null)
+                                              ? dangerColor
+                                              : Colors.black87)),
+                                ),
+                                flex: 10,
+                              ),
+                              Flexible(child: Container(), flex: 1),
+                            ],
+                          ),
                         ),
-                        flex: 8,
+                        flex: 1,
                       ),
-                      Expanded(child: Container(), flex: 1),
+                      Flexible(
+                        child: Container(
+                          child: Row(
+                            children: [
+                              Expanded(child: Container(), flex: 1),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text('PAUSA:'),
+                                ),
+                                flex: 4,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    (formatoFechaOnlyHoras(
+                                          _.personalSeleccionado[index]
+                                              .pausainicio,
+                                          _.personalSeleccionado[index]
+                                              .pausafin,
+                                        ) ??
+                                        '-Sin pausas-'),
+                                    style: TextStyle(
+                                        color: (_.personalSeleccionado[index]
+                                                        .pausainicio ==
+                                                    null ||
+                                                _.personalSeleccionado[index]
+                                                        .pausainicio ==
+                                                    null)
+                                            ? Colors.grey
+                                            : Colors.black87),
+                                  ),
+                                ),
+                                flex: 8,
+                              ),
+                              Expanded(child: Container(), flex: 1),
+                            ],
+                          ),
+                        ),
+                        flex: 1,
+                      ),
                     ],
                   ),
                 ),
-                flex: 1,
               ),
-            ],
-          ),
-        ),
-      ),
-    ));
+            ));
   }
 
   Widget _opcionesSeleccionados() {
@@ -242,10 +294,7 @@ class ListadoPersonasPage extends StatelessWidget {
               child: Container(
                 child: Text(
                   '${_.seleccionados.length} seleccionados',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
               ),
               flex: 12,

@@ -6,6 +6,7 @@ import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_current_time_world_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_usuarios_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
@@ -33,8 +34,9 @@ class SincronizarController extends GetxController{
   final GetUsuariosUseCase _getUsuariosUseCase;
   final GetPersonalsEmpresaUseCase _getPersonalsEmpresaUseCase;
   final GetCentroCostosUseCase _getCentroCostosUseCase;
+  final GetCurrentTimeWorldUseCase _getCurrentTimeWorldUseCase;
 
-  SincronizarController(this._getActividadsUseCase, this._getSubdivisonsUseCase, this._getLaborsUseCase, this._getUsuariosUseCase, this._getPersonalsEmpresaUseCase, this._getCentroCostosUseCase);
+  SincronizarController(this._getActividadsUseCase, this._getSubdivisonsUseCase, this._getLaborsUseCase, this._getUsuariosUseCase, this._getPersonalsEmpresaUseCase, this._getCentroCostosUseCase, this._getCurrentTimeWorldUseCase);
 
   bool validando=false;
 
@@ -97,16 +99,18 @@ class SincronizarController extends GetxController{
     String version = packageInfo.version;
     var logs = await Hive.openBox<LogEntity>('log_sincronizar');
     PreferenciasUsuario().lastVersion=version;
-    PreferenciasUsuario().lastVersionDate=formatoFechaHora(DateTime.now());
+    PreferenciasUsuario().lastVersionDate=formatoFechaHora((await _getCurrentTimeWorldUseCase.execute()).datetime);
     print(PreferenciasUsuario().lastVersion);
     print(PreferenciasUsuario().lastVersionDate);
-    logs.add(
+    await logs.add(
       new LogEntity(
         id: DateTime.now().microsecond,
         fecha: DateTime.now(),
         version: version,
       )
     );
+    await logs.close();
+    update(['version']);
   }
 
   Future<void> getUsuarios()async{

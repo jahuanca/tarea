@@ -28,6 +28,27 @@ Future<dynamic> basicDialog(
   );
 }
 
+Future<dynamic> basicAlert(
+    BuildContext context,
+    String titulo,
+    String contenido,
+    String pressed,
+    void Function() onPressed) {
+  return showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text(titulo),
+      content: Text(contenido),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: onPressed,
+          child: Text(pressed),
+        ),
+      ],
+    ),
+  );
+}
+
 void toastExito(String titulo, String mensaje, [int duration = 3000]) {
   Get.snackbar(
     titulo,

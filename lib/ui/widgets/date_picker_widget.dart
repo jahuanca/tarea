@@ -58,24 +58,27 @@ class DatePickerWidget {
     picked = await showTimePicker(
       context: context,
       initialTime:
-          (minDate != null) ? TimeOfDay.fromDateTime(minDate) : TimeOfDay.now(),
+          (minDate != null) ? TimeOfDay.fromDateTime(selectedDate ?? minDate) : TimeOfDay.now(),
     );
     if (picked == null) {
       return selectedDate;
     }
     selectedDate = DateTime(
-      selectedDate.year,
-      selectedDate.month,
-      selectedDate.day,
+      selectedDate?.year ?? DateTime.now().year,
+      selectedDate?.month ?? DateTime.now().month,
+      selectedDate?.day ?? DateTime.now().day,
       picked.hour,
       picked.minute,
     );
-
-    if (toDouble(picked) > toDouble(TimeOfDay.fromDateTime(minDate))) {
+    if (minDate != null) {
+      if (toDouble(picked) > toDouble(TimeOfDay.fromDateTime(minDate))) {
+        return selectedDate;
+      } else {
+        toastError('Error', 'Fecha debe ser mayor');
+        return minDate.add(Duration(minutes: 1));
+      }
+    }else{
       return selectedDate;
-    } else {
-      toastError('Error', 'Fecha debe ser mayor');
-      return dateSelected;
     }
     //onChanged(selectedDate, picked);
   }

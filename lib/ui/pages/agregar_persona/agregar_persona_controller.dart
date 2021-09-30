@@ -22,6 +22,8 @@ class AgregarPersonaController extends GetxController {
   PersonalTareaProcesoEntity personalTareaProcesoEntity =
       new PersonalTareaProcesoEntity();
 
+  String errorHoraInicio, errorHoraFin;
+
   AgregarPersonaController(this._getPersonalsEmpresaBySubdivisionUseCase);
 
   //TODO: cantidadHoras se autocalculada: horaFin - horaInicio - (finPausa - inicioPausa) en horas
@@ -97,7 +99,22 @@ class AgregarPersonaController extends GetxController {
     }
   }
 
+  void deleteInicioPausa(){
+    personalTareaProcesoEntity.pausainicio=null;
+    update(['inicio_pausa']);
+  }
+
+  void deleteFinPausa(){
+    personalTareaProcesoEntity.pausafin=null;
+    update(['fin_pausa']);
+  }
+
   void guardar() {
+    String mensaje=validar();
+    if(mensaje!=null){
+      toastError('Error', mensaje);
+      return;
+    }
     if (actualizando) {
       List<PersonalTareaProcesoEntity> personalRespuesta = [];
       for (final p in personalEmpresa) {
@@ -138,19 +155,9 @@ class AgregarPersonaController extends GetxController {
     update(['dia_siguiente']);
   }
 
-  void changeHoraInicio() {
-    personalTareaProcesoEntity.horainicio = horaInicio;
-    update(['hora_inicio']);
-  }
-
   void changeTurno(String value) {
     personalTareaProcesoEntity.turno =value;
     update(['turno']);
-  }
-
-  void changeHoraFin() {
-    personalTareaProcesoEntity.horafin = horaFin;
-    update(['hora_fin']);
   }
 
   void changeInicioPausa() {
@@ -161,5 +168,27 @@ class AgregarPersonaController extends GetxController {
   void changeFinPausa() {
     personalTareaProcesoEntity.pausafin = finPausa;
     update(['fin_pausa']);
+  }
+
+  void changeHoraInicio() {
+    personalTareaProcesoEntity.horainicio = horaInicio;
+    errorHoraInicio= (personalTareaProcesoEntity.horainicio == null) ? 'Debe elegir una hora de inicio' : null;
+    update(['hora_inicio']);
+  }
+
+  void changeHoraFin() {
+    personalTareaProcesoEntity.horafin = horaFin;
+    errorHoraFin= (personalTareaProcesoEntity.horafin == null) ? 'Debe elegir una hora de fin' : null;
+    update(['hora_fin']);
+  }
+
+  String validar() {
+    changeHoraInicio();
+    changeHoraFin();
+    
+    if(errorHoraInicio != null) return errorHoraInicio;
+    if(errorHoraFin != null) return errorHoraFin;
+    
+    return null;
   }
 }

@@ -64,10 +64,8 @@ class AgregarPersonaPage extends StatelessWidget {
                           onTap: () async {
                             _.horaInicio = await DatePickerWidget(
                               onlyDate: true,
-                              minDate:
-                                  DateTime.now().subtract(Duration(days: 10)),
                               dateSelected: DateTime.now(),
-                            ).selectTime(context, new DateTime.now());
+                            ).selectTime(context, _.horaInicio);
                             _.changeHoraInicio();
                           },
                           label: 'Hora inicio',
@@ -85,11 +83,10 @@ class AgregarPersonaPage extends StatelessWidget {
                           onTap: () async {
                             _.horaFin = await DatePickerWidget(
                               onlyDate: true,
-                              minDate:
-                                  DateTime.now().subtract(Duration(days: 10)),
-                              dateSelected: DateTime.now(),
+                              minDate: _.horaInicio,
+                              dateSelected: _.horaFin ?? DateTime.now(),
                               onChanged: () {},
-                            ).selectTime(context, new DateTime.now());
+                            ).selectTime(context, _.personalTareaProcesoEntity.horafin);
                             _.changeHoraFin();
                           },
                           label: 'Hora fin',
@@ -101,6 +98,8 @@ class AgregarPersonaPage extends StatelessWidget {
                       id: 'inicio_pausa',
                       builder: (_) => InputLabelWidget(
                           enabled: false,
+                          iconOverlay: Icons.delete,
+                          onPressedIconOverlay: _.deleteInicioPausa,
                           onTap: () async {
                             _.inicioPausa = await DatePickerWidget(
                               onlyDate: true,
@@ -123,6 +122,8 @@ class AgregarPersonaPage extends StatelessWidget {
                       id: 'fin_pausa',
                       builder: (_) => InputLabelWidget(
                           enabled: false,
+                          iconOverlay: Icons.delete,
+                          onPressedIconOverlay: _.deleteFinPausa,
                           onTap: () async {
                             _.finPausa = await DatePickerWidget(
                               onlyDate: true,

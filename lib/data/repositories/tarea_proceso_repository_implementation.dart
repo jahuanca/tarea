@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/repositories/tarea_proceso_repository.dart';
@@ -32,14 +34,14 @@ class TareaProcesoRepositoryImplementation extends TareaProcesoRepository {
   }
 
   @override
-  Future<void> migrar(TareaProcesoEntity tareaProcesoEntity) async{
+  Future<TareaProcesoEntity> migrar(TareaProcesoEntity tareaProcesoEntity) async{
     final AppHttpManager http = AppHttpManager();
     final res = await http.post(
       url: '$urlModule/createAll',
       body: tareaProcesoEntity.toJson(),
     );
 
-    return;
+    return res==null ? null : TareaProcesoEntity.fromJson(jsonDecode(res));
   }
 
 }

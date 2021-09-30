@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
@@ -37,6 +39,7 @@ class TareaProcesoEntity {
   }) {
     if (personal == null) {
       personal = [];
+      estadoLocal='P';
     }
   }
 
@@ -107,6 +110,23 @@ class TareaProcesoEntity {
       DateFormat('yyyy').format(fecha) +
       "  " +
       DateFormat('hh:mm a').format(horainicio);
+  }
+
+  Color get colorEstado{
+    switch (estadoLocal) {
+      case 'P':
+        return alertColor;
+        break;
+      case 'A':
+        return successColor;
+        break;
+      case 'M':
+        return infoColor;
+        break;
+      default:
+        return primaryColor;
+        break;
+    }
   }
 
   factory TareaProcesoEntity.fromJson(Map<String, dynamic> json) =>

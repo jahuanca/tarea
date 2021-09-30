@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/core/dimens.dart';
 import 'package:flutter_tareo/ui/pages/aprobar/aprobar_controller.dart';
+import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
 
 class AprobarPage extends StatelessWidget {
+  final AprobarController controller = Get.find<AprobarController>();
 
-  final AprobarController controller=Get.find<AprobarController>();
-  
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -16,34 +16,43 @@ class AprobarPage extends StatelessWidget {
     return GetBuilder<AprobarController>(
       init: controller,
       builder: (_) => Scaffold(
-        backgroundColor: secondColor,
-        body: GetBuilder<AprobarController>(
-          id: 'seleccionado',
-          builder: (_) => Column(
-            children: [
-              if (_.seleccionados.length > 0)
+          backgroundColor: secondColor,
+          body: GetBuilder<AprobarController>(
+            id: 'seleccionado',
+            builder: (_) => Column(
+              children: [
+                if (_.seleccionados.length > 0)
+                  Flexible(
+                    flex: 1,
+                    child: AnimatedContainer(
+                        child: _opcionesSeleccionados(),
+                        duration: Duration(seconds: 1)),
+                  ),
                 Flexible(
-                  flex: 1,
-                  child: AnimatedContainer(
-                      child: _opcionesSeleccionados(),
-                      duration: Duration(seconds: 1)),
-                ),
-              Flexible(
-                flex: 8,
-                child: Container(
-                  child: ListView.builder(
-                    itemCount: _.tareas.length,
-                    itemBuilder: (BuildContext context, int index) =>
-                        itemActividad(size, context, index),
+                  flex: 8,
+                  child: RefreshIndicator(
+                    onRefresh: _.getTareas,
+                    child: GetBuilder<AprobarController>(
+                      id: 'tareas',
+                      builder: (_) => _.tareas.isEmpty
+                          ? EmptyDataWidget(
+                              size: size,
+                              titulo: 'No existen tareas por aprobar.',
+                              onPressed: _.getTareas,
+                            )
+                          : ListView.builder(
+                              itemCount: _.tareas.length,
+                              itemBuilder: (BuildContext context, int index) =>
+                                  itemActividad(size, context, index),
+                            ),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        )),
+              ],
+            ),
+          )),
     );
   }
-
 
   Widget itemActividad(Size size, BuildContext context, int index) {
     final items = [
@@ -53,18 +62,17 @@ class AprobarPage extends StatelessWidget {
     ];
 
     return GetBuilder<AprobarController>(
-        id: 'seleccionado',
-        builder: (_) => GestureDetector(
-              onLongPress: () => _.seleccionar(index),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: (_.seleccionados.contains(index))
-                      ? Colors.blue
-                      : secondColor,
-                  border: (_.seleccionados.contains(index))
-                      ? Border.all()
-                      : Border.all(color: Colors.transparent),
-                ),
+      id: 'seleccionado',
+      builder: (_) => GestureDetector(
+        onLongPress: () => _.seleccionar(index),
+        child: Container(
+          decoration: BoxDecoration(
+            color:
+                (_.seleccionados.contains(index)) ? Colors.blue : secondColor,
+            border: (_.seleccionados.contains(index))
+                ? Border.all()
+                : Border.all(color: Colors.transparent),
+          ),
           padding: EdgeInsets.symmetric(
               vertical: size.width * 0.03, horizontal: size.width * 0.05),
           child: Container(
@@ -164,7 +172,8 @@ class AprobarPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.tareas[index].labor.descripcion ?? ''),
+                            child:
+                                Text(_.tareas[index].labor?.descripcion ?? ''),
                           ),
                           flex: 10,
                         ),
@@ -172,7 +181,9 @@ class AprobarPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.tareas[index].centroCosto.detallecentrocosto ?? ''),
+                            child: Text(_.tareas[index].centroCosto
+                                    ?.detallecentrocosto ??
+                                ''),
                           ),
                           flex: 10,
                         ),
@@ -193,8 +204,10 @@ class AprobarPage extends StatelessWidget {
                             child: Row(
                               children: [
                                 Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text(_.tareas[index].personal.length.toString())),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 5),
+                                    child: Text(_.tareas[index].personal.length
+                                        .toString())),
                                 Icon(
                                   Icons.people,
                                   color: Colors.black45,
@@ -208,7 +221,8 @@ class AprobarPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.tareas[index].sede.detallesubdivision),
+                            child: Text(
+                                _.tareas[index].sede?.detallesubdivision ?? ''),
                           ),
                           flex: 10,
                         ),
@@ -232,31 +246,33 @@ class AprobarPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Flexible(child: Container(), flex: 1),
-                        if(_.tareas[index].estadoLocal!='A')
-                        Flexible(
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: CircleAvatar(
-                              backgroundColor: infoColor,
-                              child: IconButton(
-                                  onPressed: ()=> controller.goAprobar(index),
-                                  icon: Icon(
-                                    Icons.check,
-                                    color: Colors.white,
-                                  )),
+                        if (_.tareas[index].estadoLocal != 'A')
+                          Flexible(
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: CircleAvatar(
+                                backgroundColor: infoColor,
+                                child: IconButton(
+                                    onPressed: () =>
+                                        controller.goAprobar(index),
+                                    icon: Icon(
+                                      Icons.check,
+                                      color: Colors.white,
+                                    )),
+                              ),
                             ),
+                            flex: 7,
                           ),
-                          flex: 7,
-                        ),
-                        if(_.tareas[index].estadoLocal!='A')
-                        Flexible(child: Container(), flex: 1),
+                        if (_.tareas[index].estadoLocal != 'A')
+                          Flexible(child: Container(), flex: 1),
                         Flexible(
                           child: Container(
                             alignment: Alignment.center,
                             child: CircleAvatar(
                               backgroundColor: successColor,
                               child: IconButton(
-                                onPressed: ()=> Navigator.of(context).pushNamed('nueva_tarea'),
+                                onPressed: () => Navigator.of(context)
+                                    .pushNamed('nueva_tarea'),
                                 icon: Icon(Icons.remove_red_eye),
                                 color: Colors.white,
                               ),
@@ -282,7 +298,7 @@ class AprobarPage extends StatelessWidget {
     );
   }
 
-    Widget _opcionesSeleccionados() {
+  Widget _opcionesSeleccionados() {
     final items = [
       {'key': 1, 'value': 'Seleccionar todos'},
       {'key': 2, 'value': 'Quitar todos'},
@@ -302,10 +318,7 @@ class AprobarPage extends StatelessWidget {
               child: Container(
                 child: Text(
                   '${_.seleccionados.length} seleccionados',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                 ),
               ),
               flex: 12,
@@ -349,6 +362,4 @@ class AprobarPage extends StatelessWidget {
       ),
     );
   }
-
-
 }

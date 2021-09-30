@@ -29,7 +29,7 @@ class NuevaTareaController extends GetxController {
 
   DateTime horaInicio, horaFin, inicioPausa, finPausa;
   DateTime fecha = new DateTime.now();
-  String errorActividad, errorLabor, errorCentroCosto, errorSupervisor;
+  String errorActividad, errorLabor, errorCentroCosto, errorSupervisor, errorHoraInicio, errorHoraFin, errorFecha;
 
   TareaProcesoEntity nuevaTarea = new TareaProcesoEntity();
 
@@ -153,11 +153,13 @@ class NuevaTareaController extends GetxController {
 
   void changeHoraInicio() {
     nuevaTarea.horainicio = horaInicio;
+    errorHoraInicio= (nuevaTarea.horainicio == null) ? 'Debe elegir una hora de inicio' : null;
     update(['hora_inicio']);
   }
 
   void changeHoraFin() {
     nuevaTarea.horafin = horaFin;
+    errorHoraFin= (nuevaTarea.horafin == null) ? 'Debe elegir una hora de fin' : null;
     update(['hora_fin']);
   }
 
@@ -173,6 +175,8 @@ class NuevaTareaController extends GetxController {
 
   void changeFecha() {
     nuevaTarea.fecha = fecha;
+    update(['fecha']);
+    errorFecha= (nuevaTarea.fecha == null) ? 'Ingrese una fecha' : null;
     update(['fecha']);
   }
 
@@ -304,18 +308,23 @@ class NuevaTareaController extends GetxController {
   }
 
   String validar() {
-    changeActividad(nuevaTarea.idcentrocosto.toString());
+    changeFecha();
+    changeActividad(nuevaTarea.idactividad.toString());
     changeLabor(nuevaTarea.idlabor.toString());
     changeCentroCosto(nuevaTarea.idcentrocosto.toString());
     changeSupervisor(nuevaTarea.codigoempresa.toString());
-
+    changeHoraInicio();
+    changeDiaSiguiente(nuevaTarea.diasiguiente ?? false);
+    changeRendimiento(nuevaTarea.esjornal ?? false);
+    changeHoraFin();
+    //TODO: VALIDAR: fechas por TURNO NOCHE
     if (errorActividad != null) return errorActividad;
     if (errorLabor != null) return errorLabor;
     if (errorSupervisor != null) return errorSupervisor;
-    if (nuevaTarea.horainicio == null) return 'Debe elegir una hora de inicio';
-    if (nuevaTarea.horafin == null) return 'Debe elegir una hora fin';
-    if (nuevaTarea.fecha == null) return 'Ingrese una fecha';
-
+    if(errorHoraInicio != null) return errorHoraInicio;
+    if(errorHoraFin != null) return errorHoraFin;
+    if(errorFecha != null) return errorFecha;
+    
     /* if (nuevaTarea.supervisor == null || nuevaTarea.codigoempresa == null)
       return 'Debe seleccionar un supervisor';
     if (nuevaTarea.turnotareo == null) return 'Debe seleccionar un turno';
