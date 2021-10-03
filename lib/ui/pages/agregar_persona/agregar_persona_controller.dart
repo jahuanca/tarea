@@ -15,14 +15,13 @@ class AgregarPersonaController extends GetxController {
   bool validando = false;
   bool actualizando = false;
 
-  DateTime horaInicio, horaFin, inicioPausa, finPausa;
   TareaProcesoEntity tareaSeleccionada;
 
   PersonalEmpresaEntity personaSeleccionada;
   PersonalTareaProcesoEntity personalTareaProcesoEntity =
       new PersonalTareaProcesoEntity();
 
-  String errorHoraInicio, errorHoraFin;
+  String errorHoraInicio, errorHoraFin, errorPausaInicio, errorPausaFin, errorPersonal;
 
   AgregarPersonaController(this._getPersonalsEmpresaBySubdivisionUseCase);
 
@@ -30,9 +29,6 @@ class AgregarPersonaController extends GetxController {
   //TODO: filtrar personal, si el personal se encuentra en la lista mostrar alert color
   //TODO: heredados agruparlos en otro lado
   //TODO: CAMPOS NULOS: inicioPausa y finPausa (00:00), cantidadRendimiento (0), cantidadAvance
-  //TODO_ AGREGAR PERSONA se puede OBVIAR EL CAMPO horaFin
-
-
 
   @override
   void onInit() async {
@@ -92,11 +88,14 @@ class AgregarPersonaController extends GetxController {
     int index=personalSeleccionado.indexWhere((e) => e.codigoempresa==id);
     if(index!=-1){
       //toastError('Error', 'Ya encuentra en la lista');
-      print('registrado anteriormente');
+      mostrarDialog('Personal ya registrado');
+      errorPersonal='Personal registrado';
     }else{
+      errorPersonal=null;
       personalTareaProcesoEntity.personal = personaSeleccionada;
       personalTareaProcesoEntity.personal.codigoempresa = personaSeleccionada.codigoempresa;
     }
+    update(['personal']);
   }
 
   void deleteInicioPausa(){
@@ -160,26 +159,48 @@ class AgregarPersonaController extends GetxController {
     update(['turno']);
   }
 
-  void changeInicioPausa() {
-    personalTareaProcesoEntity.pausainicio = inicioPausa;
-    update(['inicio_pausa']);
-  }
-
-  void changeFinPausa() {
-    personalTareaProcesoEntity.pausafin = finPausa;
-    update(['fin_pausa']);
-  }
-
   void changeHoraInicio() {
-    personalTareaProcesoEntity.horainicio = horaInicio;
     errorHoraInicio= (personalTareaProcesoEntity.horainicio == null) ? 'Debe elegir una hora de inicio' : null;
-    update(['hora_inicio']);
+    update(['hora_inicio', 'inicio_pausa', 'fin_pausa']);
   }
 
   void changeHoraFin() {
-    personalTareaProcesoEntity.horafin = horaFin;
     errorHoraFin= (personalTareaProcesoEntity.horafin == null) ? 'Debe elegir una hora de fin' : null;
-    update(['hora_fin']);
+    update(['hora_fin', 'inicio_pausa', 'fin_pausa']);
+  }
+
+  void changeInicioPausa() {
+    if(personalTareaProcesoEntity.pausainicio!=null){
+      if(personalTareaProcesoEntity.pausainicio.isBefore(personalTareaProcesoEntity.horainicio) || personalTareaProcesoEntity.pausainicio.isAfter(personalTareaProcesoEntity.horafin)){
+        mostrarDialog('La hora seleccionada no se encuentra en el rango de inicio y fin');
+        personalTareaProcesoEntity.pausainicio=null;
+      }
+      update(['inicio_pausa']);
+    }
+  }
+
+  void changeFinPausa() {
+    if(personalTareaProcesoEntity.pausafin!=null){
+      if(personalTareaProcesoEntity.pausafin.isBefore(personalTareaProcesoEntity.horainicio) || personalTareaProcesoEntity.pausafin.isAfter(personalTareaProcesoEntity.horafin)){
+        mostrarDialog('La hora seleccionada no se encuentra en el rango de inicio y fin');
+        personalTareaProcesoEntity.pausafin = null;
+      }
+      if(personalTareaProcesoEntity.pausainicio!=null && personalTareaProcesoEntity.pausafin.isAfter(personalTareaProcesoEntity.pausainicio)){
+        mostrarDialog('La hora debe ser mayor a la hora de pausa');
+        personalTareaProcesoEntity.pausafin = null;
+      }
+      update(['fin_pausa']);
+    }
+  }
+
+  void mostrarDialog(String mensaje){
+    basicAlert(
+        Get.overlayContext,
+        'Alerta',
+        mensaje,
+        'Aceptar',
+        () => Get.back(),
+      );
   }
 
   String validar() {
@@ -188,6 +209,17 @@ class AgregarPersonaController extends GetxController {
     
     if(errorHoraInicio != null) return errorHoraInicio;
     if(errorHoraFin != null) return errorHoraFin;
+
+    if (personalTareaProcesoEntity.pausainicio != null && personalTareaProcesoEntity.pausafin == null){
+      errorPausaFin= 'Debe ingresar la hora de fin de pausa';
+      return errorPausaFin;
+    }
+    errorPausaFin=null;
+    if (personalTareaProcesoEntity.pausafin != null && personalTareaProcesoEntity.pausainicio == null){
+      errorPausaInicio= 'Debe ingresar la hora de inicio de pausa';
+      return errorPausaInicio;
+    }
+    errorPausaInicio=null;
     
     return null;
   }

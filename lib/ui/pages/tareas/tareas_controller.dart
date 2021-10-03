@@ -43,6 +43,9 @@ class TareasController extends GetxController {
     switch (value.toInt()){
       case 1:
         break;
+      case 2:
+        goCopiar(index);
+        break;
       case 3:
         goEliminar(index);
         break;
@@ -112,7 +115,7 @@ class TareasController extends GetxController {
     }
   }
 
-  Future<void> goEditTarea(int index) async {
+  Future<void> editarTarea(int index) async {
     NuevaTareaBinding().dependencies();
     final result = await Get.to<TareaProcesoEntity>(() => NuevaTareaPage(),
         arguments: {'tarea': tareas[index]});
@@ -125,8 +128,19 @@ class TareasController extends GetxController {
     }
   }
 
-  void goEliminar(int index){
+  Future<void> copiarTarea(int index) async {
+    NuevaTareaBinding().dependencies();
+    final result = await Get.to<TareaProcesoEntity>(() => NuevaTareaPage(),
+        arguments: {'tarea': tareas[index]});
+    if (result != null) {
+      result.idusuario=PreferenciasUsuario().idUsuario;
+      tareas.add(result);
+      await _createTareaProcesoUseCase.execute(tareas.last);
+      update(['tareas']);
+    }
+  }
 
+  void goEliminar(int index){
     basicDialog(
       Get.overlayContext, 
       'Alerta', 
@@ -141,4 +155,35 @@ class TareasController extends GetxController {
       ()=> Get.back(),
     );
   }
+
+  void goCopiar(int index){
+    basicDialog(
+      Get.overlayContext, 
+      'Alerta', 
+      '¿Esta seguro de copiar la siguiente tarea?', 
+      'Si', 
+      'No', 
+      () async{
+        Get.back();
+        await copiarTarea(index);
+      }, 
+      ()=> Get.back(),
+    );
+  }
+
+  void goEditar(int index){
+    basicDialog(
+      Get.overlayContext, 
+      'Alerta', 
+      '¿Esta seguro de editar la siguiente tarea?', 
+      'Si', 
+      'No', 
+      () async{
+        Get.back();
+        await copiarTarea(index);
+      }, 
+      ()=> Get.back(),
+    );
+  }
+
 }

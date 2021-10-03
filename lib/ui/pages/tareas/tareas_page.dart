@@ -40,7 +40,10 @@ class TareasPage extends StatelessWidget {
                       child: GetBuilder<TareasController>(
                         id: 'tareas',
                         builder: (_) => _.tareas.isEmpty
-                            ? EmptyDataWidget(titulo: 'No existen tareas.', size: size, onPressed: _.getTareas)
+                            ? EmptyDataWidget(
+                                titulo: 'No existen tareas.',
+                                size: size,
+                                onPressed: _.getTareas)
                             : ListView.builder(
                                 itemCount: _.tareas.length,
                                 itemBuilder:
@@ -248,55 +251,77 @@ class TareasPage extends StatelessWidget {
                 Flexible(
                   child: Container(
                     child: Row(
-                      children: [
-                        Flexible(child: Container(), flex: 1),
-                        Flexible(
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: CircleAvatar(
-                              backgroundColor: infoColor,
-                              child: IconButton(
-                                  onPressed: () => _.goListadoPersonas(index),
-                                  icon: Icon(
-                                    Icons.search,
-                                    color: Colors.white,
-                                  )),
-                            ),
-                          ),
-                          flex: 7,
-                        ),
-                        Flexible(child: Container(), flex: 1),
-                        Flexible(
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: CircleAvatar(
-                              backgroundColor: successColor,
-                              child: IconButton(
-                                onPressed: () => _.goAgregarPersona(index),
-                                icon: Icon(Icons.person_add),
-                                color: Colors.white,
+                      children: (_.tareas[index].estadoLocal != 'P')
+                          ? [
+                            Flexible(child: Container(), flex: 1),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: CircleAvatar(
+                                    backgroundColor: successColor,
+                                    child: IconButton(
+                                        onPressed: (){},
+                                        icon: Icon(
+                                          Icons.remove_red_eye,
+                                          color: Colors.white,
+                                        )),
+                                  ),
+                                ),
+                                flex: 7,
                               ),
-                            ),
-                          ),
-                          flex: 7,
-                        ),
-                        Flexible(child: Container(), flex: 1),
-                        Flexible(
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: CircleAvatar(
-                              backgroundColor: alertColor,
-                              child: IconButton(
-                                onPressed: () => _.goEditTarea(index),
-                                icon: Icon(Icons.edit),
-                                color: Colors.white,
+                              Flexible(child: Container(), flex: 1),
+                          ]
+                          : [
+                              Flexible(child: Container(), flex: 1),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: CircleAvatar(
+                                    backgroundColor: infoColor,
+                                    child: IconButton(
+                                        onPressed: () =>
+                                            _.goListadoPersonas(index),
+                                        icon: Icon(
+                                          Icons.search,
+                                          color: Colors.white,
+                                        )),
+                                  ),
+                                ),
+                                flex: 7,
                               ),
-                            ),
-                          ),
-                          flex: 7,
-                        ),
-                        Flexible(child: Container(), flex: 1),
-                      ],
+                              Flexible(child: Container(), flex: 1),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: CircleAvatar(
+                                    backgroundColor: successColor,
+                                    child: IconButton(
+                                      onPressed: () =>
+                                          _.goAgregarPersona(index),
+                                      icon: Icon(Icons.person_add),
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                flex: 7,
+                              ),
+                              Flexible(child: Container(), flex: 1),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: CircleAvatar(
+                                    backgroundColor: alertColor,
+                                    child: IconButton(
+                                      onPressed: () => _.goEditar(index),
+                                      icon: Icon(Icons.edit),
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                flex: 7,
+                              ),
+                              Flexible(child: Container(), flex: 1),
+                            ],
                     ),
                   ),
                   flex: 4,

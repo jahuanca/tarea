@@ -245,7 +245,7 @@ class AprobarPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Flexible(child: Container(), flex: 1),
-                        if (_.tareas[index].estadoLocal != 'A')
+                        if (_.tareas[index].estadoLocal == 'P')
                           Flexible(
                             child: Container(
                               alignment: Alignment.center,

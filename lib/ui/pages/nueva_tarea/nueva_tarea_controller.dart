@@ -27,9 +27,8 @@ class NuevaTareaController extends GetxController {
       _getPersonalsEmpresaBySubdivisionUseCase;
   GetCentroCostosUseCase _getCentroCostosUseCase;
 
-  DateTime horaInicio, horaFin, inicioPausa, finPausa;
   DateTime fecha = new DateTime.now();
-  String errorActividad, errorLabor, errorCentroCosto, errorSupervisor, errorHoraInicio, errorHoraFin, errorFecha;
+  String errorActividad, errorLabor, errorCentroCosto, errorSupervisor, errorHoraInicio, errorHoraFin, errorFecha, errorPausaInicio, errorPausaFin;
 
   TareaProcesoEntity nuevaTarea = new TareaProcesoEntity();
 
@@ -66,10 +65,6 @@ class NuevaTareaController extends GetxController {
 
   void setEditValues() {
     if (editando) {
-      horaInicio = nuevaTarea.horainicio;
-      horaFin = nuevaTarea.horafin;
-      inicioPausa = nuevaTarea.pausainicio;
-      finPausa = nuevaTarea.pausafin;
       update(
           ['hora_inicio', 'editando', 'hora_fin', 'pausa_inicio', 'pausa_fin']);
     }
@@ -152,25 +147,47 @@ class NuevaTareaController extends GetxController {
   }
 
   void changeHoraInicio() {
-    nuevaTarea.horainicio = horaInicio;
     errorHoraInicio= (nuevaTarea.horainicio == null) ? 'Debe elegir una hora de inicio' : null;
-    update(['hora_inicio']);
+    update(['hora_inicio', 'inicio_pausa', 'fin_pausa']);
   }
 
   void changeHoraFin() {
-    nuevaTarea.horafin = horaFin;
     errorHoraFin= (nuevaTarea.horafin == null) ? 'Debe elegir una hora de fin' : null;
-    update(['hora_fin']);
+    update(['hora_fin', 'inicio_pausa', 'fin_pausa']);
   }
 
   void changeInicioPausa() {
-    nuevaTarea.pausainicio = inicioPausa;
-    update(['inicio_pausa']);
+    if(nuevaTarea.pausainicio!=null){
+      if(nuevaTarea.pausainicio.isBefore(nuevaTarea.horainicio) || nuevaTarea.pausainicio.isAfter(nuevaTarea.horafin)){
+        mostrarDialog('La hora seleccionada no se encuentra en el rango de inicio y fin');
+        nuevaTarea.pausainicio=null;
+      }
+      update(['inicio_pausa']);
+    }
   }
 
   void changeFinPausa() {
-    nuevaTarea.pausafin = finPausa;
-    update(['fin_pausa']);
+    if(nuevaTarea.pausafin!=null){
+      if(nuevaTarea.pausafin.isBefore(nuevaTarea.horainicio) || nuevaTarea.pausafin.isAfter(nuevaTarea.horafin)){
+        mostrarDialog('La hora seleccionada no se encuentra en el rango de inicio y fin');
+        nuevaTarea.pausafin = null;
+      }
+      if(nuevaTarea.pausainicio!=null && nuevaTarea.pausafin.isAfter(nuevaTarea.pausainicio)){
+        mostrarDialog('La hora debe ser mayor a la hora de pausa');
+        nuevaTarea.pausafin = null;
+      }
+      update(['fin_pausa']);
+    }
+  }
+
+  void mostrarDialog(String mensaje){
+    basicAlert(
+        Get.overlayContext,
+        'Alerta',
+        mensaje,
+        'Aceptar',
+        () => Get.back(),
+      );
   }
 
   void changeFecha() {
@@ -287,6 +304,7 @@ class NuevaTareaController extends GetxController {
 
     if (resultados != null) {
       nuevaTarea.personal = resultados;
+      update(['personal']);
     }
   }
 
@@ -307,6 +325,16 @@ class NuevaTareaController extends GetxController {
     update(['rendimiento', 'actividades']);
   }
 
+  void deleteInicioPausa(){
+    nuevaTarea.pausainicio=null;
+    update(['inicio_pausa']);
+  }
+
+  void deleteFinPausa(){
+    nuevaTarea.pausafin=null;
+    update(['fin_pausa']);
+  }
+
   String validar() {
     changeFecha();
     changeActividad(nuevaTarea.idactividad.toString());
@@ -325,14 +353,17 @@ class NuevaTareaController extends GetxController {
     if(errorHoraFin != null) return errorHoraFin;
     if(errorFecha != null) return errorFecha;
     
-    /* if (nuevaTarea.supervisor == null || nuevaTarea.codigoempresa == null)
-      return 'Debe seleccionar un supervisor';
-    if (nuevaTarea.turnotareo == null) return 'Debe seleccionar un turno';
-    if (nuevaTarea.esrendimiento == null) return 'Falta dato de rendimiento';
-    if (nuevaTarea.esjornal == null) return 'Falta dato de jornal';
-    if (nuevaTarea.diasiguiente == null) return 'Falta dato día siguiente';
-     */
-    //PARAMETROS:
+    if (nuevaTarea.pausainicio != null && nuevaTarea.pausafin == null){
+      errorPausaFin= 'Debe ingresar la hora de fin de pausa';
+      return errorPausaFin;
+    }
+    errorPausaFin=null;
+    if (nuevaTarea.pausafin != null && nuevaTarea.pausainicio == null){
+      errorPausaInicio= 'Debe ingresar la hora de inicio de pausa';
+      return errorPausaInicio;
+    }
+    errorPausaInicio=null;
+    
     //PUEDEN SER NULOS: inicioPausa y finPausa (00:00:00)
 
     //TODO: en caso de haber inicio de pausa validar que esten dentro de horafin y horainicio

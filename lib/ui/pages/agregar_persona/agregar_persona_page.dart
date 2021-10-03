@@ -37,9 +37,14 @@ class AgregarPersonaPage extends StatelessWidget {
                         builder: (_) => DropdownSearchWidget(
                             label: 'Personal',
                             labelText: 'name',
+                            error: _.errorPersonal,
                             labelValue: 'codigoempresa',
                             onChanged: _.changePersonal,
-                            items: controller.personalEmpresa.length == 0
+                            selectedItem: _.personalTareaProcesoEntity?.personal==null ? null : {
+                              'name': _.personalTareaProcesoEntity.personal.nombreCompleto,
+                              'codigoempresa': _.personalTareaProcesoEntity.personal.codigoempresa,
+                            },
+                            items: _.personalEmpresa.length == 0
                                 ? []
                                 : controller.personalEmpresa
                                     .map((PersonalEmpresaEntity e) => {
@@ -62,15 +67,18 @@ class AgregarPersonaPage extends StatelessWidget {
                       builder: (_) => InputLabelWidget(
                           enabled: false,
                           onTap: () async {
-                            _.horaInicio = await DatePickerWidget(
+                            _.personalTareaProcesoEntity.horainicio =
+                                await DatePickerWidget(
                               onlyDate: true,
                               dateSelected: DateTime.now(),
-                            ).selectTime(context, _.horaInicio);
+                            ).selectTime(context,
+                                    _.personalTareaProcesoEntity.horainicio);
                             _.changeHoraInicio();
                           },
                           label: 'Hora inicio',
                           textEditingController: TextEditingController(
-                              text: formatoHora(_.personalTareaProcesoEntity.horainicio)),
+                              text: formatoHora(
+                                  _.personalTareaProcesoEntity.horainicio)),
                           hintText: 'Hora inicio'),
                     ),
                     SizedBox(
@@ -81,51 +89,76 @@ class AgregarPersonaPage extends StatelessWidget {
                       builder: (_) => InputLabelWidget(
                           enabled: false,
                           onTap: () async {
-                            _.horaFin = await DatePickerWidget(
+                            _.personalTareaProcesoEntity
+                                .horafin = await DatePickerWidget(
                               onlyDate: true,
-                              minDate: _.horaInicio,
-                              dateSelected: _.horaFin ?? DateTime.now(),
+                              minDate: _.personalTareaProcesoEntity.horainicio,
+                              dateSelected:
+                                  _.personalTareaProcesoEntity.horafin ??
+                                      DateTime.now(),
                               onChanged: () {},
-                            ).selectTime(context, _.personalTareaProcesoEntity.horafin);
+                            ).selectTime(
+                                context, _.personalTareaProcesoEntity.horafin);
                             _.changeHoraFin();
                           },
                           label: 'Hora fin',
                           textEditingController: TextEditingController(
-                              text: formatoHora(_.personalTareaProcesoEntity.horafin)),
+                              text: formatoHora(
+                                  _.personalTareaProcesoEntity.horafin)),
                           hintText: 'Hora fin'),
                     ),
                     GetBuilder<AgregarPersonaController>(
-                      id: 'inicio_pausa',
-                      builder: (_) => InputLabelWidget(
-                          enabled: false,
-                          iconOverlay: Icons.delete,
-                          onPressedIconOverlay: _.deleteInicioPausa,
-                          onTap: () async {
-                            _.inicioPausa = await DatePickerWidget(
-                              onlyDate: true,
-                              minDate:
-                                  DateTime.now().subtract(Duration(days: 10)),
-                              dateSelected: DateTime.now(),
-                              onChanged: () {},
-                            ).selectTime(context, new DateTime.now());
-                            _.changeInicioPausa();
-                          },
-                          textEditingController: TextEditingController(
-                              text: formatoHora(_.personalTareaProcesoEntity.pausainicio,)),
-                          label: 'Inicio de pausa',
-                          hintText: 'Inicio de pausa'),
-                    ),
-                    SizedBox(
-                      height: size.height * 0.01,
-                    ),
+                        id: 'inicio_pausa',
+                        builder: (_) => (_.personalTareaProcesoEntity
+                                        .horainicio !=
+                                    null &&
+                                _.personalTareaProcesoEntity.horafin != null)
+                            ? Column(
+                                children: [
+                                  InputLabelWidget(
+                                      enabled: false,
+                                      error: _.errorPausaInicio,
+                                      iconOverlay: Icons.delete,
+                                      onPressedIconOverlay: _.deleteInicioPausa,
+                                      onTap: () async {
+                                        _.personalTareaProcesoEntity
+                                                .pausainicio =
+                                            await DatePickerWidget(
+                                          onlyDate: true,
+                                          minDate: DateTime.now()
+                                              .subtract(Duration(days: 10)),
+                                          dateSelected: DateTime.now(),
+                                          onChanged: () {},
+                                        ).selectTime(
+                                                context, new DateTime.now());
+                                        _.changeInicioPausa();
+                                      },
+                                      textEditingController:
+                                          TextEditingController(
+                                              text: formatoHora(
+                                        _.personalTareaProcesoEntity
+                                            .pausainicio,
+                                      )),
+                                      label: 'Inicio de pausa',
+                                      hintText: 'Inicio de pausa'),
+                                  SizedBox(
+                                    height: size.height * 0.01,
+                                  ),
+                                ],
+                              )
+                            : Container()),
                     GetBuilder<AgregarPersonaController>(
                       id: 'fin_pausa',
-                      builder: (_) => InputLabelWidget(
+                      builder: (_) => (_.personalTareaProcesoEntity.horainicio != null &&
+                                _.personalTareaProcesoEntity.horafin != null)
+                      ? InputLabelWidget(
                           enabled: false,
                           iconOverlay: Icons.delete,
                           onPressedIconOverlay: _.deleteFinPausa,
+                          error: _.errorPausaFin,
                           onTap: () async {
-                            _.finPausa = await DatePickerWidget(
+                            _.personalTareaProcesoEntity.pausafin =
+                                await DatePickerWidget(
                               onlyDate: true,
                               minDate:
                                   DateTime.now().subtract(Duration(days: 10)),
@@ -134,9 +167,11 @@ class AgregarPersonaPage extends StatelessWidget {
                             _.changeFinPausa();
                           },
                           textEditingController: TextEditingController(
-                              text: formatoHora(_.personalTareaProcesoEntity.pausafin)),
+                              text: formatoHora(
+                                  _.personalTareaProcesoEntity.pausafin)),
                           label: 'Fin de pausa',
-                          hintText: 'Fin de pausa'),
+                          hintText: 'Fin de pausa')
+                        : Container()
                     ),
                     GetBuilder<AgregarPersonaController>(
                       id: 'rendimiento',
@@ -157,7 +192,8 @@ class AgregarPersonaPage extends StatelessWidget {
                         label: 'Dia siguiente',
                         tituloTrue: 'Es dia siguiente',
                         tituloFalse: 'No es dia siguiente',
-                        value: _.personalTareaProcesoEntity.diasiguiente ?? false,
+                        value:
+                            _.personalTareaProcesoEntity.diasiguiente ?? false,
                       ),
                     ),
                     GetBuilder<AgregarPersonaController>(
@@ -167,8 +203,8 @@ class AgregarPersonaPage extends StatelessWidget {
                           labelText: 'name',
                           labelValue: '_id',
                           selectedItem: {
-                              'name': 'Dia',
-                              '_id': '1',
+                            'name': 'Dia',
+                            '_id': '1',
                           },
                           onChanged: _.changeTurno,
                           items: [

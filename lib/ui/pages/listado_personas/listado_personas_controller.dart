@@ -189,7 +189,7 @@ class ListadoPersonasController extends GetxController {
   void goLectorCode() {
     FlutterBarcodeScanner.getBarcodeStreamReceiver(
             "#ff6666", "Cancelar", false, ScanMode.DEFAULT)
-        .listen((barcode) {
+        .listen((barcode) async{
       print(barcode);
 
       if (barcode != null) {
@@ -209,6 +209,7 @@ class ListadoPersonasController extends GetxController {
         else{
           _showNotification(false, 'No se encuentra en la lista');
         }
+        await Future.delayed(Duration(seconds: 2));
       }
     });
   }

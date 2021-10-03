@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/core/dimens.dart';
@@ -24,7 +23,10 @@ class NuevaTareaPage extends StatelessWidget {
       builder: (_) => Stack(
         children: [
           Scaffold(
-            appBar: getAppBar(controller.editando ? 'Editando tarea': 'Nueva tarea', [], true),
+            appBar: getAppBar(
+                controller.editando ? 'Editando tarea' : 'Nueva tarea',
+                [],
+                true),
             backgroundColor: secondColor,
             floatingActionButton: FloatingActionButton(
               onPressed: controller.goBack,
@@ -49,8 +51,8 @@ class NuevaTareaPage extends StatelessWidget {
                             ).selectDate(context);
                             _.changeFecha();
                           },
-                          textEditingController:
-                              TextEditingController(text: formatoFecha(_.fecha)),
+                          textEditingController: TextEditingController(
+                              text: formatoFecha(_.fecha)),
                           label: 'Fecha',
                           enabled: false,
                           hintText: 'Fecha'),
@@ -61,21 +63,25 @@ class NuevaTareaPage extends StatelessWidget {
                     GetBuilder<NuevaTareaController>(
                       id: 'centro_costo',
                       builder: (_) => DropdownSearchWidget(
-                          label: 'Centro',
-                          error: _.errorCentroCosto,
-                          labelText: 'name',
-                          labelValue: '_id',
-                          selectedItem: _.nuevaTarea?.centroCosto == null ? null : {
-                          'name' : '${_.nuevaTarea.centroCosto.detallecentrocosto.trim()} ${_.nuevaTarea.centroCosto.codigoempresa}',
-                          '_id' : _.nuevaTarea.centroCosto.idcentrocosto,
-                        },
+                        label: 'Centro',
+                        error: _.errorCentroCosto,
+                        labelText: 'name',
+                        labelValue: '_id',
+                        selectedItem: _.nuevaTarea?.centroCosto == null
+                            ? null
+                            : {
+                                'name':
+                                    '${_.nuevaTarea.centroCosto.detallecentrocosto.trim()} ${_.nuevaTarea.centroCosto.codigoempresa}',
+                                '_id': _.nuevaTarea.centroCosto.idcentrocosto,
+                              },
                         onChanged: _.changeCentroCosto,
                         items: controller.centrosCosto.length == 0
                             ? []
                             : controller.centrosCosto
                                 .map((e) => {
-                                      'name' : '${e.detallecentrocosto.trim()} ${e.codigoempresa}',
-                                      '_id' : e.idcentrocosto,
+                                      'name':
+                                          '${e.detallecentrocosto.trim()} ${e.codigoempresa}',
+                                      '_id': e.idcentrocosto,
                                     })
                                 .toList(),
                       ),
@@ -98,10 +104,13 @@ class NuevaTareaPage extends StatelessWidget {
                         labelText: 'name',
                         error: _.errorActividad,
                         labelValue: '_id',
-                        selectedItem: _.nuevaTarea?.actividad == null ? null : {
-                          'name' : _.nuevaTarea.actividad.descripcion.trim(),
-                          '_id' : _.nuevaTarea.actividad.idactividad,
-                        },
+                        selectedItem: _.nuevaTarea?.actividad == null
+                            ? null
+                            : {
+                                'name':
+                                    _.nuevaTarea.actividad.descripcion.trim(),
+                                '_id': _.nuevaTarea.actividad.idactividad,
+                              },
                         onChanged: _.changeActividad,
                         items: controller.actividades.length == 0
                             ? []
@@ -121,10 +130,12 @@ class NuevaTareaPage extends StatelessWidget {
                         labelValue: '_id',
                         error: _.errorLabor,
                         onChanged: _.changeLabor,
-                        selectedItem: _.nuevaTarea?.labor == null ? null : {
-                          'name' : '${_.nuevaTarea.labor.descripcion}',
-                          '_id' : _.nuevaTarea.labor.idlabor,
-                        },
+                        selectedItem: _.nuevaTarea?.labor == null
+                            ? null
+                            : {
+                                'name': '${_.nuevaTarea.labor.descripcion}',
+                                '_id': _.nuevaTarea.labor.idlabor,
+                              },
                         items: controller.labores.length == 0
                             ? []
                             : controller.labores
@@ -143,10 +154,13 @@ class NuevaTareaPage extends StatelessWidget {
                           labelValue: 'codigoempresa',
                           error: _.errorSupervisor,
                           onChanged: _.changeSupervisor,
-                          selectedItem: _.nuevaTarea?.supervisor == null ? null : {
-                          'name' : '${_.nuevaTarea.supervisor.apellidopaterno} ${_.nuevaTarea.supervisor.apellidomaterno}, ${_.nuevaTarea.supervisor.nombres}',
-                          '_id' : _.nuevaTarea.supervisor.codigoempresa,
-                        },
+                          selectedItem: _.nuevaTarea?.supervisor == null
+                              ? null
+                              : {
+                                  'name':
+                                      '${_.nuevaTarea.supervisor.apellidopaterno} ${_.nuevaTarea.supervisor.apellidomaterno}, ${_.nuevaTarea.supervisor.nombres}',
+                                  '_id': _.nuevaTarea.supervisor.codigoempresa,
+                                },
                           items: _.supervisors.length == 0
                               ? []
                               : _.supervisors
@@ -164,7 +178,9 @@ class NuevaTareaPage extends StatelessWidget {
                           labelText: 'name',
                           labelValue: '_id',
                           selectedItem: {
-                            'name': _.nuevaTarea.turnotareo=='D' ? 'Dia' : 'Noche',
+                            'name': _.nuevaTarea.turnotareo == 'D'
+                                ? 'Dia'
+                                : 'Noche',
                             '_id': _.nuevaTarea.turnotareo
                           },
                           onChanged: _.changeTurno,
@@ -196,10 +212,10 @@ class NuevaTareaPage extends StatelessWidget {
                           enabled: false,
                           error: _.errorHoraInicio,
                           onTap: () async {
-                            _.horaInicio = await DatePickerWidget(
+                            _.nuevaTarea.horainicio = await DatePickerWidget(
                               onlyDate: true,
                               dateSelected: DateTime.now(),
-                            ).selectTime(context, _.horaInicio);
+                            ).selectTime(context, _.nuevaTarea.horainicio);
                             _.changeHoraInicio();
                           },
                           label: 'Hora inicio',
@@ -216,61 +232,72 @@ class NuevaTareaPage extends StatelessWidget {
                           enabled: false,
                           error: _.errorHoraFin,
                           onTap: () async {
-                            _.horaFin = await DatePickerWidget(
+                            _.nuevaTarea.horafin = await DatePickerWidget(
                               onlyDate: true,
-                              minDate: _.horaInicio,
-                              dateSelected: _.horaFin ?? DateTime.now(),
+                              minDate: _.nuevaTarea.horainicio,
+                              dateSelected: _.nuevaTarea.horafin ?? DateTime.now(),
                               onChanged: () {},
                             ).selectTime(context, _.nuevaTarea.horafin);
                             _.changeHoraFin();
                           },
                           label: 'Hora fin',
                           textEditingController: TextEditingController(
-                              text: formatoHora(_.horaFin)),
+                              text: formatoHora(_.nuevaTarea.horafin)),
                           hintText: 'Hora fin'),
                     ),
                     GetBuilder<NuevaTareaController>(
-                      id: 'inicio_pausa',
-                      builder: (_) => InputLabelWidget(
-                          enabled: false,
-                          onTap: () async {
-                            _.inicioPausa = await DatePickerWidget(
-                              onlyDate: true,
-                              minDate:
-                                  DateTime.now().subtract(Duration(days: 10)),
-                              dateSelected: DateTime.now(),
-                              onChanged: () {},
-                            ).selectTime(context, new DateTime.now());
-                            _.changeInicioPausa();
-                            print('inicio');
-                          },
-                          textEditingController: TextEditingController(
-                              text:
-                                  formatoHora(_.inicioPausa)),
-                          label: 'Inicio de pausa',
-                          hintText: 'Inicio de pausa'),
-                    ),
-                    SizedBox(
-                      height: size.height * 0.01,
-                    ),
+                        id: 'inicio_pausa',
+                        builder: (_) => (_.nuevaTarea.horainicio != null &&
+                                _.nuevaTarea.horafin != null)
+                            ? Column(
+                                children: [
+                                  InputLabelWidget(
+                                      enabled: false,
+                                      error: _.errorPausaInicio,
+                                      iconOverlay: Icons.delete,
+                                      onPressedIconOverlay: _.deleteInicioPausa,
+                                      onTap: () async {
+                                        _.nuevaTarea.pausainicio = await DatePickerWidget(
+                                          onlyDate: true,
+                                          dateSelected: _.nuevaTarea?.pausainicio ?? DateTime.now(),
+                                          onChanged: () {},
+                                        ).selectTime(
+                                            context, null );
+                                        _.changeInicioPausa();
+                                      },
+                                      textEditingController:
+                                          TextEditingController(
+                                              text: formatoHora(_.nuevaTarea.pausainicio)),
+                                      label: 'Inicio de pausa',
+                                      hintText: 'Inicio de pausa'),
+                                  SizedBox(
+                                    height: size.height * 0.01,
+                                  ),
+                                ],
+                              )
+                            : Container()),
                     GetBuilder<NuevaTareaController>(
-                      id: 'fin_pausa',
-                      builder: (_) => InputLabelWidget(
-                          enabled: false,
-                          onTap: () async {
-                            _.finPausa = await DatePickerWidget(
-                              onlyDate: true,
-                              minDate:
-                                  DateTime.now().subtract(Duration(days: 10)),
-                              dateSelected: DateTime.now(),
-                            ).selectTime(context, new DateTime.now());
-                            _.changeFinPausa();
-                          },
-                          textEditingController: TextEditingController(
-                              text: formatoHora(_.finPausa)),
-                          label: 'Fin de pausa',
-                          hintText: 'Fin de pausa'),
-                    ),
+                        id: 'fin_pausa',
+                        builder: (_) => (_.nuevaTarea.horainicio != null &&
+                                _.nuevaTarea.horafin != null)
+                            ? InputLabelWidget(
+                                enabled: false,
+                                iconOverlay: Icons.delete,
+                                onPressedIconOverlay: _.deleteFinPausa,
+                                error: _.errorPausaFin,
+                                onTap: () async {
+                                  _.nuevaTarea.pausafin = await DatePickerWidget(
+                                    onlyDate: true,
+                                    dateSelected: DateTime.now(),
+                                    minDate: _.nuevaTarea.horainicio,
+                                  ).selectTime(context, null);
+                                  _.changeFinPausa();
+                                },
+                                textEditingController: TextEditingController(
+                                    text: formatoHora(_.nuevaTarea.pausafin)),
+                                label: 'Fin de pausa',
+                                hintText: 'Fin de pausa')
+                            : Container()),
                     SizedBox(
                       height: size.height * 0.05,
                     ),
@@ -281,7 +308,6 @@ class NuevaTareaPage extends StatelessWidget {
                     SizedBox(
                       height: size.height * 0.05,
                     ),
-
                   ],
                 ),
               ),
