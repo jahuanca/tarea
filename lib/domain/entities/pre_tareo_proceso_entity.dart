@@ -19,7 +19,7 @@ class PreTareoProcesoEntity {
   PreTareoProcesoEntity({
     this.itempretareaproceso,
     this.fecha,
-    this.horaincio,
+    this.horainicio,
     this.horafin,
     this.pausainicio,
     this.pausafin,
@@ -35,7 +35,7 @@ class PreTareoProcesoEntity {
     this.detalles,
     this.centroCosto,
   }){
-    detalles = [];
+    detalles ??= [];
     estadoLocal='P';
   }
 
@@ -44,7 +44,7 @@ class PreTareoProcesoEntity {
   @HiveField(1)
   DateTime fecha;
   @HiveField(2)
-  DateTime horaincio;
+  DateTime horainicio;
   @HiveField(3)
   DateTime horafin;
   @HiveField(4)
@@ -83,9 +83,9 @@ class PreTareoProcesoEntity {
   CentroCostoEntity centroCosto;
 
   String get fechaHora {
-    if (fecha == null || horaincio == null) {
+    if (fecha == null || horainicio == null) {
       fecha = DateTime.now();
-      horaincio = DateTime.now();
+      horainicio = DateTime.now();
     }
     return DateFormat('dd').format(fecha) +
         "/" +
@@ -93,7 +93,7 @@ class PreTareoProcesoEntity {
         "/" +
         DateFormat('yyyy').format(fecha) +
         "  " +
-        DateFormat('hh:mm a').format(horaincio);
+        DateFormat('hh:mm a').format(horainicio);
   }
 
   Color get colorEstado {
@@ -119,9 +119,9 @@ class PreTareoProcesoEntity {
             ? null
             : json["itempretareaproceso"],
         fecha: json["fecha"] == null ? null : DateTime.parse(json["fecha"]),
-        horaincio: json["horaincio"] == null
+        horainicio: json["horainicio"] == null
             ? null
-            : DateTime.parse(json["horaincio"]),
+            : DateTime.parse(json["horainicio"]),
         horafin:
             json["horafin"] == null ? null : DateTime.parse(json["horafin"]),
         pausainicio: json["pausainicio"] == null
@@ -161,7 +161,7 @@ class PreTareoProcesoEntity {
         "fecha": fecha == null
             ? null
             : "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
-        "horaincio": horaincio == null ? null : horaincio.toIso8601String(),
+        "horainicio": horainicio == null ? null : horainicio.toIso8601String(),
         "horafin": horafin == null ? null : horafin.toIso8601String(),
         "pausainicio":
             pausainicio == null ? null : pausainicio.toIso8601String(),

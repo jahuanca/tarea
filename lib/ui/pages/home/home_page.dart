@@ -6,9 +6,8 @@ import 'package:flutter_tareo/ui/widgets/radio_group_widget.dart';
 import 'package:get/get.dart';
 
 class HomePage extends StatelessWidget {
+  final HomeController controller = Get.find<HomeController>();
 
-  final HomeController controller=Get.find<HomeController>();
-  
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
@@ -19,19 +18,21 @@ class HomePage extends StatelessWidget {
         backgroundColor: secondColor,
         body: Column(
           children: [
-            Flexible(child: Container(
-              padding: EdgeInsets.all(25),
-              child: Image.asset('assets/images/ic_logo.png'),
-            ), flex: 1),
+            Flexible(
+                child: Container(
+                  padding: EdgeInsets.all(25),
+                  child: Image.asset('assets/images/ic_logo.png'),
+                ),
+                flex: 1),
             Flexible(
                 child: GetBuilder<HomeController>(
                   id: 'version',
                   builder: (_) => Container(
-                    padding: EdgeInsets.symmetric(horizontal: size.width*0.1),
+                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
                     child: InputLabelWidget(
-                      enabled: false,
-                      label: 'Versión',
-                      hintText: _.lastVersion),
+                        enabled: false,
+                        label: 'Versión',
+                        hintText: _.lastVersion),
                   ),
                 ),
                 flex: 1),
@@ -40,11 +41,11 @@ class HomePage extends StatelessWidget {
                 child: GetBuilder<HomeController>(
                   id: 'version',
                   builder: (_) => Container(
-                    padding: EdgeInsets.symmetric(horizontal: size.width*0.1),
+                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
                     child: InputLabelWidget(
-                      enabled: false,
-                      label: 'Ultima Sincronización',
-                      hintText: _.lastVersionDate),
+                        enabled: false,
+                        label: 'Ultima Sincronización',
+                        hintText: _.lastVersionDate),
                   ),
                 ),
                 flex: 1),
@@ -52,7 +53,7 @@ class HomePage extends StatelessWidget {
                 child: GetBuilder<HomeController>(
                   id: 'modo',
                   builder: (_) => Container(
-                    padding: EdgeInsets.symmetric(horizontal: size.width*0.1),
+                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
                     alignment: Alignment.center,
                     child: RadioGroupWidget(
                       label: 'Modo',
@@ -70,9 +71,15 @@ class HomePage extends StatelessWidget {
             Flexible(
                 child: Container(
                   alignment: Alignment.center,
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: CircleAvatar(child: Icon(Icons.refresh))),
+                  child: GetBuilder<HomeController>(
+                    id: 'refresh',
+                    builder: (_) => CircleAvatar(
+                      backgroundColor: _.modo == 0 ? Colors.grey : infoColor,
+                        child: IconButton(
+                      onPressed: _.modo == 0 ? null : _.goSincronizar,
+                      icon: Icon(Icons.refresh, color: Colors.white,),
+                    )),
+                  ),
                 ),
                 flex: 1)
           ],

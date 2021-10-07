@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_pre_tareo_binding.dart';
+import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
 import 'package:flutter_tareo/di/nueva_tarea_binding.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
@@ -18,6 +19,7 @@ import 'package:flutter_tareo/domain/use_cases/tareas/update_tarea_proceso_use_c
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo/listado_personas_pre_tareo_page.dart';
+import 'package:flutter_tareo/ui/pages/nueva_pre_tarea/nueva_pre_tarea_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -103,9 +105,9 @@ class PreTareosController extends GetxController {
     update(['seleccionado']);
   }
 
-  Future<void> goNuevaTarea() async {
-    NuevaTareaBinding().dependencies();
-    final result = await Get.to<PreTareoProcesoEntity>(() => NuevaTareaPage());
+  Future<void> goNuevaPreTarea() async {
+    NuevaPreTareaBinding().dependencies();
+    final result = await Get.to<PreTareoProcesoEntity>(() => NuevaPreTareaPage());
     if (result != null) {
       preTareos.add(result);
       await _createPreTareoProcesoUseCase.execute(result);

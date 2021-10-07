@@ -19,7 +19,7 @@ class PreTareoProcesoEntityAdapter extends TypeAdapter<PreTareoProcesoEntity> {
     return PreTareoProcesoEntity(
       itempretareaproceso: fields[0] as int,
       fecha: fields[1] as DateTime,
-      horaincio: fields[2] as DateTime,
+      horainicio: fields[2] as DateTime,
       horafin: fields[3] as DateTime,
       pausainicio: fields[4] as DateTime,
       pausafin: fields[5] as DateTime,
@@ -50,7 +50,7 @@ class PreTareoProcesoEntityAdapter extends TypeAdapter<PreTareoProcesoEntity> {
       ..writeByte(1)
       ..write(obj.fecha)
       ..writeByte(2)
-      ..write(obj.horaincio)
+      ..write(obj.horainicio)
       ..writeByte(3)
       ..write(obj.horafin)
       ..writeByte(4)

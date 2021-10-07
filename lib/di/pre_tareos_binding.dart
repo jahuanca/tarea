@@ -1,5 +1,7 @@
 
+import 'package:flutter_tareo/data/repositories/pre_tareo_proceso_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/tarea_proceso_repository_implementation.dart';
+import 'package:flutter_tareo/domain/repositories/pre_tareo_proceso_repository.dart';
 import 'package:flutter_tareo/domain/repositories/tarea_proceso_repository.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/create_pre_tareo_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/delete_pre_tareo_proceso_use_case.dart';
@@ -20,7 +22,7 @@ class PreTareosBinding extends Bindings{
   @override
   void dependencies() {
 
-    Get.lazyPut<TareaProcesoRepository>(() => TareaProcesoRepositoryImplementation());
+    Get.lazyPut<PreTareoProcesoRepository>(() => PreTareoProcesoRepositoryImplementation());
 
     Get.lazyPut<CreatePreTareoProcesoUseCase>(() => CreatePreTareoProcesoUseCase(Get.find()));
     Get.lazyPut<GetAllPreTareoProcesoUseCase>(() => GetAllPreTareoProcesoUseCase(Get.find()));

@@ -54,6 +54,10 @@ class PreTareosPage extends StatelessWidget {
                 ],
               ),
             ),
+            floatingActionButton: FloatingActionButton(
+              child: IconButton(
+                  onPressed: _.goNuevaPreTarea, icon: Icon(Icons.add)),
+            ),
           ),
         ],
       ),
@@ -126,7 +130,9 @@ class PreTareosPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              _.preTareos[index].laboresCultivoPacking.actividad?.descripcion ?? '',
+                              _.preTareos[index].laboresCultivoPacking.actividad
+                                      ?.descripcion ??
+                                  '',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                               ),
@@ -181,8 +187,9 @@ class PreTareosPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child:
-                                Text(_.preTareos[index].laboresCultivoPacking.labor?.descripcion ?? ''),
+                            child: Text(_.preTareos[index].laboresCultivoPacking
+                                    .labor?.descripcion ??
+                                ''),
                           ),
                           flex: 10,
                         ),
@@ -215,7 +222,8 @@ class PreTareosPage extends StatelessWidget {
                                 Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text(_.preTareos[index].detalles.length
+                                    child: Text(_
+                                        .preTareos[index].detalles.length
                                         .toString())),
                                 Icon(
                                   Icons.people,
@@ -231,7 +239,8 @@ class PreTareosPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                                _.preTareos[index].sede?.detallesubdivision ?? ''),
+                                _.preTareos[index].sede?.detallesubdivision ??
+                                    ''),
                           ),
                           flex: 10,
                         ),
@@ -247,14 +256,14 @@ class PreTareosPage extends StatelessWidget {
                     child: Row(
                       children: (_.preTareos[index].estadoLocal != 'P')
                           ? [
-                            Flexible(child: Container(), flex: 1),
+                              Flexible(child: Container(), flex: 1),
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.center,
                                   child: CircleAvatar(
                                     backgroundColor: successColor,
                                     child: IconButton(
-                                        onPressed: (){},
+                                        onPressed: () {},
                                         icon: Icon(
                                           Icons.remove_red_eye,
                                           color: Colors.white,
@@ -264,7 +273,7 @@ class PreTareosPage extends StatelessWidget {
                                 flex: 7,
                               ),
                               Flexible(child: Container(), flex: 1),
-                          ]
+                            ]
                           : [
                               Flexible(child: Container(), flex: 1),
                               Flexible(
@@ -292,7 +301,7 @@ class PreTareosPage extends StatelessWidget {
                                     child: IconButton(
                                       onPressed: () =>
                                           _.goMigrarPreTareo(index),
-                                      icon: Icon(Icons.sync ),
+                                      icon: Icon(Icons.sync),
                                       color: Colors.white,
                                     ),
                                   ),

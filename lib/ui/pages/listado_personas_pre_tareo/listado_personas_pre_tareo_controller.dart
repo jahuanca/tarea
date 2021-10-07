@@ -210,17 +210,20 @@ class ListadoPersonasPreTareoController extends GetxController {
     FlutterBarcodeScanner.getBarcodeStreamReceiver(
             "#ff6666", "Cancelar", false, ScanMode.DEFAULT)
         .listen((barcode) async {
-      print(barcode);
+      //print(barcode);
       if(!volviendoLeer) return;
       if (barcode != null && barcode!=-1) {
         volviendoLeer=false;
+        
         int indexEncontrado=personalSeleccionado.indexWhere((e) => e.codigotk == barcode.toString());
         if(indexEncontrado!=-1){
           _showNotification(false, 'Ya se encuentra registrado');
+          await Future.delayed(Duration(seconds: 2), ()=> volviendoLeer= true);
           return;
         }
+        List<String> valores=barcode.toString().split('_');
         int index =
-            personal.indexWhere((e) => e.codigoempresa == barcode.toString());
+            personal.indexWhere((e) => e.codigoempresa == valores[0]);
         if (index != -1) {
           _showNotification(true, 'Registrado con exito');
           int lasItem= (personalSeleccionado.isEmpty) ? 0 : personalSeleccionado.last.numcaja;
