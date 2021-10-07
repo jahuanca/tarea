@@ -66,8 +66,8 @@ class TareaProcesoRepositoryImplementation extends TareaProcesoRepository {
       //request.headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
 
       for (var i = 0; i < tareaProcesoEntity.toJson().entries.length; i++) {
-        MapEntry map= tareaProcesoEntity.toJson().entries.elementAt(i);
-        request.fields.addAll({map.key : map.value.toString()});
+        MapEntry map = tareaProcesoEntity.toJson().entries.elementAt(i);
+        request.fields.addAll({map.key: map.value.toString()});
       }
 
       print("Fields: ${request.fields.toString()}");
@@ -78,8 +78,9 @@ class TareaProcesoRepositoryImplementation extends TareaProcesoRepository {
           await http.Response.fromStream(await request.send());
       print("Result: ${response.statusCode}");
       log(response.body);
-      TareaProcesoEntity respuesta=TareaProcesoEntity.fromJson(jsonDecode(response.body));
-      tareaProcesoEntity.firmaSupervisor=respuesta.firmaSupervisor;
+      TareaProcesoEntity respuesta =
+          TareaProcesoEntity.fromJson(jsonDecode(response.body));
+      tareaProcesoEntity.firmaSupervisor = respuesta.firmaSupervisor;
       return tareaProcesoEntity;
     } catch (e) {
       print('Error');

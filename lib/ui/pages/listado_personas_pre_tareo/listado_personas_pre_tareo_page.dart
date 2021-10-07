@@ -2,21 +2,22 @@ import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/core/dimens.dart';
-import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_controller.dart';
+import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo/listado_personas_pre_tareo_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
 
-class ListadoPersonasPage extends StatelessWidget {
-  final ListadoPersonasController controller =
-      Get.find<ListadoPersonasController>();
+class ListadoPersonasPreTareoPage extends StatelessWidget {
+  
+  final ListadoPersonasPreTareoController controller =
+      Get.find<ListadoPersonasPreTareoController>();
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
-    return GetBuilder<ListadoPersonasController>(
+    return GetBuilder<ListadoPersonasPreTareoController>(
       init: controller,
       id: 'personal_seleccionado',
       builder: (_) => WillPopScope(
@@ -35,7 +36,7 @@ class ListadoPersonasPage extends StatelessWidget {
               backgroundColor: secondColor,
               body: RefreshIndicator(
                 onRefresh: () async => _.update(['listado']),
-                child: GetBuilder<ListadoPersonasController>(
+                child: GetBuilder<ListadoPersonasPreTareoController>(
                   id: 'seleccionado',
                   builder: (_) => Column(
                     children: [
@@ -48,7 +49,7 @@ class ListadoPersonasPage extends StatelessWidget {
                         ),
                       Flexible(
                         flex: 8,
-                        child: GetBuilder<ListadoPersonasController>(
+                        child: GetBuilder<ListadoPersonasPreTareoController>(
                           id: 'listado',
                           builder: (_) => _.personalSeleccionado.isEmpty
                               ? EmptyDataWidget(
@@ -67,13 +68,13 @@ class ListadoPersonasPage extends StatelessWidget {
                   ),
                 ),
               ),
-              floatingActionButton: FloatingActionButton(
+              /* floatingActionButton: FloatingActionButton(
                 child: IconButton(
                     onPressed: _.goNuevoPersonaTareaProceso,
                     icon: Icon(Icons.add)),
-              ),
+              ), */
             ),
-            GetBuilder<ListadoPersonasController>(
+            GetBuilder<ListadoPersonasPreTareoController>(
               id: 'validando',
               builder: (_) => _.validando
                   ? Container(
@@ -90,11 +91,11 @@ class ListadoPersonasPage extends StatelessWidget {
 
   Widget itemActividad(Size size, context, index) {
     final items = [
-      {'key': 1, 'value': 'Editar'},
+      /* {'key': 1, 'value': 'Editar'}, */
       {'key': 2, 'value': 'Eliminar'},
     ];
 
-    return GetBuilder<ListadoPersonasController>(
+    return GetBuilder<ListadoPersonasPreTareoController>(
         id: 'seleccionado',
         builder: (_) => GestureDetector(
               onLongPress: _.seleccionados.length > 0
@@ -166,7 +167,7 @@ class ListadoPersonasPage extends StatelessWidget {
                                         Icons.more_horiz,
                                         color: primaryColor,
                                       ),
-                                      value: 1,
+                                      value: 2,
                                       items: items == null
                                           ? []
                                           : items
@@ -192,7 +193,9 @@ class ListadoPersonasPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text('75 UNDs'),
+                                  child: Text(formatoFecha(_.personalSeleccionado[index]
+                                                .fecha) ??
+                                          '-Sin fecha-'),
                                 ),
                                 flex: 10,
                               ),
@@ -201,19 +204,12 @@ class ListadoPersonasPage extends StatelessWidget {
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                      formatoFechaOnlyHoras(
-                                            _.personalSeleccionado[index]
-                                                .horainicio,
-                                            _.personalSeleccionado[index]
-                                                .horafin,
-                                          ) ??
-                                          '-Sin horas-',
+                                      formatoHora(_.personalSeleccionado[index]
+                                                .hora) ??
+                                          '-Sin hora-',
                                       style: TextStyle(
                                           color: (_.personalSeleccionado[index]
-                                                          .horainicio ==
-                                                      null ||
-                                                  _.personalSeleccionado[index]
-                                                          .horafin ==
+                                                          .hora ==
                                                       null)
                                               ? dangerColor
                                               : Colors.black87)),
@@ -234,32 +230,25 @@ class ListadoPersonasPage extends StatelessWidget {
                               Expanded(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text('PAUSA:'),
+                                  child: Text(_.personalSeleccionado[index].numcaja.toString()),
                                 ),
                                 flex: 4,
                               ),
                               Expanded(
-                                child: Container(
+                                child: Container(),
+                                /* child: Container(
                                   alignment: Alignment.center,
                                   child: Text(
-                                    (formatoFechaOnlyHoras(
-                                          _.personalSeleccionado[index]
-                                              .pausainicio,
-                                          _.personalSeleccionado[index]
-                                              .pausafin,
-                                        ) ??
-                                        '-Sin pausas-'),
+                                    'Espacio'  ??
+                                        '-Sin pausas-',
                                     style: TextStyle(
                                         color: (_.personalSeleccionado[index]
-                                                        .pausainicio ==
-                                                    null ||
-                                                _.personalSeleccionado[index]
-                                                        .pausainicio ==
+                                                        .hora ==
                                                     null)
                                             ? Colors.grey
                                             : Colors.black87),
                                   ),
-                                ),
+                                ), */
                                 flex: 8,
                               ),
                               Expanded(child: Container(), flex: 1),
@@ -282,7 +271,7 @@ class ListadoPersonasPage extends StatelessWidget {
       {'key': 3, 'value': 'Actualizar datos'},
     ];
 
-    return GetBuilder<ListadoPersonasController>(
+    return GetBuilder<ListadoPersonasPreTareoController>(
       id: 'seleccionado',
       builder: (_) => Container(
         decoration: BoxDecoration(color: Colors.white, border: Border.all()),

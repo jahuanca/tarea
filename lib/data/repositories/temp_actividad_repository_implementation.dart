@@ -8,12 +8,12 @@ class TempActividadRepositoryImplementation extends TempActividadRepository {
   final urlModule = '/temp_actividad';
 
   @override
-  Future<List<TempActividadEntity>> getAll() async{
-
-    if(PreferenciasUsuario().offLine){
-      Box dataHive = await Hive.openBox<TempActividadEntity>('actividades_sincronizar');
-      List<TempActividadEntity> local=[];
-      dataHive.toMap().forEach((key, value)=> local.add(value));
+  Future<List<TempActividadEntity>> getAll() async {
+    if (PreferenciasUsuario().offLine) {
+      Box dataHive =
+          await Hive.openBox<TempActividadEntity>('actividades_sincronizar');
+      List<TempActividadEntity> local = [];
+      dataHive.toMap().forEach((key, value) => local.add(value));
       await dataHive.close();
       return local;
     }
@@ -27,4 +27,3 @@ class TempActividadRepositoryImplementation extends TempActividadRepository {
     return tempActividadEntityFromJson((res));
   }
 }
- 

@@ -3,6 +3,7 @@ import 'package:flutter_tareo/ui/pages/home/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/ui/pages/migrar/migrar_page.dart';
+import 'package:flutter_tareo/ui/pages/pre_tareos/pre_tareos_page.dart';
 import 'package:flutter_tareo/ui/pages/search/search_page.dart';
 import 'package:flutter_tareo/ui/pages/tareas/tareas_page.dart';
 import 'package:get/get.dart';
@@ -16,7 +17,7 @@ class NavigationController extends GetxController {
     TareasPage(),
     AprobarPage(),
     MigrarPage(),
-    Container(),
+    PreTareosPage(),
     Container(),
     Container(),
     Container(),
@@ -67,6 +68,13 @@ class NavigationController extends GetxController {
         indexWidget = index;
         update(['bottom_navigation']);
         break;
+
+      case 4:
+        actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
+        titulo = 'Pre-Tareos';
+        scaffoldKey.currentState.openEndDrawer();
+        indexWidget = index;
+        update(['bottom_navigation']);
         break;
 
       default:

@@ -35,7 +35,6 @@ class ActividadRepositoryImplementation extends ActividadRepository {
           await Hive.openBox<ActividadEntity>('actividades_sincronizar');
       List<ActividadEntity> local = [];
 
-
       dataHive.values.forEach((e) {
         bool guardar = true;
         valores.forEach((key, value) {

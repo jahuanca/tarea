@@ -17,6 +17,4 @@ class UsuarioRepositoryImplementation extends UsuarioRepository {
 
     return usuarioEntityFromJson(res);
   }
-
-  
 }

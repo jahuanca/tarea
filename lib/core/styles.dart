@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
@@ -63,7 +62,9 @@ TextStyle separadorStyle() {
 
 TextStyle primaryTextStyle() {
   return TextStyle(
-      color: PreferenciasUsuario().modoDark ? primaryTextDarkColor :  primaryTextColor,
+      color: PreferenciasUsuario().modoDark
+          ? primaryTextDarkColor
+          : primaryTextColor,
       fontSize: secondTextSize,
       fontWeight: FontWeight.w400);
 }
@@ -87,7 +88,9 @@ TextStyle drawerOptionDarkStyle() {
 
 TextStyle primaryHintStyle() {
   return TextStyle(
-      color: PreferenciasUsuario().modoDark ? primaryTextDarkColor : primaryTextColor,
+      color: PreferenciasUsuario().modoDark
+          ? primaryTextDarkColor
+          : primaryTextColor,
       fontSize: secondTextSize,
       fontWeight: FontWeight.w300);
 }

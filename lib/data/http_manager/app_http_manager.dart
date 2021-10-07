@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
-
 import 'package:flutter_tareo/core/strings.dart';
 import 'package:flutter_tareo/domain/entities/message_entity.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
@@ -25,11 +24,10 @@ class AppHttpManager implements HttpManager {
     try {
       print('Api Get request url $url');
       log(query.toString());
-      final response = await http
-          .get(Uri.parse(_queryBuilder(url, query)), headers: await _headerBuilder(headers));
-          /* .timeout(timeout, onTimeout: () => throw TimeoutException()); */
+      final response = await http.get(Uri.parse(_queryBuilder(url, query)),
+          headers: await _headerBuilder(headers));
+      /* .timeout(timeout, onTimeout: () => throw TimeoutException()); */
       return _returnResponse(response);
-    
     } on Exception catch (_) {
       throw NetworkException();
     }
@@ -44,11 +42,10 @@ class AppHttpManager implements HttpManager {
   }) async {
     try {
       print('Api Post request url $url, with $body');
-      final response = await http
-          .post(Uri.parse(_queryBuilder(url, query)),
-              body: body != null ? json.encode(body) : null,
-              headers: await _headerBuilder(headers));
-          /* .timeout(timeout, onTimeout: () => throw TimeoutException()); */
+      final response = await http.post(Uri.parse(_queryBuilder(url, query)),
+          body: body != null ? json.encode(body) : null,
+          headers: await _headerBuilder(headers));
+      /* .timeout(timeout, onTimeout: () => throw TimeoutException()); */
       return _returnResponse(response);
     } on Exception catch (_) {
       print(_.toString());
@@ -84,7 +81,8 @@ class AppHttpManager implements HttpManager {
     try {
       print('Api Delete request url $url');
       final response = await http
-          .delete(Uri.parse(_queryBuilder(url, query)) , headers: await _headerBuilder(headers))
+          .delete(Uri.parse(_queryBuilder(url, query)),
+              headers: await _headerBuilder(headers))
           .timeout(timeout, onTimeout: () => throw TimeoutException());
       return _returnResponse(response);
     } on Exception catch (_) {
@@ -92,15 +90,14 @@ class AppHttpManager implements HttpManager {
     }
   }
 
-  
-
-  Future<Map<String, String>> _headerBuilder(Map<String, String> headers) async{
-    SharedPreferences sharedPreferences=await SharedPreferences.getInstance();
-    String token=sharedPreferences.getString('TOKEN') ?? '';
+  Future<Map<String, String>> _headerBuilder(
+      Map<String, String> headers) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String token = sharedPreferences.getString('TOKEN') ?? '';
     final headers = <String, String>{};
     headers[HttpHeaders.acceptHeader] = 'application/json';
     headers[HttpHeaders.contentTypeHeader] = 'application/json';
-    if(token!=null){
+    if (token != null) {
       headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
     }
     if (headers.isNotEmpty) {
@@ -128,30 +125,30 @@ class AppHttpManager implements HttpManager {
   dynamic _returnResponse(http.Response response) {
     /* final responseJson = json.decode(response.body); */
     final responseJson = response.body;
-    if (response.statusCode >= 200 && response.statusCode <= 299) { 
-        print('Api response success with ');
-        log(responseJson);
-        return responseJson;
+    if (response.statusCode >= 200 && response.statusCode <= 299) {
+      print('Api response success with ');
+      log(responseJson);
+      return responseJson;
     }
-    
-    MessageEntity mensaje= MessageEntity.fromJson(jsonDecode(responseJson));
+
+    MessageEntity mensaje = MessageEntity.fromJson(jsonDecode(responseJson));
     toastError('Error', mensaje.message);
 
     switch (response.statusCode) {
       case 400:
-        //throw BadRequestException();
-        //return null;
+      //throw BadRequestException();
+      //return null;
       case 401:
       case 403:
         //throw UnauthorisedException();
         return null;
       case 500:
         return null;
-      default:      
+      default:
         return null;
-        //throw ServerException();
-    } 
-    
+      //throw ServerException();
+    }
+
     /* } */
     /* print('Api response error with ${response.statusCode} + ${response.body}');
     */

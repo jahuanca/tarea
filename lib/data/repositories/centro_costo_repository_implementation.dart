@@ -5,18 +5,16 @@ import 'package:flutter_tareo/ui/utils/conecction_state.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:hive/hive.dart';
 
-
 class CentroCostoRepositoryImplementation extends CentroCostoRepository {
   final urlModule = '/centro_costo';
 
-
   @override
-  Future<List<CentroCostoEntity>> getAll() async{
-
-    if(PreferenciasUsuario().offLine){
-      Box sedesHive = await Hive.openBox<CentroCostoEntity>('centros_costo_sincronizar');
-      List<CentroCostoEntity> local=[];
-      sedesHive.toMap().forEach((key, value)=> local.add(value));
+  Future<List<CentroCostoEntity>> getAll() async {
+    if (PreferenciasUsuario().offLine) {
+      Box sedesHive =
+          await Hive.openBox<CentroCostoEntity>('centros_costo_sincronizar');
+      List<CentroCostoEntity> local = [];
+      sedesHive.toMap().forEach((key, value) => local.add(value));
       await sedesHive.close();
       return local;
     }
@@ -29,4 +27,3 @@ class CentroCostoRepositoryImplementation extends CentroCostoRepository {
     return centroCostoEntityFromJson((res));
   }
 }
- 

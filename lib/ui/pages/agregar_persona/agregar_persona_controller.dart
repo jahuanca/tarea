@@ -26,7 +26,6 @@ class AgregarPersonaController extends GetxController {
   AgregarPersonaController(this._getPersonalsEmpresaBySubdivisionUseCase);
 
   //TODO: cantidadHoras se autocalculada: horaFin - horaInicio - (finPausa - inicioPausa) en horas
-  //TODO: filtrar personal, si el personal se encuentra en la lista mostrar alert color
   //TODO: heredados agruparlos en otro lado
   //TODO: CAMPOS NULOS: inicioPausa y finPausa (00:00), cantidadRendimiento (0), cantidadAvance
 
@@ -73,6 +72,7 @@ class AgregarPersonaController extends GetxController {
           if (personalEmpresa.length > 0) {
             personaSeleccionada = personalEmpresa.first;
             personalTareaProcesoEntity.personal = personaSeleccionada;
+            
           }
           validando = false;
         }
@@ -87,9 +87,10 @@ class AgregarPersonaController extends GetxController {
         personalEmpresa.firstWhere((e) => e.codigoempresa == id);
     int index=personalSeleccionado.indexWhere((e) => e.codigoempresa==id);
     if(index!=-1){
-      //toastError('Error', 'Ya encuentra en la lista');
+      personalTareaProcesoEntity.personal = personaSeleccionada;
+      personalTareaProcesoEntity.personal.codigoempresa = personaSeleccionada.codigoempresa;
       mostrarDialog('Personal ya registrado');
-      errorPersonal='Personal registrado';
+      errorPersonal='Personal ya se encuentra registrado.';
     }else{
       errorPersonal=null;
       personalTareaProcesoEntity.personal = personaSeleccionada;
@@ -206,7 +207,9 @@ class AgregarPersonaController extends GetxController {
   String validar() {
     changeHoraInicio();
     changeHoraFin();
+    changePersonal(personaSeleccionada.codigoempresa);
     
+    if(errorPersonal != null) return errorPersonal;
     if(errorHoraInicio != null) return errorHoraInicio;
     if(errorHoraFin != null) return errorHoraFin;
 

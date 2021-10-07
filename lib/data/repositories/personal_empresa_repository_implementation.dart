@@ -36,10 +36,11 @@ class PersonalEmpresaRepositoryImplementation
           await Hive.openBox<PersonalEmpresaEntity>('personal_sincronizar');
       List<PersonalEmpresaEntity> local = [];
       dataHive.values.forEach((element) {
-        if(element.personalEmpresaSubdivision!=null && element.personalEmpresaSubdivision.idsubdivision==idSubdivision){
+        if (element.personalEmpresaSubdivision != null &&
+            element.personalEmpresaSubdivision.idsubdivision == idSubdivision) {
           local.add(element);
         }
-       });
+      });
       await dataHive.close();
       return local;
     }

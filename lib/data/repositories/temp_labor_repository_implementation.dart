@@ -8,12 +8,11 @@ class TempLaborRepositoryImplementation extends TempLaborRepository {
   final urlModule = '/temp_labor';
 
   @override
-  Future<List<TempLaborEntity>> getAll() async{
-
-    if(PreferenciasUsuario().offLine){
+  Future<List<TempLaborEntity>> getAll() async {
+    if (PreferenciasUsuario().offLine) {
       Box dataHive = await Hive.openBox<TempLaborEntity>('labores_sincronizar');
-      List<TempLaborEntity> local=[];
-      dataHive.toMap().forEach((key, value)=> local.add(value));
+      List<TempLaborEntity> local = [];
+      dataHive.toMap().forEach((key, value) => local.add(value));
       await dataHive.close();
       return local;
     }
@@ -27,4 +26,3 @@ class TempLaborRepositoryImplementation extends TempLaborRepository {
     return tempLaborEntityFromJson((res));
   }
 }
- 

@@ -8,12 +8,11 @@ class CurrentTimeRepositoryImplementation extends CurrentTimeRepository {
   final urlModule = 'http://worldtimeapi.org/api/timezone/America/Lima';
 
   @override
-  Future<CurrentTimeEntity> get() async{
-
+  Future<CurrentTimeEntity> get() async {
     final res = await http.get(
       urlModule,
     );
-    if(res.statusCode==200){
+    if (res.statusCode == 200) {
       print('CurrentTime succes, response with:');
       log(res.body.toString());
     }
@@ -21,4 +20,3 @@ class CurrentTimeRepositoryImplementation extends CurrentTimeRepository {
     return CurrentTimeEntity.fromJson(jsonDecode(res.body));
   }
 }
- 

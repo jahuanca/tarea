@@ -172,7 +172,7 @@ class NuevaTareaController extends GetxController {
         mostrarDialog('La hora seleccionada no se encuentra en el rango de inicio y fin');
         nuevaTarea.pausafin = null;
       }
-      if(nuevaTarea.pausainicio!=null && nuevaTarea.pausafin.isAfter(nuevaTarea.pausainicio)){
+      if(nuevaTarea.pausainicio!=null && nuevaTarea.pausainicio.isAfter(nuevaTarea.pausafin)){
         mostrarDialog('La hora debe ser mayor a la hora de pausa');
         nuevaTarea.pausafin = null;
       }

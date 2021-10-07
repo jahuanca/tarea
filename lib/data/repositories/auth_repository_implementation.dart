@@ -15,7 +15,7 @@ class AuthRepositoryImplementation extends AuthRepository {
     if (PreferenciasUsuario().offLine) {
       Box<UsuarioEntity> usuariosHive =
           await Hive.openBox<UsuarioEntity>('usuarios_sincronizar');
-      
+
       print('Body ');
       print(usuarioEntity.toJson().toString());
 
@@ -29,7 +29,7 @@ class AuthRepositoryImplementation extends AuthRepository {
             for (var j = 0; j < u.usuarioPerfils.length; j++) {
               var p = u.usuarioPerfils.elementAt(j);
               if (p.idsubdivision == usuarioEntity.idsubdivision) {
-                u.token='token de prueba';
+                u.token = 'token de prueba';
                 return u;
               }
             }

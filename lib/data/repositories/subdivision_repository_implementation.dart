@@ -5,18 +5,16 @@ import 'package:flutter_tareo/ui/utils/conecction_state.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:hive/hive.dart';
 
-
 class SubdivisionRepositoryImplementation extends SubdivisionRepository {
   final urlModule = '/subdivision';
 
-
   @override
-  Future<List<SubdivisionEntity>> getAll() async{
-
-    if(PreferenciasUsuario().offLine){
-      Box sedesHive = await Hive.openBox<SubdivisionEntity>('sedes_sincronizar');
-      List<SubdivisionEntity> local=[];
-      sedesHive.toMap().forEach((key, value)=> local.add(value));
+  Future<List<SubdivisionEntity>> getAll() async {
+    if (PreferenciasUsuario().offLine) {
+      Box sedesHive =
+          await Hive.openBox<SubdivisionEntity>('sedes_sincronizar');
+      List<SubdivisionEntity> local = [];
+      sedesHive.toMap().forEach((key, value) => local.add(value));
       await sedesHive.close();
       return local;
     }
@@ -29,4 +27,3 @@ class SubdivisionRepositoryImplementation extends SubdivisionRepository {
     return subdivisionEntityFromJson((res));
   }
 }
- 
