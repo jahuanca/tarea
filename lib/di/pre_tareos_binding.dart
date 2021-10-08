@@ -24,11 +24,11 @@ class PreTareosBinding extends Bindings{
 
     Get.lazyPut<PreTareoProcesoRepository>(() => PreTareoProcesoRepositoryImplementation());
 
-    Get.lazyPut<CreatePreTareoProcesoUseCase>(() => CreatePreTareoProcesoUseCase(Get.find()));
-    Get.lazyPut<GetAllPreTareoProcesoUseCase>(() => GetAllPreTareoProcesoUseCase(Get.find()));
-    Get.lazyPut<UpdatePreTareoProcesoUseCase>(() => UpdatePreTareoProcesoUseCase(Get.find()));
-    Get.lazyPut<DeletePreTareoProcesoUseCase>(() => DeletePreTareoProcesoUseCase(Get.find()));
-    Get.lazyPut<MigrarAllPreTareoUseCase>(() => MigrarAllPreTareoUseCase(Get.find()));
+    Get.lazyReplace<CreatePreTareoProcesoUseCase>(() => CreatePreTareoProcesoUseCase(Get.find()));
+    Get.lazyReplace<GetAllPreTareoProcesoUseCase>(() => GetAllPreTareoProcesoUseCase(Get.find()));
+    Get.lazyReplace<UpdatePreTareoProcesoUseCase>(() => UpdatePreTareoProcesoUseCase(Get.find()));
+    Get.lazyReplace<DeletePreTareoProcesoUseCase>(() => DeletePreTareoProcesoUseCase(Get.find()));
+    Get.lazyReplace<MigrarAllPreTareoUseCase>(() => MigrarAllPreTareoUseCase(Get.find()));
 
     Get.lazyPut<PreTareosController>(() => PreTareosController(Get.find(), Get.find() , Get.find(), Get.find(), Get.find()));
     
