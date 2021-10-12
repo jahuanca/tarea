@@ -71,7 +71,7 @@ class NavigationController extends GetxController {
 
       case 4:
         actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
-        titulo = 'Pre-Tareos';
+        titulo = 'Linea P.';
         scaffoldKey.currentState.openEndDrawer();
         indexWidget = index;
         update(['bottom_navigation']);

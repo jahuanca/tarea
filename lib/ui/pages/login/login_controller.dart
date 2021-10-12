@@ -1,9 +1,9 @@
 
+import 'package:flutter_tareo/di/navigation_binding.dart';
 import 'package:flutter_tareo/di/sincronizar_binding.dart';
 import 'package:flutter_tareo/domain/entities/log_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_current_time_world_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/login/save_token_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/login/save_user_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/login/sign_in_use_case.dart';
@@ -138,6 +138,7 @@ class LoginController extends GetxController{
   }
 
   void goHome(){
+    NavigationBinding().dependencies();
     Get.offAndToNamed('navigation');
   }
 
