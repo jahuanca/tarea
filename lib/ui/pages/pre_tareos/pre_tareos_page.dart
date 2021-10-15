@@ -25,13 +25,13 @@ class PreTareosPage extends StatelessWidget {
               builder: (_) => Column(
                 children: [
                   if (_.seleccionados.length > 0)
-                    Flexible(
+                    Expanded(
                       flex: 1,
                       child: AnimatedContainer(
                           child: _opcionesSeleccionados(),
                           duration: Duration(seconds: 1)),
                     ),
-                  Flexible(
+                  Expanded(
                     flex: 8,
                     child: RefreshIndicator(
                       onRefresh: _.getTareas,
@@ -43,6 +43,7 @@ class PreTareosPage extends StatelessWidget {
                                 size: size,
                                 onPressed: _.getTareas)
                             : ListView.builder(
+                                controller: _.scrollController,
                                 itemCount: _.preTareos.length,
                                 itemBuilder:
                                     (BuildContext context, int index) =>

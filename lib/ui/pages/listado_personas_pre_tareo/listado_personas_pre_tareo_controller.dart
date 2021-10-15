@@ -2,19 +2,18 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
-import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
-import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
-import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/update_pre_tareo_proceso_use_case.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
+import 'package:honeywell_scanner/honeywell_scanner.dart';
 
-class ListadoPersonasPreTareoController extends GetxController {
+class ListadoPersonasPreTareoController extends GetxController
+    implements ScannerCallBack {
   List<int> seleccionados = [];
   List<PersonalEmpresaEntity> personal = [];
   List<PreTareoProcesoDetalleEntity> personalSeleccionado = [];
@@ -25,6 +24,7 @@ class ListadoPersonasPreTareoController extends GetxController {
   final UpdatePreTareoProcesoUseCase _updatePreTareoProcesoUseCase;
   bool validando = false;
   bool editando = false;
+  HoneywellScanner honeywellScanner;
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
@@ -34,6 +34,22 @@ class ListadoPersonasPreTareoController extends GetxController {
 
   @override
   void onInit() async {
+    List<CodeFormat> codeFormats = [];
+    codeFormats.addAll(CodeFormatUtils.ALL_1D_FORMATS);
+    codeFormats.addAll(CodeFormatUtils.ALL_2D_FORMATS);
+    Map<String, dynamic> properties = {
+      ...CodeFormatUtils.getAsPropertiesComplement(
+          codeFormats), //CodeFormatUtils.getAsPropertiesComplement(...) this function converts a list of CodeFormat enums to its corresponding properties representation.
+      'DEC_CODABAR_START_STOP_TRANSMIT':
+          true, //This is the Codabar start/stop digit specific property
+      'DEC_EAN13_CHECK_DIGIT_TRANSMIT':
+          true, //This is the EAN13 check digit specific property
+    };
+    
+
+    honeywellScanner = HoneywellScanner();
+    honeywellScanner.setScannerCallBack(this);
+    honeywellScanner.setProperties(properties);
     super.onInit();
     if (Get.arguments != null) {
       if (Get.arguments['tarea'] != null) {
@@ -55,9 +71,9 @@ class ListadoPersonasPreTareoController extends GetxController {
         update(['validando']);
         /* personal = await _getPersonalsEmpresaBySubdivisionUseCase.execute(
             (Get.arguments['sede'] as SubdivisionEntity).idsubdivision); */
-        personal = await _getPersonalsEmpresaBySubdivisionUseCase.execute(
-            PreferenciasUsuario().idSede);
-        
+        personal = await _getPersonalsEmpresaBySubdivisionUseCase
+            .execute(PreferenciasUsuario().idSede);
+
         validando = false;
         update(['validando']);
       }
@@ -69,6 +85,25 @@ class ListadoPersonasPreTareoController extends GetxController {
 
     await flutterLocalNotificationsPlugin.initialize(initSettings,
         onSelectNotification: _onSelectNotification);
+    honeywellScanner.startScanner();
+  }
+
+  @override
+  void onClose(){
+    honeywellScanner.stopScanner();
+    super.onClose();
+  }
+
+
+  @override
+  void onDecoded(String result) {
+    setCodeBar(result);
+  }
+
+  @override
+  void onError(Exception error) {
+    toastError('Error', error.toString());
+    
   }
 
   Future<void> _showNotification(bool success, String mensaje) async {
@@ -204,47 +239,47 @@ class ListadoPersonasPreTareoController extends GetxController {
       () => Get.back(),
     );
   }
-  bool volviendoLeer=true;
 
   void goLectorCode() {
     FlutterBarcodeScanner.getBarcodeStreamReceiver(
             "#ff6666", "Cancelar", false, ScanMode.DEFAULT)
         .listen((barcode) async {
       //print(barcode);
-      if(!volviendoLeer) return;
-      if (barcode != null && barcode!=-1) {
-        volviendoLeer=false;
-        
-        int indexEncontrado=personalSeleccionado.indexWhere((e) => e.codigotk == barcode.toString());
-        if(indexEncontrado!=-1){
+      await setCodeBar(barcode);
+    });
+  }
+
+  Future<void> setCodeBar(dynamic barcode) async{
+    if (barcode != null && barcode != -1) {
+        int indexEncontrado = personalSeleccionado
+            .indexWhere((e) => e.codigotk == barcode.toString());
+        if (indexEncontrado != -1) {
           _showNotification(false, 'Ya se encuentra registrado');
-          await Future.delayed(Duration(seconds: 2), ()=> volviendoLeer= true);
           return;
         }
-        List<String> valores=barcode.toString().split('_');
-        int index =
-            personal.indexWhere((e) => e.codigoempresa == valores[0]);
+        List<String> valores = barcode.toString().split('_');
+        int index = personal.indexWhere((e) => e.codigoempresa == valores[0]);
         if (index != -1) {
           _showNotification(true, 'Registrado con exito');
-          int lasItem= (personalSeleccionado.isEmpty) ? 0 : personalSeleccionado.last.numcaja;
+          int lasItem = (personalSeleccionado.isEmpty)
+              ? 0
+              : personalSeleccionado.last.numcaja;
           personalSeleccionado.add(PreTareoProcesoDetalleEntity(
-            personal: personal[index],
-            numcaja: lasItem + 1,
-            codigoempresa: personal[index].codigoempresa,
-            fecha: DateTime.now(),
-            hora: DateTime.now(),
-            imei: '1256',
-            idestado: 1,
-            codigotk: barcode.toString(),
-            idusuario: PreferenciasUsuario().idUsuario,
-            itempretareaproceso: preTarea.itempretareaproceso
-          ));
+              personal: personal[index],
+              numcaja: lasItem + 1,
+              codigoempresa: personal[index].codigoempresa,
+              fecha: DateTime.now(),
+              hora: DateTime.now(),
+              imei: '1256',
+              idestado: 1,
+              codigotk: barcode.toString(),
+              idusuario: PreferenciasUsuario().idUsuario,
+              itempretareaproceso: preTarea.itempretareaproceso));
           update(['personal_seleccionado']);
         } else {
           _showNotification(false, 'No se encuentra en la lista');
         }
-        await Future.delayed(Duration(seconds: 2), ()=> volviendoLeer= true);
+        
       }
-    });
   }
 }

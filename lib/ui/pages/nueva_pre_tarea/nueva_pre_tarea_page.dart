@@ -23,7 +23,7 @@ class NuevaPreTareaPage extends StatelessWidget {
         children: [
           Scaffold(
             appBar: getAppBar(
-                controller.editando ? 'Editando pre-tareo' : 'Nuevo pre-tareo',
+                controller.editando ? 'Editando arándano' : 'Nuevo arándano',
                 [],
                 true),
             backgroundColor: secondColor,
@@ -60,18 +60,44 @@ class NuevaPreTareaPage extends StatelessWidget {
                       height: size.height * 0.01,
                     ),
                     GetBuilder<NuevaPreTareaController>(
+                      id: 'presentacion',
+                      builder: (_) => DropdownSearchWidget(
+                        label: 'Presentación',
+                        /* error: _.errorCentroCosto, */
+                        labelText: 'name',
+                        labelValue: '_id',
+                        selectedItem: _.nuevaPreTarea?.laboresCultivoPacking?.presentacionLinea == null
+                            ? null
+                            : {
+                                'name':
+                                    '${_.nuevaPreTarea.laboresCultivoPacking.presentacionLinea.descripcion.trim()}',
+                                '_id': _.nuevaPreTarea.laboresCultivoPacking.item,
+                              },
+                        onChanged: _.changePresentacion,
+                        items: controller.presentaciones.length == 0
+                            ? []
+                            : controller.presentaciones
+                                .map((e) => {
+                                      'name':
+                                          '${e.descripcion.trim()}',
+                                      '_id': e.idpresentacion,
+                                    })
+                                .toList(),
+                      ),
+                    ),
+                    GetBuilder<NuevaPreTareaController>(
                       id: 'centro_costo',
                       builder: (_) => DropdownSearchWidget(
                         label: 'Centro',
                         error: _.errorCentroCosto,
                         labelText: 'name',
                         labelValue: '_id',
-                        selectedItem: _.nuevaTarea?.centroCosto == null
+                        selectedItem: _.nuevaPreTarea?.centroCosto == null
                             ? null
                             : {
                                 'name':
-                                    '${_.nuevaTarea.centroCosto.detallecentrocosto.trim()} ${_.nuevaTarea.centroCosto.codigoempresa}',
-                                '_id': _.nuevaTarea.centroCosto.idcentrocosto,
+                                    '${_.nuevaPreTarea.centroCosto.detallecentrocosto.trim()} ${_.nuevaPreTarea.centroCosto.codigoempresa}',
+                                '_id': _.nuevaPreTarea.centroCosto.idcentrocosto,
                               },
                         onChanged: _.changeCentroCosto,
                         items: controller.centrosCosto.length == 0
@@ -86,29 +112,18 @@ class NuevaPreTareaPage extends StatelessWidget {
                       ),
                     ),
                     GetBuilder<NuevaPreTareaController>(
-                      id: 'rendimiento',
-                      builder: (_) => ItemConfiguracionSwitchWidget(
-                        onChanged: _.changeRendimiento,
-                        size: size,
-                        label: 'Rendimiento/Jornal',
-                        tituloTrue: 'Es jornal',
-                        tituloFalse: 'Es rendimiento',
-                        value: _.nuevaTarea.esjornal ?? false,
-                      ),
-                    ),
-                    GetBuilder<NuevaPreTareaController>(
                       id: 'actividades',
                       builder: (_) => DropdownSearchWidget(
                         label: 'Actividad',
                         labelText: 'name',
                         error: _.errorActividad,
                         labelValue: '_id',
-                        selectedItem: _.nuevaTarea?.actividad == null
+                        selectedItem: _.nuevaPreTarea?.laboresCultivoPacking?.actividad == null
                             ? null
                             : {
                                 'name':
-                                    _.nuevaTarea.actividad.descripcion.trim(),
-                                '_id': _.nuevaTarea.actividad.idactividad,
+                                    _.nuevaPreTarea.laboresCultivoPacking.actividad.descripcion.trim(),
+                                '_id': _.nuevaPreTarea.laboresCultivoPacking.actividad.idactividad,
                               },
                         onChanged: _.changeActividad,
                         items: controller.actividades.length == 0
@@ -129,11 +144,11 @@ class NuevaPreTareaPage extends StatelessWidget {
                         labelValue: '_id',
                         error: _.errorLabor,
                         onChanged: _.changeLabor,
-                        selectedItem: _.nuevaTarea?.labor == null
+                        selectedItem: _.nuevaPreTarea?.laboresCultivoPacking?.labor == null
                             ? null
                             : {
-                                'name': '${_.nuevaTarea.labor.descripcion}',
-                                '_id': _.nuevaTarea.labor.idlabor,
+                                'name': '${_.nuevaPreTarea.laboresCultivoPacking.labor.descripcion}',
+                                '_id': _.nuevaPreTarea.laboresCultivoPacking.labor.idlabor,
                               },
                         items: controller.labores.length == 0
                             ? []
@@ -153,12 +168,37 @@ class NuevaPreTareaPage extends StatelessWidget {
                           labelValue: 'codigoempresa',
                           error: _.errorSupervisor,
                           onChanged: _.changeSupervisor,
-                          selectedItem: _.nuevaTarea?.supervisor == null
+                          selectedItem: _.nuevaPreTarea?.supervisor == null
                               ? null
                               : {
                                   'name':
-                                      '${_.nuevaTarea.supervisor.apellidopaterno} ${_.nuevaTarea.supervisor.apellidomaterno}, ${_.nuevaTarea.supervisor.nombres}',
-                                  '_id': _.nuevaTarea.supervisor.codigoempresa,
+                                      '${_.nuevaPreTarea.supervisor.apellidopaterno} ${_.nuevaPreTarea.supervisor.apellidomaterno}, ${_.nuevaPreTarea.supervisor.nombres}',
+                                  '_id': _.nuevaPreTarea.supervisor.codigoempresa,
+                                },
+                          items: _.supervisors.length == 0
+                              ? []
+                              : _.supervisors
+                                  .map((e) => {
+                                        'name':
+                                            '${e.apellidopaterno} ${e.apellidomaterno}, ${e.nombres}',
+                                        'codigoempresa': e.codigoempresa,
+                                      })
+                                  .toList()),
+                    ),
+                    GetBuilder<NuevaPreTareaController>(
+                      id: 'digitadors',
+                      builder: (_) => DropdownSearchWidget(
+                          label: 'Digitador',
+                          labelText: 'name',
+                          labelValue: 'codigoempresa',
+                          error: _.errorDigitador,
+                          onChanged: _.changeDigitador,
+                          selectedItem: _.nuevaPreTarea?.digitador == null
+                              ? null
+                              : {
+                                  'name':
+                                      '${_.nuevaPreTarea.digitador.apellidopaterno} ${_.nuevaPreTarea.digitador.apellidomaterno}, ${_.nuevaPreTarea.digitador.nombres}',
+                                  '_id': _.nuevaPreTarea.digitador.codigoempresa,
                                 },
                           items: _.supervisors.length == 0
                               ? []
@@ -177,10 +217,10 @@ class NuevaPreTareaPage extends StatelessWidget {
                           labelText: 'name',
                           labelValue: '_id',
                           selectedItem: {
-                            'name': _.nuevaTarea.turnotareo == 'D'
+                            'name': _.nuevaPreTarea.turnotareo == 'D'
                                 ? 'Dia'
                                 : 'Noche',
-                            '_id': _.nuevaTarea.turnotareo
+                            '_id': _.nuevaPreTarea.turnotareo
                           },
                           onChanged: _.changeTurno,
                           items: [
@@ -202,7 +242,7 @@ class NuevaPreTareaPage extends StatelessWidget {
                         label: 'Dia siguiente',
                         tituloTrue: 'Es dia siguiente',
                         tituloFalse: 'No es dia siguiente',
-                        value: _.nuevaTarea.diasiguiente ?? false,
+                        value: _.nuevaPreTarea.diasiguiente ?? false,
                       ),
                     ),
                     GetBuilder<NuevaPreTareaController>(
@@ -211,15 +251,15 @@ class NuevaPreTareaPage extends StatelessWidget {
                           enabled: false,
                           error: _.errorHoraInicio,
                           onTap: () async {
-                            _.nuevaTarea.horainicio = await DatePickerWidget(
+                            _.nuevaPreTarea.horainicio = await DatePickerWidget(
                               onlyDate: true,
                               dateSelected: DateTime.now(),
-                            ).selectTime(context, _.nuevaTarea.horainicio);
+                            ).selectTime(context, _.nuevaPreTarea.horainicio);
                             _.changeHoraInicio();
                           },
                           label: 'Hora inicio',
                           textEditingController: TextEditingController(
-                              text: formatoHora(_.nuevaTarea.horainicio)),
+                              text: formatoHora(_.nuevaPreTarea.horainicio)),
                           hintText: 'Hora inicio'),
                     ),
                     SizedBox(
@@ -231,23 +271,23 @@ class NuevaPreTareaPage extends StatelessWidget {
                           enabled: false,
                           error: _.errorHoraFin,
                           onTap: () async {
-                            _.nuevaTarea.horafin = await DatePickerWidget(
+                            _.nuevaPreTarea.horafin = await DatePickerWidget(
                               onlyDate: true,
-                              minDate: _.nuevaTarea.horainicio,
-                              dateSelected: _.nuevaTarea.horafin ?? DateTime.now(),
+                              minDate: _.nuevaPreTarea?.turnotareo=='D' ?  _.nuevaPreTarea.horainicio : null,
+                              dateSelected: _.nuevaPreTarea.horafin ?? DateTime.now(),
                               onChanged: () {},
-                            ).selectTime(context, _.nuevaTarea.horafin);
+                            ).selectTime(context, _.nuevaPreTarea.horafin);
                             _.changeHoraFin();
                           },
                           label: 'Hora fin',
                           textEditingController: TextEditingController(
-                              text: formatoHora(_.nuevaTarea.horafin)),
+                              text: formatoHora(_.nuevaPreTarea.horafin)),
                           hintText: 'Hora fin'),
                     ),
                     GetBuilder<NuevaPreTareaController>(
                         id: 'inicio_pausa',
-                        builder: (_) => (_.nuevaTarea.horainicio != null &&
-                                _.nuevaTarea.horafin != null)
+                        builder: (_) => (_.nuevaPreTarea.horainicio != null &&
+                                _.nuevaPreTarea.horafin != null)
                             ? Column(
                                 children: [
                                   InputLabelWidget(
@@ -256,9 +296,9 @@ class NuevaPreTareaPage extends StatelessWidget {
                                       iconOverlay: Icons.delete,
                                       onPressedIconOverlay: _.deleteInicioPausa,
                                       onTap: () async {
-                                        _.nuevaTarea.pausainicio = await DatePickerWidget(
+                                        _.nuevaPreTarea.pausainicio = await DatePickerWidget(
                                           onlyDate: true,
-                                          dateSelected: _.nuevaTarea?.pausainicio ?? DateTime.now(),
+                                          dateSelected: _.nuevaPreTarea?.pausainicio ?? DateTime.now(),
                                           onChanged: () {},
                                         ).selectTime(
                                             context, null );
@@ -266,7 +306,7 @@ class NuevaPreTareaPage extends StatelessWidget {
                                       },
                                       textEditingController:
                                           TextEditingController(
-                                              text: formatoHora(_.nuevaTarea.pausainicio)),
+                                              text: formatoHora(_.nuevaPreTarea.pausainicio)),
                                       label: 'Inicio de pausa',
                                       hintText: 'Inicio de pausa'),
                                   SizedBox(
@@ -277,23 +317,23 @@ class NuevaPreTareaPage extends StatelessWidget {
                             : Container()),
                     GetBuilder<NuevaPreTareaController>(
                         id: 'fin_pausa',
-                        builder: (_) => (_.nuevaTarea.horainicio != null &&
-                                _.nuevaTarea.horafin != null)
+                        builder: (_) => (_.nuevaPreTarea.horainicio != null &&
+                                _.nuevaPreTarea.horafin != null)
                             ? InputLabelWidget(
                                 enabled: false,
                                 iconOverlay: Icons.delete,
                                 onPressedIconOverlay: _.deleteFinPausa,
                                 error: _.errorPausaFin,
                                 onTap: () async {
-                                  _.nuevaTarea.pausafin = await DatePickerWidget(
+                                  _.nuevaPreTarea.pausafin = await DatePickerWidget(
                                     onlyDate: true,
                                     dateSelected: DateTime.now(),
-                                    minDate: _.nuevaTarea.horainicio,
+                                    minDate: _.nuevaPreTarea.horainicio,
                                   ).selectTime(context, null);
                                   _.changeFinPausa();
                                 },
                                 textEditingController: TextEditingController(
-                                    text: formatoHora(_.nuevaTarea.pausafin)),
+                                    text: formatoHora(_.nuevaPreTarea.pausafin)),
                                 label: 'Fin de pausa',
                                 hintText: 'Fin de pausa')
                             : Container()),
@@ -345,7 +385,7 @@ class NuevaPreTareaPage extends StatelessWidget {
                 builder: (_) => Container(
                   alignment: Alignment.center,
                   child: Text(
-                    '${_.nuevaTarea.personal.length} personas',
+                    '${_.nuevaPreTarea.detalles.length} personas',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w300,
@@ -376,7 +416,7 @@ class NuevaPreTareaPage extends StatelessWidget {
                   child: Container(),
                   flex: 1,
                 ),
-                Flexible(
+                /* Flexible(
                     child: Container(
                       alignment: Alignment.center,
                       child: IconButton(
@@ -388,7 +428,7 @@ class NuevaPreTareaPage extends StatelessWidget {
                 Flexible(
                   child: Container(),
                   flex: 1,
-                ),
+                ), */
               ],
             ),
           ),

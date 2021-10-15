@@ -22,6 +22,7 @@ class PreTareoProcesoRepositoryImplementation
           await Hive.openBox<PreTareoProcesoEntity>('pre_tareos_sincronizar');
       List<PreTareoProcesoEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
+      local.sort((a, b) => b.fechamod.compareTo(a.fechamod));
       await dataHive.close();
       return local;
     }

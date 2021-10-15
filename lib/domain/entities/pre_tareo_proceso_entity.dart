@@ -9,6 +9,7 @@ import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dar
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
+import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
@@ -81,6 +82,14 @@ class PreTareoProcesoEntity {
   String firmaSupervisor;
   @HiveField(20)
   CentroCostoEntity centroCosto;
+  @HiveField(21)
+  String turnotareo;
+  @HiveField(22)
+  PersonalEmpresaEntity supervisor;
+  @HiveField(23)
+  PersonalEmpresaEntity digitador;
+  @HiveField(24)
+  bool diasiguiente;
 
   String get fechaHora {
     if (fecha == null || horainicio == null) {

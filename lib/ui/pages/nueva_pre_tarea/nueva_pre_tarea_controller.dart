@@ -2,11 +2,16 @@ import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
+import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
+import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_labores_cultivo_packing_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_actividads_by_key_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_labors_by_key_use_case.dart';
@@ -14,6 +19,7 @@ import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_page.dart';
+import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo/listado_personas_pre_tareo_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/validators_utils.dart';
@@ -23,13 +29,25 @@ class NuevaPreTareaController extends GetxController {
   final GetActividadsByKeyUseCase _getActividadsByKeyUseCase;
   final GetLaborsByKeyUseCase _getLaborsByKeyUseCase;
   final GetSubdivisonsUseCase _getSubdivisonsUseCase;
-  final GetPersonalsEmpresaBySubdivisionUseCase _getPersonalsEmpresaBySubdivisionUseCase;
+  final GetPersonalsEmpresaBySubdivisionUseCase
+      _getPersonalsEmpresaBySubdivisionUseCase;
   final GetCentroCostosUseCase _getCentroCostosUseCase;
+  final GetLaboresCultivoPackingUseCase _getLaboresCultivoPackingUseCase;
 
   DateTime fecha = DateTime.now();
-  String errorActividad, errorLabor, errorCentroCosto, errorSupervisor, errorHoraInicio, errorHoraFin, errorFecha, errorPausaInicio, errorPausaFin;
+  String errorActividad,
+      errorLabor,
+      errorPresentacion,
+      errorCentroCosto,
+      errorSupervisor,
+      errorDigitador,
+      errorHoraInicio,
+      errorHoraFin,
+      errorFecha,
+      errorPausaInicio,
+      errorPausaFin;
 
-  TareaProcesoEntity nuevaTarea = TareaProcesoEntity();
+  PreTareoProcesoEntity nuevaPreTarea = PreTareoProcesoEntity();
 
   bool validando = false;
   bool editando = false;
@@ -38,6 +56,8 @@ class NuevaPreTareaController extends GetxController {
   List<LaborEntity> labores = [];
   List<CentroCostoEntity> centrosCosto = [];
   List<SubdivisionEntity> subdivisions = [];
+  List<LaboresCultivoPackingEntity> laboresCultivoPacking = [];
+  List<PresentacionLineaEntity> presentaciones = [];
   List<PersonalEmpresaEntity> supervisors = [];
 
   NuevaPreTareaController(
@@ -45,6 +65,7 @@ class NuevaPreTareaController extends GetxController {
       this._getLaborsByKeyUseCase,
       this._getSubdivisonsUseCase,
       this._getPersonalsEmpresaBySubdivisionUseCase,
+      this._getLaboresCultivoPackingUseCase,
       this._getCentroCostosUseCase);
 
   @override
@@ -53,13 +74,10 @@ class NuevaPreTareaController extends GetxController {
     if (Get.arguments != null) {
       if (Get.arguments['tarea'] != null) {
         editando = true;
-        nuevaTarea = Get.arguments['tarea'] as TareaProcesoEntity;
+        nuevaPreTarea = Get.arguments['tarea'] as PreTareoProcesoEntity;
       }
     }
-    nuevaTarea.fechamod = fecha;
-    nuevaTarea.escampo = true;
-    nuevaTarea.espacking = true;
-    nuevaTarea.idestado = 1;
+    nuevaPreTarea.fechamod = fecha;
   }
 
   void setEditValues() {
@@ -74,125 +92,199 @@ class NuevaPreTareaController extends GetxController {
     super.onReady();
     validando = true;
     update(['validando']);
-    await getActividades(
-        nuevaTarea.esrendimiento ?? false ? 'esjornal' : 'esrendimiento', true);
-    await getLabores();
+
+    //await getLabores();
     await getCentrosCosto();
+    await getPresentaciones();
     await getSupervisors(PreferenciasUsuario().idSede);
-    changeTurno(editando ? nuevaTarea.turnotareo : 'D');
+    changeTurno(editando ? nuevaPreTarea.turnotareo : 'D');
     validando = false;
     update(['validando']);
 
     setEditValues();
   }
 
-  Future<void> getActividades(String key, dynamic value) async {
-    actividades = await _getActividadsByKeyUseCase
-        .execute({key: value, 'idsociedad': PreferenciasUsuario().idSociedad});
-    print(actividades.length);
-    if (actividades.length > 0) {
-      nuevaTarea.actividad = actividades?.first;
-      await changeActividad(nuevaTarea.actividad?.idactividad.toString());
+  Future<void> getPresentaciones() async {
+    laboresCultivoPacking = await _getLaboresCultivoPackingUseCase.execute();
+    presentaciones = [];
+    if(laboresCultivoPacking.isNotEmpty){
+      nuevaPreTarea.laboresCultivoPacking=new LaboresCultivoPackingEntity();
+    }
+    laboresCultivoPacking.forEach((element) {
+      PresentacionLineaEntity presentacion = element.presentacionLinea;
+      int index = presentaciones
+          .indexWhere((e) => e.idpresentacion == presentacion.idpresentacion);
+      if (index == -1) {
+        presentaciones.add(presentacion);
+      }
+    });
+    if (presentaciones.isNotEmpty){
+      nuevaPreTarea.laboresCultivoPacking.presentacionLinea =
+          presentaciones.first;
+      nuevaPreTarea.laboresCultivoPacking.idpresentacion=presentaciones.first.idpresentacion;
+      await changePresentacion(nuevaPreTarea
+          .laboresCultivoPacking.presentacionLinea?.idpresentacion
+          .toString());
+      getActividades();
+    }
+    update(['presentacion']);
+  }
+
+  Future<void> getActividades() async {
+    actividades = [];
+    laboresCultivoPacking.forEach((element) {
+      if (element.presentacionLinea.idpresentacion ==
+          nuevaPreTarea.laboresCultivoPacking.idpresentacion) {
+        ActividadEntity actividad = element.actividad;
+        int index = actividades
+            .indexWhere((e) => e.idactividad == actividad.idactividad);
+        if (index == -1) {
+          actividades.add(actividad);
+        }
+      }
+    });
+    if (actividades.isNotEmpty) {
+      nuevaPreTarea.laboresCultivoPacking.actividad = actividades?.first;
+      nuevaPreTarea.laboresCultivoPacking.idactividad = actividades?.first?.idactividad;
+      await changeActividad(nuevaPreTarea
+          .laboresCultivoPacking.idactividad
+          .toString());
       await getLabores();
+      //await changeLabor(nuevaPreTarea.laboresCultivoPacking.idlabor.toString());
     }
     update(['actividades']);
   }
 
   Future<void> getSupervisors(int idSubdivision) async {
-    nuevaTarea.sede = (await _getSubdivisonsUseCase.execute())
+    nuevaPreTarea.sede = (await _getSubdivisonsUseCase.execute())
         .firstWhere((e) => e.idsubdivision == idSubdivision);
     validando = true;
     update(['validando']);
     supervisors = await _getPersonalsEmpresaBySubdivisionUseCase.execute(5);
     if (supervisors.length > 0) {
-      nuevaTarea.supervisor = supervisors[1];
-      changeSupervisor(nuevaTarea.supervisor.codigoempresa);
+      nuevaPreTarea.supervisor = supervisors[0];
+      nuevaPreTarea.digitador = supervisors[0];
+      changeSupervisor(nuevaPreTarea.supervisor.codigoempresa);
+      changeDigitador(nuevaPreTarea.digitador.codigoempresa);
     }
-    update(['supervisors']);
+    update(['supervisors','digitadors']);
     validando = false;
     update(['validando']);
   }
 
   Future<void> getLabores() async {
-    if (nuevaTarea.idactividad == null) {
+    if (nuevaPreTarea?.laboresCultivoPacking?.actividad?.idactividad == null) {
       return;
     }
-    labores = await _getLaborsByKeyUseCase
-        .execute({'idactividad': nuevaTarea.idactividad});
-    print(labores.length);
+    labores = [];
+    laboresCultivoPacking.forEach((element) {
+      if (element.idpresentacion ==
+          nuevaPreTarea.laboresCultivoPacking.idpresentacion && element.idactividad==nuevaPreTarea.laboresCultivoPacking.idactividad) {
+        LaborEntity labor = element.labor;
+        int index = labores
+            .indexWhere((e) => e.idlabor == labor.idlabor);
+        if (index == -1) {
+          labores.add(labor);
+        }
+      }
+    });
+    
     if (labores.isNotEmpty) {
-      nuevaTarea.labor = labores.first;
-      nuevaTarea.idlabor = nuevaTarea.labor.idlabor;
+      nuevaPreTarea.laboresCultivoPacking.labor = labores.first;
+      nuevaPreTarea.laboresCultivoPacking.idlabor =
+          labores.first.idlabor;
     }
-
-    changeLabor(nuevaTarea.labor?.idlabor.toString());
+    changeLabor(nuevaPreTarea.laboresCultivoPacking.labor?.idlabor.toString());
     update(['labores']);
+    
   }
 
   Future<void> getCentrosCosto() async {
     centrosCosto = await _getCentroCostosUseCase.execute();
     if (!editando) {
       if (centrosCosto.isNotEmpty) {
-        nuevaTarea.centroCosto = centrosCosto.first;
+        nuevaPreTarea.centroCosto = centrosCosto.first;
       }
     }
-    changeCentroCosto(nuevaTarea.centroCosto.idcentrocosto.toString());
+    changeCentroCosto(nuevaPreTarea.centroCosto.idcentrocosto.toString());
     update(['centro_costo']);
   }
 
   void changeTurno(String id) {
-    nuevaTarea.turnotareo = id;
+    nuevaPreTarea.turnotareo = id;
+    if (id == 'D') {
+      nuevaPreTarea.horafin = null;
+      nuevaPreTarea.pausainicio = null;
+      nuevaPreTarea.pausafin = null;
+      update(['inicio_pausa', 'fin_pausa', 'hora_fin']);
+    }
     update(['turno']);
   }
 
   void changeHoraInicio() {
-    errorHoraInicio= (nuevaTarea.horainicio == null) ? 'Debe elegir una hora de inicio' : null;
+    errorHoraInicio = (nuevaPreTarea.horainicio == null)
+        ? 'Debe elegir una hora de inicio'
+        : null;
     update(['hora_inicio', 'inicio_pausa', 'fin_pausa']);
   }
 
   void changeHoraFin() {
-    errorHoraFin= (nuevaTarea.horafin == null) ? 'Debe elegir una hora de fin' : null;
+    errorHoraFin =
+        (nuevaPreTarea.horafin == null) ? 'Debe elegir una hora de fin' : null;
     update(['hora_fin', 'inicio_pausa', 'fin_pausa']);
   }
 
   void changeInicioPausa() {
-    if(nuevaTarea.pausainicio!=null){
-      if(nuevaTarea.pausainicio.isBefore(nuevaTarea.horainicio) || nuevaTarea.pausainicio.isAfter(nuevaTarea.horafin)){
-        mostrarDialog('La hora seleccionada no se encuentra en el rango de inicio y fin');
-        nuevaTarea.pausainicio=null;
+    if (nuevaPreTarea.pausainicio != null) {
+      if (nuevaPreTarea.turnotareo == 'N') {
+        update(['inicio_pausa']);
+        return;
+      }
+      if (nuevaPreTarea.pausainicio.isBefore(nuevaPreTarea.horainicio) ||
+          nuevaPreTarea.pausainicio.isAfter(nuevaPreTarea.horafin)) {
+        mostrarDialog(
+            'La hora seleccionada no se encuentra en el rango de inicio y fin');
+        nuevaPreTarea.pausainicio = null;
       }
       update(['inicio_pausa']);
     }
   }
 
   void changeFinPausa() {
-    if(nuevaTarea.pausafin!=null){
-      if(nuevaTarea.pausafin.isBefore(nuevaTarea.horainicio) || nuevaTarea.pausafin.isAfter(nuevaTarea.horafin)){
-        mostrarDialog('La hora seleccionada no se encuentra en el rango de inicio y fin');
-        nuevaTarea.pausafin = null;
+    if (nuevaPreTarea.pausafin != null && nuevaPreTarea.turnotareo == 'D') {
+      if (nuevaPreTarea.turnotareo == 'N') {
+        update(['inicio_pausa']);
+        return;
       }
-      if(nuevaTarea.pausainicio!=null && nuevaTarea.pausainicio.isAfter(nuevaTarea.pausafin)){
+      if (nuevaPreTarea.pausafin.isBefore(nuevaPreTarea.horainicio) ||
+          nuevaPreTarea.pausafin.isAfter(nuevaPreTarea.horafin)) {
+        mostrarDialog(
+            'La hora seleccionada no se encuentra en el rango de inicio y fin');
+        nuevaPreTarea.pausafin = null;
+      }
+      if (nuevaPreTarea.pausainicio != null &&
+          nuevaPreTarea.pausainicio.isAfter(nuevaPreTarea?.pausafin)) {
         mostrarDialog('La hora debe ser mayor a la hora de pausa');
-        nuevaTarea.pausafin = null;
+        nuevaPreTarea.pausafin = null;
       }
       update(['fin_pausa']);
     }
   }
 
-  void mostrarDialog(String mensaje){
+  void mostrarDialog(String mensaje) {
     basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        mensaje,
-        'Aceptar',
-        () => Get.back(),
-      );
+      Get.overlayContext,
+      'Alerta',
+      mensaje,
+      'Aceptar',
+      () => Get.back(),
+    );
   }
 
   void changeFecha() {
-    nuevaTarea.fecha = fecha;
+    nuevaPreTarea.fecha = fecha;
     update(['fecha']);
-    errorFecha= (nuevaTarea.fecha == null) ? 'Ingrese una fecha' : null;
+    errorFecha = (nuevaPreTarea.fecha == null) ? 'Ingrese una fecha' : null;
     update(['fecha']);
   }
 
@@ -200,17 +292,34 @@ class NuevaPreTareaController extends GetxController {
     errorSupervisor = validatorUtilText(id, 'Supervisor', {
       'required': '',
     });
-    int index = supervisors.indexWhere((e) => e.codigoempresa.toString()== id);
+    int index = supervisors.indexWhere((e) => e.codigoempresa.toString() == id);
     if (errorSupervisor == null && index != -1) {
-      nuevaTarea.supervisor = supervisors[index];
-      nuevaTarea.codigoempresa = nuevaTarea.supervisor.codigoempresa;
-      
+      nuevaPreTarea.supervisor = supervisors[index];
+      nuevaPreTarea.codigoempresasupervisor =
+          nuevaPreTarea.supervisor.codigoempresa;
     } else {
-      nuevaTarea.supervisor = null;
-      nuevaTarea.codigoempresa = null;
+      nuevaPreTarea.supervisor = null;
+      nuevaPreTarea.codigoempresasupervisor = null;
     }
 
     update(['supervisors']);
+  }
+
+  void changeDigitador(String id) {
+    errorDigitador = validatorUtilText(id, 'Digitador', {
+      'required': '',
+    });
+    int index = supervisors.indexWhere((e) => e.codigoempresa.toString() == id);
+    if (errorDigitador == null && index != -1) {
+      nuevaPreTarea.digitador = supervisors[index];
+      nuevaPreTarea.codigoempresadigitador =
+          supervisors[index].codigoempresa;
+    } else {
+      nuevaPreTarea.digitador = null;
+      nuevaPreTarea.codigoempresadigitador = null;
+    }
+
+    update(['digitadors']);
   }
 
   Future<void> changeActividad(String id) async {
@@ -219,15 +328,34 @@ class NuevaPreTareaController extends GetxController {
     });
     int index = actividades.indexWhere((e) => e.idactividad == int.parse(id));
     if (errorActividad == null && index != -1) {
-      nuevaTarea.actividad = actividades[index];
-      nuevaTarea.idactividad = int.parse(id);
+      nuevaPreTarea.laboresCultivoPacking.actividad = actividades[index];
+      nuevaPreTarea.laboresCultivoPacking.idactividad = int.parse(id);
       await getLabores();
     } else {
-      nuevaTarea.actividad = null;
-      nuevaTarea.idactividad = null;
+      nuevaPreTarea.laboresCultivoPacking.actividad = null;
+      nuevaPreTarea.laboresCultivoPacking.idactividad = null;
     }
 
     update(['actividades']);
+  }
+
+  void changePresentacion(String id) {
+    errorPresentacion = validatorUtilText(id, 'Presentación', {
+      'required': '',
+    });
+    int index =
+        presentaciones.indexWhere((e) => e.idpresentacion == int.parse(id));
+    if (errorPresentacion == null && index != -1) {
+      nuevaPreTarea.laboresCultivoPacking = LaboresCultivoPackingEntity();
+      nuevaPreTarea.laboresCultivoPacking.presentacionLinea =
+          presentaciones[index];
+      nuevaPreTarea.laboresCultivoPacking.idpresentacion = int.parse(id);
+    } else {
+      nuevaPreTarea.laboresCultivoPacking.presentacionLinea = null;
+      nuevaPreTarea.laboresCultivoPacking.idpresentacion = null;
+    }
+    getActividades();
+    update(['presentacion']);
   }
 
   void changeCentroCosto(String id) {
@@ -237,11 +365,11 @@ class NuevaPreTareaController extends GetxController {
     int index =
         centrosCosto.indexWhere((e) => e.idcentrocosto == int.parse(id));
     if (errorCentroCosto == null && index != -1) {
-      nuevaTarea.centroCosto = centrosCosto[index];
-      nuevaTarea.idcentrocosto = int.parse(id);
+      nuevaPreTarea.centroCosto = centrosCosto[index];
+      nuevaPreTarea.idcentrocosto = int.parse(id);
     } else {
-      nuevaTarea.centroCosto = null;
-      nuevaTarea.idcentrocosto = null;
+      nuevaPreTarea.centroCosto = null;
+      nuevaPreTarea.idcentrocosto = null;
     }
     update(['centro_costo']);
   }
@@ -251,18 +379,19 @@ class NuevaPreTareaController extends GetxController {
       'required': '',
     });
     int index = labores?.indexWhere((e) => e.idlabor.toString() == id);
-    
+
     if (errorLabor == null && index != -1) {
-      nuevaTarea.labor = labores[index];
-      nuevaTarea.idlabor = nuevaTarea.labor.idlabor;
+      nuevaPreTarea.laboresCultivoPacking.labor = labores[index];
+      nuevaPreTarea.laboresCultivoPacking.idlabor =
+          nuevaPreTarea.laboresCultivoPacking.labor.idlabor;
     } else {
-      nuevaTarea.labor = null;
-      nuevaTarea.idlabor = null;
+      nuevaPreTarea.laboresCultivoPacking.labor = null;
+      nuevaPreTarea.laboresCultivoPacking.idlabor = null;
     }
     update(['labores']);
   }
 
-  Future<void> goAgregarPersona() async {
+  /* Future<void> goAgregarPersona() async {
     if (supervisors.length == 0) {
       toastError('Error', 'No hay personal en dicha sede');
       return;
@@ -273,20 +402,20 @@ class NuevaPreTareaController extends GetxController {
         () => AgregarPersonaPage(),
         arguments: {
           'personal': supervisors,
-          'personal_seleccionado': nuevaTarea.personal,
-          'tarea': nuevaTarea,
+          'personal_seleccionado': nuevaPreTarea.personal,
+          'tarea': nuevaPreTarea,
         });
     if (result != null) {
       print('regreso');
-      nuevaTarea.personal.add(result);
+      nuevaPreTarea.detalles.add(result);
       update(['personal']);
     }
-  }
+  } */
 
   void goBack() {
     String mensaje = validar();
     if (mensaje == null) {
-      Get.back(result: nuevaTarea);
+      Get.back(result: nuevaPreTarea);
     } else {
       toastError('Error', mensaje);
     }
@@ -294,75 +423,59 @@ class NuevaPreTareaController extends GetxController {
 
   Future<void> goListadoPersonas() async {
     ListadoPersonasBinding().dependencies();
-    final resultados = await Get.to<List<PersonalTareaProcesoEntity>>(
-        () => ListadoPersonasPage(),
-        arguments: {
-          'tarea': nuevaTarea,
-          'personal': supervisors
-        });
+    final resultados = await Get.to<List<PreTareoProcesoDetalleEntity>>(
+        () => ListadoPersonasPreTareoPage(),
+        arguments: {'tarea': nuevaPreTarea, 'personal': supervisors});
 
     if (resultados != null) {
-      nuevaTarea.personal = resultados;
+      nuevaPreTarea.detalles = resultados;
       update(['personal']);
     }
   }
 
   void changeDiaSiguiente(bool value) {
-    nuevaTarea.diasiguiente = value;
+    nuevaPreTarea.diasiguiente = value;
     update(['dia_siguiente']);
   }
 
-  Future<void> changeRendimiento(bool value) async {
-    if (value) {
-      nuevaTarea.esjornal = true;
-      nuevaTarea.esrendimiento = false;
-    } else {
-      nuevaTarea.esjornal = false;
-      nuevaTarea.esrendimiento = true;
-    }
-    await getActividades(value ? 'esjornal' : 'esrendimiento', true);
-    update(['rendimiento', 'actividades']);
-  }
-
-  void deleteInicioPausa(){
-    nuevaTarea.pausainicio=null;
+  void deleteInicioPausa() {
+    nuevaPreTarea.pausainicio = null;
     update(['inicio_pausa']);
   }
 
-  void deleteFinPausa(){
-    nuevaTarea.pausafin=null;
+  void deleteFinPausa() {
+    nuevaPreTarea.pausafin = null;
     update(['fin_pausa']);
   }
 
   String validar() {
     changeFecha();
-    changeActividad(nuevaTarea.idactividad.toString());
-    changeLabor(nuevaTarea.idlabor.toString());
-    changeCentroCosto(nuevaTarea.idcentrocosto.toString());
-    changeSupervisor(nuevaTarea.codigoempresa.toString());
+    changeActividad(nuevaPreTarea.laboresCultivoPacking.idactividad.toString());
+    changeLabor(nuevaPreTarea.laboresCultivoPacking.idlabor.toString());
+    changeCentroCosto(nuevaPreTarea.idcentrocosto.toString());
+    changeSupervisor(nuevaPreTarea.codigoempresasupervisor.toString());
     changeHoraInicio();
-    changeDiaSiguiente(nuevaTarea.diasiguiente ?? false);
-    changeRendimiento(nuevaTarea.esjornal ?? false);
+    changeDiaSiguiente(nuevaPreTarea.diasiguiente ?? false);
     changeHoraFin();
     //TODO: VALIDAR: fechas por TURNO NOCHE
     if (errorActividad != null) return errorActividad;
     if (errorLabor != null) return errorLabor;
     if (errorSupervisor != null) return errorSupervisor;
-    if(errorHoraInicio != null) return errorHoraInicio;
-    if(errorHoraFin != null) return errorHoraFin;
-    if(errorFecha != null) return errorFecha;
-    
-    if (nuevaTarea.pausainicio != null && nuevaTarea.pausafin == null){
-      errorPausaFin= 'Debe ingresar la hora de fin de pausa';
+    if (errorHoraInicio != null) return errorHoraInicio;
+    if (errorHoraFin != null) return errorHoraFin;
+    if (errorFecha != null) return errorFecha;
+
+    if (nuevaPreTarea.pausainicio != null && nuevaPreTarea.pausafin == null) {
+      errorPausaFin = 'Debe ingresar la hora de fin de pausa';
       return errorPausaFin;
     }
-    errorPausaFin=null;
-    if (nuevaTarea.pausafin != null && nuevaTarea.pausainicio == null){
-      errorPausaInicio= 'Debe ingresar la hora de inicio de pausa';
+    errorPausaFin = null;
+    if (nuevaPreTarea.pausafin != null && nuevaPreTarea.pausainicio == null) {
+      errorPausaInicio = 'Debe ingresar la hora de inicio de pausa';
       return errorPausaInicio;
     }
-    errorPausaInicio=null;
-    
+    errorPausaInicio = null;
+
     //PUEDEN SER NULOS: inicioPausa y finPausa (00:00:00)
 
     //TODO: en caso de haber inicio de pausa validar que esten dentro de horafin y horainicio

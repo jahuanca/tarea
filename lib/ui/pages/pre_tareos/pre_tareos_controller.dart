@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_pre_tareo_binding.dart';
@@ -13,11 +14,6 @@ import 'package:flutter_tareo/domain/use_cases/pre_tareos/delete_pre_tareo_proce
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/get_all_pre_tareo_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/migrar_all_pre_tareo_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/update_pre_tareo_proceso_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/tareas/create_tarea_proceso_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/tareas/delete_tarea_proceso_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/tareas/update_tarea_proceso_use_case.dart';
-import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
-import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo/listado_personas_pre_tareo_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_pre_tarea/nueva_pre_tarea_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
@@ -31,6 +27,7 @@ class PreTareosController extends GetxController {
   final UpdatePreTareoProcesoUseCase _updatePreTareoProcesoUseCase;
   final DeletePreTareoProcesoUseCase _deletePreTareoProcesoUseCase;
   final MigrarAllPreTareoUseCase _migrarAllPreTareoUseCase;
+  ScrollController scrollController=ScrollController();
 
   PreTareosController(
       this._createPreTareoProcesoUseCase,
@@ -43,11 +40,17 @@ class PreTareosController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    await getTareas();
   }
 
+  @override
+  void onReady() async {
+    super.onReady();
+    await getTareas();
+  }
+  
   Future<void> getTareas() async {
     preTareos = await _getAllPreTareoProcesoUseCase.execute();
+    update(['tareas']);
     return;
   }
 

@@ -1,14 +1,17 @@
 
 import 'package:flutter_tareo/data/repositories/actividad_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/centro_costo_repository_implementation.dart';
+import 'package:flutter_tareo/data/repositories/labores_cultivo_packing_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/personal_empresa_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/subdivision_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/labor_repository_implementation.dart';
 import 'package:flutter_tareo/domain/repositories/actividad_repository.dart';
 import 'package:flutter_tareo/domain/repositories/centro_costo_repository.dart';
+import 'package:flutter_tareo/domain/repositories/labores_cultivo_packing_repository.dart';
 import 'package:flutter_tareo/domain/repositories/personal_empresa_repository.dart';
 import 'package:flutter_tareo/domain/repositories/subdivision_repository.dart';
 import 'package:flutter_tareo/domain/repositories/labor_repository.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_labores_cultivo_packing_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_actividads_by_key_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_labors_by_key_use_case.dart';
@@ -33,6 +36,7 @@ class NuevaTareaBinding extends Bindings{
     Get.lazyReplace<GetSubdivisonsUseCase>(() => GetSubdivisonsUseCase(Get.find()));
     Get.lazyReplace<GetPersonalsEmpresaBySubdivisionUseCase>(() => GetPersonalsEmpresaBySubdivisionUseCase(Get.find()));
     Get.lazyReplace<GetCentroCostosUseCase>(() => GetCentroCostosUseCase(Get.find()));
+    Get.lazyReplace<GetLaboresCultivoPackingUseCase>(() => GetLaboresCultivoPackingUseCase(Get.find()));
 
     Get.lazyPut<NuevaTareaController>(() => NuevaTareaController(Get.find(), Get.find(), Get.find(), Get.find(), Get.find()));
     

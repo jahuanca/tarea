@@ -38,13 +38,17 @@ class PreTareoProcesoEntityAdapter extends TypeAdapter<PreTareoProcesoEntity> {
       ..sede = fields[16] as SubdivisionEntity
       ..pathUrl = fields[17] as String
       ..estadoLocal = fields[18] as String
-      ..firmaSupervisor = fields[19] as String;
+      ..firmaSupervisor = fields[19] as String
+      ..turnotareo = fields[21] as String
+      ..supervisor = fields[22] as PersonalEmpresaEntity
+      ..digitador = fields[23] as PersonalEmpresaEntity
+      ..diasiguiente = fields[24] as bool;
   }
 
   @override
   void write(BinaryWriter writer, PreTareoProcesoEntity obj) {
     writer
-      ..writeByte(21)
+      ..writeByte(25)
       ..writeByte(0)
       ..write(obj.itempretareaproceso)
       ..writeByte(1)
@@ -86,7 +90,15 @@ class PreTareoProcesoEntityAdapter extends TypeAdapter<PreTareoProcesoEntity> {
       ..writeByte(19)
       ..write(obj.firmaSupervisor)
       ..writeByte(20)
-      ..write(obj.centroCosto);
+      ..write(obj.centroCosto)
+      ..writeByte(21)
+      ..write(obj.turnotareo)
+      ..writeByte(22)
+      ..write(obj.supervisor)
+      ..writeByte(23)
+      ..write(obj.digitador)
+      ..writeByte(24)
+      ..write(obj.diasiguiente);
   }
 
   @override

@@ -289,7 +289,7 @@ class NuevaTareaPage extends StatelessWidget {
                                   _.nuevaTarea.pausafin = await DatePickerWidget(
                                     onlyDate: true,
                                     dateSelected: DateTime.now(),
-                                    minDate: _.nuevaTarea.horainicio,
+                                    minDate: _.nuevaTarea.pausainicio,
                                   ).selectTime(context, null);
                                   _.changeFinPausa();
                                 },

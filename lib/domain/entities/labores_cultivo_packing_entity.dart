@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
@@ -75,3 +77,8 @@ class LaboresCultivoPackingEntity {
         "Presentacion_Linea": presentacionLinea == null ? null : presentacionLinea.toJson(),
     };
 }
+
+List<LaboresCultivoPackingEntity> laboresCultivoPackingEntityFromJson(String str) => List<LaboresCultivoPackingEntity>.from(json.decode(str).map((x) => LaboresCultivoPackingEntity.fromJson(x)));
+
+String laboresCultivoPackingEntityToJson(List<LaboresCultivoPackingEntity> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
