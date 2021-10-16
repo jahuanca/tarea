@@ -258,7 +258,7 @@ class MigrarPage extends StatelessWidget {
                                     child: CircleAvatar(
                                       backgroundColor: infoColor,
                                       child: IconButton(
-                                          onPressed: () => _.goAprobar(index),
+                                          onPressed: () => _.goMigrar(index),
                                           icon: Icon(
                                             Icons.sync_rounded,
                                             color: Colors.white,

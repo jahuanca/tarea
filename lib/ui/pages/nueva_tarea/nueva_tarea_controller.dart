@@ -287,6 +287,7 @@ class NuevaTareaController extends GetxController {
   void goBack() {
     String mensaje = validar();
     if (mensaje == null) {
+      nuevaTarea.idusuario=PreferenciasUsuario().idUsuario;
       Get.back(result: nuevaTarea);
     } else {
       toastError('Error', mensaje);

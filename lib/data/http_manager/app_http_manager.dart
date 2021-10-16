@@ -12,7 +12,8 @@ import 'package:flutter_tareo/data/http_manager/http_manager.dart';
 import 'package:flutter_tareo/domain/exceptions/app_exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const timeout = Duration(seconds: 5);
+const timeout = Duration(seconds: 20);
+//FIXME: error de NETWORKEXCEPTION with /PERSONAL_EMPRESA
 
 class AppHttpManager implements HttpManager {
   @override
@@ -25,8 +26,8 @@ class AppHttpManager implements HttpManager {
       print('Api Get request url $url');
       log(query.toString());
       final response = await http.get(Uri.parse(_queryBuilder(url, query)),
-          headers: await _headerBuilder(headers));
-      /* .timeout(timeout, onTimeout: () => throw TimeoutException()); */
+          headers: await _headerBuilder(headers))
+      .timeout(timeout, onTimeout: () => throw TimeoutException());
       return _returnResponse(response);
     } on Exception catch (_) {
       throw NetworkException();
@@ -127,7 +128,9 @@ class AppHttpManager implements HttpManager {
     final responseJson = response.body;
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       print('Api response success with ');
-      log(responseJson);
+      if(mostrarLog){
+        log(responseJson);
+      }
       return responseJson;
     }
 

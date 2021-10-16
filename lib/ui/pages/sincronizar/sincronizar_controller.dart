@@ -60,13 +60,14 @@ class SincronizarController extends GetxController{
   @override
   void onReady()async{
     super.onReady();
+    
     await getActividades();
     await getSedes();
     await getLabores();
     await getCentrosCosto();
     await getUsuarios();
     await getPersonal();
-    await getPreTareos();
+    //await getPreTareos();
     await getLaboresCultivoPacking();
     validando=false;
     update(['validando']);

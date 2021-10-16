@@ -1,6 +1,8 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_pre_tareo_binding.dart';
@@ -14,12 +16,14 @@ import 'package:flutter_tareo/domain/use_cases/pre_tareos/delete_pre_tareo_proce
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/get_all_pre_tareo_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/migrar_all_pre_tareo_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/update_pre_tareo_proceso_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/pre_tareos/upload_file_of_tarea_use_case.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo/listado_personas_pre_tareo_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_pre_tarea/nueva_pre_tarea_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
+import 'package:image_editor_pro/image_editor_pro.dart';
 
 class PreTareosController extends GetxController {
   final CreatePreTareoProcesoUseCase _createPreTareoProcesoUseCase;
@@ -27,15 +31,19 @@ class PreTareosController extends GetxController {
   final UpdatePreTareoProcesoUseCase _updatePreTareoProcesoUseCase;
   final DeletePreTareoProcesoUseCase _deletePreTareoProcesoUseCase;
   final MigrarAllPreTareoUseCase _migrarAllPreTareoUseCase;
-  ScrollController scrollController=ScrollController();
+  final UploadFileOfPreTareoUseCase _uploadFileOfPreTareoUseCase;
+  ScrollController scrollController = ScrollController();
+
+  bool validando = false;
 
   PreTareosController(
-      this._createPreTareoProcesoUseCase,
-      this._getAllPreTareoProcesoUseCase,
-      this._updatePreTareoProcesoUseCase,
-      this._deletePreTareoProcesoUseCase,
-      this._migrarAllPreTareoUseCase
-      );
+    this._createPreTareoProcesoUseCase,
+    this._getAllPreTareoProcesoUseCase,
+    this._updatePreTareoProcesoUseCase,
+    this._deletePreTareoProcesoUseCase,
+    this._migrarAllPreTareoUseCase,
+    this._uploadFileOfPreTareoUseCase,
+  );
 
   @override
   void onInit() async {
@@ -47,7 +55,7 @@ class PreTareosController extends GetxController {
     super.onReady();
     await getTareas();
   }
-  
+
   Future<void> getTareas() async {
     preTareos = await _getAllPreTareoProcesoUseCase.execute();
     update(['tareas']);
@@ -55,7 +63,7 @@ class PreTareosController extends GetxController {
   }
 
   void onChangedMenu(dynamic value, int index) async {
-    switch (value.toInt()){
+    switch (value.toInt()) {
       case 1:
         break;
       case 2:
@@ -69,9 +77,115 @@ class PreTareosController extends GetxController {
     }
   }
 
-  Future<void> goMigrarPreTareo(int index) async {
-    await _migrarAllPreTareoUseCase.execute(preTareos[index]);
+  void goAprobar(int index) async {
+    String mensaje = await validarParaAprobar(index);
+    if (mensaje != null) {
+      basicAlert(
+        Get.overlayContext,
+        'Alerta',
+        mensaje,
+        'Aceptar',
+        () => Get.back(),
+      );
+    } else {
+      basicDialog(
+        Get.overlayContext,
+        'Alerta',
+        '¿Desea aprobar esta actividad?',
+        'Si',
+        'No',
+        () async {
+          Get.back();
+          await getimageditor(index);
+        },
+        () => Get.back(),
+      );
+    }
   }
+
+  Future<void> getimageditor(int index) async {
+    Navigator.push(Get.overlayContext, MaterialPageRoute(builder: (context) {
+      return ImageEditorPro(
+        appBarColor: Color(0xFF009ee0),
+        bottomBarColor: Colors.white,
+      );
+    })).then((geteditimage) async {
+      if (geteditimage != null) {
+        File _image = geteditimage[0];
+
+        preTareos[index].pathUrl = _image.path;
+        preTareos[index].estadoLocal = 'A';
+        await _updatePreTareoProcesoUseCase.execute(preTareos[index], index);
+
+        update(['seleccionado']);
+      }
+    }).catchError((er) {
+      print(er);
+    });
+  }
+
+  Future<String> validarParaAprobar(int index) async {
+    PreTareoProcesoEntity tarea = preTareos[index];
+    if (tarea.detalles == null || tarea.detalles.isEmpty) {
+      return 'No se puede aprobar una actividad que no tiene personal';
+    } else {
+      for (var item in tarea.detalles) {
+        if (!item.validadoParaAprobar) {
+          return 'Verifique que todos los datos del personal esten llenos';
+        }
+      }
+    }
+    return null;
+  }
+
+  Future<void> goMigrar(int index) async {
+    //TODO: CARGAR CIRCULAR PROGRESS 
+    if (preTareos[index].estadoLocal == 'A') {
+      basicDialog(
+        Get.overlayContext,
+        'Alerta',
+        '¿Desea migrar esta actividad?',
+        'Si',
+        'No',
+        () async {
+          Get.back();
+          await migrar(index);
+        },
+        () => Get.back(),
+      );
+    } else {
+      basicAlert(
+        Get.overlayContext,
+        'Alerta',
+        'Esta tarea aun no ha sido aprobada',
+        'Aceptar',
+        () => Get.back(),
+      );
+    }
+  }
+
+  Future<void> migrar(int index) async {
+    validando = true;
+    update(['validando']);
+    PreTareoProcesoEntity tareaMigrada =
+        await _migrarAllPreTareoUseCase.execute(preTareos[index]);
+    if (tareaMigrada != null) {
+      toastExito('Exito', 'Tarea migrada con exito');
+      preTareos[index].estadoLocal = 'M';
+      preTareos[index].itempretareaproceso = tareaMigrada.itempretareaproceso;
+      await _updatePreTareoProcesoUseCase.execute(preTareos[index], index);
+      tareaMigrada = await _uploadFileOfPreTareoUseCase.execute(
+          preTareos[index], File(preTareos[index].pathUrl));
+      preTareos[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
+      await _updatePreTareoProcesoUseCase.execute(preTareos[index], index);
+      validando = false;
+      update(['validando', 'tareas']);
+    }
+  }
+
+  /* Future<void> goMigrarPreTareo(int index) async {
+    await _migrarAllPreTareoUseCase.execute(preTareos[index]);
+  } */
 
   Future<void> goListadoPersonas(int index) async {
     ListadoPersonasPreTareoBinding().dependencies();
@@ -110,9 +224,11 @@ class PreTareosController extends GetxController {
 
   Future<void> goNuevaPreTarea() async {
     NuevaPreTareaBinding().dependencies();
-    final result = await Get.to<PreTareoProcesoEntity>(() => NuevaPreTareaPage());
+    final result =
+        await Get.to<PreTareoProcesoEntity>(() => NuevaPreTareaPage());
     if (result != null) {
-      preTareos.add(result);
+      preTareos.insert(0, result);
+      //preTareos.add(result);
       await _createPreTareoProcesoUseCase.execute(result);
       update(['tareas']);
     }
@@ -124,7 +240,7 @@ class PreTareosController extends GetxController {
         arguments: {'tarea': preTareos[index]});
     if (result != null) {
       log(result.toJson().toString());
-      result.idusuario=PreferenciasUsuario().idUsuario;
+      result.idusuario = PreferenciasUsuario().idUsuario;
       preTareos[index] = result;
       await _updatePreTareoProcesoUseCase.execute(preTareos[index], index);
       update(['tareas']);
@@ -136,57 +252,56 @@ class PreTareosController extends GetxController {
     final result = await Get.to<PreTareoProcesoEntity>(() => NuevaTareaPage(),
         arguments: {'tarea': preTareos[index]});
     if (result != null) {
-      result.idusuario=PreferenciasUsuario().idUsuario;
+      result.idusuario = PreferenciasUsuario().idUsuario;
       preTareos.add(result);
       await _createPreTareoProcesoUseCase.execute(preTareos.last);
       update(['tareas']);
     }
   }
 
-  void goEliminar(int index){
+  void goEliminar(int index) {
     basicDialog(
-      Get.overlayContext, 
-      'Alerta', 
-      '¿Esta seguro de eliminar esta tarea?', 
-      'Si', 
-      'No', 
-      () async{
+      Get.overlayContext,
+      'Alerta',
+      '¿Esta seguro de eliminar esta tarea?',
+      'Si',
+      'No',
+      () async {
         await delete(index);
         update(['tareas']);
         Get.back();
-      }, 
-      ()=> Get.back(),
+      },
+      () => Get.back(),
     );
   }
 
-  void goCopiar(int index){
+  void goCopiar(int index) {
     basicDialog(
-      Get.overlayContext, 
-      'Alerta', 
-      '¿Esta seguro de copiar la siguiente tarea?', 
-      'Si', 
-      'No', 
-      () async{
+      Get.overlayContext,
+      'Alerta',
+      '¿Esta seguro de copiar la siguiente tarea?',
+      'Si',
+      'No',
+      () async {
         Get.back();
         await copiarTarea(index);
-      }, 
-      ()=> Get.back(),
+      },
+      () => Get.back(),
     );
   }
 
-  void goEditar(int index){
+  void goEditar(int index) {
     basicDialog(
-      Get.overlayContext, 
-      'Alerta', 
-      '¿Esta seguro de editar la siguiente tarea?', 
-      'Si', 
-      'No', 
-      () async{
+      Get.overlayContext,
+      'Alerta',
+      '¿Esta seguro de editar la siguiente tarea?',
+      'Si',
+      'No',
+      () async {
         Get.back();
         await copiarTarea(index);
-      }, 
-      ()=> Get.back(),
+      },
+      () => Get.back(),
     );
   }
-
 }

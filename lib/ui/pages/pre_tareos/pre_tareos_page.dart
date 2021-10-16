@@ -39,7 +39,7 @@ class PreTareosPage extends StatelessWidget {
                         id: 'tareas',
                         builder: (_) => _.preTareos.isEmpty
                             ? EmptyDataWidget(
-                                titulo: 'No existen tareas.',
+                                titulo: 'No existen arandanos.',
                                 size: size,
                                 onPressed: _.getTareas)
                             : ListView.builder(
@@ -255,8 +255,27 @@ class PreTareosPage extends StatelessWidget {
                 Flexible(
                   child: Container(
                     child: Row(
-                      children: (_.preTareos[index].estadoLocal != 'P')
+                      children: (_.preTareos[index].estadoLocal != 'P' && _.preTareos[index].estadoLocal!='PC')
                           ? [
+                              
+                              Flexible(child: Container(), flex: 1),
+                              if(_.preTareos[index].estadoLocal != 'M')
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: CircleAvatar(
+                                    backgroundColor: infoColor,
+                                    child: IconButton(
+                                        onPressed: () =>
+                                            _.goMigrar(index),
+                                        icon: Icon(
+                                          Icons.sync,
+                                          color: Colors.white,
+                                        )),
+                                  ),
+                                ),
+                                flex: 7,
+                              ),
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                 child: Container(
@@ -264,11 +283,25 @@ class PreTareosPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: successColor,
                                     child: IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(
-                                          Icons.remove_red_eye,
-                                          color: Colors.white,
-                                        )),
+                                      onPressed: null,
+                                          // ()=> _.goAprobar(index),
+                                      icon: Icon(Icons.remove_red_eye),
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                flex: 7,
+                              ),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: CircleAvatar(
+                                    backgroundColor: dangerColor,
+                                    child: IconButton(
+                                      onPressed: () => _.goEliminar(index),
+                                      icon: Icon(Icons.delete),
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                                 flex: 7,
@@ -301,15 +334,17 @@ class PreTareosPage extends StatelessWidget {
                                     backgroundColor: successColor,
                                     child: IconButton(
                                       onPressed: () =>
-                                          _.goMigrarPreTareo(index),
-                                      icon: Icon(Icons.sync),
+                                          _.goAprobar(index),
+                                      icon: Icon(Icons.check_rounded),
                                       color: Colors.white,
                                     ),
                                   ),
                                 ),
                                 flex: 7,
                               ),
+                              if(_.preTareos[index].estadoLocal == 'PC')
                               Flexible(child: Container(), flex: 1),
+                              if(_.preTareos[index].estadoLocal == 'PC')
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.center,

@@ -45,7 +45,6 @@ class ListadoPersonasPreTareoController extends GetxController
       'DEC_EAN13_CHECK_DIGIT_TRANSMIT':
           true, //This is the EAN13 check digit specific property
     };
-    
 
     honeywellScanner = HoneywellScanner();
     honeywellScanner.setScannerCallBack(this);
@@ -89,21 +88,19 @@ class ListadoPersonasPreTareoController extends GetxController
   }
 
   @override
-  void onClose(){
+  void onClose() {
     honeywellScanner.stopScanner();
     super.onClose();
   }
 
-
   @override
   void onDecoded(String result) {
-    setCodeBar(result);
+    setCodeBar(result, true);
   }
 
   @override
   void onError(Exception error) {
     toastError('Error', error.toString());
-    
   }
 
   Future<void> _showNotification(bool success, String mensaje) async {
@@ -146,7 +143,6 @@ class ListadoPersonasPreTareoController extends GetxController
         return false;
       }
     });
-
     Get.back(result: personalSeleccionado);
     return true;
   }
@@ -249,37 +245,42 @@ class ListadoPersonasPreTareoController extends GetxController
     });
   }
 
-  Future<void> setCodeBar(dynamic barcode) async{
+  Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
     if (barcode != null && barcode != -1) {
-        int indexEncontrado = personalSeleccionado
-            .indexWhere((e) => e.codigotk == barcode.toString());
-        if (indexEncontrado != -1) {
-          _showNotification(false, 'Ya se encuentra registrado');
-          return;
-        }
-        List<String> valores = barcode.toString().split('_');
-        int index = personal.indexWhere((e) => e.codigoempresa == valores[0]);
-        if (index != -1) {
-          _showNotification(true, 'Registrado con exito');
-          int lasItem = (personalSeleccionado.isEmpty)
-              ? 0
-              : personalSeleccionado.last.numcaja;
-          personalSeleccionado.add(PreTareoProcesoDetalleEntity(
-              personal: personal[index],
-              numcaja: lasItem + 1,
-              codigoempresa: personal[index].codigoempresa,
-              fecha: DateTime.now(),
-              hora: DateTime.now(),
-              imei: '1256',
-              idestado: 1,
-              codigotk: barcode.toString(),
-              idusuario: PreferenciasUsuario().idUsuario,
-              itempretareaproceso: preTarea.itempretareaproceso));
-          update(['personal_seleccionado']);
-        } else {
-          _showNotification(false, 'No se encuentra en la lista');
-        }
-        
+      int indexEncontrado = personalSeleccionado
+          .indexWhere((e) => e.codigotk == barcode.toString());
+      if (indexEncontrado != -1) {
+        byLector
+            ? toastError('Error', 'Ya se encuentra registrado')
+            : _showNotification(false, 'Ya se encuentra registrado');
+        return;
       }
+      List<String> valores = barcode.toString().split('_');
+      int index = personal.indexWhere((e) => e.codigoempresa == valores[0]);
+      if (index != -1) {
+        byLector
+            ? toastExito('Éxito', 'Registrado con exito')
+            : _showNotification(true, 'Registrado con exito');
+        int lasItem = (personalSeleccionado.isEmpty)
+            ? 0
+            : personalSeleccionado.last.numcaja;
+        personalSeleccionado.add(PreTareoProcesoDetalleEntity(
+            personal: personal[index],
+            numcaja: lasItem + 1,
+            codigoempresa: personal[index].codigoempresa,
+            fecha: DateTime.now(),
+            hora: DateTime.now(),
+            imei: '1256',
+            idestado: 1,
+            codigotk: barcode.toString(),
+            idusuario: PreferenciasUsuario().idUsuario,
+            itempretareaproceso: preTarea.itempretareaproceso));
+        update(['personal_seleccionado']);
+      } else {
+        byLector
+            ? toastError('Error', 'No se encuentra en la lista')
+            : _showNotification(false, 'No se encuentra en la lista');
+      }
+    }
   }
 }

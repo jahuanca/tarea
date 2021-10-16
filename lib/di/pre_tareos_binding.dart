@@ -8,6 +8,7 @@ import 'package:flutter_tareo/domain/use_cases/pre_tareos/delete_pre_tareo_proce
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/get_all_pre_tareo_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/migrar_all_pre_tareo_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/update_pre_tareo_proceso_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/pre_tareos/upload_file_of_tarea_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/create_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/delete_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/get_all_tarea_proceso_use_case.dart';
@@ -29,8 +30,9 @@ class PreTareosBinding extends Bindings{
     Get.lazyReplace<UpdatePreTareoProcesoUseCase>(() => UpdatePreTareoProcesoUseCase(Get.find()));
     Get.lazyReplace<DeletePreTareoProcesoUseCase>(() => DeletePreTareoProcesoUseCase(Get.find()));
     Get.lazyReplace<MigrarAllPreTareoUseCase>(() => MigrarAllPreTareoUseCase(Get.find()));
+    Get.lazyReplace<UploadFileOfPreTareoUseCase>(() => UploadFileOfPreTareoUseCase(Get.find()));
 
-    Get.lazyPut<PreTareosController>(() => PreTareosController(Get.find(), Get.find() , Get.find(), Get.find(), Get.find()));
+    Get.lazyPut<PreTareosController>(() => PreTareosController(Get.find(), Get.find() , Get.find(), Get.find(), Get.find(), Get.find()));
     
   }
 

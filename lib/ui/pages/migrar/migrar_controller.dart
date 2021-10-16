@@ -53,7 +53,7 @@ class MigrarController extends GetxController {
     update(['seleccionado']);
   }
 
-  void goAprobar(int index) {
+  void goMigrar(int index) {
     if (tareas[index].estadoLocal == 'A') {
       basicDialog(
         Get.overlayContext,

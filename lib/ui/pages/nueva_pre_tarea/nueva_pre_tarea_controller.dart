@@ -415,6 +415,16 @@ class NuevaPreTareaController extends GetxController {
   void goBack() {
     String mensaje = validar();
     if (mensaje == null) {
+
+      laboresCultivoPacking.forEach((e) {
+        LaboresCultivoPackingEntity actual=nuevaPreTarea.laboresCultivoPacking;
+        if(e.idcultivo== actual.idcultivo && e.idactividad== actual.idactividad && e.idlabor== actual.idlabor){
+          nuevaPreTarea.item=e.item;
+        }
+      });
+
+      nuevaPreTarea.idusuario=PreferenciasUsuario().idUsuario;
+      nuevaPreTarea.estadoLocal='PC';
       Get.back(result: nuevaPreTarea);
     } else {
       toastError('Error', mensaje);

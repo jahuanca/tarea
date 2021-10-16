@@ -4,6 +4,7 @@ import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
+import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
 
 class AgregarPersonaController extends GetxController {
@@ -121,6 +122,7 @@ class AgregarPersonaController extends GetxController {
         personalRespuesta.add(PersonalTareaProcesoEntity(
           personal: p,
           codigoempresa: p.codigoempresa,
+          idusuario: PreferenciasUsuario().idUsuario,
           horainicio: personalTareaProcesoEntity.horainicio,
           horafin: personalTareaProcesoEntity.horafin,
           pausainicio: personalTareaProcesoEntity.pausainicio,
@@ -136,6 +138,7 @@ class AgregarPersonaController extends GetxController {
       return;
     }
     personalTareaProcesoEntity.codigoempresa=personalTareaProcesoEntity.personal.codigoempresa;
+    personalTareaProcesoEntity.idusuario=PreferenciasUsuario().idUsuario;
     Get.back(result: personalTareaProcesoEntity);
   }
 
