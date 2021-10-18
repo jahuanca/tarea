@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/ui/pages/migrar/migrar_page.dart';
 import 'package:flutter_tareo/ui/pages/pre_tareos/pre_tareos_page.dart';
+import 'package:flutter_tareo/ui/pages/pre_tareos_uva/pre_tareos_uva_page.dart';
 import 'package:flutter_tareo/ui/pages/search/search_page.dart';
 import 'package:flutter_tareo/ui/pages/tareas/tareas_page.dart';
 import 'package:get/get.dart';
@@ -18,7 +19,7 @@ class NavigationController extends GetxController {
     AprobarPage(),
     MigrarPage(),
     PreTareosPage(),
-    Container(),
+    PreTareosUvaPage(),
     Container(),
     Container(),
   ];
@@ -72,6 +73,14 @@ class NavigationController extends GetxController {
       case 4:
         actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
         titulo = 'Arándano';
+        scaffoldKey.currentState.openEndDrawer();
+        indexWidget = index;
+        update(['bottom_navigation']);
+        break;
+      
+      case 5:
+        actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
+        titulo = 'Uva';
         scaffoldKey.currentState.openEndDrawer();
         indexWidget = index;
         update(['bottom_navigation']);

@@ -10,6 +10,8 @@ import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
@@ -50,6 +52,8 @@ void main() async{
   Hive.registerAdapter(CultivoEntityAdapter());
   Hive.registerAdapter(PresentacionLineaEntityAdapter());
   Hive.registerAdapter(PreTareoProcesoDetalleEntityAdapter());
+  Hive.registerAdapter(PreTareoProcesoUvaEntityAdapter());
+  Hive.registerAdapter(PreTareoProcesoUvaDetalleEntityAdapter());
   
   runApp(MyApp());
 }

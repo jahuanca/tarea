@@ -3,24 +3,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/core/dimens.dart';
-import 'package:flutter_tareo/ui/pages/pre_tareos/pre_tareos_controller.dart';
+import 'package:flutter_tareo/ui/pages/pre_tareos_uva/pre_tareos_uva_controller.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
 
-class PreTareosPage extends StatelessWidget {
-  final PreTareosController controller = Get.find<PreTareosController>();
+class PreTareosUvaPage extends StatelessWidget {
+  final PreTareosUvaController controller = Get.find<PreTareosUvaController>();
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
-    return GetBuilder<PreTareosController>(
+    return GetBuilder<PreTareosUvaController>(
       init: controller,
       builder: (_) => Stack(
         children: [
           Scaffold(
             backgroundColor: secondColor,
-            body: GetBuilder<PreTareosController>(
+            body: GetBuilder<PreTareosUvaController>(
               id: 'seleccionado',
               builder: (_) => Column(
                 children: [
@@ -35,7 +35,7 @@ class PreTareosPage extends StatelessWidget {
                     flex: 8,
                     child: RefreshIndicator(
                       onRefresh: _.getTareas,
-                      child: GetBuilder<PreTareosController>(
+                      child: GetBuilder<PreTareosUvaController>(
                         id: 'tareas',
                         builder: (_) => _.preTareos.isEmpty
                             ? EmptyDataWidget(
@@ -75,7 +75,7 @@ class PreTareosPage extends StatelessWidget {
       {'key': 3, 'value': 'Eliminar'},
     ];
 
-    return GetBuilder<PreTareosController>(
+    return GetBuilder<PreTareosUvaController>(
       id: 'seleccionado',
       builder: (_) => GestureDetector(
         onLongPress: () => _.seleccionar(index),
@@ -131,8 +131,7 @@ class PreTareosPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              _.preTareos[index].laboresCultivoPacking.actividad
-                                      ?.descripcion ??
+                              _.preTareos[index]?.presentacion?.descripcion ??
                                   '',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
@@ -188,9 +187,9 @@ class PreTareosPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.preTareos[index].laboresCultivoPacking
-                                    .labor?.descripcion ??
-                                ''),
+                            child: Text(
+                                _.preTareos[index]?.presentacion?.descripcion ??
+                                    ''),
                           ),
                           flex: 10,
                         ),
@@ -255,27 +254,26 @@ class PreTareosPage extends StatelessWidget {
                 Flexible(
                   child: Container(
                     child: Row(
-                      children: (_.preTareos[index].estadoLocal != 'P' && _.preTareos[index].estadoLocal!='PC')
+                      children: (_.preTareos[index].estadoLocal != 'P' &&
+                              _.preTareos[index].estadoLocal != 'PC')
                           ? [
-                              
                               Flexible(child: Container(), flex: 1),
-                              if(_.preTareos[index].estadoLocal != 'M')
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: infoColor,
-                                    child: IconButton(
-                                        onPressed: () =>
-                                            _.goMigrar(index),
-                                        icon: Icon(
-                                          Icons.sync,
-                                          color: Colors.white,
-                                        )),
+                              if (_.preTareos[index].estadoLocal != 'M')
+                                Flexible(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: CircleAvatar(
+                                      backgroundColor: infoColor,
+                                      child: IconButton(
+                                          onPressed: () => _.goMigrar(index),
+                                          icon: Icon(
+                                            Icons.sync,
+                                            color: Colors.white,
+                                          )),
+                                    ),
                                   ),
+                                  flex: 7,
                                 ),
-                                flex: 7,
-                              ),
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                 child: Container(
@@ -284,7 +282,7 @@ class PreTareosPage extends StatelessWidget {
                                     backgroundColor: successColor,
                                     child: IconButton(
                                       onPressed: null,
-                                          // ()=> _.goAprobar(index),
+                                      // ()=> _.goAprobar(index),
                                       icon: Icon(Icons.remove_red_eye),
                                       color: Colors.white,
                                     ),
@@ -333,8 +331,7 @@ class PreTareosPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: successColor,
                                     child: IconButton(
-                                      onPressed: () =>
-                                          _.goAprobar(index),
+                                      onPressed: () => _.goAprobar(index),
                                       icon: Icon(Icons.check_rounded),
                                       color: Colors.white,
                                     ),
@@ -342,23 +339,23 @@ class PreTareosPage extends StatelessWidget {
                                 ),
                                 flex: 7,
                               ),
-                              if(_.preTareos[index].estadoLocal == 'PC')
-                              Flexible(child: Container(), flex: 1),
-                              if(_.preTareos[index].estadoLocal == 'PC')
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: alertColor,
-                                    child: IconButton(
-                                      onPressed: () => _.goEditar(index),
-                                      icon: Icon(Icons.edit),
-                                      color: Colors.white,
+                              if (_.preTareos[index].estadoLocal == 'PC')
+                                Flexible(child: Container(), flex: 1),
+                              if (_.preTareos[index].estadoLocal == 'PC')
+                                Flexible(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: CircleAvatar(
+                                      backgroundColor: alertColor,
+                                      child: IconButton(
+                                        onPressed: () => _.goEditar(index),
+                                        icon: Icon(Icons.edit),
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
+                                  flex: 7,
                                 ),
-                                flex: 7,
-                              ),
                               Flexible(child: Container(), flex: 1),
                             ],
                     ),
@@ -384,7 +381,7 @@ class PreTareosPage extends StatelessWidget {
       {'key': 3, 'value': 'Exportar en excel'},
     ];
 
-    return GetBuilder<PreTareosController>(
+    return GetBuilder<PreTareosUvaController>(
       id: 'seleccionado',
       builder: (_) => Container(
         decoration: BoxDecoration(color: Colors.white, border: Border.all()),

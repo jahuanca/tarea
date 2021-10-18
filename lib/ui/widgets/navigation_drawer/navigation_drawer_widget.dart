@@ -76,7 +76,9 @@ Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey){
             _itemDrawer(size, Icons.check, 'Aprobación', ()=> _.goAprobar(scaffoldKey)),
             _itemDrawer(size, Icons.sync_rounded, 'Migrar', ()=> _.goMigrar(scaffoldKey)),
             if(PreferenciasUsuario().idSede==7)
-            _itemDrawer(size, Icons.task_rounded, 'Arándano', ()=> _.goPreTareo(scaffoldKey)),
+            _itemDrawer(size, 'assets/images/arandano_icon.png', 'Arándano', ()=> _.goPreTareo(scaffoldKey)),
+            if(PreferenciasUsuario().idSede==7)
+            _itemDrawer(size, 'assets/images/uva_icon.png' , 'Uva', ()=> _.goPreTareoUva(scaffoldKey)),
             
             _itemDrawer(size, Icons.construction , 'Herramientas', _.goMisEventos),
             _itemDrawer(size, Icons.settings, 'Configuración', _.goMisEventos), 
@@ -88,7 +90,7 @@ Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey){
   );
 }
 
-Widget _itemDrawer(Size size, IconData icon, String texto, void Function() onTap){
+Widget _itemDrawer(Size size, dynamic icon, String texto, void Function() onTap){
   return GestureDetector(
     onTap: onTap,
     child: Container(
@@ -97,7 +99,8 @@ Widget _itemDrawer(Size size, IconData icon, String texto, void Function() onTap
         children: [
           Flexible(child: Container(
             alignment: Alignment.center,
-            child:Icon(icon, color: starColor),
+            child: (icon is IconData) ?
+            Icon(icon, color: starColor) : ImageIcon(AssetImage(icon), color: starColor ),
           ), flex: 1),
           Flexible(child: Container(
             alignment: Alignment.centerLeft,
