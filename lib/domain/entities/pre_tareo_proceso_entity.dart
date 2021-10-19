@@ -35,6 +35,8 @@ class PreTareoProcesoEntity {
     this.laboresCultivoPacking,
     this.detalles,
     this.centroCosto,
+    this.turnotareo,
+    this.diasiguiente,
   }){
     detalles ??= [];
     estadoLocal='P';
@@ -152,6 +154,8 @@ class PreTareoProcesoEntity {
             json["fechamod"] == null ? null : DateTime.parse(json["fechamod"]),
         activo: json["activo"] == null ? null : json["activo"],
         idusuario: json["idusuario"] == null ? null : json["idusuario"],
+        turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
+        diasiguiente: json["diasiguiente"] == null ? null : json["diasiguiente"],
         laboresCultivoPacking: json["Labores_Cultivo_Packing"] == null
             ? null
             : LaboresCultivoPackingEntity.fromJson(
@@ -185,6 +189,8 @@ class PreTareoProcesoEntity {
         "fechamod": fechamod == null ? null : fechamod.toIso8601String(),
         "activo": activo == null ? null : activo,
         "idusuario": idusuario == null ? null : idusuario,
+        "turnotareo": turnotareo == null ? null : turnotareo,
+        "diasiguiente": diasiguiente == null ? null : diasiguiente,
         "Labores_Cultivo_Packing": laboresCultivoPacking == null
             ? null
             : laboresCultivoPacking.toJson(),

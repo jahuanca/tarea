@@ -23,6 +23,8 @@ class PreTareoProcesoUvaDetalleEntity {
     this.labor,
     this.actividad,
     this.presentacion,
+    this.idactividad,
+    this.idlabor,
   });
 
   @HiveField(0)
@@ -75,6 +77,8 @@ class PreTareoProcesoUvaDetalleEntity {
         codigoempresa: json['codigoempresa'],
         hora: DateTime?.parse(json['hora']),
         numcaja: json['numcaja'],
+        idlabor: json['idlabor'],
+        idactividad: json['idactividad'],
         imei: json['imei'],
         fecha: DateTime?.parse(json['fecha']),
         idestado: json['idestado'],
@@ -89,6 +93,8 @@ class PreTareoProcesoUvaDetalleEntity {
         'codigoempresa': codigoempresa,
         'hora': hora?.toIso8601String(),
         'numcaja': numcaja,
+        'idlabor': idlabor,
+        'idactividad': idactividad,
         'imei': imei,
         'fecha': fecha?.toIso8601String(),
         'idestado': idestado,

@@ -34,6 +34,8 @@ class PreTareoProcesoUvaEntity {
     this.detalles,
     this.centroCosto,
     this.presentacion,
+    this.turnotareo,
+    this.diasiguiente,
   }){
     detalles ??= [];
     estadoLocal='P';
@@ -148,6 +150,8 @@ class PreTareoProcesoUvaEntity {
             json["fechamod"] == null ? null : DateTime.parse(json["fechamod"]),
         activo: json["activo"] == null ? null : json["activo"],
         idusuario: json["idusuario"] == null ? null : json["idusuario"],
+        diasiguiente: json["diasiguiente"] == null ? null : json["diasiguiente"],
+        turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
         centroCosto: json['Centro_Costo'] == null ? null : CentroCostoEntity.fromJson(json['Centro_Costo']),
         presentacion: json['Presentacion_Linea'] == null ? null : PresentacionLineaEntity.fromJson(json['Presentacion_Linea']),
         detalles: json['Pre_Tareo_Proceso_Detalles'] == null
@@ -176,6 +180,8 @@ class PreTareoProcesoUvaEntity {
             codigoempresadigitador == null ? null : codigoempresadigitador,
         "fechamod": fechamod == null ? null : fechamod.toIso8601String(),
         "activo": activo == null ? null : activo,
+        "turnotareo": turnotareo == null ? null : turnotareo,
+        "diasiguiente": diasiguiente == null ? null : diasiguiente,
         "idusuario": idusuario == null ? null : idusuario,
         "Pre_Tareo_Proceso_Uva_Detalles": detalles == null
             ? null

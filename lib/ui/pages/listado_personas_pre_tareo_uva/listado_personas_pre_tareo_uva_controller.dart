@@ -1,13 +1,12 @@
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
+import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pre_tareos/update_pre_tareo_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/update_pre_tareo_proceso_uva_use_case.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
@@ -18,10 +17,12 @@ import 'package:honeywell_scanner/honeywell_scanner.dart';
 class ListadoPersonasPreTareoUvaController extends GetxController
     implements ScannerCallBack {
   List<int> seleccionados = [];
+  List<LaborEntity> labores = [];
   List<PersonalEmpresaEntity> personal = [];
   List<PreTareoProcesoUvaDetalleEntity> personalSeleccionado = [];
   int indexTarea;
   PreTareoProcesoUvaEntity preTarea;
+  final GetLaborsUseCase _getLaborsUseCase;
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
   final UpdatePreTareoProcesoUvaUseCase _updatePreTareoProcesoUvaUseCase;
@@ -32,6 +33,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   ListadoPersonasPreTareoUvaController(
+      this._getLaborsUseCase,
       this._getPersonalsEmpresaBySubdivisionUseCase,
       this._updatePreTareoProcesoUvaUseCase);
 
@@ -48,7 +50,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
       'DEC_EAN13_CHECK_DIGIT_TRANSMIT':
           true, //This is the EAN13 check digit specific property
     };
-
+    await getLabores();
     honeywellScanner = HoneywellScanner();
     honeywellScanner.setScannerCallBack(this);
     honeywellScanner.setProperties(properties);
@@ -88,6 +90,11 @@ class ListadoPersonasPreTareoUvaController extends GetxController
     await flutterLocalNotificationsPlugin.initialize(initSettings,
         onSelectNotification: _onSelectNotification);
     honeywellScanner.startScanner();
+  }
+
+  Future<void> getLabores() async {
+    labores = await _getLaborsUseCase.execute();
+    update(['labores']);
   }
 
   @override
@@ -197,7 +204,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
     }
   }
 
-  Future<void> changeOptions(dynamic index) async {
+  Future<void> changeOptions(dynamic index, int indexItem) async {
     switch (index) {
       case 1:
         AgregarPersonaBinding().dependencies();
@@ -214,7 +221,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
         }
         break;
       case 2:
-        goEliminar(index);
+        goEliminar(indexItem);
 
         break;
       default:
@@ -231,7 +238,8 @@ class ListadoPersonasPreTareoUvaController extends GetxController
       'No',
       () async {
         Get.back();
-        personalSeleccionado.removeAt(index);
+        print(index);
+        personalSeleccionado?.removeAt(index);
         await _updatePreTareoProcesoUvaUseCase.execute(preTarea, indexTarea);
         update(['seleccionados', 'personal_seleccionado']);
       },
@@ -243,7 +251,6 @@ class ListadoPersonasPreTareoUvaController extends GetxController
     FlutterBarcodeScanner.getBarcodeStreamReceiver(
             "#ff6666", "Cancelar", false, ScanMode.DEFAULT)
         .listen((barcode) async {
-      //print(barcode);
       await setCodeBar(barcode);
     });
   }
@@ -261,6 +268,8 @@ class ListadoPersonasPreTareoUvaController extends GetxController
       List<String> valores = barcode.toString().split('_');
       int index = personal.indexWhere((e) => e.codigoempresa == valores[0]);
       if (index != -1) {
+        LaborEntity labor =
+            labores.firstWhere((e) => e.idlabor == int.parse(valores[1]));
         byLector
             ? toastExito('Éxito', 'Registrado con exito')
             : _showNotification(true, 'Registrado con exito');
@@ -268,7 +277,11 @@ class ListadoPersonasPreTareoUvaController extends GetxController
             ? 0
             : personalSeleccionado.last.numcaja;
         personalSeleccionado.add(PreTareoProcesoUvaDetalleEntity(
+            idlabor: labor.idlabor,
             personal: personal[index],
+            labor: labor,
+            actividad: labor.actividad,
+            idactividad: labor.idactividad,
             numcaja: lasItem + 1,
             codigoempresa: personal[index].codigoempresa,
             fecha: DateTime.now(),

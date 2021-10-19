@@ -37,14 +37,14 @@ class PreTareosUvaPage extends StatelessWidget {
                       onRefresh: _.getTareas,
                       child: GetBuilder<PreTareosUvaController>(
                         id: 'tareas',
-                        builder: (_) => _.preTareos.isEmpty
+                        builder: (_) => _.preTareosUva.isEmpty
                             ? EmptyDataWidget(
                                 titulo: 'No existen actividades.',
                                 size: size,
                                 onPressed: _.getTareas)
                             : ListView.builder(
                                 controller: _.scrollController,
-                                itemCount: _.preTareos.length,
+                                itemCount: _.preTareosUva.length,
                                 itemBuilder:
                                     (BuildContext context, int index) =>
                                         itemActividad(size, context, index),
@@ -60,6 +60,13 @@ class PreTareosUvaPage extends StatelessWidget {
                   onPressed: _.goNuevaPreTarea, icon: Icon(Icons.add)),
             ),
           ),
+          GetBuilder<PreTareosUvaController>(
+                id: 'validando',
+                builder: (_)=> _.validando ? Container(
+                  color: Colors.black45,
+                  child: Center(child: CircularProgressIndicator()),
+                ) : Container(),
+              ),
         ],
       ),
     );
@@ -110,7 +117,7 @@ class PreTareosUvaPage extends StatelessWidget {
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: 5),
                               child: Container(
-                                color: _.preTareos[index].colorEstado,
+                                color: _.preTareosUva[index].colorEstado,
                               ),
                             ),
                             flex: 1),
@@ -119,7 +126,7 @@ class PreTareosUvaPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              _.preTareos[index].fechaHora,
+                              _.preTareosUva[index].fechaHora,
                               style: TextStyle(
                                   fontWeight: FontWeight.normal, fontSize: 14),
                             ),
@@ -131,7 +138,7 @@ class PreTareosUvaPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              _.preTareos[index]?.presentacion?.descripcion ??
+                              _.preTareosUva[index]?.presentacion?.descripcion ??
                                   '',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
@@ -188,7 +195,7 @@ class PreTareosUvaPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                                _.preTareos[index]?.presentacion?.descripcion ??
+                                _.preTareosUva[index]?.presentacion?.descripcion ??
                                     ''),
                           ),
                           flex: 10,
@@ -197,7 +204,7 @@ class PreTareosUvaPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.preTareos[index].centroCosto
+                            child: Text(_.preTareosUva[index].centroCosto
                                     ?.detallecentrocosto ??
                                 ''),
                           ),
@@ -223,7 +230,7 @@ class PreTareosUvaPage extends StatelessWidget {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
                                     child: Text(_
-                                        .preTareos[index].detalles.length
+                                        .preTareosUva[index].detalles.length
                                         .toString())),
                                 Icon(
                                   Icons.people,
@@ -239,7 +246,7 @@ class PreTareosUvaPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                                _.preTareos[index].sede?.detallesubdivision ??
+                                _.preTareosUva[index].sede?.detallesubdivision ??
                                     ''),
                           ),
                           flex: 10,
@@ -254,11 +261,11 @@ class PreTareosUvaPage extends StatelessWidget {
                 Flexible(
                   child: Container(
                     child: Row(
-                      children: (_.preTareos[index].estadoLocal != 'P' &&
-                              _.preTareos[index].estadoLocal != 'PC')
+                      children: (_.preTareosUva[index].estadoLocal != 'P' &&
+                              _.preTareosUva[index].estadoLocal != 'PC')
                           ? [
                               Flexible(child: Container(), flex: 1),
-                              if (_.preTareos[index].estadoLocal != 'M')
+                              if (_.preTareosUva[index].estadoLocal != 'M')
                                 Flexible(
                                   child: Container(
                                     alignment: Alignment.center,
@@ -339,9 +346,9 @@ class PreTareosUvaPage extends StatelessWidget {
                                 ),
                                 flex: 7,
                               ),
-                              if (_.preTareos[index].estadoLocal == 'PC')
+                              if (_.preTareosUva[index].estadoLocal == 'PC')
                                 Flexible(child: Container(), flex: 1),
-                              if (_.preTareos[index].estadoLocal == 'PC')
+                              if (_.preTareosUva[index].estadoLocal == 'PC')
                                 Flexible(
                                   child: Container(
                                     alignment: Alignment.center,

@@ -13,7 +13,7 @@ import 'package:http_parser/http_parser.dart';
 
 class PreTareoProcesoUvaRepositoryImplementation
     extends PreTareoProcesoUvaRepository {
-  final urlModule = '/pre_tareo_uva_proceso';
+  final urlModule = '/pre_tareo_proceso_uva';
 
   @override
   Future<List<PreTareoProcesoUvaEntity>> getAll() async {

@@ -60,6 +60,13 @@ class PreTareosPage extends StatelessWidget {
                   onPressed: _.goNuevaPreTarea, icon: Icon(Icons.add)),
             ),
           ),
+          GetBuilder<PreTareosController>(
+                id: 'validando',
+                builder: (_)=> _.validando ? Container(
+                  color: Colors.black45,
+                  child: Center(child: CircularProgressIndicator()),
+                ) : Container(),
+              ),
         ],
       ),
     );

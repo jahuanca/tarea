@@ -178,9 +178,9 @@ class PreTareosController extends GetxController {
           preTareos[index], File(preTareos[index].pathUrl));
       preTareos[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
       await _updatePreTareoProcesoUseCase.execute(preTareos[index], index);
-      validando = false;
-      update(['validando', 'tareas']);
     }
+    validando = false;
+    update(['validando', 'tareas']);
   }
 
   /* Future<void> goMigrarPreTareo(int index) async {

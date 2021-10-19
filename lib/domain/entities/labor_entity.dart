@@ -3,7 +3,7 @@
 //     final laborEntity = laborEntityFromJson(jsonString);
 
 import 'dart:convert';
-
+import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:hive/hive.dart';
 
 part 'labor_entity.g.dart';
@@ -18,6 +18,7 @@ class LaborEntity {
     this.activo,
     this.idusuario,
     this.fechamod,
+    this.actividad,
   });
 
   @HiveField(0)
@@ -34,6 +35,8 @@ class LaborEntity {
   int idusuario;
   @HiveField(6)
   DateTime fechamod;
+  @HiveField(7)
+  ActividadEntity actividad;
 
   factory LaborEntity.fromJson(Map<String, dynamic> json) => LaborEntity(
         idlabor: json["idlabor"],
@@ -43,6 +46,7 @@ class LaborEntity {
         activo: json["activo"],
         idusuario: json["idusuario"],
         fechamod: DateTime?.parse(json["fechamod"]),
+        actividad: json["Actividad"] == null ? null : ActividadEntity.fromJson(json['Actividad']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -53,6 +57,7 @@ class LaborEntity {
         "activo": activo,
         "idusuario": idusuario,
         "fechamod": fechamod?.toIso8601String(),
+        "Actividad": actividad?.toJson(),
       };
 }
 

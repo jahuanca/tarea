@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/di/listado_personas_pre_tareo_binding.dart';
+import 'package:flutter_tareo/di/listado_personas_pre_tareo_uva_binding.dart';
 import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
+import 'package:flutter_tareo/di/nueva_pre_tarea_uva_binding.dart';
 import 'package:flutter_tareo/di/nueva_tarea_binding.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
@@ -16,7 +18,9 @@ import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/migrar_all_pre_tar
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/update_pre_tareo_proceso_uva_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/upload_file_of_pre_tareo_uva_use_case.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo/listado_personas_pre_tareo_page.dart';
+import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo_uva/listado_personas_pre_tareo_uva_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_pre_tarea/nueva_pre_tarea_page.dart';
+import 'package:flutter_tareo/ui/pages/nueva_pre_tarea_uva/nueva_pre_tarea_uva_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -55,7 +59,7 @@ class PreTareosUvaController extends GetxController {
   }
 
   Future<void> getTareas() async {
-    preTareos = await _getAllPreTareoProcesoUvaUseCase.execute();
+    preTareosUva = await _getAllPreTareoProcesoUvaUseCase.execute();
     update(['tareas']);
     return;
   }
@@ -111,9 +115,9 @@ class PreTareosUvaController extends GetxController {
       if (geteditimage != null) {
         File _image = geteditimage[0];
 
-        preTareos[index].pathUrl = _image.path;
-        preTareos[index].estadoLocal = 'A';
-        await _updatePreTareoProcesoUvaUseCase.execute(preTareos[index], index);
+        preTareosUva[index].pathUrl = _image.path;
+        preTareosUva[index].estadoLocal = 'A';
+        await _updatePreTareoProcesoUvaUseCase.execute(preTareosUva[index], index);
 
         update(['seleccionado']);
       }
@@ -123,7 +127,7 @@ class PreTareosUvaController extends GetxController {
   }
 
   Future<String> validarParaAprobar(int index) async {
-    PreTareoProcesoUvaEntity tarea = preTareos[index];
+    PreTareoProcesoUvaEntity tarea = preTareosUva[index];
     if (tarea.detalles == null || tarea.detalles.isEmpty) {
       return 'No se puede aprobar una actividad que no tiene personal';
     } else {
@@ -137,8 +141,7 @@ class PreTareosUvaController extends GetxController {
   }
 
   Future<void> goMigrar(int index) async {
-    //TODO: CARGAR CIRCULAR PROGRESS 
-    if (preTareos[index].estadoLocal == 'A') {
+    if (preTareosUva[index].estadoLocal == 'A') {
       basicDialog(
         Get.overlayContext,
         'Alerta',
@@ -166,19 +169,19 @@ class PreTareosUvaController extends GetxController {
     validando = true;
     update(['validando']);
     PreTareoProcesoUvaEntity tareaMigrada =
-        await _migrarAllPreTareoUvaUseCase.execute(preTareos[index]);
+        await _migrarAllPreTareoUvaUseCase.execute(preTareosUva[index]);
     if (tareaMigrada != null) {
       toastExito('Exito', 'Tarea migrada con exito');
-      preTareos[index].estadoLocal = 'M';
-      preTareos[index].itempretareaprocesouva = tareaMigrada.itempretareaprocesouva;
-      await _updatePreTareoProcesoUvaUseCase.execute(preTareos[index], index);
+      preTareosUva[index].estadoLocal = 'M';
+      preTareosUva[index].itempretareaprocesouva = tareaMigrada.itempretareaprocesouva;
+      await _updatePreTareoProcesoUvaUseCase.execute(preTareosUva[index], index);
       tareaMigrada = await _uploadFileOfPreTareoUvaUseCase.execute(
-          preTareos[index], File(preTareos[index].pathUrl));
-      preTareos[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
-      await _updatePreTareoProcesoUvaUseCase.execute(preTareos[index], index);
-      validando = false;
-      update(['validando', 'tareas']);
+          preTareosUva[index], File(preTareosUva[index].pathUrl));
+      preTareosUva[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
+      await _updatePreTareoProcesoUvaUseCase.execute(preTareosUva[index], index);
     }
+    validando = false;
+    update(['validando', 'tareas']);
   }
 
   /* Future<void> goMigrarPreTareo(int index) async {
@@ -186,29 +189,29 @@ class PreTareosUvaController extends GetxController {
   } */
 
   Future<void> goListadoPersonas(int index) async {
-    ListadoPersonasPreTareoBinding().dependencies();
+    ListadoPersonasPreTareoUvaBinding().dependencies();
     final resultados = await Get.to<List<PreTareoProcesoUvaDetalleEntity>>(
-        () => ListadoPersonasPreTareoPage(),
+        () => ListadoPersonasPreTareoUvaPage(),
         arguments: {
-          'tarea': preTareos[index],
+          'tarea': preTareosUva[index],
           'index': index,
         });
 
     if (resultados != null && resultados.isNotEmpty) {
-      preTareos[index].detalles = resultados;
-      await _updatePreTareoProcesoUvaUseCase.execute(preTareos[index], index);
+      preTareosUva[index].detalles = resultados;
+      await _updatePreTareoProcesoUvaUseCase.execute(preTareosUva[index], index);
       print(resultados.first.toJson());
-      update(['tareas']);
     }
+    update(['tareas']);
   }
 
   Future<void> delete(int index) async {
     await _deletePreTareoProcesoUvaUseCase.execute(index);
-    preTareos.removeAt(index);
+    preTareosUva.removeAt(index);
   }
 
   List<int> seleccionados = [];
-  List<PreTareoProcesoUvaEntity> preTareos = [];
+  List<PreTareoProcesoUvaEntity> preTareosUva = [];
 
   void seleccionar(int index) {
     int i = seleccionados.indexWhere((element) => element == index);
@@ -221,11 +224,11 @@ class PreTareosUvaController extends GetxController {
   }
 
   Future<void> goNuevaPreTarea() async {
-    NuevaPreTareaBinding().dependencies();
+    NuevaPreTareaUvaBinding().dependencies();
     final result =
-        await Get.to<PreTareoProcesoUvaEntity>(() => NuevaPreTareaPage());
+        await Get.to<PreTareoProcesoUvaEntity>(() => NuevaPreTareaUvaPage());
     if (result != null) {
-      preTareos.insert(0, result);
+      preTareosUva.insert(0, result);
       //preTareos.add(result);
       await _createPreTareoProcesoUvaUseCase.execute(result);
       update(['tareas']);
@@ -233,26 +236,26 @@ class PreTareosUvaController extends GetxController {
   }
 
   Future<void> editarTarea(int index) async {
-    NuevaTareaBinding().dependencies();
-    final result = await Get.to<PreTareoProcesoUvaEntity>(() => NuevaTareaPage(),
-        arguments: {'tarea': preTareos[index]});
+    NuevaPreTareaUvaBinding().dependencies();
+    final result = await Get.to<PreTareoProcesoUvaEntity>(() => NuevaPreTareaUvaPage(),
+        arguments: {'tarea': preTareosUva[index]});
     if (result != null) {
       log(result.toJson().toString());
       result.idusuario = PreferenciasUsuario().idUsuario;
-      preTareos[index] = result;
-      await _updatePreTareoProcesoUvaUseCase.execute(preTareos[index], index);
+      preTareosUva[index] = result;
+      await _updatePreTareoProcesoUvaUseCase.execute(preTareosUva[index], index);
       update(['tareas']);
     }
   }
 
   Future<void> copiarTarea(int index) async {
-    NuevaTareaBinding().dependencies();
-    final result = await Get.to<PreTareoProcesoUvaEntity>(() => NuevaTareaPage(),
-        arguments: {'tarea': preTareos[index]});
+    NuevaPreTareaUvaBinding().dependencies();
+    final result = await Get.to<PreTareoProcesoUvaEntity>(() => NuevaPreTareaUvaPage(),
+        arguments: {'tarea': preTareosUva[index]});
     if (result != null) {
       result.idusuario = PreferenciasUsuario().idUsuario;
-      preTareos.add(result);
-      await _createPreTareoProcesoUvaUseCase.execute(preTareos.last);
+      preTareosUva.add(result);
+      await _createPreTareoProcesoUvaUseCase.execute(preTareosUva.last);
       update(['tareas']);
     }
   }
