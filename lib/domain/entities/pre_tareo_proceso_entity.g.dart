@@ -34,15 +34,15 @@ class PreTareoProcesoEntityAdapter extends TypeAdapter<PreTareoProcesoEntity> {
       laboresCultivoPacking: fields[14] as LaboresCultivoPackingEntity,
       detalles: (fields[15] as List)?.cast<PreTareoProcesoDetalleEntity>(),
       centroCosto: fields[20] as CentroCostoEntity,
+      turnotareo: fields[21] as String,
+      diasiguiente: fields[24] as bool,
     )
       ..sede = fields[16] as SubdivisionEntity
       ..pathUrl = fields[17] as String
       ..estadoLocal = fields[18] as String
       ..firmaSupervisor = fields[19] as String
-      ..turnotareo = fields[21] as String
       ..supervisor = fields[22] as PersonalEmpresaEntity
-      ..digitador = fields[23] as PersonalEmpresaEntity
-      ..diasiguiente = fields[24] as bool;
+      ..digitador = fields[23] as PersonalEmpresaEntity;
   }
 
   @override

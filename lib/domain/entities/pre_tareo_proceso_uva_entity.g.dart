@@ -33,21 +33,22 @@ class PreTareoProcesoUvaEntityAdapter
       idusuario: fields[12] as int,
       detalles: (fields[13] as List)?.cast<PreTareoProcesoUvaDetalleEntity>(),
       centroCosto: fields[18] as CentroCostoEntity,
+      presentacion: fields[23] as PresentacionLineaEntity,
+      turnotareo: fields[19] as String,
+      diasiguiente: fields[22] as bool,
+      firmaSupervisor: fields[17] as String,
     )
       ..sede = fields[14] as SubdivisionEntity
       ..pathUrl = fields[15] as String
       ..estadoLocal = fields[16] as String
-      ..firmaSupervisor = fields[17] as String
-      ..turnotareo = fields[19] as String
       ..supervisor = fields[20] as PersonalEmpresaEntity
-      ..digitador = fields[21] as PersonalEmpresaEntity
-      ..diasiguiente = fields[22] as bool;
+      ..digitador = fields[21] as PersonalEmpresaEntity;
   }
 
   @override
   void write(BinaryWriter writer, PreTareoProcesoUvaEntity obj) {
     writer
-      ..writeByte(23)
+      ..writeByte(24)
       ..writeByte(0)
       ..write(obj.itempretareaprocesouva)
       ..writeByte(1)
@@ -93,7 +94,9 @@ class PreTareoProcesoUvaEntityAdapter
       ..writeByte(21)
       ..write(obj.digitador)
       ..writeByte(22)
-      ..write(obj.diasiguiente);
+      ..write(obj.diasiguiente)
+      ..writeByte(23)
+      ..write(obj.presentacion);
   }
 
   @override

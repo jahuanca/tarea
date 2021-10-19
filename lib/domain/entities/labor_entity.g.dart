@@ -24,13 +24,14 @@ class LaborEntityAdapter extends TypeAdapter<LaborEntity> {
       activo: fields[4] as bool,
       idusuario: fields[5] as int,
       fechamod: fields[6] as DateTime,
+      actividad: fields[7] as ActividadEntity,
     );
   }
 
   @override
   void write(BinaryWriter writer, LaborEntity obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.idlabor)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class LaborEntityAdapter extends TypeAdapter<LaborEntity> {
       ..writeByte(5)
       ..write(obj.idusuario)
       ..writeByte(6)
-      ..write(obj.fechamod);
+      ..write(obj.fechamod)
+      ..writeByte(7)
+      ..write(obj.actividad);
   }
 
   @override

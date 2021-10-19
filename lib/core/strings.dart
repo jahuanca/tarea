@@ -3,4 +3,4 @@
 const String serverUrlCorta='40.88.149.7/node/node';
 const String serverUrl = 'http://$serverUrlCorta';
 const String rImages = 'assets/images/';
-const bool mostrarLog=false;
+const bool mostrarLog=true;

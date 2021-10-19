@@ -32,10 +32,9 @@ class PreTareoProcesoUvaDetalleEntityAdapter
       labor: fields[15] as LaborEntity,
       actividad: fields[14] as ActividadEntity,
       presentacion: fields[16] as PresentacionLineaEntity,
-    )
-      ..idlabor = fields[11] as int
-      ..idactividad = fields[12] as int
-      ..idpresentacion = fields[13] as int;
+      idactividad: fields[12] as int,
+      idlabor: fields[11] as int,
+    )..idpresentacion = fields[13] as int;
   }
 
   @override

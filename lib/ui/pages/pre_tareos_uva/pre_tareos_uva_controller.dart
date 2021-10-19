@@ -170,9 +170,10 @@ class PreTareosUvaController extends GetxController {
     update(['validando']);
     PreTareoProcesoUvaEntity tareaMigrada =
         await _migrarAllPreTareoUvaUseCase.execute(preTareosUva[index]);
+    print(tareaMigrada.itempretareaprocesouva);
     if (tareaMigrada != null) {
       toastExito('Exito', 'Tarea migrada con exito');
-      preTareosUva[index].estadoLocal = 'M';
+      //preTareosUva[index].estadoLocal = 'M';
       preTareosUva[index].itempretareaprocesouva = tareaMigrada.itempretareaprocesouva;
       await _updatePreTareoProcesoUvaUseCase.execute(preTareosUva[index], index);
       tareaMigrada = await _uploadFileOfPreTareoUvaUseCase.execute(

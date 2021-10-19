@@ -36,6 +36,7 @@ class PreTareoProcesoUvaEntity {
     this.presentacion,
     this.turnotareo,
     this.diasiguiente,
+    this.firmaSupervisor,
   }){
     detalles ??= [];
     estadoLocal='P';
@@ -123,9 +124,9 @@ class PreTareoProcesoUvaEntity {
 
   factory PreTareoProcesoUvaEntity.fromJson(Map<String, dynamic> json) =>
       PreTareoProcesoUvaEntity(
-        itempretareaprocesouva: json["itempretareaproceso"] == null
+        itempretareaprocesouva: json["itempretareaprocesouva"] == null
             ? null
-            : json["itempretareaproceso"],
+            : json["itempretareaprocesouva"],
         fecha: json["fecha"] == null ? null : DateTime.parse(json["fecha"]),
         horainicio: json["horainicio"] == null
             ? null
@@ -149,6 +150,7 @@ class PreTareoProcesoUvaEntity {
         fechamod:
             json["fechamod"] == null ? null : DateTime.parse(json["fechamod"]),
         activo: json["activo"] == null ? null : json["activo"],
+        firmaSupervisor: json["firmasupervisor"] == null ? null : json["firmasupervisor"],
         idusuario: json["idusuario"] == null ? null : json["idusuario"],
         diasiguiente: json["diasiguiente"] == null ? null : json["diasiguiente"],
         turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
@@ -162,7 +164,7 @@ class PreTareoProcesoUvaEntity {
       );
 
   Map<String, dynamic> toJson() => {
-        "itempretareaproceso":
+        "itempretareaprocesouva":
             itempretareaprocesouva == null ? null : itempretareaprocesouva,
         "fecha": fecha == null
             ? null
@@ -181,6 +183,7 @@ class PreTareoProcesoUvaEntity {
         "fechamod": fechamod == null ? null : fechamod.toIso8601String(),
         "activo": activo == null ? null : activo,
         "turnotareo": turnotareo == null ? null : turnotareo,
+        "firmasupervisor": firmaSupervisor == null ? null : firmaSupervisor,
         "diasiguiente": diasiguiente == null ? null : diasiguiente,
         "idusuario": idusuario == null ? null : idusuario,
         "Pre_Tareo_Proceso_Uva_Detalles": detalles == null
