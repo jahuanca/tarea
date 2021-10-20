@@ -150,7 +150,6 @@ class NuevaPreTareaController extends GetxController {
           .laboresCultivoPacking.idactividad
           .toString());
       await getLabores();
-      //await changeLabor(nuevaPreTarea.laboresCultivoPacking.idlabor.toString());
     }
     update(['actividades']);
   }
@@ -194,7 +193,7 @@ class NuevaPreTareaController extends GetxController {
       nuevaPreTarea.laboresCultivoPacking.idlabor =
           labores.first.idlabor;
     }
-    changeLabor(nuevaPreTarea.laboresCultivoPacking.labor?.idlabor.toString());
+    changeLabor(nuevaPreTarea.laboresCultivoPacking.idlabor.toString());
     update(['labores']);
     
   }
@@ -406,7 +405,6 @@ class NuevaPreTareaController extends GetxController {
           'tarea': nuevaPreTarea,
         });
     if (result != null) {
-      print('regreso');
       nuevaPreTarea.detalles.add(result);
       update(['personal']);
     }
@@ -418,8 +416,9 @@ class NuevaPreTareaController extends GetxController {
 
       laboresCultivoPacking.forEach((e) {
         LaboresCultivoPackingEntity actual=nuevaPreTarea.laboresCultivoPacking;
-        if(e.idcultivo== actual.idcultivo && e.idactividad== actual.idactividad && e.idlabor== actual.idlabor){
+        if(e.idactividad== actual.idactividad && e.idlabor== actual.idlabor && e.idpresentacion == actual.idpresentacion){
           nuevaPreTarea.item=e.item;
+          nuevaPreTarea.laboresCultivoPacking=actual;
         }
       });
 
@@ -460,14 +459,13 @@ class NuevaPreTareaController extends GetxController {
 
   String validar() {
     changeFecha();
-    changeActividad(nuevaPreTarea.laboresCultivoPacking.idactividad.toString());
+    //changeActividad(nuevaPreTarea.laboresCultivoPacking.idactividad.toString());
     changeLabor(nuevaPreTarea.laboresCultivoPacking.idlabor.toString());
     changeCentroCosto(nuevaPreTarea.idcentrocosto.toString());
     changeSupervisor(nuevaPreTarea.codigoempresasupervisor.toString());
     changeHoraInicio();
     changeDiaSiguiente(nuevaPreTarea.diasiguiente ?? false);
     changeHoraFin();
-    //TODO: VALIDAR: fechas por TURNO NOCHE
     if (errorActividad != null) return errorActividad;
     if (errorLabor != null) return errorLabor;
     if (errorSupervisor != null) return errorSupervisor;

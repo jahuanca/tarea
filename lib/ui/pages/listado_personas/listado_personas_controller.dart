@@ -194,7 +194,7 @@ class ListadoPersonasController extends GetxController
     }
   }
 
-  Future<void> changeOptions(dynamic index) async {
+  Future<void> changeOptions(dynamic index, int position) async {
     switch (index) {
       case 1:
         AgregarPersonaBinding().dependencies();
@@ -206,12 +206,12 @@ class ListadoPersonasController extends GetxController
               'personal': personal
             });
         if (result != null) {
-          personalSeleccionado[index] = result;
+          personalSeleccionado[position] = result;
           update(['personal_seleccionado']);
         }
         break;
       case 2:
-        goEliminar(index);
+        goEliminar(position);
 
         break;
       default:

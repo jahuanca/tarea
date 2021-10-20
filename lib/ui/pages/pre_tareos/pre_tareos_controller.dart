@@ -3,12 +3,9 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/di/agregar_persona_binding.dart';
-import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_pre_tareo_binding.dart';
 import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
 import 'package:flutter_tareo/di/nueva_tarea_binding.dart';
-import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/create_pre_tareo_proceso_use_case.dart';
@@ -32,7 +29,6 @@ class PreTareosController extends GetxController {
   final DeletePreTareoProcesoUseCase _deletePreTareoProcesoUseCase;
   final MigrarAllPreTareoUseCase _migrarAllPreTareoUseCase;
   final UploadFileOfPreTareoUseCase _uploadFileOfPreTareoUseCase;
-  ScrollController scrollController = ScrollController();
 
   bool validando = false;
 
@@ -188,10 +184,14 @@ class PreTareosController extends GetxController {
   } */
 
   Future<void> goListadoPersonas(int index) async {
+    List<PreTareoProcesoEntity> otras=[];
+    otras.addAll(preTareos);
+    otras.removeAt(index);
     ListadoPersonasPreTareoBinding().dependencies();
     final resultados = await Get.to<List<PreTareoProcesoDetalleEntity>>(
         () => ListadoPersonasPreTareoPage(),
         arguments: {
+          'otras': otras,
           'tarea': preTareos[index],
           'index': index,
         });

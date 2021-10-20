@@ -175,7 +175,7 @@ class ListadoPersonasPreTareoPage extends StatelessWidget {
                                                   value: e['key'],
                                                   child: Text(e['value'])))
                                               .toList(),
-                                      onChanged: _.changeOptions,
+                                      onChanged: (value) => _.changeOptions(value, index),
                                     ),
                                   ),
                                   flex: 5),

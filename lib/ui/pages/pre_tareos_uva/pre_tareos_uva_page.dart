@@ -43,7 +43,6 @@ class PreTareosUvaPage extends StatelessWidget {
                                 size: size,
                                 onPressed: _.getTareas)
                             : ListView.builder(
-                                controller: _.scrollController,
                                 itemCount: _.preTareosUva.length,
                                 itemBuilder:
                                     (BuildContext context, int index) =>

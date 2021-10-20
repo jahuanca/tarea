@@ -22,6 +22,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
   List<PreTareoProcesoUvaDetalleEntity> personalSeleccionado = [];
   int indexTarea;
   PreTareoProcesoUvaEntity preTarea;
+  List<PreTareoProcesoUvaEntity> otrasPreTareas=[];
   final GetLaborsUseCase _getLaborsUseCase;
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
@@ -56,6 +57,11 @@ class ListadoPersonasPreTareoUvaController extends GetxController
     honeywellScanner.setProperties(properties);
     super.onInit();
     if (Get.arguments != null) {
+
+      if (Get.arguments['otras'] != null) {
+        otrasPreTareas = Get.arguments['otras'] as List<PreTareoProcesoUvaEntity>;
+      }
+
       if (Get.arguments['tarea'] != null) {
         preTarea = Get.arguments['tarea'] as PreTareoProcesoUvaEntity;
         personalSeleccionado = preTarea.detalles;
@@ -204,7 +210,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
     }
   }
 
-  Future<void> changeOptions(dynamic index, int indexItem) async {
+  Future<void> changeOptions(dynamic index, int position) async {
     switch (index) {
       case 1:
         AgregarPersonaBinding().dependencies();
@@ -216,12 +222,12 @@ class ListadoPersonasPreTareoUvaController extends GetxController
               'personal': personal
             });
         if (result != null) {
-          personalSeleccionado[index] = result;
+          personalSeleccionado[position] = result;
           update(['personal_seleccionado']);
         }
         break;
       case 2:
-        goEliminar(indexItem);
+        goEliminar(position);
 
         break;
       default:
@@ -257,8 +263,20 @@ class ListadoPersonasPreTareoUvaController extends GetxController
 
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
     if (barcode != null && barcode != -1) {
+      for (var element in otrasPreTareas) {
+        int indexOtra= element.detalles.indexWhere((e) => e.codigotk.toString().trim() == barcode.toString().trim());
+        if(indexOtra != -1){
+          byLector
+            ? toastError('Error', 'Se encuentra en otra tarea')
+            : _showNotification(false, 'Se encuentra en otra tarea');
+          return;
+        }
+      }
+
+
+
       int indexEncontrado = personalSeleccionado
-          .indexWhere((e) => e.codigotk == barcode.toString());
+          .indexWhere((e) => e.codigotk.trim() == barcode.toString().trim());
       if (indexEncontrado != -1) {
         byLector
             ? toastError('Error', 'Ya se encuentra registrado')
@@ -288,10 +306,12 @@ class ListadoPersonasPreTareoUvaController extends GetxController
             hora: DateTime.now(),
             imei: '1256',
             idestado: 1,
-            codigotk: barcode.toString(),
+            codigotk: barcode.toString().trim(),
             idusuario: PreferenciasUsuario().idUsuario,
             itempretareaprocesouva: preTarea.itempretareaprocesouva));
         update(['personal_seleccionado']);
+        preTarea.detalles = personalSeleccionado;
+        await _updatePreTareoProcesoUvaUseCase.execute(preTarea, indexTarea);
       } else {
         byLector
             ? toastError('Error', 'No se encuentra en la lista')
