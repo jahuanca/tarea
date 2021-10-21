@@ -159,7 +159,7 @@ class NuevaPreTareaUvaController extends GetxController {
         .firstWhere((e) => e.idsubdivision == idSubdivision);
     validando = true;
     update(['validando']);
-    supervisors = await _getPersonalsEmpresaBySubdivisionUseCase.execute(5);
+    supervisors = await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
     if (supervisors.length > 0) {
       nuevaPreTarea.supervisor = supervisors[0];
       nuevaPreTarea.digitador = supervisors[0];
@@ -234,7 +234,7 @@ class NuevaPreTareaUvaController extends GetxController {
   }
 
   void changeInicioPausa() {
-    if (nuevaPreTarea.pausainicio != null) {
+    /* if (nuevaPreTarea.pausainicio != null) {
       if (nuevaPreTarea.turnotareo == 'N') {
         update(['inicio_pausa']);
         return;
@@ -246,11 +246,11 @@ class NuevaPreTareaUvaController extends GetxController {
         nuevaPreTarea.pausainicio = null;
       }
       update(['inicio_pausa']);
-    }
+    } */
   }
 
   void changeFinPausa() {
-    if (nuevaPreTarea.pausafin != null && nuevaPreTarea.turnotareo == 'D') {
+    /* if (nuevaPreTarea.pausafin != null && nuevaPreTarea.turnotareo == 'D') {
       if (nuevaPreTarea.turnotareo == 'N') {
         update(['inicio_pausa']);
         return;
@@ -267,7 +267,7 @@ class NuevaPreTareaUvaController extends GetxController {
         nuevaPreTarea.pausafin = null;
       }
       update(['fin_pausa']);
-    }
+    } */
   }
 
   void mostrarDialog(String mensaje) {

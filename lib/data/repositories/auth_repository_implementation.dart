@@ -16,9 +16,6 @@ class AuthRepositoryImplementation extends AuthRepository {
       Box<UsuarioEntity> usuariosHive =
           await Hive.openBox<UsuarioEntity>('usuarios_sincronizar');
 
-      print('Body ');
-      print(usuarioEntity.toJson().toString());
-
       List<UsuarioEntity> usuarios = usuariosHive.values.toList();
       await usuariosHive.close();
       for (var i = 0; i < usuarios.length; i++) {

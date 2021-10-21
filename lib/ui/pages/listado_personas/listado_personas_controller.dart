@@ -249,13 +249,13 @@ class ListadoPersonasController extends GetxController
   Future<void> setCodeBar(dynamic barcode)async{
     if (barcode != null) {
         int indexEncontrado = personalSeleccionado
-            .indexWhere((e) => e.personal.codigoempresa == barcode.toString());
+            .indexWhere((e) => e.personal.nrodocumento == barcode.toString());
         if (indexEncontrado != -1) {
           _showNotification(false, 'Ya se encuentra registrado');
           return;
         }
         int index =
-            personal.indexWhere((e) => e.codigoempresa == barcode.toString());
+            personal.indexWhere((e) => e.nrodocumento == barcode.toString());
         if (index != -1) {
           _showNotification(true, 'Registrado con exito');
           personalSeleccionado.add(PersonalTareaProcesoEntity(

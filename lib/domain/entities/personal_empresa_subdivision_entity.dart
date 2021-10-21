@@ -44,10 +44,10 @@ class PersonalEmpresaSubdivisionEntity {
       PersonalEmpresaSubdivisionEntity(
         codigoempresa: json["codigoempresa"],
         idsubdivision: json["idsubdivision"],
-        fechadesde: DateTime.parse(json["fechadesde"]),
-        fechahasta: DateTime.parse(json["fechahasta"]),
+        fechadesde: json['fechadesde'] == null ? null : DateTime?.parse(json["fechadesde"]),
+        fechahasta:  json['fechahasta'] == null ? null : DateTime?.parse(json["fechahasta"]),
         activo: json["activo"],
-        fechamod: DateTime.parse(json["fechamod"]),
+        fechamod:  json['fechamod'] == null ? null : DateTime.parse(json["fechamod"]),
         idusuario: json["idusuario"],
         personalEmpresa: json['Personal_Empresa'] == null
             ? null

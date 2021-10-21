@@ -104,7 +104,7 @@ class NuevaTareaController extends GetxController {
         .firstWhere((e) => e.idsubdivision == idSubdivision);
     validando = true;
     update(['validando']);
-    supervisors = await _getPersonalsEmpresaBySubdivisionUseCase.execute(5);
+    supervisors = await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
     if (supervisors.length > 0) {
       nuevaTarea.supervisor = supervisors[1];
       changeSupervisor(nuevaTarea.supervisor.codigoempresa);
@@ -157,17 +157,17 @@ class NuevaTareaController extends GetxController {
   }
 
   void changeInicioPausa() {
-    if(nuevaTarea.pausainicio!=null){
+    /* if(nuevaTarea.pausainicio!=null){
       if(nuevaTarea.pausainicio.isBefore(nuevaTarea.horainicio) || nuevaTarea.pausainicio.isAfter(nuevaTarea.horafin)){
         mostrarDialog('La hora seleccionada no se encuentra en el rango de inicio y fin');
         nuevaTarea.pausainicio=null;
       }
       update(['inicio_pausa']);
-    }
+    } */
   }
 
   void changeFinPausa() {
-    if(nuevaTarea.pausafin!=null){
+    /* if(nuevaTarea.pausafin!=null){
       if(nuevaTarea.pausafin.isBefore(nuevaTarea.horainicio) || nuevaTarea.pausafin.isAfter(nuevaTarea.horafin)){
         mostrarDialog('La hora seleccionada no se encuentra en el rango de inicio y fin');
         nuevaTarea.pausafin = null;
@@ -177,7 +177,7 @@ class NuevaTareaController extends GetxController {
         nuevaTarea.pausafin = null;
       }
       update(['fin_pausa']);
-    }
+    } */
   }
 
   void mostrarDialog(String mensaje){

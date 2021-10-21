@@ -234,7 +234,8 @@ class NuevaTareaPage extends StatelessWidget {
                           onTap: () async {
                             _.nuevaTarea.horafin = await DatePickerWidget(
                               onlyDate: true,
-                              minDate: _.nuevaTarea.horainicio,
+                              //minDate: _.nuevaTarea?.turnotareo=='D' ?  _.nuevaTarea.horainicio : null,
+                              minDate: null,
                               dateSelected: _.nuevaTarea.horafin ?? DateTime.now(),
                               onChanged: () {},
                             ).selectTime(context, _.nuevaTarea.horafin);
@@ -289,7 +290,8 @@ class NuevaTareaPage extends StatelessWidget {
                                   _.nuevaTarea.pausafin = await DatePickerWidget(
                                     onlyDate: true,
                                     dateSelected: DateTime.now(),
-                                    minDate: _.nuevaTarea.pausainicio,
+                                    minDate: null,
+                                    //minDate: _.nuevaTarea.pausainicio,
                                   ).selectTime(context, null);
                                   _.changeFinPausa();
                                 },

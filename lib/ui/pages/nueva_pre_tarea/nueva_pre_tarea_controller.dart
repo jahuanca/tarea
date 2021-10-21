@@ -70,6 +70,7 @@ class NuevaPreTareaController extends GetxController {
 
   @override
   void onInit() {
+    print(PreferenciasUsuario().idSede);
     super.onInit();
     if (Get.arguments != null) {
       if (Get.arguments['tarea'] != null) {
@@ -158,8 +159,10 @@ class NuevaPreTareaController extends GetxController {
     nuevaPreTarea.sede = (await _getSubdivisonsUseCase.execute())
         .firstWhere((e) => e.idsubdivision == idSubdivision);
     validando = true;
+    supervisors = await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
     update(['validando']);
-    supervisors = await _getPersonalsEmpresaBySubdivisionUseCase.execute(5);
+    
+
     if (supervisors.length > 0) {
       nuevaPreTarea.supervisor = supervisors[0];
       nuevaPreTarea.digitador = supervisors[0];
@@ -234,7 +237,7 @@ class NuevaPreTareaController extends GetxController {
   }
 
   void changeInicioPausa() {
-    if (nuevaPreTarea.pausainicio != null) {
+    /* if (nuevaPreTarea.pausainicio != null) {
       if (nuevaPreTarea.turnotareo == 'N') {
         update(['inicio_pausa']);
         return;
@@ -246,11 +249,11 @@ class NuevaPreTareaController extends GetxController {
         nuevaPreTarea.pausainicio = null;
       }
       update(['inicio_pausa']);
-    }
+    } */
   }
 
   void changeFinPausa() {
-    if (nuevaPreTarea.pausafin != null && nuevaPreTarea.turnotareo == 'D') {
+    /* if (nuevaPreTarea.pausafin != null && nuevaPreTarea.turnotareo == 'D') {
       if (nuevaPreTarea.turnotareo == 'N') {
         update(['inicio_pausa']);
         return;
@@ -267,7 +270,7 @@ class NuevaPreTareaController extends GetxController {
         nuevaPreTarea.pausafin = null;
       }
       update(['fin_pausa']);
-    }
+    } */
   }
 
   void mostrarDialog(String mensaje) {
