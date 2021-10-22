@@ -11,17 +11,15 @@ import 'package:flutter_tareo/di/nueva_tarea_binding.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
+import 'package:flutter_tareo/domain/use_cases/others/export_data_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/create_pre_tareo_proceso_uva_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/delete_pre_tareo_proceso_uva_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/get_all_pre_tareo_proceso_uva_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/migrar_all_pre_tareo_uva_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/update_pre_tareo_proceso_uva_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/upload_file_of_pre_tareo_uva_use_case.dart';
-import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo/listado_personas_pre_tareo_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo_uva/listado_personas_pre_tareo_uva_page.dart';
-import 'package:flutter_tareo/ui/pages/nueva_pre_tarea/nueva_pre_tarea_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_pre_tarea_uva/nueva_pre_tarea_uva_page.dart';
-import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
@@ -34,7 +32,7 @@ class PreTareosUvaController extends GetxController {
   final DeletePreTareoProcesoUvaUseCase _deletePreTareoProcesoUvaUseCase;
   final MigrarAllPreTareoUvaUseCase _migrarAllPreTareoUvaUseCase;
   final UploadFileOfPreTareoUvaUseCase _uploadFileOfPreTareoUvaUseCase;
-
+  final ExportDataToExcelUseCase _exportDataToExcelUseCase;
 
   bool validando = false;
 
@@ -45,6 +43,7 @@ class PreTareosUvaController extends GetxController {
     this._deletePreTareoProcesoUvaUseCase,
     this._migrarAllPreTareoUvaUseCase,
     this._uploadFileOfPreTareoUvaUseCase,
+    this._exportDataToExcelUseCase,
   );
 
   @override
@@ -74,9 +73,17 @@ class PreTareosUvaController extends GetxController {
       case 3:
         goEliminar(index);
         break;
+      case 4:
+        goExcel(index);
+        break;
       default:
         break;
     }
+  }
+
+  void goExcel(int index) async {
+    await _exportDataToExcelUseCase.execute(preTareosUva[index]);
+    print('exportando');
   }
 
   void goAprobar(int index) async {
@@ -194,7 +201,7 @@ class PreTareosUvaController extends GetxController {
   } */
 
   Future<void> goListadoPersonas(int index) async {
-    List<PreTareoProcesoUvaEntity> otras=[];
+    List<PreTareoProcesoUvaEntity> otras = [];
     otras.addAll(preTareosUva);
     otras.removeAt(index);
     ListadoPersonasPreTareoUvaBinding().dependencies();

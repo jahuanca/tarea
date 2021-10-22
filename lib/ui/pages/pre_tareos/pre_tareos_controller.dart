@@ -9,6 +9,7 @@ import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
 import 'package:flutter_tareo/di/nueva_tarea_binding.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
+import 'package:flutter_tareo/domain/use_cases/others/export_data_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/create_pre_tareo_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/delete_pre_tareo_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/get_all_pre_tareo_proceso_use_case.dart';
@@ -35,17 +36,18 @@ class PreTareosController extends GetxController {
   final DeletePreTareoProcesoUseCase _deletePreTareoProcesoUseCase;
   final MigrarAllPreTareoUseCase _migrarAllPreTareoUseCase;
   final UploadFileOfPreTareoUseCase _uploadFileOfPreTareoUseCase;
+  final ExportDataToExcelUseCase _exportDataToExcelUseCase;
 
   bool validando = false;
 
   PreTareosController(
-    this._createPreTareoProcesoUseCase,
-    this._getAllPreTareoProcesoUseCase,
-    this._updatePreTareoProcesoUseCase,
-    this._deletePreTareoProcesoUseCase,
-    this._migrarAllPreTareoUseCase,
-    this._uploadFileOfPreTareoUseCase,
-  );
+      this._createPreTareoProcesoUseCase,
+      this._getAllPreTareoProcesoUseCase,
+      this._updatePreTareoProcesoUseCase,
+      this._deletePreTareoProcesoUseCase,
+      this._migrarAllPreTareoUseCase,
+      this._uploadFileOfPreTareoUseCase,
+      this._exportDataToExcelUseCase);
 
   @override
   void onInit() async {
@@ -85,57 +87,8 @@ class PreTareosController extends GetxController {
     }
   }
 
-  TargetPlatform platform;
-
-  Future<bool> _checkPermission() async {
-    if (this.platform == TargetPlatform.android) {
-      
-      final status = await Permission.storage.status;
-      if (status != PermissionStatus.granted) {
-        final result = await Permission.storage.request();
-        if (result == PermissionStatus.granted) {
-          return true;
-        }
-      } else {
-        return true;
-      }
-    } else {
-      return true;
-    }
-    return false;
-  }
-
   void goExcel(int index) async {
-    var excel = Excel.createExcel();
-    excel.rename('Sheet1', 'Data');
-    Sheet sheetObject = excel['Data'];
-    int initialRow=5;
-    sheetObject.insertRowIterables(listaEncabezados(preTareos[index].toJson()), 1);
-    sheetObject.insertRowIterables(listaItem(preTareos[index].toJson()), 2);
-    sheetObject.insertRowIterables(listaEncabezados(PreTareoProcesoDetalleEntity().toJson()), 4);
-    for (var i = 0; i < preTareos[index].detalles.length ; i++) {
-      PreTareoProcesoDetalleEntity d=preTareos[index].detalles[i];
-      sheetObject.insertRowIterables(listaItem(d.toJson()), i+ initialRow);
-    }
-
-    var fileBytes = excel.save();
-
-    if(await _checkPermission()==false){
-      print('No hay permisos');
-      return;
-    }
-
-    this.platform = Theme.of(Get.overlayContext).platform;
-
-    final directory = this.platform == TargetPlatform.android
-        ? '/storage/emulated/0/Android/data/com.example.flutter_tareo/files'
-        : (await getApplicationDocumentsDirectory()).path +
-            Platform.pathSeparator +
-            'Download';
-    File("$directory/arandono_${formatoFecha(preTareos[index].fecha)}_$index.xlsx")
-      ..createSync(recursive: true)
-      ..writeAsBytesSync(fileBytes);
-    print('Path of New Dir: ' + directory);
+    await _exportDataToExcelUseCase.execute(preTareos[index]);
     print('exportando');
   }
 
@@ -303,7 +256,8 @@ class PreTareosController extends GetxController {
   Future<void> editarTarea(int index) async {
     NuevaPreTareaBinding().dependencies();
     print(preTareos[index].horafin);
-    final result = await Get.to<PreTareoProcesoEntity>(() => NuevaPreTareaPage(),
+    final result = await Get.to<PreTareoProcesoEntity>(
+        () => NuevaPreTareaPage(),
         arguments: {'tarea': preTareos[index]});
     if (result != null) {
       print(result.horafin);

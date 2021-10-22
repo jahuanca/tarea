@@ -75,10 +75,9 @@ class PreTareosUvaPage extends StatelessWidget {
     final items = [
       /* {'key': 1, 'value': 'Seleccionar'}, */
       {'key': 1, 'value': 'Sincronizar'},
-      {'key': 2, 'value': 'Copiar tarea'},
-      //TODO: se cambia la hora de inicio y hora fin
-      //aparece un formulario de nueva tarea con los datos cargados
+      /* {'key': 2, 'value': 'Copiar tarea'}, */
       {'key': 3, 'value': 'Eliminar'},
+      {'key': 4, 'value': 'Exportar a EXCEL'},
     ];
 
     return GetBuilder<PreTareosUvaController>(

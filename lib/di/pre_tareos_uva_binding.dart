@@ -1,6 +1,9 @@
 
+import 'package:flutter_tareo/data/repositories/export_data_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/pre_tareo_proceso_uva_repository_implementation.dart';
+import 'package:flutter_tareo/domain/repositories/export_data_repository.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tareo_proceso_uva_repository.dart';
+import 'package:flutter_tareo/domain/use_cases/others/export_data_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/create_pre_tareo_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/delete_pre_tareo_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos/get_all_pre_tareo_proceso_use_case.dart';
@@ -24,6 +27,7 @@ class PreTareosUvaBinding extends Bindings{
   void dependencies() {
 
     Get.lazyPut<PreTareoProcesoUvaRepository>(() => PreTareoProcesoUvaRepositoryImplementation());
+    Get.lazyPut<ExportDataRepository>(() => ExportDataRepositoryImplementation());
 
     Get.lazyReplace<CreatePreTareoProcesoUvaUseCase>(() => CreatePreTareoProcesoUvaUseCase(Get.find()));
     Get.lazyReplace<GetAllPreTareoProcesoUvaUseCase>(() => GetAllPreTareoProcesoUvaUseCase(Get.find()));
@@ -31,8 +35,9 @@ class PreTareosUvaBinding extends Bindings{
     Get.lazyReplace<DeletePreTareoProcesoUvaUseCase>(() => DeletePreTareoProcesoUvaUseCase(Get.find()));
     Get.lazyReplace<MigrarAllPreTareoUvaUseCase>(() => MigrarAllPreTareoUvaUseCase(Get.find()));
     Get.lazyReplace<UploadFileOfPreTareoUvaUseCase>(() => UploadFileOfPreTareoUvaUseCase(Get.find()));
+    Get.lazyReplace<ExportDataToExcelUseCase>(() => ExportDataToExcelUseCase(Get.find()));
 
-    Get.lazyPut<PreTareosUvaController>(() => PreTareosUvaController(Get.find(), Get.find() , Get.find(), Get.find(), Get.find(), Get.find()));
+    Get.lazyPut<PreTareosUvaController>(() => PreTareosUvaController(Get.find(), Get.find() , Get.find(), Get.find(), Get.find(), Get.find(), Get.find()));
     
   }
 
