@@ -7,6 +7,7 @@ import 'package:flutter_tareo/ui/pages/pre_tareos/pre_tareos_page.dart';
 import 'package:flutter_tareo/ui/pages/pre_tareos_uva/pre_tareos_uva_page.dart';
 import 'package:flutter_tareo/ui/pages/search/search_page.dart';
 import 'package:flutter_tareo/ui/pages/tareas/tareas_page.dart';
+import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -77,7 +78,7 @@ class NavigationController extends GetxController {
         indexWidget = index;
         update(['bottom_navigation']);
         break;
-      
+
       case 5:
         actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
         titulo = 'Uva';
@@ -104,5 +105,17 @@ class NavigationController extends GetxController {
 
   void change() {
     update(['modo']);
+  }
+
+  Future<bool> goBack() async {
+    return await basicDialog(
+      Get.overlayContext,
+      'Alerta',
+      'Saldra de la aplicación, ¿esta seguro?',
+      'Si',
+      'No',
+      () => Get.back(result: true),
+      () => Get.back(result: false),
+    );
   }
 }

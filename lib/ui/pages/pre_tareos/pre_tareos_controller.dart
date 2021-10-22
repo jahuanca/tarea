@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
-
+import 'dart:io' show Platform;
+import 'package:excel/excel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/di/listado_personas_pre_tareo_binding.dart';
@@ -18,9 +19,14 @@ import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo/listado_person
 import 'package:flutter_tareo/ui/pages/nueva_pre_tarea/nueva_pre_tarea_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
+import 'package:flutter_tareo/ui/utils/listas.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:get/get.dart';
 import 'package:image_editor_pro/image_editor_pro.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:path/path.dart' as p;
 
 class PreTareosController extends GetxController {
   final CreatePreTareoProcesoUseCase _createPreTareoProcesoUseCase;
@@ -54,6 +60,9 @@ class PreTareosController extends GetxController {
 
   Future<void> getTareas() async {
     preTareos = await _getAllPreTareoProcesoUseCase.execute();
+    for (var p in preTareos) {
+      print(p.horafin);
+    }
     update(['tareas']);
     return;
   }
@@ -68,9 +77,66 @@ class PreTareosController extends GetxController {
       case 3:
         goEliminar(index);
         break;
+      case 4:
+        goExcel(index);
+        break;
       default:
         break;
     }
+  }
+
+  TargetPlatform platform;
+
+  Future<bool> _checkPermission() async {
+    if (this.platform == TargetPlatform.android) {
+      
+      final status = await Permission.storage.status;
+      if (status != PermissionStatus.granted) {
+        final result = await Permission.storage.request();
+        if (result == PermissionStatus.granted) {
+          return true;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      return true;
+    }
+    return false;
+  }
+
+  void goExcel(int index) async {
+    var excel = Excel.createExcel();
+    excel.rename('Sheet1', 'Data');
+    Sheet sheetObject = excel['Data'];
+    int initialRow=5;
+    sheetObject.insertRowIterables(listaEncabezados(preTareos[index].toJson()), 1);
+    sheetObject.insertRowIterables(listaItem(preTareos[index].toJson()), 2);
+    sheetObject.insertRowIterables(listaEncabezados(PreTareoProcesoDetalleEntity().toJson()), 4);
+    for (var i = 0; i < preTareos[index].detalles.length ; i++) {
+      PreTareoProcesoDetalleEntity d=preTareos[index].detalles[i];
+      sheetObject.insertRowIterables(listaItem(d.toJson()), i+ initialRow);
+    }
+
+    var fileBytes = excel.save();
+
+    if(await _checkPermission()==false){
+      print('No hay permisos');
+      return;
+    }
+
+    this.platform = Theme.of(Get.overlayContext).platform;
+
+    final directory = this.platform == TargetPlatform.android
+        ? '/storage/emulated/0/Android/data/com.example.flutter_tareo/files'
+        : (await getApplicationDocumentsDirectory()).path +
+            Platform.pathSeparator +
+            'Download';
+    File("$directory/arandono_${formatoFecha(preTareos[index].fecha)}_$index.xlsx")
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(fileBytes);
+    print('Path of New Dir: ' + directory);
+    print('exportando');
   }
 
   void goAprobar(int index) async {
@@ -135,7 +201,7 @@ class PreTareosController extends GetxController {
   }
 
   Future<void> goMigrar(int index) async {
-    //TODO: CARGAR CIRCULAR PROGRESS 
+    //TODO: CARGAR CIRCULAR PROGRESS
     if (preTareos[index].estadoLocal == 'A') {
       basicDialog(
         Get.overlayContext,
@@ -184,7 +250,7 @@ class PreTareosController extends GetxController {
   } */
 
   Future<void> goListadoPersonas(int index) async {
-    List<PreTareoProcesoEntity> otras=[];
+    List<PreTareoProcesoEntity> otras = [];
     otras.addAll(preTareos);
     otras.removeAt(index);
     ListadoPersonasPreTareoBinding().dependencies();
@@ -227,19 +293,20 @@ class PreTareosController extends GetxController {
     final result =
         await Get.to<PreTareoProcesoEntity>(() => NuevaPreTareaPage());
     if (result != null) {
+      print(result.horafin);
       preTareos.insert(0, result);
-      //preTareos.add(result);
       await _createPreTareoProcesoUseCase.execute(result);
       update(['tareas']);
     }
   }
 
   Future<void> editarTarea(int index) async {
-    NuevaTareaBinding().dependencies();
-    final result = await Get.to<PreTareoProcesoEntity>(() => NuevaTareaPage(),
+    NuevaPreTareaBinding().dependencies();
+    print(preTareos[index].horafin);
+    final result = await Get.to<PreTareoProcesoEntity>(() => NuevaPreTareaPage(),
         arguments: {'tarea': preTareos[index]});
     if (result != null) {
-      log(result.toJson().toString());
+      print(result.horafin);
       result.idusuario = PreferenciasUsuario().idUsuario;
       preTareos[index] = result;
       await _updatePreTareoProcesoUseCase.execute(preTareos[index], index);
@@ -248,7 +315,7 @@ class PreTareosController extends GetxController {
   }
 
   Future<void> copiarTarea(int index) async {
-    NuevaTareaBinding().dependencies();
+    NuevaPreTareaBinding().dependencies();
     final result = await Get.to<PreTareoProcesoEntity>(() => NuevaTareaPage(),
         arguments: {'tarea': preTareos[index]});
     if (result != null) {
@@ -294,12 +361,12 @@ class PreTareosController extends GetxController {
     basicDialog(
       Get.overlayContext,
       'Alerta',
-      '¿Esta seguro de editar la siguiente tarea?',
+      '¿Esta seguro de editar la actividad?',
       'Si',
       'No',
       () async {
         Get.back();
-        await copiarTarea(index);
+        await editarTarea(index);
       },
       () => Get.back(),
     );

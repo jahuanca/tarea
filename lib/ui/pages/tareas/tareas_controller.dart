@@ -180,7 +180,7 @@ class TareasController extends GetxController {
       'No', 
       () async{
         Get.back();
-        await copiarTarea(index);
+        await editarTarea(index);
       }, 
       ()=> Get.back(),
     );

@@ -46,7 +46,7 @@ class NuevaPreTareaUvaController extends GetxController {
       errorPausaInicio,
       errorPausaFin;
 
-  PreTareoProcesoUvaEntity nuevaPreTarea = PreTareoProcesoUvaEntity();
+  PreTareoProcesoUvaEntity nuevaPreTarea;
 
   bool validando = false;
   bool editando = false;
@@ -76,6 +76,7 @@ class NuevaPreTareaUvaController extends GetxController {
         nuevaPreTarea = Get.arguments['tarea'] as PreTareoProcesoUvaEntity;
       }
     }
+    if (nuevaPreTarea == null) nuevaPreTarea = new PreTareoProcesoUvaEntity();
     nuevaPreTarea.fechamod = fecha;
   }
 
@@ -212,10 +213,9 @@ class NuevaPreTareaUvaController extends GetxController {
   void changeTurno(String id) {
     nuevaPreTarea.turnotareo = id;
     if (id == 'D') {
-      nuevaPreTarea.horafin = null;
       nuevaPreTarea.pausainicio = null;
       nuevaPreTarea.pausafin = null;
-      update(['inicio_pausa', 'fin_pausa', 'hora_fin']);
+      update(['inicio_pausa', 'fin_pausa']);
     }
     update(['turno']);
   }
@@ -247,6 +247,7 @@ class NuevaPreTareaUvaController extends GetxController {
       }
       update(['inicio_pausa']);
     } */
+    update(['inicio_pausa']);
   }
 
   void changeFinPausa() {
@@ -268,6 +269,7 @@ class NuevaPreTareaUvaController extends GetxController {
       }
       update(['fin_pausa']);
     } */
+    update(['fin_pausa']);
   }
 
   void mostrarDialog(String mensaje) {

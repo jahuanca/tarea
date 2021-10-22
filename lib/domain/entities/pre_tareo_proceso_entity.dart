@@ -174,11 +174,11 @@ class PreTareoProcesoEntity {
         "fecha": fecha == null
             ? null
             : "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
-        "horainicio": horainicio == null ? null : horainicio.toIso8601String(),
-        "horafin": horafin == null ? null : horafin.toIso8601String(),
+        "horainicio": horainicio == null ? null : horainicio?.toIso8601String(),
+        "horafin": horafin == null ? null : horafin?.toIso8601String(),
         "pausainicio":
-            pausainicio == null ? null : pausainicio.toIso8601String(),
-        "pausafin": pausafin == null ? null : pausafin.toIso8601String(),
+            pausainicio == null ? null : pausainicio?.toIso8601String(),
+        "pausafin": pausafin == null ? null : pausafin?.toIso8601String(),
         "linea": linea == null ? null : linea,
         "item": item == null ? null : item,
         "idcentrocosto": idcentrocosto == null ? null : idcentrocosto,

@@ -20,17 +20,20 @@ class NavigationPage extends GetWidget<NavigationController> {
       init: NavigationController(),
       id: 'bottom_navigation',
       builder: (_)=> SafeArea(
-        child: Scaffold(
-          key: _scaffoldKey,
-          appBar: getAppBar( navigationController.titulo, navigationController.actions, true, ),
-          drawer: getDrawer(size, _scaffoldKey),
-          /* bottomNavigationBar: GetBuilder<NavigationController>(
-            id: 'bottom_navigation',
-            builder: (_)=> getNavigationBar(_scaffoldKey)
-          ), */
-          body: GetBuilder<NavigationController>(
-            /* id: 'bottom_navigation', */
-            builder: (_)=> navigationController.lista[navigationController.indexWidget]),
+        child: WillPopScope(
+          onWillPop: _.goBack,
+          child: Scaffold(
+            key: _scaffoldKey,
+            appBar: getAppBar( navigationController.titulo, navigationController.actions, true, ),
+            drawer: getDrawer(size, _scaffoldKey),
+            /* bottomNavigationBar: GetBuilder<NavigationController>(
+              id: 'bottom_navigation',
+              builder: (_)=> getNavigationBar(_scaffoldKey)
+            ), */
+            body: GetBuilder<NavigationController>(
+              /* id: 'bottom_navigation', */
+              builder: (_)=> navigationController.lista[navigationController.indexWidget]),
+          ),
         ),
       ),
     );

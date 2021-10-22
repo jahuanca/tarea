@@ -308,12 +308,12 @@ class PreTareosUvaController extends GetxController {
     basicDialog(
       Get.overlayContext,
       'Alerta',
-      '¿Esta seguro de editar la siguiente tarea?',
+      '¿Esta seguro de editar la actividad?',
       'Si',
       'No',
       () async {
         Get.back();
-        await copiarTarea(index);
+        await editarTarea(index);
       },
       () => Get.back(),
     );

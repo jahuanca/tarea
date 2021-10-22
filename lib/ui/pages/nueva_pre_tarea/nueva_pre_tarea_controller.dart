@@ -1,15 +1,13 @@
-import 'package:flutter_tareo/di/agregar_persona_binding.dart';
+
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
-import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
-import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labores_cultivo_packing_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_actividads_by_key_use_case.dart';
@@ -17,8 +15,6 @@ import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_labors_by_key_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
-import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
-import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo/listado_personas_pre_tareo_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -47,7 +43,7 @@ class NuevaPreTareaController extends GetxController {
       errorPausaInicio,
       errorPausaFin;
 
-  PreTareoProcesoEntity nuevaPreTarea = PreTareoProcesoEntity();
+  PreTareoProcesoEntity nuevaPreTarea;
 
   bool validando = false;
   bool editando = false;
@@ -70,15 +66,17 @@ class NuevaPreTareaController extends GetxController {
 
   @override
   void onInit() {
-    print(PreferenciasUsuario().idSede);
-    super.onInit();
     if (Get.arguments != null) {
       if (Get.arguments['tarea'] != null) {
         editando = true;
         nuevaPreTarea = Get.arguments['tarea'] as PreTareoProcesoEntity;
+        update(['hora_fin']);
       }
     }
+    if (nuevaPreTarea == null) nuevaPreTarea = new PreTareoProcesoEntity();
     nuevaPreTarea.fechamod = fecha;
+    super.onInit();
+    
   }
 
   void setEditValues() {
@@ -108,8 +106,8 @@ class NuevaPreTareaController extends GetxController {
   Future<void> getPresentaciones() async {
     laboresCultivoPacking = await _getLaboresCultivoPackingUseCase.execute();
     presentaciones = [];
-    if(laboresCultivoPacking.isNotEmpty){
-      nuevaPreTarea.laboresCultivoPacking=new LaboresCultivoPackingEntity();
+    if (laboresCultivoPacking.isNotEmpty) {
+      nuevaPreTarea.laboresCultivoPacking = new LaboresCultivoPackingEntity();
     }
     laboresCultivoPacking.forEach((element) {
       PresentacionLineaEntity presentacion = element.presentacionLinea;
@@ -119,10 +117,11 @@ class NuevaPreTareaController extends GetxController {
         presentaciones.add(presentacion);
       }
     });
-    if (presentaciones.isNotEmpty){
+    if (presentaciones.isNotEmpty) {
       nuevaPreTarea.laboresCultivoPacking.presentacionLinea =
           presentaciones.first;
-      nuevaPreTarea.laboresCultivoPacking.idpresentacion=presentaciones.first.idpresentacion;
+      nuevaPreTarea.laboresCultivoPacking.idpresentacion =
+          presentaciones.first.idpresentacion;
       await changePresentacion(nuevaPreTarea
           .laboresCultivoPacking.presentacionLinea?.idpresentacion
           .toString());
@@ -146,10 +145,10 @@ class NuevaPreTareaController extends GetxController {
     });
     if (actividades.isNotEmpty) {
       nuevaPreTarea.laboresCultivoPacking.actividad = actividades?.first;
-      nuevaPreTarea.laboresCultivoPacking.idactividad = actividades?.first?.idactividad;
-      await changeActividad(nuevaPreTarea
-          .laboresCultivoPacking.idactividad
-          .toString());
+      nuevaPreTarea.laboresCultivoPacking.idactividad =
+          actividades?.first?.idactividad;
+      await changeActividad(
+          nuevaPreTarea.laboresCultivoPacking.idactividad.toString());
       await getLabores();
     }
     update(['actividades']);
@@ -159,9 +158,9 @@ class NuevaPreTareaController extends GetxController {
     nuevaPreTarea.sede = (await _getSubdivisonsUseCase.execute())
         .firstWhere((e) => e.idsubdivision == idSubdivision);
     validando = true;
-    supervisors = await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
+    supervisors =
+        await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
     update(['validando']);
-    
 
     if (supervisors.length > 0) {
       nuevaPreTarea.supervisor = supervisors[0];
@@ -169,7 +168,7 @@ class NuevaPreTareaController extends GetxController {
       changeSupervisor(nuevaPreTarea.supervisor.codigoempresa);
       changeDigitador(nuevaPreTarea.digitador.codigoempresa);
     }
-    update(['supervisors','digitadors']);
+    update(['supervisors', 'digitadors']);
     validando = false;
     update(['validando']);
   }
@@ -181,24 +180,23 @@ class NuevaPreTareaController extends GetxController {
     labores = [];
     laboresCultivoPacking.forEach((element) {
       if (element.idpresentacion ==
-          nuevaPreTarea.laboresCultivoPacking.idpresentacion && element.idactividad==nuevaPreTarea.laboresCultivoPacking.idactividad) {
+              nuevaPreTarea.laboresCultivoPacking.idpresentacion &&
+          element.idactividad ==
+              nuevaPreTarea.laboresCultivoPacking.idactividad) {
         LaborEntity labor = element.labor;
-        int index = labores
-            .indexWhere((e) => e.idlabor == labor.idlabor);
+        int index = labores.indexWhere((e) => e.idlabor == labor.idlabor);
         if (index == -1) {
           labores.add(labor);
         }
       }
     });
-    
+
     if (labores.isNotEmpty) {
       nuevaPreTarea.laboresCultivoPacking.labor = labores.first;
-      nuevaPreTarea.laboresCultivoPacking.idlabor =
-          labores.first.idlabor;
+      nuevaPreTarea.laboresCultivoPacking.idlabor = labores.first.idlabor;
     }
     changeLabor(nuevaPreTarea.laboresCultivoPacking.idlabor.toString());
     update(['labores']);
-    
   }
 
   Future<void> getCentrosCosto() async {
@@ -215,10 +213,9 @@ class NuevaPreTareaController extends GetxController {
   void changeTurno(String id) {
     nuevaPreTarea.turnotareo = id;
     if (id == 'D') {
-      nuevaPreTarea.horafin = null;
       nuevaPreTarea.pausainicio = null;
       nuevaPreTarea.pausafin = null;
-      update(['inicio_pausa', 'fin_pausa', 'hora_fin']);
+      update(['inicio_pausa', 'fin_pausa']);
     }
     update(['turno']);
   }
@@ -250,6 +247,7 @@ class NuevaPreTareaController extends GetxController {
       }
       update(['inicio_pausa']);
     } */
+    update(['inicio_pausa']);
   }
 
   void changeFinPausa() {
@@ -271,6 +269,7 @@ class NuevaPreTareaController extends GetxController {
       }
       update(['fin_pausa']);
     } */
+    update(['fin_pausa']);
   }
 
   void mostrarDialog(String mensaje) {
@@ -314,8 +313,7 @@ class NuevaPreTareaController extends GetxController {
     int index = supervisors.indexWhere((e) => e.codigoempresa.toString() == id);
     if (errorDigitador == null && index != -1) {
       nuevaPreTarea.digitador = supervisors[index];
-      nuevaPreTarea.codigoempresadigitador =
-          supervisors[index].codigoempresa;
+      nuevaPreTarea.codigoempresadigitador = supervisors[index].codigoempresa;
     } else {
       nuevaPreTarea.digitador = null;
       nuevaPreTarea.codigoempresadigitador = null;
@@ -416,17 +414,19 @@ class NuevaPreTareaController extends GetxController {
   void goBack() {
     String mensaje = validar();
     if (mensaje == null) {
-
       laboresCultivoPacking.forEach((e) {
-        LaboresCultivoPackingEntity actual=nuevaPreTarea.laboresCultivoPacking;
-        if(e.idactividad== actual.idactividad && e.idlabor== actual.idlabor && e.idpresentacion == actual.idpresentacion){
-          nuevaPreTarea.item=e.item;
-          nuevaPreTarea.laboresCultivoPacking=actual;
+        LaboresCultivoPackingEntity actual =
+            nuevaPreTarea.laboresCultivoPacking;
+        if (e.idactividad == actual.idactividad &&
+            e.idlabor == actual.idlabor &&
+            e.idpresentacion == actual.idpresentacion) {
+          nuevaPreTarea.item = e.item;
+          nuevaPreTarea.laboresCultivoPacking = actual;
         }
       });
 
-      nuevaPreTarea.idusuario=PreferenciasUsuario().idUsuario;
-      nuevaPreTarea.estadoLocal='PC';
+      nuevaPreTarea.idusuario = PreferenciasUsuario().idUsuario;
+      nuevaPreTarea.estadoLocal = 'PC';
       Get.back(result: nuevaPreTarea);
     } else {
       toastError('Error', mensaje);
@@ -486,10 +486,6 @@ class NuevaPreTareaController extends GetxController {
       return errorPausaInicio;
     }
     errorPausaInicio = null;
-
-    //PUEDEN SER NULOS: inicioPausa y finPausa (00:00:00)
-
-    //TODO: en caso de haber inicio de pausa validar que esten dentro de horafin y horainicio
     return null;
   }
 }

@@ -141,7 +141,7 @@ class LoginPage extends StatelessWidget {
                       labelText: 'name',
                       labelValue: '_id',
                       selectedItem: _.sedeSelected == null ? null : {
-                        'name' : _.sedeSelected.detallesubdivision,
+                        'name' : '${_.sedeSelected.detallesubdivision} - ${_.sedeSelected.subdivision}',
                         '_id' : _.sedeSelected.idsubdivision,
                       },
                       onChanged: _.changeSede,
@@ -149,7 +149,7 @@ class LoginPage extends StatelessWidget {
                           ? []
                           : controller.sedes
                               .map((e) => {
-                                    'name': e.detallesubdivision,
+                                    'name': '${e.detallesubdivision} - ${e.subdivision}',
                                     '_id': e.idsubdivision,
                                   })
                               .toList(),

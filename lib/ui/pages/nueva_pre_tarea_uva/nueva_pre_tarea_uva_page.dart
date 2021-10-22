@@ -409,7 +409,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                     child: Container(
                       alignment: Alignment.center,
                       child: IconButton(
-                        onPressed: controller.goListadoPersonas,
+                        //onPressed: controller.goListadoPersonas,
                         icon: Icon(Icons.search, size: 40),
                       ),
                     ),

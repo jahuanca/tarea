@@ -76,4 +76,6 @@ class PreTareoProcesoDetalleEntity {
         'idusuario': idusuario,
         'codigotk': codigotk,
       };
+
+  
 }

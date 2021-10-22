@@ -17,6 +17,7 @@ AppBar getAppBar(String titulo, List<Widget> actions,[bool bandera = false]) {
         Text(
           titulo,
           style: TextStyle(
+              fontSize: 18,
               color: PreferenciasUsuario().modoDark ? Colors.white : Colors.black),
         ),
 

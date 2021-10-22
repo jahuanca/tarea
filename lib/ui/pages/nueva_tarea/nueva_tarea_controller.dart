@@ -30,7 +30,7 @@ class NuevaTareaController extends GetxController {
   DateTime fecha = new DateTime.now();
   String errorActividad, errorLabor, errorCentroCosto, errorSupervisor, errorHoraInicio, errorHoraFin, errorFecha, errorPausaInicio, errorPausaFin;
 
-  TareaProcesoEntity nuevaTarea = new TareaProcesoEntity();
+  TareaProcesoEntity nuevaTarea;
 
   bool validando = false;
   bool editando = false;
@@ -57,6 +57,7 @@ class NuevaTareaController extends GetxController {
         nuevaTarea = Get.arguments['tarea'] as TareaProcesoEntity;
       }
     }
+    if (nuevaTarea == null) nuevaTarea = new TareaProcesoEntity();
     nuevaTarea.fechamod = fecha;
     nuevaTarea.escampo = true;
     nuevaTarea.espacking = true;
@@ -164,6 +165,7 @@ class NuevaTareaController extends GetxController {
       }
       update(['inicio_pausa']);
     } */
+    update(['inicio_pausa']);
   }
 
   void changeFinPausa() {
@@ -178,6 +180,7 @@ class NuevaTareaController extends GetxController {
       }
       update(['fin_pausa']);
     } */
+    update(['fin_pausa']);
   }
 
   void mostrarDialog(String mensaje){
