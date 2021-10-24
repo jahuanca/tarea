@@ -245,7 +245,6 @@ class ListadoPersonasPreTareoController extends GetxController
     FlutterBarcodeScanner.getBarcodeStreamReceiver(
             "#ff6666", "Cancelar", false, ScanMode.DEFAULT)
         .listen((barcode) async {
-      //print(barcode);
       await setCodeBar(barcode);
     });
   }

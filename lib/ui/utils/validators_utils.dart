@@ -1,5 +1,6 @@
 String validatorUtilText(dynamic texto, String label, Map<String, dynamic> rules){
   String error;
+  if(rules==null) return error;
   for (var i = 0; i < rules.values.length; i++) {
     String key=rules.keys.elementAt(i);
     dynamic value=rules.values.elementAt(i);

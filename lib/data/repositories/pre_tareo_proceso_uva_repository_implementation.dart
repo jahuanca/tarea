@@ -64,7 +64,7 @@ class PreTareoProcesoUvaRepositoryImplementation
   Future<void> create(PreTareoProcesoUvaEntity tareaProcesoEntity) async {
     var tareas =
         await Hive.openBox<PreTareoProcesoUvaEntity>('pre_tareos_uva_sincronizar');
-    await tareas.add(tareaProcesoEntity);
+    return await tareas.add(tareaProcesoEntity);
   }
 
   @override

@@ -418,7 +418,7 @@ class NuevaPreTareaController extends GetxController {
         LaboresCultivoPackingEntity actual =
             nuevaPreTarea.laboresCultivoPacking;
         if (e.idactividad == actual.idactividad &&
-            e.idlabor == actual.idlabor &&
+            e.idlabor == actual.idlabor && e.idcultivo==1 &&
             e.idpresentacion == actual.idpresentacion) {
           nuevaPreTarea.item = e.item;
           nuevaPreTarea.laboresCultivoPacking = actual;

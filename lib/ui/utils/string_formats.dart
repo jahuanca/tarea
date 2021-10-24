@@ -112,3 +112,10 @@ String formatoHora(DateTime value) {
   if (value == null) return null;
   return DateFormat('HH:mm').format(value);
 }
+
+String toHorasMinutos(double value){
+  int horas=value.truncate();
+  int minutos=((value-horas) * 60).truncate();
+  return '$horas h $minutos min';
+
+}

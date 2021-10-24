@@ -192,7 +192,7 @@ class ListadoPersonasPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text('75 UNDs'),
+                                  child: Text(toHorasMinutos(_.personalSeleccionado[index].cantidadHoras)),
                                 ),
                                 flex: 10,
                               ),

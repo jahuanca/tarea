@@ -134,6 +134,7 @@ InputBorder inputBorder() {
       borderSide: BorderSide(width: 1, color: primaryColor));
 }
 
+
 InputBorder inputBorderError() {
   return OutlineInputBorder(
       borderRadius: BorderRadius.circular(borderRadius),

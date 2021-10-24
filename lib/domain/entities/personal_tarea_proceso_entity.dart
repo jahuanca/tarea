@@ -125,7 +125,7 @@ class PersonalTareaProcesoEntity {
         'esjornal': esjornal,
         'esrendimiento': esrendimiento,
         'fechamod': fechamod?.toIso8601String(),
-        'cantidadHoras': cantidadHoras,
+        'cantidadhoras': cantidadHoras,
         'cantidadrendimiento': cantidadrendimiento,
         'cantidadavance': cantidadavance,
         'idestado': idestado,

@@ -109,6 +109,7 @@ class TareasController extends GetxController {
     NuevaTareaBinding().dependencies();
     final result = await Get.to<TareaProcesoEntity>(() => NuevaTareaPage());
     if (result != null) {
+      result.idusuario=PreferenciasUsuario().idUsuario;
       tareas.add(result);
       await _createTareaProcesoUseCase.execute(result);
       update(['tareas']);

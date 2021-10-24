@@ -92,7 +92,7 @@ class AgregarPersonaPage extends StatelessWidget {
                             _.personalTareaProcesoEntity
                                 .horafin = await DatePickerWidget(
                               onlyDate: true,
-                              minDate: _.personalTareaProcesoEntity.horainicio,
+                              //minDate: _.personalTareaProcesoEntity.horainicio,
                               dateSelected:
                                   _.personalTareaProcesoEntity.horafin ??
                                       DateTime.now(),
@@ -125,12 +125,11 @@ class AgregarPersonaPage extends StatelessWidget {
                                                 .pausainicio =
                                             await DatePickerWidget(
                                           onlyDate: true,
-                                          minDate: DateTime.now()
-                                              .subtract(Duration(days: 10)),
+                                          //minDate: _.personalTareaProcesoEntity.horainicio ,
                                           dateSelected: DateTime.now(),
                                           onChanged: () {},
                                         ).selectTime(
-                                                context, new DateTime.now());
+                                                context, _.personalTareaProcesoEntity.horainicio ?? DateTime.now());
                                         _.changeInicioPausa();
                                       },
                                       textEditingController:
@@ -160,10 +159,9 @@ class AgregarPersonaPage extends StatelessWidget {
                             _.personalTareaProcesoEntity.pausafin =
                                 await DatePickerWidget(
                               onlyDate: true,
-                              minDate:
-                                  DateTime.now().subtract(Duration(days: 10)),
+                              //minDate: _.personalTareaProcesoEntity.pausainicio ,
                               dateSelected: DateTime.now(),
-                            ).selectTime(context, new DateTime.now());
+                            ).selectTime(context, _.personalTareaProcesoEntity?.pausainicio ?? new DateTime.now());
                             _.changeFinPausa();
                           },
                           textEditingController: TextEditingController(
@@ -221,16 +219,19 @@ class AgregarPersonaPage extends StatelessWidget {
                     GetBuilder<AgregarPersonaController>(
                       id: 'cantidad_horas',
                       builder: (_) => InputLabelWidget(
-                        hintText: 'Cantidad',
+                        hintText: 'Cantidad Horas',
+                        textEditingController: TextEditingController(text: _.textoCantidadHoras),
                         enabled: false,
                         textInputType: TextInputType.number,
-                        label: 'Cantidad',
+                        label: 'Cantidad Horas',
                       ),
                     ),
                     GetBuilder<AgregarPersonaController>(
                       id: 'cantidad_rendimiento',
                       builder: (_) => InputLabelWidget(
                         hintText: 'Cantidad rendimiento',
+                        error: _.errorCantidadRendimiento,
+                        onChanged: _.changeCantidadRendimiento,
                         textInputType: TextInputType.number,
                         label: 'Cantidad rendimiento',
                       ),
@@ -239,6 +240,8 @@ class AgregarPersonaPage extends StatelessWidget {
                       id: 'cantidad_avance',
                       builder: (_) => InputLabelWidget(
                         hintText: 'Cantidad avance',
+                        error: _.errorCantidadAvance,
+                        onChanged: _.changeCantidadAvance,
                         textInputType: TextInputType.number,
                         label: 'Cantidad avance',
                       ),

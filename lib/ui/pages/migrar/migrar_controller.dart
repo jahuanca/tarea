@@ -16,7 +16,7 @@ class MigrarController extends GetxController {
 
   List<TareaProcesoEntity> tareas = [];
 
-  bool validando=false;
+  bool validando = false;
 
   MigrarController(
       this._getAllTareaProcesoUseCase,
@@ -79,21 +79,22 @@ class MigrarController extends GetxController {
   }
 
   Future<void> migrar(int index) async {
-    validando=true;
+    validando = true;
     update(['validando']);
     TareaProcesoEntity tareaMigrada =
         await _migrarAllTareaUseCase.execute(tareas[index]);
     if (tareaMigrada != null) {
       toastExito('Exito', 'Tarea migrada con exito');
+      tareas[index].estadoLocal = 'M';
+      tareas[index].itemtareoproceso = tareaMigrada.itemtareoproceso;
+      await _updateTareaProcesoUseCase.execute(tareas[index], index);
+      tareaMigrada = await _uploadFileOfTareaUseCase.execute(
+          tareas[index], File(tareas[index].pathUrl));
+      tareas[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
+      await _updateTareaProcesoUseCase.execute(tareas[index], index);
     }
-    tareas[index].estadoLocal = 'M';
-    tareas[index].itemtareoproceso = tareaMigrada.itemtareoproceso;
-    await _updateTareaProcesoUseCase.execute(tareas[index], index);
-    tareaMigrada=await _uploadFileOfTareaUseCase.execute(
-        tareas[index], File(tareas[index].pathUrl));
-    tareas[index].firmaSupervisor=tareaMigrada?.firmaSupervisor;
-    await _updateTareaProcesoUseCase.execute(tareas[index], index);
-    validando=false;
+    validando = false;
+
     update(['validando', 'tareas']);
   }
 }

@@ -61,10 +61,8 @@ class PreTareosController extends GetxController {
   }
 
   Future<void> getTareas() async {
+    preTareos=[];
     preTareos = await _getAllPreTareoProcesoUseCase.execute();
-    for (var p in preTareos) {
-      print(p.horafin);
-    }
     update(['tareas']);
     return;
   }
@@ -246,7 +244,6 @@ class PreTareosController extends GetxController {
     final result =
         await Get.to<PreTareoProcesoEntity>(() => NuevaPreTareaPage());
     if (result != null) {
-      print(result.horafin);
       preTareos.insert(0, result);
       await _createPreTareoProcesoUseCase.execute(result);
       update(['tareas']);
