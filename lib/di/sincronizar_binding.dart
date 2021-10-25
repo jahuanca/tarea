@@ -1,6 +1,7 @@
 
 import 'package:flutter_tareo/data/repositories/actividad_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/centro_costo_repository_implementation.dart';
+import 'package:flutter_tareo/data/repositories/cultivo_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/current_time_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/labor_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/labores_cultivo_packing_repository_implementation.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_tareo/data/repositories/temp_labor_repository_implementa
 import 'package:flutter_tareo/data/repositories/usuario_repository_implementation.dart';
 import 'package:flutter_tareo/domain/repositories/actividad_repository.dart';
 import 'package:flutter_tareo/domain/repositories/centro_costo_repository.dart';
+import 'package:flutter_tareo/domain/repositories/cultivo_repository.dart';
 import 'package:flutter_tareo/domain/repositories/current_time_repository.dart';
 import 'package:flutter_tareo/domain/repositories/labores_cultivo_packing_repository.dart';
 import 'package:flutter_tareo/domain/repositories/personal_empresa_repository.dart';
@@ -26,6 +28,7 @@ import 'package:flutter_tareo/domain/sincronizar/get_usuarios_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/ui/pages/sincronizar/sincronizar_controller.dart';
 import 'package:get/get.dart';
@@ -45,6 +48,7 @@ class SincronizarBinding extends Bindings{
     Get.lazyPut<CurrentTimeRepository>(() => CurrentTimeRepositoryImplementation());
     Get.lazyPut<PreTareoProcesoRepository>(() => PreTareoProcesoRepositoryImplementation());
     Get.lazyPut<LaboresCultivoPackingRepository>(() => LaboresCultivoPackingRepositoryImplementation());
+    Get.lazyPut<CultivoRepository>(() => CultivoRepositoryImplementation());
 
     Get.lazyPut<GetActividadsUseCase>(() => GetActividadsUseCase(Get.find()));
     Get.lazyPut<GetSubdivisonsUseCase>(() => GetSubdivisonsUseCase(Get.find()));
@@ -55,8 +59,9 @@ class SincronizarBinding extends Bindings{
     Get.lazyReplace<GetCurrentTimeWorldUseCase>(() => GetCurrentTimeWorldUseCase(Get.find()));
     Get.lazyReplace<GetPreTareoProcesosUseCase>(() => GetPreTareoProcesosUseCase(Get.find()));
     Get.lazyReplace<GetLaboresCultivoPackingUseCase>(() => GetLaboresCultivoPackingUseCase(Get.find()));
+    Get.lazyReplace<GetCultivosUseCase>(() => GetCultivosUseCase(Get.find()));
 
-    Get.lazyPut<SincronizarController>(() => SincronizarController(Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find()));
+    Get.lazyPut<SincronizarController>(() => SincronizarController(Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find()));
     
   }
 

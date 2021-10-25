@@ -18,8 +18,8 @@ class PreTareoProcesoUvaRepositoryImplementation
   @override
   Future<List<PreTareoProcesoUvaEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
-      Box dataHive =
-          await Hive.openBox<PreTareoProcesoUvaEntity>('pre_tareos_uva_sincronizar');
+      Box dataHive = await Hive.openBox<PreTareoProcesoUvaEntity>(
+          'pre_tareos_uva_sincronizar');
       List<PreTareoProcesoUvaEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       local.sort((a, b) => b.fechamod.compareTo(a.fechamod));
@@ -41,7 +41,8 @@ class PreTareoProcesoUvaRepositoryImplementation
       Map<String, dynamic> valores) async {
     if (PreferenciasUsuario().offLine) {
       Box<PreTareoProcesoUvaEntity> dataHive =
-          await Hive.openBox<PreTareoProcesoUvaEntity>('pre_tareos_uva_sincronizar');
+          await Hive.openBox<PreTareoProcesoUvaEntity>(
+              'pre_tareos_uva_sincronizar');
       List<PreTareoProcesoUvaEntity> local = [];
 
       dataHive.values.forEach((e) {
@@ -62,23 +63,23 @@ class PreTareoProcesoUvaRepositoryImplementation
 
   @override
   Future<void> create(PreTareoProcesoUvaEntity tareaProcesoEntity) async {
-    var tareas =
-        await Hive.openBox<PreTareoProcesoUvaEntity>('pre_tareos_uva_sincronizar');
+    var tareas = await Hive.openBox<PreTareoProcesoUvaEntity>(
+        'pre_tareos_uva_sincronizar');
     return await tareas.add(tareaProcesoEntity);
   }
 
   @override
   Future<void> delete(int index) async {
-    var tareas =
-        await Hive.openBox<PreTareoProcesoUvaEntity>('pre_tareos_uva_sincronizar');
+    var tareas = await Hive.openBox<PreTareoProcesoUvaEntity>(
+        'pre_tareos_uva_sincronizar');
     return await tareas.deleteAt(index);
   }
 
   @override
   Future<void> update(
       PreTareoProcesoUvaEntity tareaProcesoEntity, int index) async {
-    var tareas =
-        await Hive.openBox<PreTareoProcesoUvaEntity>('pre_tareos_uva_sincronizar');
+    var tareas = await Hive.openBox<PreTareoProcesoUvaEntity>(
+        'pre_tareos_uva_sincronizar');
     return await tareas.putAt(index, tareaProcesoEntity);
   }
 

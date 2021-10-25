@@ -5,6 +5,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_tareo/core/colors.dart';
+import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
@@ -37,6 +38,8 @@ class PreTareoProcesoUvaEntity {
     this.turnotareo,
     this.diasiguiente,
     this.firmaSupervisor,
+    this.idcultivo,
+    this.cultivo,
   }){
     detalles ??= [];
     estadoLocal='P';
@@ -90,6 +93,10 @@ class PreTareoProcesoUvaEntity {
   bool diasiguiente;
   @HiveField(23)
   PresentacionLineaEntity presentacion;
+  @HiveField(24)
+  int idcultivo;
+  @HiveField(25)
+  CultivoEntity cultivo;
 
   String get fechaHora {
     if (fecha == null || horainicio == null) {
@@ -152,10 +159,12 @@ class PreTareoProcesoUvaEntity {
         activo: json["activo"] == null ? null : json["activo"],
         firmaSupervisor: json["firmasupervisor"] == null ? null : json["firmasupervisor"],
         idusuario: json["idusuario"] == null ? null : json["idusuario"],
+        idcultivo: json["idcultivo"] == null ? null : json["idcultivo"],
         diasiguiente: json["diasiguiente"] == null ? null : json["diasiguiente"],
         turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
         centroCosto: json['Centro_Costo'] == null ? null : CentroCostoEntity.fromJson(json['Centro_Costo']),
         presentacion: json['Presentacion_Linea'] == null ? null : PresentacionLineaEntity.fromJson(json['Presentacion_Linea']),
+        cultivo: json['Cultivo'] == null ? null : CultivoEntity.fromJson(json['Cultivo']),
         detalles: json['Pre_Tareo_Proceso_Detalles'] == null
             ? null
             : List<PreTareoProcesoUvaDetalleEntity>.from(
@@ -186,6 +195,8 @@ class PreTareoProcesoUvaEntity {
         "firmasupervisor": firmaSupervisor == null ? null : firmaSupervisor,
         "diasiguiente": diasiguiente == null ? null : diasiguiente,
         "idusuario": idusuario == null ? null : idusuario,
+        "idcultivo": idcultivo == null ? null : idcultivo,
+        
         "Pre_Tareo_Proceso_Uva_Detalles": detalles == null
             ? null
             : List<dynamic>.from(detalles.map((x) => x.toJson())),

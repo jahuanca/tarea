@@ -81,7 +81,7 @@ class NavigationController extends GetxController {
 
       case 5:
         actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
-        titulo = 'Uva';
+        titulo = 'Packing';
         scaffoldKey.currentState.openEndDrawer();
         indexWidget = index;
         update(['bottom_navigation']);

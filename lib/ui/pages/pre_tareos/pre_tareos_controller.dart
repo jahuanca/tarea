@@ -152,7 +152,6 @@ class PreTareosController extends GetxController {
   }
 
   Future<void> goMigrar(int index) async {
-    //TODO: CARGAR CIRCULAR PROGRESS
     if (preTareos[index].estadoLocal == 'A') {
       basicDialog(
         Get.overlayContext,

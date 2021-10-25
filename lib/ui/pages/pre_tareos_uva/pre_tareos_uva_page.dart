@@ -136,7 +136,7 @@ class PreTareosUvaPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              _.preTareosUva[index]?.presentacion?.descripcion ??
+                              _.preTareosUva[index]?.cultivo?.detallecultivo ??
                                   '',
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
@@ -189,7 +189,7 @@ class PreTareosUvaPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Flexible(child: Container(), flex: 1),
-                        Flexible(
+                        /* Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -198,7 +198,7 @@ class PreTareosUvaPage extends StatelessWidget {
                           ),
                           flex: 10,
                         ),
-                        Flexible(child: Container(), flex: 1),
+                        Flexible(child: Container(), flex: 1), */
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
@@ -206,7 +206,7 @@ class PreTareosUvaPage extends StatelessWidget {
                                     ?.detallecentrocosto ??
                                 ''),
                           ),
-                          flex: 10,
+                          flex: 20,
                         ),
                         Flexible(child: Container(), flex: 1),
                       ],

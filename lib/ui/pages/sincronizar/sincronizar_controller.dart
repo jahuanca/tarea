@@ -1,6 +1,7 @@
 
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
+import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/log_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_tareo/domain/sincronizar/get_usuarios_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -33,6 +35,7 @@ class SincronizarController extends GetxController{
   List<PreTareoProcesoEntity> preTareos=[];
   List<CentroCostoEntity> centrosCosto=[];
   List<LaboresCultivoPackingEntity> laboresCultivoPacking=[];
+  List<CultivoEntity> cultivos=[];
 
   final GetActividadsUseCase _getActividadsUseCase;
   final GetSubdivisonsUseCase _getSubdivisonsUseCase;
@@ -43,8 +46,9 @@ class SincronizarController extends GetxController{
   final GetCurrentTimeWorldUseCase _getCurrentTimeWorldUseCase;
   final GetPreTareoProcesosUseCase _getPreTareoProcesosUseCase;
   final GetLaboresCultivoPackingUseCase _getLaboresCultivoPackingUseCase;
+  final GetCultivosUseCase _getCultivosUseCase;
 
-  SincronizarController(this._getActividadsUseCase, this._getSubdivisonsUseCase, this._getLaborsUseCase, this._getUsuariosUseCase, this._getPersonalsEmpresaUseCase, this._getCentroCostosUseCase, this._getCurrentTimeWorldUseCase, this._getPreTareoProcesosUseCase, this._getLaboresCultivoPackingUseCase);
+  SincronizarController(this._getActividadsUseCase, this._getSubdivisonsUseCase, this._getLaborsUseCase, this._getUsuariosUseCase, this._getPersonalsEmpresaUseCase, this._getCentroCostosUseCase, this._getCurrentTimeWorldUseCase, this._getPreTareoProcesosUseCase, this._getLaboresCultivoPackingUseCase, this._getCultivosUseCase);
 
   bool validando=false;
 
@@ -68,7 +72,8 @@ class SincronizarController extends GetxController{
     await getUsuarios();
     await getPersonal();
     //await getPreTareos();
-    await getLaboresCultivoPacking();
+    //await getLaboresCultivoPacking();
+    await getCultivos();
     validando=false;
     update(['validando']);
     await setLog();
@@ -116,6 +121,15 @@ class SincronizarController extends GetxController{
     await sedesSincronizadas.addAll(sedes);
     await sedesSincronizadas.close();
     update(['sedes']);
+  }
+
+  Future<void> getCultivos()async{
+    cultivos= await _getCultivosUseCase.execute();
+    var cultivosSincronizadas = await Hive.openBox<CultivoEntity>('cultivos_sincronizar');
+    await cultivosSincronizadas.clear();
+    await cultivosSincronizadas.addAll(cultivos);
+    await cultivosSincronizadas.close();
+    update(['cultivos']);
   }
 
   Future<void> getLabores()async{

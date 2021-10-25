@@ -23,7 +23,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
         children: [
           Scaffold(
             appBar: getAppBar(
-                controller.editando ? 'Editando uva' : 'Nuevo uva',
+                controller.editando ? 'Editando Packing' : 'Nuevo Packing',
                 [],
                 true),
             backgroundColor: secondColor,
@@ -85,6 +85,32 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                                 .toList(),
                       ),
                     ), */
+                    GetBuilder<NuevaPreTareaUvaController>(
+                      id: 'cultivo',
+                      builder: (_) => DropdownSearchWidget(
+                        label: 'Cultivo',
+                        error: _.errorCultivo,
+                        labelText: 'name',
+                        labelValue: '_id',
+                        selectedItem: _.nuevaPreTarea?.cultivo == null
+                            ? null
+                            : {
+                                'name':
+                                    '${_.nuevaPreTarea.cultivo.detallecultivo.trim()} - ${_.nuevaPreTarea.cultivo.cultivo.trim()}',
+                                '_id': _.nuevaPreTarea.cultivo.idcultivo,
+                              },
+                        onChanged: _.changeCentroCosto,
+                        items: controller.cultivos.length == 0
+                            ? []
+                            : controller.cultivos
+                                .map((e) => {
+                                      'name':
+                                          '${e.detallecultivo.trim()} - ${e.cultivo.trim()}',
+                                      '_id': e.idcultivo,
+                                    })
+                                .toList(),
+                      ),
+                    ),
                     GetBuilder<NuevaPreTareaUvaController>(
                       id: 'centro_costo',
                       builder: (_) => DropdownSearchWidget(

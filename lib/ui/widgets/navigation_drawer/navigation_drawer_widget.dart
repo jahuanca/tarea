@@ -91,11 +91,11 @@ Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey) {
                 () => _.goAprobar(scaffoldKey)),
             _itemDrawer(size, Icons.sync_rounded, 'Migrar',
                 () => _.goMigrar(scaffoldKey)),
-            if (PreferenciasUsuario().idSede == 7)
+            /* if (PreferenciasUsuario().idSede == 7)
               _itemDrawer(size, 'assets/images/arandano_icon.png', 'Arándano',
-                  () => _.goPreTareo(scaffoldKey)),
+                  () => _.goPreTareo(scaffoldKey)), */
             if (PreferenciasUsuario().idSede == 7)
-              _itemDrawer(size, 'assets/images/uva_icon.png', 'Uva',
+              _itemDrawer(size, 'assets/images/uva_icon.png', 'Packing',
                   () => _.goPreTareoUva(scaffoldKey)),
 
             _itemDrawer(

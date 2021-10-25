@@ -2,6 +2,7 @@
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
+import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
@@ -14,10 +15,10 @@ import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labores_cultivo_packing_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_actividads_by_key_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_labors_by_key_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
-import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo/listado_personas_pre_tareo_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo_uva/listado_personas_pre_tareo_uva_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -25,19 +26,19 @@ import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 
 class NuevaPreTareaUvaController extends GetxController {
-  final GetActividadsByKeyUseCase _getActividadsByKeyUseCase;
-  final GetLaborsByKeyUseCase _getLaborsByKeyUseCase;
+  
   final GetSubdivisonsUseCase _getSubdivisonsUseCase;
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
   final GetCentroCostosUseCase _getCentroCostosUseCase;
-  final GetLaboresCultivoPackingUseCase _getLaboresCultivoPackingUseCase;
+  final GetCultivosUseCase _getCultivosUseCase;
 
   DateTime fecha = DateTime.now();
   String errorActividad,
       errorLabor,
       errorPresentacion,
       errorCentroCosto,
+      errorCultivo,
       errorSupervisor,
       errorDigitador,
       errorHoraInicio,
@@ -54,17 +55,16 @@ class NuevaPreTareaUvaController extends GetxController {
   List<ActividadEntity> actividades = [];
   List<LaborEntity> labores = [];
   List<CentroCostoEntity> centrosCosto = [];
+  List<CultivoEntity> cultivos = [];
   List<SubdivisionEntity> subdivisions = [];
   List<LaboresCultivoPackingEntity> laboresCultivoPacking = [];
   List<PresentacionLineaEntity> presentaciones = [];
   List<PersonalEmpresaEntity> supervisors = [];
 
   NuevaPreTareaUvaController(
-      this._getActividadsByKeyUseCase,
-      this._getLaborsByKeyUseCase,
       this._getSubdivisonsUseCase,
       this._getPersonalsEmpresaBySubdivisionUseCase,
-      this._getLaboresCultivoPackingUseCase,
+      this._getCultivosUseCase,
       this._getCentroCostosUseCase);
 
   @override
@@ -93,9 +93,8 @@ class NuevaPreTareaUvaController extends GetxController {
     validando = true;
     update(['validando']);
 
-    //await getLabores();
+    await getCultivos();
     await getCentrosCosto();
-    //await getPresentaciones();
     await getSupervisors(PreferenciasUsuario().idSede);
     changeTurno(editando ? nuevaPreTarea.turnotareo : 'D');
     validando = false;
@@ -104,57 +103,6 @@ class NuevaPreTareaUvaController extends GetxController {
     setEditValues();
   }
 
-  /* Future<void> getPresentaciones() async {
-    laboresCultivoPacking = await _getLaboresCultivoPackingUseCase.execute();
-    presentaciones = [];
-    if(laboresCultivoPacking.isNotEmpty){
-      nuevaPreTarea.laboresCultivoPacking=new LaboresCultivoPackingEntity();
-    }
-    laboresCultivoPacking.forEach((element) {
-      PresentacionLineaEntity presentacion = element.presentacionLinea;
-      int index = presentaciones
-          .indexWhere((e) => e.idpresentacion == presentacion.idpresentacion);
-      if (index == -1) {
-        presentaciones.add(presentacion);
-      }
-    });
-    if (presentaciones.isNotEmpty){
-      nuevaPreTarea.laboresCultivoPacking.presentacionLinea =
-          presentaciones.first;
-      nuevaPreTarea.laboresCultivoPacking.idpresentacion=presentaciones.first.idpresentacion;
-      await changePresentacion(nuevaPreTarea
-          .laboresCultivoPacking.presentacionLinea?.idpresentacion
-          .toString());
-      getActividades();
-    }
-    update(['presentacion']);
-  } */
-
-  /* Future<void> getActividades() async {
-    actividades = [];
-    laboresCultivoPacking.forEach((element) {
-      if (element.presentacionLinea.idpresentacion ==
-          nuevaPreTarea.laboresCultivoPacking.idpresentacion) {
-        ActividadEntity actividad = element.actividad;
-        int index = actividades
-            .indexWhere((e) => e.idactividad == actividad.idactividad);
-        if (index == -1) {
-          actividades.add(actividad);
-        }
-      }
-    });
-    if (actividades.isNotEmpty) {
-      nuevaPreTarea.laboresCultivoPacking.actividad = actividades?.first;
-      nuevaPreTarea.laboresCultivoPacking.idactividad = actividades?.first?.idactividad;
-      await changeActividad(nuevaPreTarea
-          .laboresCultivoPacking.idactividad
-          .toString());
-      await getLabores();
-      //await changeLabor(nuevaPreTarea.laboresCultivoPacking.idlabor.toString());
-    }
-    update(['actividades']);
-  }
- */
   Future<void> getSupervisors(int idSubdivision) async {
     nuevaPreTarea.sede = (await _getSubdivisonsUseCase.execute())
         .firstWhere((e) => e.idsubdivision == idSubdivision);
@@ -172,33 +120,6 @@ class NuevaPreTareaUvaController extends GetxController {
     update(['validando']);
   }
 
-  /* Future<void> getLabores() async {
-    if (nuevaPreTarea?.laboresCultivoPacking?.actividad?.idactividad == null) {
-      return;
-    }
-    labores = [];
-    laboresCultivoPacking.forEach((element) {
-      if (element.idpresentacion ==
-          nuevaPreTarea.laboresCultivoPacking.idpresentacion && element.idactividad==nuevaPreTarea.laboresCultivoPacking.idactividad) {
-        LaborEntity labor = element.labor;
-        int index = labores
-            .indexWhere((e) => e.idlabor == labor.idlabor);
-        if (index == -1) {
-          labores.add(labor);
-        }
-      }
-    });
-    
-    if (labores.isNotEmpty) {
-      nuevaPreTarea.laboresCultivoPacking.labor = labores.first;
-      nuevaPreTarea.laboresCultivoPacking.idlabor =
-          labores.first.idlabor;
-    }
-    changeLabor(nuevaPreTarea.laboresCultivoPacking.labor?.idlabor.toString());
-    update(['labores']);
-    
-  } */
-
   Future<void> getCentrosCosto() async {
     centrosCosto = await _getCentroCostosUseCase.execute();
     if (!editando) {
@@ -208,6 +129,17 @@ class NuevaPreTareaUvaController extends GetxController {
     }
     changeCentroCosto(nuevaPreTarea.centroCosto.idcentrocosto.toString());
     update(['centro_costo']);
+  }
+
+  Future<void> getCultivos() async {
+    cultivos = await _getCultivosUseCase.execute();
+    if (!editando) {
+      if (cultivos.isNotEmpty) {
+        nuevaPreTarea.cultivo = cultivos.first;
+      }
+    }
+    changeCultivo(nuevaPreTarea.cultivo.idcultivo.toString());
+    update(['cultivos']);
   }
 
   void changeTurno(String id) {
@@ -323,42 +255,6 @@ class NuevaPreTareaUvaController extends GetxController {
     update(['digitadors']);
   }
 
-  /* Future<void> changeActividad(String id) async {
-    errorActividad = validatorUtilText(id, 'Actividad', {
-      'required': '',
-    });
-    int index = actividades.indexWhere((e) => e.idactividad == int.parse(id));
-    if (errorActividad == null && index != -1) {
-      nuevaPreTarea.laboresCultivoPacking.actividad = actividades[index];
-      nuevaPreTarea.laboresCultivoPacking.idactividad = int.parse(id);
-      await getLabores();
-    } else {
-      nuevaPreTarea.laboresCultivoPacking.actividad = null;
-      nuevaPreTarea.laboresCultivoPacking.idactividad = null;
-    }
-
-    update(['actividades']);
-  }
-
-  void changePresentacion(String id) {
-    errorPresentacion = validatorUtilText(id, 'Presentación', {
-      'required': '',
-    });
-    int index =
-        presentaciones.indexWhere((e) => e.idpresentacion == int.parse(id));
-    if (errorPresentacion == null && index != -1) {
-      nuevaPreTarea.laboresCultivoPacking = LaboresCultivoPackingEntity();
-      nuevaPreTarea.laboresCultivoPacking.presentacionLinea =
-          presentaciones[index];
-      nuevaPreTarea.laboresCultivoPacking.idpresentacion = int.parse(id);
-    } else {
-      nuevaPreTarea.laboresCultivoPacking.presentacionLinea = null;
-      nuevaPreTarea.laboresCultivoPacking.idpresentacion = null;
-    }
-    getActividades();
-    update(['presentacion']);
-  } */
-
   void changeCentroCosto(String id) {
     errorCentroCosto = validatorUtilText(id, 'Centro de costo', {
       'required': '',
@@ -375,54 +271,25 @@ class NuevaPreTareaUvaController extends GetxController {
     update(['centro_costo']);
   }
 
-  /* void changeLabor(String id) {
-    errorLabor = validatorUtilText(id, 'Labor', {
+  void changeCultivo(String id) {
+    errorCultivo = validatorUtilText(id, 'Cultivo', {
       'required': '',
     });
-    int index = labores?.indexWhere((e) => e.idlabor.toString() == id);
-
-    if (errorLabor == null && index != -1) {
-      nuevaPreTarea.laboresCultivoPacking.labor = labores[index];
-      nuevaPreTarea.laboresCultivoPacking.idlabor =
-          nuevaPreTarea.laboresCultivoPacking.labor.idlabor;
+    int index =
+        cultivos.indexWhere((e) => e.idcultivo== int.parse(id));
+    if (errorCultivo == null && index != -1) {
+      nuevaPreTarea.cultivo = cultivos[index];
+      nuevaPreTarea.idcultivo = int.parse(id);
     } else {
-      nuevaPreTarea.laboresCultivoPacking.labor = null;
-      nuevaPreTarea.laboresCultivoPacking.idlabor = null;
+      nuevaPreTarea.cultivo = null;
+      nuevaPreTarea.idcultivo = null;
     }
-    update(['labores']);
-  } */
-
-  /* Future<void> goAgregarPersona() async {
-    if (supervisors.length == 0) {
-      toastError('Error', 'No hay personal en dicha sede');
-      return;
-    }
-
-    AgregarPersonaBinding().dependencies();
-    final result = await Get.to<PersonalTareaProcesoEntity>(
-        () => AgregarPersonaPage(),
-        arguments: {
-          'personal': supervisors,
-          'personal_seleccionado': nuevaPreTarea.personal,
-          'tarea': nuevaPreTarea,
-        });
-    if (result != null) {
-      print('regreso');
-      nuevaPreTarea.detalles.add(result);
-      update(['personal']);
-    }
-  } */
+    update(['cultivo']);
+  }
 
   void goBack() {
     String mensaje = validar();
     if (mensaje == null) {
-
-      /* laboresCultivoPacking.forEach((e) {
-        LaboresCultivoPackingEntity actual=nuevaPreTarea.laboresCultivoPacking;
-        if(e.idcultivo== actual.idcultivo && e.idactividad== actual.idactividad && e.idlabor== actual.idlabor){
-          nuevaPreTarea.item=e.item;
-        }
-      }); */
 
       nuevaPreTarea.idusuario=PreferenciasUsuario().idUsuario;
       nuevaPreTarea.estadoLocal='PC';
@@ -461,8 +328,7 @@ class NuevaPreTareaUvaController extends GetxController {
 
   String validar() {
     changeFecha();
-    /* changeActividad(nuevaPreTarea.laboresCultivoPacking.idactividad.toString());
-    changeLabor(nuevaPreTarea.laboresCultivoPacking.idlabor.toString()); */
+    changeCultivo(nuevaPreTarea.idcultivo.toString());
     changeCentroCosto(nuevaPreTarea.idcentrocosto.toString());
     changeSupervisor(nuevaPreTarea.codigoempresasupervisor.toString());
     changeHoraInicio();

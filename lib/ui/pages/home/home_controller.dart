@@ -12,6 +12,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    PreferenciasUsuario().offLine = true;
     setLog();
   }
 

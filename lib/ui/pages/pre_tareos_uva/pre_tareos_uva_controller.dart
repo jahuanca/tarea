@@ -3,12 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/di/listado_personas_pre_tareo_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_pre_tareo_uva_binding.dart';
-import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
 import 'package:flutter_tareo/di/nueva_pre_tarea_uva_binding.dart';
-import 'package:flutter_tareo/di/nueva_tarea_binding.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_data_to_excel_use_case.dart';
@@ -178,7 +174,7 @@ class PreTareosUvaController extends GetxController {
     update(['validando']);
     PreTareoProcesoUvaEntity tareaMigrada =
         await _migrarAllPreTareoUvaUseCase.execute(preTareosUva[index]);
-    print(tareaMigrada.itempretareaprocesouva);
+    
     if (tareaMigrada != null) {
       toastExito('Exito', 'Tarea migrada con exito');
       preTareosUva[index].estadoLocal = 'M';
@@ -246,7 +242,6 @@ class PreTareosUvaController extends GetxController {
         await Get.to<PreTareoProcesoUvaEntity>(() => NuevaPreTareaUvaPage());
     if (result != null) {
       preTareosUva.insert(0, result);
-      //preTareos.add(result);
       await _createPreTareoProcesoUvaUseCase.execute(result);
       update(['tareas']);
     }

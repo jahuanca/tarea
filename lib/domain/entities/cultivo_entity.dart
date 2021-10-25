@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:hive/hive.dart';
 
 part 'cultivo_entity.g.dart';
@@ -29,3 +31,7 @@ class CultivoEntity {
         "cultivo": cultivo == null ? null : cultivo,
     };
 }
+
+List<CultivoEntity> cultivoEntityFromJson(String str) => List<CultivoEntity>.from(json.decode(str).map((x) => CultivoEntity.fromJson(x)));
+
+String cultivoEntityToJson(List<CultivoEntity> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
