@@ -7,7 +7,7 @@ class CreateTareaProcesoUseCase{
 
   CreateTareaProcesoUseCase(this._tareaProcesoRepository);
 
-  Future<void> execute(TareaProcesoEntity tareaProcesoEntity) async{
+  Future<int> execute(TareaProcesoEntity tareaProcesoEntity) async{
     return await _tareaProcesoRepository.create(tareaProcesoEntity);
   }
 

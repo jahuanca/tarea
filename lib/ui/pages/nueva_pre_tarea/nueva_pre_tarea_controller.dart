@@ -391,26 +391,6 @@ class NuevaPreTareaController extends GetxController {
     update(['labores']);
   }
 
-  /* Future<void> goAgregarPersona() async {
-    if (supervisors.length == 0) {
-      toastError('Error', 'No hay personal en dicha sede');
-      return;
-    }
-
-    AgregarPersonaBinding().dependencies();
-    final result = await Get.to<PersonalTareaProcesoEntity>(
-        () => AgregarPersonaPage(),
-        arguments: {
-          'personal': supervisors,
-          'personal_seleccionado': nuevaPreTarea.personal,
-          'tarea': nuevaPreTarea,
-        });
-    if (result != null) {
-      nuevaPreTarea.detalles.add(result);
-      update(['personal']);
-    }
-  } */
-
   void goBack() {
     String mensaje = validar();
     if (mensaje == null) {

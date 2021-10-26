@@ -14,9 +14,12 @@ class TareaProcesoRepositoryImplementation extends TareaProcesoRepository {
   final urlModule = '/tarea_proceso';
 
   @override
-  Future<void> create(TareaProcesoEntity tareaProcesoEntity) async {
+  Future<int> create(TareaProcesoEntity tareaProcesoEntity) async {
     var tareas = await Hive.openBox<TareaProcesoEntity>('tarea_proceso');
-    await tareas.add(tareaProcesoEntity);
+    int id=await tareas.add(tareaProcesoEntity);
+    tareaProcesoEntity.key=id;
+    await tareas.put(id, tareaProcesoEntity);
+    return id;
   }
 
   @override
@@ -26,15 +29,15 @@ class TareaProcesoRepositoryImplementation extends TareaProcesoRepository {
   }
 
   @override
-  Future<void> delete(int index) async {
+  Future<void> delete(int key) async {
     var tareas = await Hive.openBox<TareaProcesoEntity>('tarea_proceso');
-    return await tareas.deleteAt(index);
+    return await tareas.delete(key);
   }
 
   @override
-  Future<void> update(TareaProcesoEntity tareaProcesoEntity, int index) async {
+  Future<void> update(TareaProcesoEntity tareaProcesoEntity, int key) async {
     var tareas = await Hive.openBox<TareaProcesoEntity>('tarea_proceso');
-    return await tareas.putAt(index, tareaProcesoEntity);
+    return await tareas.put(key, tareaProcesoEntity);
   }
 
   @override

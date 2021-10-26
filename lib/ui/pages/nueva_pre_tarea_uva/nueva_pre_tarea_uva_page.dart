@@ -99,7 +99,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                                     '${_.nuevaPreTarea.cultivo.detallecultivo.trim()} - ${_.nuevaPreTarea.cultivo.cultivo.trim()}',
                                 '_id': _.nuevaPreTarea.cultivo.idcultivo,
                               },
-                        onChanged: _.changeCentroCosto,
+                        onChanged: _.changeCultivo,
                         items: controller.cultivos.length == 0
                             ? []
                             : controller.cultivos

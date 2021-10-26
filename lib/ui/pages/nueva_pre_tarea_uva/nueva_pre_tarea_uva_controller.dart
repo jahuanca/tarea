@@ -74,9 +74,11 @@ class NuevaPreTareaUvaController extends GetxController {
       if (Get.arguments['tarea'] != null) {
         editando = true;
         nuevaPreTarea = Get.arguments['tarea'] as PreTareoProcesoUvaEntity;
+        if(nuevaPreTarea.detalles==null) nuevaPreTarea.detalles=[];
       }
     }
     if (nuevaPreTarea == null) nuevaPreTarea = new PreTareoProcesoUvaEntity();
+    if(nuevaPreTarea.detalles==null) nuevaPreTarea.detalles=[];
     nuevaPreTarea.fechamod = fecha;
   }
 
@@ -256,6 +258,7 @@ class NuevaPreTareaUvaController extends GetxController {
   }
 
   void changeCentroCosto(String id) {
+    print('codigo: $id');
     errorCentroCosto = validatorUtilText(id, 'Centro de costo', {
       'required': '',
     });
@@ -263,7 +266,9 @@ class NuevaPreTareaUvaController extends GetxController {
         centrosCosto.indexWhere((e) => e.idcentrocosto == int.parse(id));
     if (errorCentroCosto == null && index != -1) {
       nuevaPreTarea.centroCosto = centrosCosto[index];
+      print('CENTRO: ${nuevaPreTarea.centroCosto.toJson()}');
       nuevaPreTarea.idcentrocosto = int.parse(id);
+      print('CENTRO CODIGO: ${nuevaPreTarea.idcentrocosto}');
     } else {
       nuevaPreTarea.centroCosto = null;
       nuevaPreTarea.idcentrocosto = null;
@@ -336,6 +341,7 @@ class NuevaPreTareaUvaController extends GetxController {
     changeHoraFin();
     //TODO: VALIDAR: fechas por TURNO NOCHE
     if (errorActividad != null) return errorActividad;
+    if (errorCultivo != null) return errorCultivo;
     if (errorLabor != null) return errorLabor;
     if (errorSupervisor != null) return errorSupervisor;
     if (errorHoraInicio != null) return errorHoraInicio;

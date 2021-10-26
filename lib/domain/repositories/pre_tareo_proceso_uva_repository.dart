@@ -6,9 +6,9 @@ abstract class PreTareoProcesoUvaRepository{
 
   Future<List<PreTareoProcesoUvaEntity>> getAll();
   Future<List<PreTareoProcesoUvaEntity>> getAllByValue(Map<String,dynamic> valores);
-  Future<void> create(PreTareoProcesoUvaEntity preTareaProcesoUvaEntity);
+  Future<int> create(PreTareoProcesoUvaEntity preTareaProcesoUvaEntity);
   Future<PreTareoProcesoUvaEntity> migrar(PreTareoProcesoUvaEntity preTareaProcesoUvaEntity);
   Future<PreTareoProcesoUvaEntity> uploadFile(PreTareoProcesoUvaEntity preTareaProcesoUvaEntity, File fileLocal);
-  Future<void> update(PreTareoProcesoUvaEntity preTareaProcesoUvaEntity , int index);
-  Future<void> delete(int index);
+  Future<void> update(PreTareoProcesoUvaEntity preTareaProcesoUvaEntity , int key);
+  Future<void> delete(int key);
 }

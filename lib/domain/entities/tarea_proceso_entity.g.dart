@@ -39,6 +39,7 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       esrendimiento: fields[24] as bool,
       pathUrl: fields[25] as String,
       estadoLocal: fields[26] as String,
+      key: fields[28] as int,
     )
       ..actividad = fields[16] as ActividadEntity
       ..labor = fields[17] as LaborEntity
@@ -51,7 +52,7 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
   @override
   void write(BinaryWriter writer, TareaProcesoEntity obj) {
     writer
-      ..writeByte(28)
+      ..writeByte(29)
       ..writeByte(0)
       ..write(obj.itemtareoproceso)
       ..writeByte(1)
@@ -107,7 +108,9 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       ..writeByte(26)
       ..write(obj.estadoLocal)
       ..writeByte(27)
-      ..write(obj.firmaSupervisor);
+      ..write(obj.firmaSupervisor)
+      ..writeByte(28)
+      ..write(obj.key);
   }
 
   @override

@@ -10,6 +10,7 @@ import 'package:hive/hive.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:uuid/uuid.dart';
 
 class PreTareoProcesoUvaRepositoryImplementation
     extends PreTareoProcesoUvaRepository {
@@ -62,42 +63,45 @@ class PreTareoProcesoUvaRepositoryImplementation
   }
 
   @override
-  Future<void> create(PreTareoProcesoUvaEntity tareaProcesoEntity) async {
+  Future<int> create(PreTareoProcesoUvaEntity preTareaProcesoUvaEntity) async {
     var tareas = await Hive.openBox<PreTareoProcesoUvaEntity>(
         'pre_tareos_uva_sincronizar');
-    return await tareas.add(tareaProcesoEntity);
+    int id=await tareas.add(preTareaProcesoUvaEntity);
+    preTareaProcesoUvaEntity.key=id;
+    await tareas.put(id, preTareaProcesoUvaEntity);
+    return id;
   }
 
   @override
-  Future<void> delete(int index) async {
+  Future<void> delete(int uuid) async {
     var tareas = await Hive.openBox<PreTareoProcesoUvaEntity>(
         'pre_tareos_uva_sincronizar');
-    return await tareas.deleteAt(index);
+    return await tareas.delete(uuid);
   }
 
   @override
   Future<void> update(
-      PreTareoProcesoUvaEntity tareaProcesoEntity, int index) async {
+      PreTareoProcesoUvaEntity preTareaProcesoUvaEntity, int id) async {
     var tareas = await Hive.openBox<PreTareoProcesoUvaEntity>(
         'pre_tareos_uva_sincronizar');
-    return await tareas.putAt(index, tareaProcesoEntity);
+    return await tareas.put(id, preTareaProcesoUvaEntity);
   }
 
   @override
   Future<PreTareoProcesoUvaEntity> migrar(
-      PreTareoProcesoUvaEntity tareaProcesoEntity) async {
+      PreTareoProcesoUvaEntity preTareaProcesoUvaEntity) async {
     final AppHttpManager http = AppHttpManager();
     final res = await http.post(
       url: '$urlModule/createAll',
-      body: tareaProcesoEntity.toJson(),
+      body: preTareaProcesoUvaEntity.toJson(),
     );
 
-    return res == null ? null : tareaProcesoEntity;
+    return res == null ? null : preTareaProcesoUvaEntity;
   }
 
   @override
   Future<PreTareoProcesoUvaEntity> uploadFile(
-      PreTareoProcesoUvaEntity tareaProcesoEntity, File fileLocal) async {
+      PreTareoProcesoUvaEntity preTareaProcesoUvaEntity, File fileLocal) async {
     http.MultipartFile file;
     final mimeType = mime(fileLocal.path).split('/');
     file = await http.MultipartFile.fromPath('file', fileLocal.path,
@@ -111,8 +115,8 @@ class PreTareoProcesoUvaRepositoryImplementation
       request.headers[HttpHeaders.contentTypeHeader] = 'multipart/form-data';
       //request.headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
 
-      for (var i = 0; i < tareaProcesoEntity.toJson().entries.length; i++) {
-        MapEntry map = tareaProcesoEntity.toJson().entries.elementAt(i);
+      for (var i = 0; i < preTareaProcesoUvaEntity.toJson().entries.length; i++) {
+        MapEntry map = preTareaProcesoUvaEntity.toJson().entries.elementAt(i);
         request.fields.addAll({map.key: map.value.toString()});
       }
 
@@ -126,8 +130,8 @@ class PreTareoProcesoUvaRepositoryImplementation
       log(response.body);
       PreTareoProcesoUvaEntity respuesta =
           PreTareoProcesoUvaEntity.fromJson(jsonDecode(response.body));
-      tareaProcesoEntity.firmaSupervisor = respuesta.firmaSupervisor;
-      return tareaProcesoEntity;
+      preTareaProcesoUvaEntity.firmaSupervisor = respuesta.firmaSupervisor;
+      return preTareaProcesoUvaEntity;
     } catch (e) {
       print('Error');
       log(e.toString());

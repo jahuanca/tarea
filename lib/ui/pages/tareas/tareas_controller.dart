@@ -65,7 +65,7 @@ class TareasController extends GetxController {
         });
     if (resultado != null) {
       tareas[index].personal.add(resultado);
-      await _updateTareaProcesoUseCase.execute(tareas[index], index);
+      await _updateTareaProcesoUseCase.execute(tareas[index], tareas[index].key);
       update(['tareas']);
     }
   }
@@ -82,13 +82,13 @@ class TareasController extends GetxController {
 
     if (resultados != null) {
       tareas[index].personal = resultados;
-      await _updateTareaProcesoUseCase.execute(tareas[index], index);
+      await _updateTareaProcesoUseCase.execute(tareas[index], tareas[index].key);
       update(['tareas']);
     }
   }
 
   Future<void> delete(int index) async {
-    await _deleteTareaProcesoUseCase.execute(index);
+    await _deleteTareaProcesoUseCase.execute(tareas[index].key);
     tareas.removeAt(index);
   }
 
@@ -110,8 +110,9 @@ class TareasController extends GetxController {
     final result = await Get.to<TareaProcesoEntity>(() => NuevaTareaPage());
     if (result != null) {
       result.idusuario=PreferenciasUsuario().idUsuario;
+      int id=await _createTareaProcesoUseCase.execute(result);
+      result.key=id;
       tareas.add(result);
-      await _createTareaProcesoUseCase.execute(result);
       update(['tareas']);
     }
   }
@@ -124,7 +125,7 @@ class TareasController extends GetxController {
       log(result.toJson().toString());
       result.idusuario=PreferenciasUsuario().idUsuario;
       tareas[index] = result;
-      await _updateTareaProcesoUseCase.execute(tareas[index], index);
+      await _updateTareaProcesoUseCase.execute(tareas[index], tareas[index].key);
       update(['tareas']);
     }
   }
@@ -135,8 +136,9 @@ class TareasController extends GetxController {
         arguments: {'tarea': tareas[index]});
     if (result != null) {
       result.idusuario=PreferenciasUsuario().idUsuario;
+      int id=await _createTareaProcesoUseCase.execute(tareas[index]);
+      result.key=id;
       tareas.add(result);
-      await _createTareaProcesoUseCase.execute(tareas.last);
       update(['tareas']);
     }
   }

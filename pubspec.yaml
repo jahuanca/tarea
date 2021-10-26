@@ -53,6 +53,7 @@ dependencies:
   honeywell_scanner: ^3.1.3+11
   excel: ^2.0.0-null-safety-3
   path_provider: ^1.6.28
+  uuid: ^3.0.5
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons:
   #cupertino_icons: ^1.0.2

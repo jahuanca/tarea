@@ -40,8 +40,8 @@ class PreTareoProcesoUvaEntity {
     this.firmaSupervisor,
     this.idcultivo,
     this.cultivo,
+    this.key,
   }){
-    detalles ??= [];
     estadoLocal='P';
   }
 
@@ -97,6 +97,8 @@ class PreTareoProcesoUvaEntity {
   int idcultivo;
   @HiveField(25)
   CultivoEntity cultivo;
+  @HiveField(26)
+  int key;
 
   String get fechaHora {
     if (fecha == null || horainicio == null) {
@@ -162,6 +164,7 @@ class PreTareoProcesoUvaEntity {
         idcultivo: json["idcultivo"] == null ? null : json["idcultivo"],
         diasiguiente: json["diasiguiente"] == null ? null : json["diasiguiente"],
         turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
+        key: json["uuid"] == null ? null : json["uuid"],
         centroCosto: json['Centro_Costo'] == null ? null : CentroCostoEntity.fromJson(json['Centro_Costo']),
         presentacion: json['Presentacion_Linea'] == null ? null : PresentacionLineaEntity.fromJson(json['Presentacion_Linea']),
         cultivo: json['Cultivo'] == null ? null : CultivoEntity.fromJson(json['Cultivo']),
@@ -192,6 +195,7 @@ class PreTareoProcesoUvaEntity {
         "fechamod": fechamod == null ? null : fechamod.toIso8601String(),
         "activo": activo == null ? null : activo,
         "turnotareo": turnotareo == null ? null : turnotareo,
+        "uuid": key == null ? null : key,
         "firmasupervisor": firmaSupervisor == null ? null : firmaSupervisor,
         "diasiguiente": diasiguiente == null ? null : diasiguiente,
         "idusuario": idusuario == null ? null : idusuario,

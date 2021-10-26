@@ -36,6 +36,7 @@ class TareaProcesoEntity {
     this.esrendimiento,
     this.pathUrl,
     this.estadoLocal,
+    this.key,
   }) {
     if (personal == null) {
       personal = [];
@@ -99,6 +100,8 @@ class TareaProcesoEntity {
   String estadoLocal;
   @HiveField(27)
   String firmaSupervisor;
+  @HiveField(28)
+  int key;
 
   String get fechaHora{
     if(fecha==null || horainicio==null){
@@ -147,6 +150,7 @@ class TareaProcesoEntity {
         espacking: json['espacking'],
         diasiguiente: json['diasiguiente'],
         esjornal: json['esjornal'],
+        key: json['key'],
         esrendimiento: json['esrendimiento'],
         pathUrl: json['fileUrl'],
         horainicio: DateTime.parse(json['horainicio']),
@@ -173,6 +177,7 @@ class TareaProcesoEntity {
         'espacking': espacking,
         'diasiguiente': diasiguiente,
         'esjornal': esjornal,
+        'key': key,
         'esrendimiento': esrendimiento,
         'fileUrl': pathUrl,
         'horainicio': horainicio?.toIso8601String(),

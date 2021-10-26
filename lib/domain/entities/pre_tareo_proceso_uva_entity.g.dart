@@ -39,6 +39,7 @@ class PreTareoProcesoUvaEntityAdapter
       firmaSupervisor: fields[17] as String,
       idcultivo: fields[24] as int,
       cultivo: fields[25] as CultivoEntity,
+      key: fields[26] as int,
     )
       ..sede = fields[14] as SubdivisionEntity
       ..pathUrl = fields[15] as String
@@ -50,7 +51,7 @@ class PreTareoProcesoUvaEntityAdapter
   @override
   void write(BinaryWriter writer, PreTareoProcesoUvaEntity obj) {
     writer
-      ..writeByte(26)
+      ..writeByte(27)
       ..writeByte(0)
       ..write(obj.itempretareaprocesouva)
       ..writeByte(1)
@@ -102,7 +103,9 @@ class PreTareoProcesoUvaEntityAdapter
       ..writeByte(24)
       ..write(obj.idcultivo)
       ..writeByte(25)
-      ..write(obj.cultivo);
+      ..write(obj.cultivo)
+      ..writeByte(26)
+      ..write(obj.key);
   }
 
   @override

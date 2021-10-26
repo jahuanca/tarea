@@ -121,8 +121,7 @@ class PreTareosUvaController extends GetxController {
         preTareosUva[index].pathUrl = _image.path;
         preTareosUva[index].estadoLocal = 'A';
         await _updatePreTareoProcesoUvaUseCase.execute(
-            preTareosUva[index], index);
-
+            preTareosUva[index], preTareosUva[index].key);
         update(['seleccionado']);
       }
     }).catchError((er) {
@@ -181,12 +180,12 @@ class PreTareosUvaController extends GetxController {
       preTareosUva[index].itempretareaprocesouva =
           tareaMigrada.itempretareaprocesouva;
       await _updatePreTareoProcesoUvaUseCase.execute(
-          preTareosUva[index], index);
+          preTareosUva[index], preTareosUva[index].key);
       tareaMigrada = await _uploadFileOfPreTareoUvaUseCase.execute(
           preTareosUva[index], File(preTareosUva[index].pathUrl));
       preTareosUva[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
       await _updatePreTareoProcesoUvaUseCase.execute(
-          preTareosUva[index], index);
+          preTareosUva[index], preTareosUva[index].key);
     }
     validando = false;
     update(['validando', 'tareas']);
@@ -212,14 +211,14 @@ class PreTareosUvaController extends GetxController {
     if (resultados != null && resultados.isNotEmpty) {
       preTareosUva[index].detalles = resultados;
       await _updatePreTareoProcesoUvaUseCase.execute(
-          preTareosUva[index], index);
+          preTareosUva[index], preTareosUva[index].key);
       print(resultados.first.toJson());
     }
     update(['tareas']);
   }
 
   Future<void> delete(int index) async {
-    await _deletePreTareoProcesoUvaUseCase.execute(index);
+    await _deletePreTareoProcesoUvaUseCase.execute(preTareosUva[index].key);
     preTareosUva.removeAt(index);
   }
 
@@ -241,8 +240,9 @@ class PreTareosUvaController extends GetxController {
     final result =
         await Get.to<PreTareoProcesoUvaEntity>(() => NuevaPreTareaUvaPage());
     if (result != null) {
+      int id=await _createPreTareoProcesoUvaUseCase.execute(result);
+      result.key=id;
       preTareosUva.insert(0, result);
-      await _createPreTareoProcesoUvaUseCase.execute(result);
       update(['tareas']);
     }
   }
@@ -253,11 +253,10 @@ class PreTareosUvaController extends GetxController {
         () => NuevaPreTareaUvaPage(),
         arguments: {'tarea': preTareosUva[index]});
     if (result != null) {
-      log(result.toJson().toString());
       result.idusuario = PreferenciasUsuario().idUsuario;
       preTareosUva[index] = result;
       await _updatePreTareoProcesoUvaUseCase.execute(
-          preTareosUva[index], index);
+          preTareosUva[index], preTareosUva[index].key);
       update(['tareas']);
     }
   }
@@ -269,8 +268,9 @@ class PreTareosUvaController extends GetxController {
         arguments: {'tarea': preTareosUva[index]});
     if (result != null) {
       result.idusuario = PreferenciasUsuario().idUsuario;
+      int id=await _createPreTareoProcesoUvaUseCase.execute(result);
+      result.key=id;
       preTareosUva.add(result);
-      await _createPreTareoProcesoUvaUseCase.execute(preTareosUva.last);
       update(['tareas']);
     }
   }
