@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
@@ -122,7 +121,6 @@ class TareasController extends GetxController {
     final result = await Get.to<TareaProcesoEntity>(() => NuevaTareaPage(),
         arguments: {'tarea': tareas[index]});
     if (result != null) {
-      log(result.toJson().toString());
       result.idusuario=PreferenciasUsuario().idUsuario;
       tareas[index] = result;
       await _updateTareaProcesoUseCase.execute(tareas[index], tareas[index].key);

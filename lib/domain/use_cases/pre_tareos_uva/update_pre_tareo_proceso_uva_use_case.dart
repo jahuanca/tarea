@@ -7,8 +7,8 @@ class UpdatePreTareoProcesoUvaUseCase{
 
   UpdatePreTareoProcesoUvaUseCase(this._preTareoProcesoUvaRepository);
 
-  Future<void> execute(PreTareoProcesoUvaEntity preTareoProcesoUvaEntity, int index) async{
-    return await _preTareoProcesoUvaRepository.update(preTareoProcesoUvaEntity ,index);
+  Future<void> execute(PreTareoProcesoUvaEntity preTareoProcesoUvaEntity, int key) async{
+    return await _preTareoProcesoUvaRepository.update(preTareoProcesoUvaEntity ,key);
   }
 
 }

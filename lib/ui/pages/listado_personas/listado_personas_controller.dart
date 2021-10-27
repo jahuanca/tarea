@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -229,7 +227,7 @@ class ListadoPersonasController extends GetxController
       () async {
         Get.back();
         personalSeleccionado.removeAt(index);
-        await _updateTareaProcesoUseCase.execute(tarea, indexTarea);
+        await _updateTareaProcesoUseCase.execute(tarea, tarea.key);
         update(['seleccionado']);
       },
       () => Get.back(),

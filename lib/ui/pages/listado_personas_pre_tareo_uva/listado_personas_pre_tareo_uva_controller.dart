@@ -246,7 +246,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
         Get.back();
         print(index);
         personalSeleccionado?.removeAt(index);
-        await _updatePreTareoProcesoUvaUseCase.execute(preTarea, indexTarea);
+        await _updatePreTareoProcesoUvaUseCase.execute(preTarea, preTarea.key);
         update(['seleccionados', 'personal_seleccionado']);
       },
       () => Get.back(),
@@ -262,9 +262,10 @@ class ListadoPersonasPreTareoUvaController extends GetxController
   }
 
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
-    if (barcode != null && barcode != -1) {
+    if (barcode != null && barcode != '-1') {
       for (var element in otrasPreTareas) {
-        int indexOtra= element.detalles.indexWhere((e) => e.codigotk.toString().trim() == barcode.toString().trim());
+        int indexOtra= element.detalles.indexWhere(
+          (e) => e.codigotk.toString().trim() == barcode.toString().trim());
         if(indexOtra != -1){
           byLector
             ? toastError('Error', 'Se encuentra en otra tarea')
@@ -311,7 +312,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
             itempretareaprocesouva: preTarea.itempretareaprocesouva));
         update(['personal_seleccionado']);
         preTarea.detalles = personalSeleccionado;
-        await _updatePreTareoProcesoUvaUseCase.execute(preTarea, indexTarea);
+        await _updatePreTareoProcesoUvaUseCase.execute(preTarea, preTarea.key);
       } else {
         byLector
             ? toastError('Error', 'No se encuentra en la lista')

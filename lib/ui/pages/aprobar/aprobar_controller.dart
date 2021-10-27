@@ -59,7 +59,7 @@ class AprobarController extends GetxController {
 
         tareas[index].pathUrl = _image.path;
         tareas[index].estadoLocal = 'A';
-        await _updateTareaProcesoUseCase.execute(tareas[index], index);
+        await _updateTareaProcesoUseCase.execute(tareas[index], tareas[index].key);
 
         update(['seleccionado']);
       }

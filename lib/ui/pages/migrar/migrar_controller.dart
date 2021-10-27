@@ -87,11 +87,11 @@ class MigrarController extends GetxController {
       toastExito('Exito', 'Tarea migrada con exito');
       tareas[index].estadoLocal = 'M';
       tareas[index].itemtareoproceso = tareaMigrada.itemtareoproceso;
-      await _updateTareaProcesoUseCase.execute(tareas[index], index);
+      await _updateTareaProcesoUseCase.execute(tareas[index], tareas[index].key);
       tareaMigrada = await _uploadFileOfTareaUseCase.execute(
           tareas[index], File(tareas[index].pathUrl));
       tareas[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
-      await _updateTareaProcesoUseCase.execute(tareas[index], index);
+      await _updateTareaProcesoUseCase.execute(tareas[index], tareas[index].key);
     }
     validando = false;
 

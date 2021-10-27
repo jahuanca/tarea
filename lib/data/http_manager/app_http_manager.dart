@@ -29,7 +29,7 @@ class AppHttpManager implements HttpManager {
           headers: await _headerBuilder(headers))
       .timeout(timeout, onTimeout: () => throw TimeoutException());
       return _returnResponse(response);
-    } on Exception catch (_) {
+    } on SocketException catch (_) {
       throw NetworkException();
     }
   }
@@ -48,8 +48,7 @@ class AppHttpManager implements HttpManager {
           headers: await _headerBuilder(headers));
       /* .timeout(timeout, onTimeout: () => throw TimeoutException()); */
       return _returnResponse(response);
-    } on Exception catch (_) {
-      print(_.toString());
+    } on SocketException catch (_) {
       throw NetworkException();
     }
   }
@@ -68,7 +67,7 @@ class AppHttpManager implements HttpManager {
               body: json.encode(body), headers: await _headerBuilder(headers))
           .timeout(timeout, onTimeout: () => throw TimeoutException());
       return _returnResponse(response);
-    } on Exception catch (_) {
+    } on SocketException catch (_) {
       throw NetworkException();
     }
   }
@@ -86,7 +85,7 @@ class AppHttpManager implements HttpManager {
               headers: await _headerBuilder(headers))
           .timeout(timeout, onTimeout: () => throw TimeoutException());
       return _returnResponse(response);
-    } on Exception catch (_) {
+    } on SocketException catch (_) {
       throw NetworkException();
     }
   }

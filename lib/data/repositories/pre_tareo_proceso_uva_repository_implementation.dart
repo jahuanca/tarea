@@ -66,8 +66,8 @@ class PreTareoProcesoUvaRepositoryImplementation
   Future<int> create(PreTareoProcesoUvaEntity preTareaProcesoUvaEntity) async {
     var tareas = await Hive.openBox<PreTareoProcesoUvaEntity>(
         'pre_tareos_uva_sincronizar');
-    int id=await tareas.add(preTareaProcesoUvaEntity);
-    preTareaProcesoUvaEntity.key=id;
+    int id = await tareas.add(preTareaProcesoUvaEntity);
+    preTareaProcesoUvaEntity.key = id;
     await tareas.put(id, preTareaProcesoUvaEntity);
     return id;
   }
@@ -96,7 +96,7 @@ class PreTareoProcesoUvaRepositoryImplementation
       body: preTareaProcesoUvaEntity.toJson(),
     );
 
-    return res == null ? null : preTareaProcesoUvaEntity;
+    return res == null ? null : PreTareoProcesoUvaEntity.fromJson(jsonDecode(res));
   }
 
   @override
@@ -115,7 +115,9 @@ class PreTareoProcesoUvaRepositoryImplementation
       request.headers[HttpHeaders.contentTypeHeader] = 'multipart/form-data';
       //request.headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
 
-      for (var i = 0; i < preTareaProcesoUvaEntity.toJson().entries.length; i++) {
+      for (var i = 0;
+          i < preTareaProcesoUvaEntity.toJson().entries.length;
+          i++) {
         MapEntry map = preTareaProcesoUvaEntity.toJson().entries.elementAt(i);
         request.fields.addAll({map.key: map.value.toString()});
       }
@@ -123,18 +125,24 @@ class PreTareoProcesoUvaRepositoryImplementation
       print("Fields: ${request.fields.toString()}");
 
       print("Api ${request.method} request ${request.url}, with");
-      log(request.toString());
+      if (mostrarLog) {
+        log(request.toString());
+      }
       http.Response response =
           await http.Response.fromStream(await request.send());
-      print("Result: ${response.statusCode}");
-      log(response.body);
+      if (mostrarLog) {
+        print("Result: ${response.statusCode}");
+        log(response.body);
+      }
       PreTareoProcesoUvaEntity respuesta =
           PreTareoProcesoUvaEntity.fromJson(jsonDecode(response.body));
       preTareaProcesoUvaEntity.firmaSupervisor = respuesta.firmaSupervisor;
       return preTareaProcesoUvaEntity;
     } catch (e) {
-      print('Error');
-      log(e.toString());
+      if(mostrarLog){
+        print('Error');
+        log(e.toString());
+      }
       return null;
     }
   }
