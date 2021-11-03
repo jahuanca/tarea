@@ -29,6 +29,7 @@ class PreTareaEsparragoFormatoEntityAdapter
       idusuario: fields[8] as int,
       idlabor: fields[11] as int,
       labor: fields[15] as LaborEntity,
+      correlativo: fields[17] as int,
       idactividad: fields[12] as int,
       actividad: fields[14] as ActividadEntity,
       imei: fields[5] as String,
@@ -39,7 +40,7 @@ class PreTareaEsparragoFormatoEntityAdapter
   @override
   void write(BinaryWriter writer, PreTareaEsparragoFormatoEntity obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.itemprestareaesparragoformato)
       ..writeByte(1)
@@ -69,7 +70,9 @@ class PreTareaEsparragoFormatoEntityAdapter
       ..writeByte(15)
       ..write(obj.labor)
       ..writeByte(16)
-      ..write(obj.detalle);
+      ..write(obj.detalle)
+      ..writeByte(17)
+      ..write(obj.correlativo);
   }
 
   @override

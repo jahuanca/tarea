@@ -41,6 +41,7 @@ class PreTareaEsparragoGrupoEntityAdapter
       turnotareo: fields[18] as String,
       firmaSupervisor: fields[16] as String,
       key: fields[22] as int,
+      kilosavance: fields[27] as double,
     )
       ..sede = fields[13] as SubdivisionEntity
       ..pathUrl = fields[14] as String
@@ -52,7 +53,7 @@ class PreTareaEsparragoGrupoEntityAdapter
   @override
   void write(BinaryWriter writer, PreTareaEsparragoGrupoEntity obj) {
     writer
-      ..writeByte(27)
+      ..writeByte(28)
       ..writeByte(0)
       ..write(obj.itempretareaesparragosgrupo)
       ..writeByte(1)
@@ -106,7 +107,9 @@ class PreTareaEsparragoGrupoEntityAdapter
       ..writeByte(25)
       ..write(obj.idactividad)
       ..writeByte(26)
-      ..write(obj.actividad);
+      ..write(obj.actividad)
+      ..writeByte(27)
+      ..write(obj.kilosavance);
   }
 
   @override

@@ -4,7 +4,6 @@ import 'package:flutter_tareo/core/dimens.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
-import 'package:flutter_tareo/ui/widgets/button_login_widget.dart';
 import 'package:flutter_tareo/ui/widgets/date_picker_widget.dart';
 import 'package:flutter_tareo/ui/widgets/dropdown_search_widget.dart';
 import 'package:flutter_tareo/ui/widgets/input_label_widget.dart';

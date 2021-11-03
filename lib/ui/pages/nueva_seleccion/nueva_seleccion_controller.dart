@@ -41,6 +41,7 @@ class NuevaSeleccionController extends GetxController {
       errorPresentacion,
       errorCentroCosto,
       errorCultivo,
+      errorKilosavance,
       errorSupervisor,
       errorDigitador,
       errorHoraInicio,
@@ -386,10 +387,11 @@ class NuevaSeleccionController extends GetxController {
     changeLabor(nuevaSeleccion.idlabor.toString());
     changeCentroCosto(nuevaSeleccion.idcentrocosto.toString());
     changeSupervisor(nuevaSeleccion.codigosupervisor.toString());
+    changeCantidadAvance(nuevaSeleccion.kilosavance.toString());
     changeHoraInicio();
     changeDiaSiguiente(nuevaSeleccion.diasiguiente ?? false);
     changeHoraFin();
-    //TODO: VALIDAR: fechas por TURNO NOCHE
+    
     if (errorActividad != null) return errorActividad;
     if (errorCultivo != null) return errorCultivo;
     if (errorLabor != null) return errorLabor;
@@ -413,5 +415,23 @@ class NuevaSeleccionController extends GetxController {
 
     //TODO: en caso de haber inicio de pausa validar que esten dentro de horafin y horainicio
     return null;
+  }
+
+  void changeCantidadAvance(String value) {
+    if([null, ''].contains(value)){
+      errorKilosavance=null;
+      nuevaSeleccion.kilosavance=null;
+      update(['kilos_avance']);
+      return;
+    }
+    double avance = double.tryParse(value);
+    if (avance != null) {
+      nuevaSeleccion.kilosavance = avance;
+      errorKilosavance = null;
+    } else {
+      errorKilosavance = 'El valor ingresado no es un número';
+    }
+
+    update(['kilos_avance']);
   }
 }

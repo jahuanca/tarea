@@ -41,6 +41,7 @@ class PreTareaEsparragoGrupoEntity {
     this.turnotareo,
     this.firmaSupervisor,
     this.key,
+    this.kilosavance,
   }) {
     estadoLocal = 'P';
   }
@@ -99,6 +100,8 @@ class PreTareaEsparragoGrupoEntity {
   int idactividad;
   @HiveField(26)
   ActividadEntity actividad;
+  @HiveField(27)
+  double kilosavance;
 
   String get fechaHora {
     if (fecha == null || horainicio == null) {
@@ -148,6 +151,7 @@ class PreTareaEsparragoGrupoEntity {
         pausafin:
             json["pausafin"] == null ? null : DateTime.parse(json["pausafin"]),
         linea: json["linea"] == null ? null : json["linea"],
+        kilosavance: json["kilosavance"] == null ? null : json["kilosavance"],
         idcentrocosto:
             json["idcentrocosto"] == null ? null : json["idcentrocosto"],
         codigosupervisor:
@@ -202,6 +206,7 @@ class PreTareaEsparragoGrupoEntity {
         "firmasupervisor": firmaSupervisor == null ? null : firmaSupervisor,
         "diasiguiente": diasiguiente == null ? null : diasiguiente,
         "idusuario": idusuario == null ? null : idusuario,
+        "kilosavance": kilosavance == null ? null : kilosavance,
         "Pre_Tarea_Esparrago_Detalle_Grupo": detalles == null
             ? null
             : List<dynamic>.from(

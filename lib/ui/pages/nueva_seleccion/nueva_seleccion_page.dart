@@ -365,6 +365,16 @@ class NuevaSeleccionPage extends StatelessWidget {
                                 label: 'Fin de pausa',
                                 hintText: 'Fin de pausa')
                             : Container()),
+                    GetBuilder<NuevaSeleccionController>(
+                      id: 'kilos_avance',
+                      builder: (_) => InputLabelWidget(
+                        hintText: 'Kilos avance',
+                        error: _.errorKilosavance,
+                        onChanged: _.changeCantidadAvance,
+                        textInputType: TextInputType.number,
+                        label: 'Kilos avance',
+                      ),
+                    ),
                     SizedBox(
                       height: size.height * 0.05,
                     ),

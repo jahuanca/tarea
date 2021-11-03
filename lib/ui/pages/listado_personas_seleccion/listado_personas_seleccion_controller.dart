@@ -278,7 +278,7 @@ class ListadoPersonasSeleccionController extends GetxController
       }
       print(barcode);
       List<String> valores = barcode.toString().split('_');
-      int index = personal.indexWhere((e) => e.codigoempresa == barcode.toString());
+      int index = personal.indexWhere((e) => e.nrodocumento == barcode.toString());
       if (index != -1) {
         byLector
             ? toastExito('Éxito', 'Registrado con exito')
