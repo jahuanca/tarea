@@ -97,6 +97,9 @@ Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey) {
             if (PreferenciasUsuario().idSede == 7)
               _itemDrawer(size, 'assets/images/uva_icon.png', 'Packing',
                   () => _.goPreTareoUva(scaffoldKey)),
+            if (PreferenciasUsuario().idSede == 7)
+              _itemDrawer(size, 'assets/images/arandano_icon.png', 'Esparrago',
+                  () => _.goEsparragos(scaffoldKey)),
 
             _itemDrawer(
                 size, Icons.construction, 'Herramientas', _.goMisEventos),

@@ -121,7 +121,6 @@ class NuevaTareaController extends GetxController {
     }
     labores = await _getLaborsByKeyUseCase
         .execute({'idactividad': nuevaTarea.idactividad});
-    print(labores.length);
     if (labores.isNotEmpty) {
       nuevaTarea.labor = labores.first;
       nuevaTarea.idlabor = nuevaTarea.labor.idlabor;

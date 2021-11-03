@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/data/repositories/storage_repository_implementation.dart';
 import 'package:flutter_tareo/di/aprobar_binding.dart';
+import 'package:flutter_tareo/di/esparragos_binding.dart';
 import 'package:flutter_tareo/di/home_binding.dart';
 import 'package:flutter_tareo/di/login_binding.dart';
 import 'package:flutter_tareo/di/migrar_binding.dart';
@@ -53,6 +54,11 @@ class NavigationDrawerController extends GetxController{
   void goPreTareo(GlobalKey<ScaffoldState> scaffoldKey){
     PreTareosBinding().dependencies();
     Get.find<NavigationController>().eventos(4, scaffoldKey);
+  }
+
+  void goEsparragos(GlobalKey<ScaffoldState> scaffoldKey){
+    EsparragosBinding().dependencies();
+    Get.find<NavigationController>().eventos(6, scaffoldKey);
   }
 
   void goPreTareoUva(GlobalKey<ScaffoldState> scaffoldKey){

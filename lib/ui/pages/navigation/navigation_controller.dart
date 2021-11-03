@@ -1,4 +1,5 @@
 import 'package:flutter_tareo/ui/pages/aprobar/aprobar_page.dart';
+import 'package:flutter_tareo/ui/pages/esparragos/esparragos_page.dart';
 import 'package:flutter_tareo/ui/pages/home/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class NavigationController extends GetxController {
     MigrarPage(),
     PreTareosPage(),
     PreTareosUvaPage(),
-    Container(),
+    EsparragosPage(),
     Container(),
   ];
 
@@ -82,6 +83,13 @@ class NavigationController extends GetxController {
       case 5:
         actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
         titulo = 'Packing';
+        scaffoldKey.currentState.openEndDrawer();
+        indexWidget = index;
+        update(['bottom_navigation']);
+        break;
+      
+      case 6:
+        titulo = 'Esparrago';
         scaffoldKey.currentState.openEndDrawer();
         indexWidget = index;
         update(['bottom_navigation']);

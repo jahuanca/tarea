@@ -9,6 +9,13 @@ import 'package:flutter_tareo/domain/entities/log_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_grupo_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_formato_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_grupo_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
@@ -54,6 +61,13 @@ void main() async{
   Hive.registerAdapter(PreTareoProcesoDetalleEntityAdapter());
   Hive.registerAdapter(PreTareoProcesoUvaEntityAdapter());
   Hive.registerAdapter(PreTareoProcesoUvaDetalleEntityAdapter());
+  Hive.registerAdapter(PreTareaEsparragoVariosEntityAdapter());
+  Hive.registerAdapter(PreTareaEsparragoDetalleVariosEntityAdapter());
+  Hive.registerAdapter(PreTareaEsparragoGrupoEntityAdapter());
+  Hive.registerAdapter(PreTareaEsparragoDetalleGrupoEntityAdapter());
+  Hive.registerAdapter(PreTareaEsparragoEntityAdapter());
+  Hive.registerAdapter(PreTareaEsparragoFormatoEntityAdapter());
+  Hive.registerAdapter(PreTareaEsparragoDetalleEntityAdapter());
   
   runApp(MyApp());
 }
