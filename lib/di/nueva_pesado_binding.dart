@@ -12,7 +12,6 @@ import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/ui/pages/nueva_pesado/nueva_pesado_controller.dart';
-import 'package:flutter_tareo/ui/pages/nueva_pre_tarea_uva/nueva_pre_tarea_uva_controller.dart';
 import 'package:get/get.dart';
 
 class NuevaPesadoBinding extends Bindings {

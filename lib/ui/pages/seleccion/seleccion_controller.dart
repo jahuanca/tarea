@@ -1,11 +1,10 @@
 
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/di/listado_personas_pesado_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_seleccion_binding.dart';
 import 'package:flutter_tareo/di/nueva_seleccion_binding.dart';
-import 'package:flutter_tareo/di/nueva_pesado_binding.dart';
 import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_grupo_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_grupo_entity.dart';
@@ -16,10 +15,7 @@ import 'package:flutter_tareo/domain/use_cases/seleccion/get_all_seleccion_use_c
 import 'package:flutter_tareo/domain/use_cases/seleccion/migrar_all_seleccion_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/seleccion/update_seleccion_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/seleccion/upload_file_of_seleccion_use_case.dart';
-import 'package:flutter_tareo/ui/pages/listado_personas_pesado/listado_personas_pesado_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_seleccion/listado_personas_seleccion_page.dart';
-import 'package:flutter_tareo/ui/pages/nueva_pesado/nueva_pesado_page.dart';
-import 'package:flutter_tareo/ui/pages/nueva_pre_tarea/nueva_pre_tarea_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_seleccion/nueva_seleccion_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
@@ -239,6 +235,7 @@ class SeleccionController extends GetxController {
     final result =
         await Get.to<PreTareaEsparragoGrupoEntity>(() => NuevaSeleccionPage());
     if (result != null) {
+      log(result.toJson().toString());
       seleccions.insert(0, result);
       await _createSeleccionUseCase.execute(result);
       update(['tareas']);
@@ -253,6 +250,7 @@ class SeleccionController extends GetxController {
         arguments: {'tarea': seleccions[index]});
     if (result != null) {
       print(result.horafin);
+      log(result.toJson().toString());
       result.idusuario = PreferenciasUsuario().idUsuario;
       seleccions[index] = result;
       await _updateSeleccionUseCase.execute(seleccions[index], seleccions[index].key);

@@ -8,7 +8,6 @@ import 'package:flutter_tareo/data/repositories/labores_cultivo_packing_reposito
 import 'package:flutter_tareo/data/repositories/personal_empresa_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/pre_tareo_proceso_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/subdivision_repository_implementation.dart';
-import 'package:flutter_tareo/data/repositories/temp_labor_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/usuario_repository_implementation.dart';
 import 'package:flutter_tareo/domain/repositories/actividad_repository.dart';
 import 'package:flutter_tareo/domain/repositories/centro_costo_repository.dart';

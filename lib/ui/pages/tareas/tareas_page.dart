@@ -56,8 +56,8 @@ class TareasPage extends StatelessWidget {
               ),
             ),
             floatingActionButton: FloatingActionButton(
-              child:
-                  IconButton(onPressed: _.goNuevaTarea, icon: Icon(Icons.add)),
+              onPressed: _.goNuevaTarea,
+              child: Icon(Icons.add),
             ),
           ),
         ],
@@ -70,7 +70,6 @@ class TareasPage extends StatelessWidget {
       /* {'key': 1, 'value': 'Seleccionar'}, */
       {'key': 1, 'value': 'Sincronizar'},
       {'key': 2, 'value': 'Copiar tarea'},
-      //TODO: se cambia la hora de inicio y hora fin
       //aparece un formulario de nueva tarea con los datos cargados
       {'key': 3, 'value': 'Eliminar'},
     ];
@@ -252,14 +251,14 @@ class TareasPage extends StatelessWidget {
                     child: Row(
                       children: (_.tareas[index].estadoLocal != 'P')
                           ? [
-                            Flexible(child: Container(), flex: 1),
+                              Flexible(child: Container(), flex: 1),
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.center,
                                   child: CircleAvatar(
                                     backgroundColor: successColor,
                                     child: IconButton(
-                                        onPressed: (){},
+                                        onPressed: () {},
                                         icon: Icon(
                                           Icons.remove_red_eye,
                                           color: Colors.white,
@@ -269,7 +268,7 @@ class TareasPage extends StatelessWidget {
                                 flex: 7,
                               ),
                               Flexible(child: Container(), flex: 1),
-                          ]
+                            ]
                           : [
                               Flexible(child: Container(), flex: 1),
                               Flexible(

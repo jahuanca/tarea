@@ -81,8 +81,6 @@ Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey) {
                 ),
               ),
             ),
-            //TODO: tareador: todo menos aprobación
-            //TODO: supervisor: todo
             _itemDrawer(
                 size, Icons.home, 'Inicio', () => _.goHome(scaffoldKey)),
             _itemDrawer(

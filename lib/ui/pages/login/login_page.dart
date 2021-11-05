@@ -197,7 +197,6 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
             ), flex: 1),
-            //TODO: agregar en un RICHTEXT
             Flexible(child: GestureDetector(
                 onTap: null,
                 child: Container(

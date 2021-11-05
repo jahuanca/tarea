@@ -348,7 +348,6 @@ class NuevaTareaController extends GetxController {
     changeDiaSiguiente(nuevaTarea.diasiguiente ?? false);
     changeRendimiento(nuevaTarea.esjornal ?? false);
     changeHoraFin();
-    //TODO: VALIDAR: fechas por TURNO NOCHE
     if (errorActividad != null) return errorActividad;
     if (errorLabor != null) return errorLabor;
     if (errorSupervisor != null) return errorSupervisor;
@@ -368,8 +367,6 @@ class NuevaTareaController extends GetxController {
     errorPausaInicio=null;
     
     //PUEDEN SER NULOS: inicioPausa y finPausa (00:00:00)
-
-    //TODO: en caso de haber inicio de pausa validar que esten dentro de horafin y horainicio
     return null;
   }
 }

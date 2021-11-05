@@ -6,7 +6,6 @@ const _pref_token = 'TOKEN';
 const _pref_id = '_ID';
 const _pref_account = 'ACCOUNT';
 const _pref_email = 'EMAIL';
-const _pref_phonenumber = 'PHONE_NUMBER';
 const _pref_display_name = 'DISPLAY_NAME';
 
 class StorageRepositoryImplementation implements StorageRepository {

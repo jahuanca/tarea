@@ -7,8 +7,6 @@ import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dar
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';

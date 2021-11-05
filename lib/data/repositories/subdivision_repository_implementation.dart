@@ -1,7 +1,6 @@
 import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/repositories/subdivision_repository.dart';
-import 'package:flutter_tareo/ui/utils/conecction_state.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:hive/hive.dart';
 

@@ -115,7 +115,6 @@ class ListadoPersonasPreTareoController extends GetxController
     final iOS = IOSNotificationDetails();
     final platform = NotificationDetails(android: android, iOS: iOS);
     false;
-    final isSuccess = true;
 
     await flutterLocalNotificationsPlugin.show(
       0,

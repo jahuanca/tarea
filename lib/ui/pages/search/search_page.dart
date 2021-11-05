@@ -100,25 +100,7 @@ class SearchPage extends StatelessWidget {
               flex: 1),
         ],
       ),
-      /* child: Scaffold(
-          body: ListView(
-            /* keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, */
-            children: [
-              _itemResultado(size),
-              _itemResultado(size),
-            ],
-          ),
-        ), */
     );
   }
 
-  Widget _itemResultado(Size size) {
-    return Container(
-      child: ListTile(
-        //leading: Icon(Icons.flutter_dash),
-        title: Text('Titulo'),
-        subtitle: Text('Sub titulo'),
-      ),
-    );
-  }
 }

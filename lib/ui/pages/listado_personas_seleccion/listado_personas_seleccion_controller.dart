@@ -1,18 +1,10 @@
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_grupo_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_grupo_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pesados/update_pesado_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pre_tareos/update_pre_tareo_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/seleccion/update_seleccion_use_case.dart';
-import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
@@ -121,7 +113,6 @@ class ListadoPersonasSeleccionController extends GetxController
     final iOS = IOSNotificationDetails();
     final platform = NotificationDetails(android: android, iOS: iOS);
     false;
-    final isSuccess = true;
 
     await flutterLocalNotificationsPlugin.show(
       0,
@@ -277,8 +268,8 @@ class ListadoPersonasSeleccionController extends GetxController
         return;
       }
       print(barcode);
-      List<String> valores = barcode.toString().split('_');
-      int index = personal.indexWhere((e) => e.nrodocumento == barcode.toString());
+      
+      int index = personal.indexWhere((e) => e.nrodocumento.trim() == barcode.toString().trim());
       if (index != -1) {
         byLector
             ? toastExito('Éxito', 'Registrado con exito')

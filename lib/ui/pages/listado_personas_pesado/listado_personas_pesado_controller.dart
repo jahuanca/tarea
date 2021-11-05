@@ -1,19 +1,14 @@
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/update_pesado_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pre_tareos/update_pre_tareo_proceso_use_case.dart';
-import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
@@ -132,7 +127,6 @@ class ListadoPersonasPesadoController extends GetxController
     final iOS = IOSNotificationDetails();
     final platform = NotificationDetails(android: android, iOS: iOS);
     false;
-    final isSuccess = true;
 
     await flutterLocalNotificationsPlugin.show(
       0,

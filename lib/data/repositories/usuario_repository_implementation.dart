@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';

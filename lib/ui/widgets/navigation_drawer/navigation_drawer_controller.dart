@@ -16,7 +16,6 @@ import 'package:flutter_tareo/ui/pages/login/login_page.dart';
 import 'package:flutter_tareo/ui/pages/navigation/navigation_controller.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class NavigationDrawerController extends GetxController{
 
@@ -27,6 +26,7 @@ class NavigationDrawerController extends GetxController{
 
   @override
   void onInit() async{
+    super.onInit();
     usuarioEntity=await StorageRepositoryImplementation().getUser();
     update(['usuario']);
   }

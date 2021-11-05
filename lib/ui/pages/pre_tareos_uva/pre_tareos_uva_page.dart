@@ -55,8 +55,8 @@ class PreTareosUvaPage extends StatelessWidget {
               ),
             ),
             floatingActionButton: FloatingActionButton(
-              child: IconButton(
-                  onPressed: _.goNuevaPreTarea, icon: Icon(Icons.add)),
+              onPressed: _.goNuevaPreTarea,
+              child: Icon(Icons.add),
             ),
           ),
           GetBuilder<PreTareosUvaController>(

@@ -68,9 +68,8 @@ class ListadoPersonasPage extends StatelessWidget {
                 ),
               ),
               floatingActionButton: FloatingActionButton(
-                child: IconButton(
-                    onPressed: _.goNuevoPersonaTareaProceso,
-                    icon: Icon(Icons.add)),
+                onPressed: _.goNuevoPersonaTareaProceso,
+                child: Icon(Icons.add),
               ),
             ),
             GetBuilder<ListadoPersonasController>(

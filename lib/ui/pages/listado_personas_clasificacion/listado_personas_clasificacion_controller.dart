@@ -4,15 +4,12 @@ import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_formato_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/clasificacion/update_clasificacion_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pesados/update_pesado_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
@@ -131,7 +128,6 @@ class ListadoPersonasClasificacionController extends GetxController
     final iOS = IOSNotificationDetails();
     final platform = NotificationDetails(android: android, iOS: iOS);
     false;
-    final isSuccess = true;
 
     await flutterLocalNotificationsPlugin.show(
       0,

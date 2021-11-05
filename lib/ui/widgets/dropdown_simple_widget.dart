@@ -2,7 +2,6 @@
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/core/dimens.dart';
 import 'package:flutter_tareo/core/styles.dart';
-import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter/material.dart';
 
 class DropdownSimpleWidget extends StatelessWidget {

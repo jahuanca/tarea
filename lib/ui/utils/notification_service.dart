@@ -22,7 +22,7 @@ class NotificationService {
       requestSoundPermission: false,
       requestBadgePermission: false,
       requestAlertPermission: false,
-      onDidReceiveLocalNotification: (id, title, body, payload) {},
+      //onDidReceiveLocalNotification: (id, title, body, payload) {},
     );
 
     final InitializationSettings initializationSettings =

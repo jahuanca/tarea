@@ -1,22 +1,18 @@
 
+import 'dart:developer';
+
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
-import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_grupo_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_grupo_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_actividads_by_key_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_labors_by_key_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
@@ -77,6 +73,7 @@ class NuevaSeleccionController extends GetxController {
       if (Get.arguments['tarea'] != null) {
         editando = true;
         nuevaSeleccion = Get.arguments['tarea'] as PreTareaEsparragoGrupoEntity;
+        log(nuevaSeleccion?.toJson().toString());
         if(nuevaSeleccion.detalles==null) nuevaSeleccion.detalles=[];
       }
     }
@@ -88,10 +85,9 @@ class NuevaSeleccionController extends GetxController {
   Future<void> getActividades() async {
     actividades = await _getActividadsByKeyUseCase
         .execute({'idsociedad': PreferenciasUsuario().idSociedad});
-    print(actividades.length);
     if (actividades.length > 0) {
-      nuevaSeleccion.actividad = actividades?.first;
-      await changeActividad(nuevaSeleccion.actividad?.idactividad.toString());
+      nuevaSeleccion?.actividad = actividades?.first;
+      await changeActividad(nuevaSeleccion?.actividad?.idactividad.toString());
       await getLabores();
     }
     update(['actividades']);
@@ -182,8 +178,7 @@ class NuevaSeleccionController extends GetxController {
   void changeTurno(String id) {
     nuevaSeleccion.turnotareo = id;
     if (id == 'D') {
-      nuevaSeleccion.pausainicio = null;
-      nuevaSeleccion.pausafin = null;
+      
       update(['inicio_pausa', 'fin_pausa']);
     }
     update(['turno']);
@@ -293,7 +288,6 @@ class NuevaSeleccionController extends GetxController {
   }
 
   void changeCentroCosto(String id) {
-    print('codigo: $id');
     errorCentroCosto = validatorUtilText(id, 'Centro de costo', {
       'required': '',
     });
@@ -301,9 +295,7 @@ class NuevaSeleccionController extends GetxController {
         centrosCosto.indexWhere((e) => e.idcentrocosto == int.parse(id));
     if (errorCentroCosto == null && index != -1) {
       nuevaSeleccion.centroCosto = centrosCosto[index];
-      print('CENTRO: ${nuevaSeleccion.centroCosto.toJson()}');
       nuevaSeleccion.idcentrocosto = int.parse(id);
-      print('CENTRO CODIGO: ${nuevaSeleccion.idcentrocosto}');
     } else {
       nuevaSeleccion.centroCosto = null;
       nuevaSeleccion.idcentrocosto = null;
@@ -315,7 +307,7 @@ class NuevaSeleccionController extends GetxController {
     errorActividad = validatorUtilText(id, 'Actividad', {
       'required': '',
     });
-    int index = actividades.indexWhere((e) => e.idactividad == int.parse(id));
+    int index = actividades?.indexWhere((e) => e.idactividad == int.parse(id));
     if (errorActividad == null && index != -1) {
       nuevaSeleccion.actividad = actividades[index];
       nuevaSeleccion.idactividad = int.parse(id);
@@ -412,8 +404,6 @@ class NuevaSeleccionController extends GetxController {
     errorPausaInicio = null;
 
     //PUEDEN SER NULOS: inicioPausa y finPausa (00:00:00)
-
-    //TODO: en caso de haber inicio de pausa validar que esten dentro de horafin y horainicio
     return null;
   }
 

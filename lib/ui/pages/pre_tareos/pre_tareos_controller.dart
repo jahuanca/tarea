@@ -1,12 +1,9 @@
-import 'dart:developer';
+
 import 'dart:io';
-import 'dart:io' show Platform;
-import 'package:excel/excel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/di/listado_personas_pre_tareo_binding.dart';
 import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
-import 'package:flutter_tareo/di/nueva_tarea_binding.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_data_to_excel_use_case.dart';
@@ -20,14 +17,9 @@ import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo/listado_person
 import 'package:flutter_tareo/ui/pages/nueva_pre_tarea/nueva_pre_tarea_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
-import 'package:flutter_tareo/ui/utils/listas.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
-import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:get/get.dart';
 import 'package:image_editor_pro/image_editor_pro.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:path/path.dart' as p;
 
 class PreTareosController extends GetxController {
   final CreatePreTareoProcesoUseCase _createPreTareoProcesoUseCase;

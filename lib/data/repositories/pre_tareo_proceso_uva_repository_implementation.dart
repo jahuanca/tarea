@@ -10,7 +10,6 @@ import 'package:hive/hive.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
-import 'package:uuid/uuid.dart';
 
 class PreTareoProcesoUvaRepositoryImplementation
     extends PreTareoProcesoUvaRepository {

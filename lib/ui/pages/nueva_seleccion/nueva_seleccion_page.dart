@@ -369,6 +369,7 @@ class NuevaSeleccionPage extends StatelessWidget {
                       id: 'kilos_avance',
                       builder: (_) => InputLabelWidget(
                         hintText: 'Kilos avance',
+                        initialValue: _.nuevaSeleccion.kilosavance.toString(),
                         error: _.errorKilosavance,
                         onChanged: _.changeCantidadAvance,
                         textInputType: TextInputType.number,
@@ -445,7 +446,7 @@ class NuevaSeleccionPage extends StatelessWidget {
                     child: Container(
                       alignment: Alignment.center,
                       child: IconButton(
-                        //onPressed: controller.goListadoPersonas,
+                        onPressed: null, // controller.goListadoPersonas,
                         icon: Icon(Icons.search, size: 40),
                       ),
                     ),
