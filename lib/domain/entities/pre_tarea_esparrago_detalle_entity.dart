@@ -19,6 +19,7 @@ class PreTareaEsparragoDetalleEntity {
     this.correlativo,
     this.idusuario,
     this.idlabor,
+    this.linea,
     this.labor,
     this.idactividad,
     this.actividad,
@@ -55,6 +56,8 @@ class PreTareaEsparragoDetalleEntity {
   ActividadEntity actividad;
   @HiveField(15)
   LaborEntity labor;
+  @HiveField(16)
+  int linea;
 
   bool get validadoParaAprobar{
     if(codigoempresa==null || hora==null){
@@ -73,6 +76,7 @@ class PreTareaEsparragoDetalleEntity {
         hora: DateTime?.parse(json['hora']),
         imei: json['imei'],
         idusuario: json['idusuario'],
+        linea: json['linea'],
         correlativo: json['correlativo'],
         fecha: DateTime?.parse(json['fecha']),
         idlabor: json['idlabor'],
@@ -90,6 +94,7 @@ class PreTareaEsparragoDetalleEntity {
         'imei': imei,
         'idusuario': idusuario,
         'correlativo': correlativo,
+        'linea': linea,
         'fecha': fecha?.toIso8601String(),
         
         'idlabor': idlabor,

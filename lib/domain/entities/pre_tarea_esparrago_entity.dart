@@ -9,6 +9,7 @@ import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_formato_entity
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
+import 'package:flutter_tareo/domain/entities/tipo_tarea_entity.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
@@ -35,6 +36,8 @@ class PreTareaEsparragoEntity {
     this.turnotareo,
     this.firmaSupervisor,
     this.key,
+    this.idtipotarea,
+    this.tipoTarea,
   }){
     estadoLocal='P';
   }
@@ -85,6 +88,10 @@ class PreTareaEsparragoEntity {
   bool diasiguiente;
   @HiveField(22)
   int key;
+  @HiveField(23)
+  int idtipotarea;
+  @HiveField(24)
+  TipoTareaEntity tipoTarea;
 
   String get fechaHora {
     if (fecha == null || horainicio == null) {
@@ -134,6 +141,7 @@ class PreTareaEsparragoEntity {
         pausafin:
             json["pausafin"] == null ? null : DateTime.parse(json["pausafin"]),
         linea: json["linea"] == null ? null : json["linea"],
+        idtipotarea: json["idtipotarea"] == null ? null : json["idtipotarea"],
         idcentrocosto:
             json["idcentrocosto"] == null ? null : json["idcentrocosto"],
         codigosupervisor: json["codigosupervisor"] == null
@@ -148,6 +156,7 @@ class PreTareaEsparragoEntity {
         turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
         key: json["key"] == null ? null : json["key"],
         centroCosto: json['Centro_Costo'] == null ? null : CentroCostoEntity.fromJson(json['Centro_Costo']),
+        tipoTarea: json['Tipo_Tarea'] == null ? null : TipoTareaEntity.fromJson(json['Tipo_Tarea']),
         detalles: json['Pre_Tarea_Esparrago_Formato'] == null
             ? null
             : List<PreTareaEsparragoFormatoEntity>.from(
@@ -177,7 +186,8 @@ class PreTareaEsparragoEntity {
         "firmasupervisor": firmaSupervisor == null ? null : firmaSupervisor,
         "diasiguiente": diasiguiente == null ? null : diasiguiente,
         "idusuario": idusuario == null ? null : idusuario,
-        
+        "idtipotarea": idtipotarea == null ? null : idtipotarea,
+        "Tipo_Tarea": tipoTarea == null ? null : tipoTarea?.toJson(),
         "Pre_Tarea_Esparrago_Formato": detalles == null
             ? null
             : List<dynamic>.from(detalles.map((x) => x.toJson())),

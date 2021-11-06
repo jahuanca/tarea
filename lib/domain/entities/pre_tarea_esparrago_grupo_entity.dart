@@ -151,7 +151,7 @@ class PreTareaEsparragoGrupoEntity {
         pausafin:
             json["pausafin"] == null ? null : DateTime.parse(json["pausafin"]),
         linea: json["linea"] == null ? null : json["linea"],
-        kilosavance: json["kilosavance"] == null ? null : json["kilosavance"],
+        kilosavance: json["kilosavance"] == null ? null : (json["kilosavance"] as num).toDouble(),
         idcentrocosto:
             json["idcentrocosto"] == null ? null : json["idcentrocosto"],
         codigosupervisor:

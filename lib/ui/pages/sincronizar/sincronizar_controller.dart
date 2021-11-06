@@ -1,6 +1,7 @@
 
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
+import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
 import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/log_entity.dart';
@@ -8,10 +9,13 @@ import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
+import 'package:flutter_tareo/domain/entities/tipo_tarea_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_clientes_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_current_time_world_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labores_cultivo_packing_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_pre_tareo_procesos_use_case.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_tipo_tareas_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_usuarios_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
@@ -33,6 +37,8 @@ class SincronizarController extends GetxController{
   List<UsuarioEntity> usuarios=[];
   List<PersonalEmpresaEntity> personal=[];
   List<PreTareoProcesoEntity> preTareos=[];
+  List<ClienteEntity> clientes=[];
+  List<TipoTareaEntity> tipoTareas=[];
   List<CentroCostoEntity> centrosCosto=[];
   List<LaboresCultivoPackingEntity> laboresCultivoPacking=[];
   List<CultivoEntity> cultivos=[];
@@ -47,8 +53,10 @@ class SincronizarController extends GetxController{
   final GetPreTareoProcesosUseCase _getPreTareoProcesosUseCase;
   final GetLaboresCultivoPackingUseCase _getLaboresCultivoPackingUseCase;
   final GetCultivosUseCase _getCultivosUseCase;
+  final GetClientesUseCase _getClientesUseCase;
+  final GetTipoTareasUseCase _getTipoTareasUseCase;
 
-  SincronizarController(this._getActividadsUseCase, this._getSubdivisonsUseCase, this._getLaborsUseCase, this._getUsuariosUseCase, this._getPersonalsEmpresaUseCase, this._getCentroCostosUseCase, this._getCurrentTimeWorldUseCase, this._getPreTareoProcesosUseCase, this._getLaboresCultivoPackingUseCase, this._getCultivosUseCase);
+  SincronizarController(this._getActividadsUseCase, this._getSubdivisonsUseCase, this._getLaborsUseCase, this._getUsuariosUseCase, this._getPersonalsEmpresaUseCase, this._getCentroCostosUseCase, this._getCurrentTimeWorldUseCase, this._getPreTareoProcesosUseCase, this._getLaboresCultivoPackingUseCase, this._getCultivosUseCase, this._getClientesUseCase, this._getTipoTareasUseCase);
 
   bool validando=false;
 
@@ -71,15 +79,36 @@ class SincronizarController extends GetxController{
     await getCentrosCosto();
     await getUsuarios();
     await getPersonal();
-    //await getPreTareos();
-    //await getLaboresCultivoPacking();
     await getCultivos();
+    await getClientes();
+    await getTipoTareas();
     validando=false;
     update(['validando']);
     await setLog();
     PreferenciasUsuario().offLine=true;
   }
 
+  Future<bool> getClientes()async{
+    clientes=await _getClientesUseCase.execute();
+    Box<ClienteEntity> clientesSincronizados = await Hive.openBox<ClienteEntity>('clientes_sincronizar');
+    
+    await clientesSincronizados?.clear();
+    await clientesSincronizados.addAll(clientes);
+    await clientesSincronizados.close();
+    update(['clientes']);
+    return true;
+  }
+
+  Future<bool> getTipoTareas()async{
+    tipoTareas=await _getTipoTareasUseCase.execute();
+    Box<TipoTareaEntity> tipoTareasSincronizados = await Hive.openBox<TipoTareaEntity>('tipo_tareas_sincronizar');
+    
+    await tipoTareasSincronizados?.clear();
+    await tipoTareasSincronizados.addAll(tipoTareas);
+    await tipoTareasSincronizados.close();
+    update(['tipo_tareas']);
+    return true;
+  }
 
   Future<bool> getPreTareos()async{
     preTareos=await _getPreTareoProcesosUseCase.execute();

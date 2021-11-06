@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
+import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
 import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/entities/division_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
@@ -24,6 +25,7 @@ import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/temp_labor_entity.dart';
+import 'package:flutter_tareo/domain/entities/tipo_tarea_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_perfil_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
@@ -68,6 +70,8 @@ void main() async{
   Hive.registerAdapter(PreTareaEsparragoEntityAdapter());
   Hive.registerAdapter(PreTareaEsparragoFormatoEntityAdapter());
   Hive.registerAdapter(PreTareaEsparragoDetalleEntityAdapter());
+  Hive.registerAdapter(ClienteEntityAdapter());
+  Hive.registerAdapter(TipoTareaEntityAdapter());
   
   runApp(MyApp());
 }

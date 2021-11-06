@@ -26,7 +26,7 @@ class ListadoPersonasClasificacionPage extends StatelessWidget {
           children: [
             Scaffold(
               appBar: getAppBar(
-                  '${_.personalSeleccionado.length}',
+                  '${_.personalSeleccionado?.length ?? 0}',
                   [
                     IconButton(
                         onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
@@ -51,7 +51,7 @@ class ListadoPersonasClasificacionPage extends StatelessWidget {
                         flex: 8,
                         child: GetBuilder<ListadoPersonasClasificacionController>(
                           id: 'listado',
-                          builder: (_) => _.personalSeleccionado.isEmpty
+                          builder: (_) => _.personalSeleccionado?.isEmpty ?? true
                               ? EmptyDataWidget(
                                   titulo: 'No existe equipo asociado.',
                                   onPressed: () => _.update(['listado']),

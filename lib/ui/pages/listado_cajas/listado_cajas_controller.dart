@@ -1,36 +1,36 @@
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_tareo/di/listado_personas_clasificacion_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
+import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_formato_entity.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_clientes_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/clasificacion/update_clasificacion_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
+import 'package:flutter_tareo/ui/pages/listado_personas_clasificacion/listado_personas_clasificacion_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
 
-class ListadoPersonasClasificacionController extends GetxController
-    implements ScannerCallBack {
+class ListadoCajasController extends GetxController implements ScannerCallBack {
   List<int> seleccionados = [];
-  List<PersonalEmpresaEntity> personal = [];
-  List<PreTareaEsparragoDetalleEntity> personalSeleccionado = [];
+  List<ClienteEntity> clientes = [];
+  List<PreTareaEsparragoFormatoEntity> personalSeleccionado = [];
   int indexTarea;
-  int indexFormato;
   PreTareaEsparragoEntity preTarea;
-  List<PreTareaEsparragoDetalleEntity> detalles;
-  List<PreTareaEsparragoFormatoEntity> otrasCajas = [];
+  List<PreTareaEsparragoEntity> otrasPreTareas = [];
 
   List<ActividadEntity> actividades = [];
   List<LaborEntity> labores = [];
 
-  final GetPersonalsEmpresaBySubdivisionUseCase
-      _getPersonalsEmpresaBySubdivisionUseCase;
+  final GetClientesUseCase _getClientesUseCase;
   final UpdateClasificacionUseCase _updateClasificacionUseCase;
   final GetActividadsUseCase _getActividadsUseCase;
   final GetLaborsUseCase _getLaborsUseCase;
@@ -40,15 +40,13 @@ class ListadoPersonasClasificacionController extends GetxController
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
-  ListadoPersonasClasificacionController(
-      this._getPersonalsEmpresaBySubdivisionUseCase,
-      this._getActividadsUseCase,
-      this._getLaborsUseCase,
-      this._updateClasificacionUseCase);
+  ListadoCajasController(this._getClientesUseCase, this._getActividadsUseCase,
+      this._getLaborsUseCase, this._updateClasificacionUseCase);
 
   @override
   void onInit() async {
     actividades = await _getActividadsUseCase.execute();
+    clientes = await _getClientesUseCase.execute();
     labores = await _getLaborsUseCase.execute();
     List<CodeFormat> codeFormats = [];
     codeFormats.addAll(CodeFormatUtils.ALL_1D_FORMATS);
@@ -66,40 +64,20 @@ class ListadoPersonasClasificacionController extends GetxController
     honeywellScanner.setScannerCallBack(this);
     honeywellScanner.setProperties(properties);
     super.onInit();
-
     if (Get.arguments != null) {
-      if (Get.arguments['index'] != null) {
-        editando = true;
-        indexTarea = Get.arguments['index'] as int;
-      }
-
-      if (Get.arguments['index_formato'] != null) {
-        editando = true;
-        indexFormato = Get.arguments['index_formato'] as int;
-      }
-
       if (Get.arguments['otras'] != null) {
-        otrasCajas =
-            Get.arguments['otras'] as List<PreTareaEsparragoFormatoEntity>;
+        otrasPreTareas =
+            Get.arguments['otras'] as List<PreTareaEsparragoEntity>;
       }
       if (Get.arguments['tarea'] != null) {
         preTarea = Get.arguments['tarea'] as PreTareaEsparragoEntity;
-        personalSeleccionado = preTarea.detalles[indexFormato].detalles;
-        if (personalSeleccionado == null) personalSeleccionado = [];
+        personalSeleccionado = preTarea.detalles;
         update(['personal_seleccionado']);
       }
 
-      if (Get.arguments['personal'] != null) {
-        personal = Get.arguments['personal'] as List<PersonalEmpresaEntity>;
-        update(['personal']);
-      } else {
-        validando = true;
-        update(['validando']);
-        personal = await _getPersonalsEmpresaBySubdivisionUseCase
-            .execute(PreferenciasUsuario().idSede);
-
-        validando = false;
-        update(['validando']);
+      if (Get.arguments['index'] != null) {
+        editando = true;
+        indexTarea = Get.arguments['index'] as int;
       }
     }
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -136,8 +114,8 @@ class ListadoPersonasClasificacionController extends GetxController
     final platform = NotificationDetails(android: android, iOS: iOS);
     false;
 
-    await flutterLocalNotificationsPlugin?.show(
-      1,
+    await flutterLocalNotificationsPlugin.show(
+      0,
       success ? 'Exito' : 'Error',
       mensaje,
       platform,
@@ -171,18 +149,27 @@ class ListadoPersonasClasificacionController extends GetxController
     return true;
   }
 
-  /* void goNuevoPersonaTareaProceso() async {
-    AgregarPersonaBinding().dependencies();
-    final result = await Get.to<PreTareoProcesoDetalleEntity>(
-        () => AgregarPersonaPage(),
-        arguments: {'personal': personal, 'tarea': preTarea});
-    if (result != null) {
-      personalSeleccionado.add(result);
-      update(['personal_seleccionado']);
-      seleccionados.clear();
-      update(['listado']);
+  Future<void> goListadoDetalles(int index) async {
+    List<PreTareaEsparragoFormatoEntity> otras = [];
+    otras.addAll(preTarea.detalles);
+    otras.removeAt(index);
+    ListadoPersonasClasificacionBinding().dependencies();
+    final resultados = await Get.to<List<PreTareaEsparragoDetalleEntity>>(
+        () => ListadoPersonasClasificacionPage(),
+        arguments: {
+          'otras': otras,
+          //'tarea': clasificados[index],
+          'tarea': preTarea,
+          'index': indexTarea,
+          'index_formato': index,
+        });
+
+    if (resultados != null && resultados.isNotEmpty) {
+      preTarea.detalles[index].detalles = resultados;
+      await _updateClasificacionUseCase.execute(preTarea, preTarea.key);
+      update(['item_$index']);
     }
-  } */
+  }
 
   Future<void> changeOptionsGlobal(dynamic index) async {
     switch (index) {
@@ -270,7 +257,7 @@ class ListadoPersonasClasificacionController extends GetxController
 
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
     if (barcode != null && barcode != -1) {
-      for (var element in otrasCajas) {
+      for (var element in otrasPreTareas) {
         int indexOtra = element.detalles.indexWhere(
             (e) => e.codigotk.toString().trim() == barcode.toString().trim());
         if (indexOtra != -1) {
@@ -291,7 +278,7 @@ class ListadoPersonasClasificacionController extends GetxController
       }
 
       List<String> valores = barcode.toString().split('_');
-      int index = personal.indexWhere((e) => e.codigoempresa == valores[0]);
+      int index = clientes.indexWhere((e) => e.idcliente == int.parse(valores[0]));
       if (index != -1) {
         byLector
             ? toastExito('Éxito', 'Registrado con exito')
@@ -299,14 +286,13 @@ class ListadoPersonasClasificacionController extends GetxController
         /* int lasItem = (personalSeleccionado.isEmpty)
             ? 0
             : personalSeleccionado.last.numcaja; */
-        //TODO: VERIFICAR ESTRUCTURA QR:
-        //TODO:codigosap_idcliente_idlabor_linea_correlativo
-        int indexLabor =
-            labores.indexWhere((e) => e.idlabor == int.parse(valores[2]));
 
-        personalSeleccionado.add(PreTareaEsparragoDetalleEntity(
-          personal: personal[index],
-          codigoempresa: personal[index].codigoempresa,
+        int indexLabor =
+            labores.indexWhere((e) => e.idlabor == int.parse(valores[1]));
+
+        personalSeleccionado.add(PreTareaEsparragoFormatoEntity(
+          cliente: clientes[index],
+          idcliente: clientes[index].idcliente,
           fecha: DateTime.now(),
           hora: DateTime.now(),
           imei: '1256',
@@ -314,19 +300,12 @@ class ListadoPersonasClasificacionController extends GetxController
           idlabor: labores[indexLabor].idlabor,
           idactividad: labores[indexLabor].idactividad,
           labor: labores[indexLabor],
-          linea: int.parse(valores[3]),
-          correlativo: int.parse(valores[4]),
+          correlativo: int.parse(valores[2]),
           codigotk: barcode.toString(),
           idusuario: PreferenciasUsuario().idUsuario,
         ));
         update(['personal_seleccionado']);
-        if (preTarea.detalles == null) {
-          preTarea.detalles = [];
-        }
-        if (preTarea.detalles[indexFormato].detalles == null) {
-          preTarea.detalles[indexFormato].detalles = [];
-        }
-        preTarea.detalles[indexFormato].detalles = personalSeleccionado;
+        preTarea.detalles = personalSeleccionado;
         await _updateClasificacionUseCase.execute(preTarea, preTarea.key);
       } else {
         byLector

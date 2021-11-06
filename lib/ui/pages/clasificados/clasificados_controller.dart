@@ -2,6 +2,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/di/listado_cajas_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_clasificacion_binding.dart';
 import 'package:flutter_tareo/di/nueva_clasificacion_binding.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_entity.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_tareo/domain/use_cases/clasificacion/migrar_all_clasific
 import 'package:flutter_tareo/domain/use_cases/clasificacion/update_clasificacion_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/clasificacion/upload_file_of_clasificacion_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_data_to_excel_use_case.dart';
+import 'package:flutter_tareo/ui/pages/listado_cajas/listado_cajas_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_clasificacion/listado_personas_clasificacion_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_clasificacion/nueva_clasificacion_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
@@ -190,6 +192,27 @@ class ClasificadosController extends GetxController {
   /* Future<void> goMigrarPreTareo(int index) async {
     await _migrarAllPreTareoUseCase.execute(preTareos[index]);
   } */
+
+
+  Future<void> goListadoCajas(int index) async {
+    List<PreTareaEsparragoEntity> otras = [];
+    otras.addAll(clasificados);
+    otras.removeAt(index);
+    ListadoCajasBinding().dependencies();
+    final resultados = await Get.to<List<PreTareaEsparragoFormatoEntity>>(
+        () => ListadoCajasPage(),
+        arguments: {
+          'otras': otras,
+          'tarea': clasificados[index],
+          'index': index,
+        });
+
+    if (resultados != null && resultados.isNotEmpty) {
+      clasificados[index].detalles = resultados;
+      await _updateClasificacionUseCase.execute(clasificados[index], clasificados[index].key);
+      update(['tareas']);
+    }
+  }
 
   Future<void> goListadoPersonas(int index) async {
     List<PreTareaEsparragoEntity> otras = [];

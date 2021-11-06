@@ -1,3 +1,4 @@
+import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
@@ -11,20 +12,20 @@ class PreTareaEsparragoFormatoEntity {
   PreTareaEsparragoFormatoEntity({
     this.itemprestareaesparragoformato,
     this.itempretareaesparrago,
-    this.codigoempresa,
     this.fecha,
     this.hora,
     this.idestado,
-    this.personal,
     this.codigotk,
     this.idusuario,
     this.idlabor,
     this.labor,
     this.correlativo,
     this.idactividad,
+    this.idcliente,
+    this.cliente,
     this.actividad,
     this.imei,
-    this.detalle,
+    this.detalles,
   });
 
   @HiveField(0)
@@ -32,7 +33,7 @@ class PreTareaEsparragoFormatoEntity {
   @HiveField(1)
   int itempretareaesparrago;
   @HiveField(3)
-  String codigoempresa;
+  int idcliente;
   @HiveField(4)
   DateTime hora;
   @HiveField(5)
@@ -44,7 +45,7 @@ class PreTareaEsparragoFormatoEntity {
   @HiveField(8)
   int idusuario;
   @HiveField(9)
-  PersonalEmpresaEntity personal;
+  ClienteEntity cliente;
   @HiveField(10)
   String codigotk;
   @HiveField(11)
@@ -56,12 +57,12 @@ class PreTareaEsparragoFormatoEntity {
   @HiveField(15)
   LaborEntity labor;
   @HiveField(16)
-  PreTareaEsparragoDetalleEntity detalle;
+  List<PreTareaEsparragoDetalleEntity> detalles;
   @HiveField(17)
   int correlativo;
 
   bool get validadoParaAprobar{
-    if(codigoempresa==null || hora==null){
+    if(idcliente==null || hora==null){
       return false;
     }
     
@@ -72,7 +73,7 @@ class PreTareaEsparragoFormatoEntity {
       PreTareaEsparragoFormatoEntity(
         itemprestareaesparragoformato: json['itemprestareaesparragoformato'],
         itempretareaesparrago: json['itempretareaproceso'],
-        codigoempresa: json['codigoempresa'],
+        idcliente: json['idcliente'],
         idactividad: json['idactividad'],
         hora: DateTime?.parse(json['hora']),
         imei: json['imei'],
@@ -82,14 +83,19 @@ class PreTareaEsparragoFormatoEntity {
         correlativo: json['correlativo'],
         idestado: json['idestado'],
         codigotk: json['codigotk'],
-        detalle: json['Pre_Tarea_Esparrago_Detalle'],
+        cliente: json['cliente'] == null ? null : ClienteEntity.fromJson(json['cliente']),
+        detalles: json['Pre_Tarea_Esparrago_Detalle'] == null
+            ? null
+            : List<PreTareaEsparragoDetalleEntity>.from(
+                json["Pre_Tarea_Esparrago_Detalle"]
+                    .map((x) => PreTareaEsparragoDetalleEntity.fromJson(x))),
 
       );
 
   Map<String, dynamic> toJson() => {
         'itemprestareaesparragoformato': itemprestareaesparragoformato,
         'itempretareaesparrago': itempretareaesparrago,
-        'codigoempresa': codigoempresa,
+        'idcliente': idcliente,
         'idactividad': idactividad,
         'hora': hora?.toIso8601String(),
         'imei': imei,
@@ -99,6 +105,9 @@ class PreTareaEsparragoFormatoEntity {
         'idlabor': idlabor,
         'idestado': idestado,
         'codigotk': codigotk,
-        'Pre_Tarea_Esparrago_Detalle': detalle?.toJson(),
+        'cliente': cliente?.toJson(),
+        "Pre_Tarea_Esparrago_Detalle": detalles == null
+            ? null
+            : List<dynamic>.from(detalles.map((x) => x.toJson())),
       };
 }

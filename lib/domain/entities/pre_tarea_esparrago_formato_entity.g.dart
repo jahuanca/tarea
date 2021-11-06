@@ -20,20 +20,20 @@ class PreTareaEsparragoFormatoEntityAdapter
     return PreTareaEsparragoFormatoEntity(
       itemprestareaesparragoformato: fields[0] as int,
       itempretareaesparrago: fields[1] as int,
-      codigoempresa: fields[3] as String,
       fecha: fields[6] as DateTime,
       hora: fields[4] as DateTime,
       idestado: fields[7] as int,
-      personal: fields[9] as PersonalEmpresaEntity,
       codigotk: fields[10] as String,
       idusuario: fields[8] as int,
       idlabor: fields[11] as int,
       labor: fields[15] as LaborEntity,
       correlativo: fields[17] as int,
       idactividad: fields[12] as int,
+      idcliente: fields[3] as int,
+      cliente: fields[9] as ClienteEntity,
       actividad: fields[14] as ActividadEntity,
       imei: fields[5] as String,
-      detalle: fields[16] as PreTareaEsparragoDetalleEntity,
+      detalles: (fields[16] as List)?.cast<PreTareaEsparragoDetalleEntity>(),
     );
   }
 
@@ -46,7 +46,7 @@ class PreTareaEsparragoFormatoEntityAdapter
       ..writeByte(1)
       ..write(obj.itempretareaesparrago)
       ..writeByte(3)
-      ..write(obj.codigoempresa)
+      ..write(obj.idcliente)
       ..writeByte(4)
       ..write(obj.hora)
       ..writeByte(5)
@@ -58,7 +58,7 @@ class PreTareaEsparragoFormatoEntityAdapter
       ..writeByte(8)
       ..write(obj.idusuario)
       ..writeByte(9)
-      ..write(obj.personal)
+      ..write(obj.cliente)
       ..writeByte(10)
       ..write(obj.codigotk)
       ..writeByte(11)
@@ -70,7 +70,7 @@ class PreTareaEsparragoFormatoEntityAdapter
       ..writeByte(15)
       ..write(obj.labor)
       ..writeByte(16)
-      ..write(obj.detalle)
+      ..write(obj.detalles)
       ..writeByte(17)
       ..write(obj.correlativo);
   }

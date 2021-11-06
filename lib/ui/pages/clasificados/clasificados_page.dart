@@ -233,7 +233,7 @@ class ClasificadosPage extends StatelessWidget {
                                         .clasificados[index].detalles.length
                                         .toString())),
                                 Icon(
-                                  Icons.people,
+                                  Icons.widgets,
                                   color: Colors.black45,
                                 )
                               ],
@@ -323,7 +323,7 @@ class ClasificadosPage extends StatelessWidget {
                                     backgroundColor: infoColor,
                                     child: IconButton(
                                         onPressed: () =>
-                                            _.goListadoPersonas(index),
+                                            _.goListadoCajas(index),
                                         icon: Icon(
                                           Icons.search,
                                           color: Colors.white,

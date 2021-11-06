@@ -42,12 +42,15 @@ class SincronizarPage extends StatelessWidget {
                 GetBuilder<SincronizarController>(
                   id: 'pre_tareos',
                   builder: (_)=> itemSincronizado(size, 'pre_tareos', 'Arándanos' , _.preTareos.length.toString() )),
-                /* GetBuilder<SincronizarController>(
-                  id: 'labores_cultivo_packing',
-                  builder: (_)=> itemSincronizado(size, 'labores_cultivo_packing', 'Labores-Cultivo-Packing' , _.laboresCultivoPacking.length.toString() )), */
                 GetBuilder<SincronizarController>(
                   id: 'cultivos',
                   builder: (_)=> itemSincronizado(size, 'cultivos', 'Cultivos' , _.cultivos.length.toString() )),
+                GetBuilder<SincronizarController>(
+                  id: 'clientes',
+                  builder: (_)=> itemSincronizado(size, 'clientes', 'Clientes' , _.clientes.length.toString() )),
+                GetBuilder<SincronizarController>(
+                  id: 'tipo_tareas',
+                  builder: (_)=> itemSincronizado(size, 'tipo_tareas', 'Tipos de tareas' , _.tipoTareas.length.toString() )),
               ],
             ),
           ),

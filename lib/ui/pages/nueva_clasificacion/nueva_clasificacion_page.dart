@@ -59,58 +59,32 @@ class NuevaClasificacionPage extends StatelessWidget {
                     SizedBox(
                       height: size.height * 0.01,
                     ),
-                    /* GetBuilder<NuevaClasificacionController>(
-                      id: 'presentacion',
+                    GetBuilder<NuevaClasificacionController>(
+                      id: 'tipo_tarea',
                       builder: (_) => DropdownSearchWidget(
-                        label: 'Presentación',
-                        /* error: _.errorCentroCosto, */
+                        label: 'Tipo de tarea',
+                        error: _.errorTipoTarea,
                         labelText: 'name',
                         labelValue: '_id',
-                        selectedItem: _.nuevaClasificacion?.laboresCultivoPacking?.presentacionLinea == null
+                        selectedItem: _.nuevaClasificacion?.tipoTarea == null
                             ? null
                             : {
                                 'name':
-                                    '${_.nuevaClasificacion.laboresCultivoPacking.presentacionLinea.descripcion.trim()}',
-                                '_id': _.nuevaClasificacion.laboresCultivoPacking.item,
+                                    '${_.nuevaClasificacion.tipoTarea?.descripcion?.trim()}',
+                                '_id': _.nuevaClasificacion.tipoTarea?.idtipotarea,
                               },
-                        onChanged: _.changePresentacion,
-                        items: controller.presentaciones.length == 0
+                        onChanged: _.changeTipoTarea,
+                        items: controller.tipoTareas.length == 0
                             ? []
-                            : controller.presentaciones
+                            : controller.tipoTareas
                                 .map((e) => {
                                       'name':
-                                          '${e.descripcion.trim()}',
-                                      '_id': e.idpresentacion,
+                                          '${e.descripcion?.trim()}',
+                                      '_id': e.idtipotarea,
                                     })
                                 .toList(),
                       ),
-                    ), */
-                    /* GetBuilder<NuevaClasificacionController>(
-                      id: 'cultivo',
-                      builder: (_) => DropdownSearchWidget(
-                        label: 'Cultivo',
-                        error: _.errorCultivo,
-                        labelText: 'name',
-                        labelValue: '_id',
-                        selectedItem: _.nuevaClasificacion?.cultivo == null
-                            ? null
-                            : {
-                                'name':
-                                    '${_.nuevaClasificacion.cultivo.detallecultivo.trim()} - ${_.nuevaClasificacion.cultivo.cultivo.trim()}',
-                                '_id': _.nuevaClasificacion.cultivo.idcultivo,
-                              },
-                        onChanged: _.changeCultivo,
-                        items: controller.cultivos.length == 0
-                            ? []
-                            : controller.cultivos
-                                .map((e) => {
-                                      'name':
-                                          '${e.detallecultivo.trim()} - ${e.cultivo.trim()}',
-                                      '_id': e.idcultivo,
-                                    })
-                                .toList(),
-                      ),
-                    ), */
+                    ),
                     GetBuilder<NuevaClasificacionController>(
                       id: 'centro_costo',
                       builder: (_) => DropdownSearchWidget(

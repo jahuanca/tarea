@@ -10,6 +10,8 @@ import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_formato_entity
 import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
+import 'package:flutter_tareo/domain/entities/tipo_tarea_entity.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_tipo_tareas_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
@@ -27,11 +29,13 @@ class NuevaClasificacionController extends GetxController {
       _getPersonalsEmpresaBySubdivisionUseCase;
   final GetCentroCostosUseCase _getCentroCostosUseCase;
   final GetCultivosUseCase _getCultivosUseCase;
+  final GetTipoTareasUseCase _getTipoTareasUseCase;
 
   DateTime fecha = DateTime.now();
   String errorActividad,
       errorLabor,
       errorPresentacion,
+      errorTipoTarea,
       errorCentroCosto,
       errorCultivo,
       errorSupervisor,
@@ -50,6 +54,7 @@ class NuevaClasificacionController extends GetxController {
   List<ActividadEntity> actividades = [];
   List<LaborEntity> labores = [];
   List<CentroCostoEntity> centrosCosto = [];
+  List<TipoTareaEntity> tipoTareas = [];
   List<CultivoEntity> cultivos = [];
   List<SubdivisionEntity> subdivisions = [];
   List<LaboresCultivoPackingEntity> laboresCultivoPacking = [];
@@ -60,7 +65,9 @@ class NuevaClasificacionController extends GetxController {
       this._getSubdivisonsUseCase,
       this._getPersonalsEmpresaBySubdivisionUseCase,
       this._getCultivosUseCase,
-      this._getCentroCostosUseCase);
+      this._getCentroCostosUseCase,
+      this._getTipoTareasUseCase,
+      );
 
   @override
   void onInit() {
@@ -91,6 +98,7 @@ class NuevaClasificacionController extends GetxController {
     update(['validando']);
 
     /* await getCultivos(); */
+    await getTipoTarea();
     await getCentrosCosto();
     await getSupervisors(PreferenciasUsuario().idSede);
     changeTurno(editando ? nuevaClasificacion.turnotareo : 'D');
@@ -115,6 +123,18 @@ class NuevaClasificacionController extends GetxController {
     update(['supervisors','digitadors']);
     validando = false;
     update(['validando']);
+  }
+
+  Future<void> getTipoTarea() async {
+    tipoTareas= await _getTipoTareasUseCase.execute();
+    print(tipoTareas.first.toJson());
+    if (!editando) {
+      if (tipoTareas.isNotEmpty) {
+        nuevaClasificacion.tipoTarea = tipoTareas.first;
+      }
+    }
+    changeTipoTarea(nuevaClasificacion.tipoTarea.idtipotarea.toString());
+    update(['tipo_tarea']);
   }
 
   Future<void> getCentrosCosto() async {
@@ -253,7 +273,6 @@ class NuevaClasificacionController extends GetxController {
   }
 
   void changeCentroCosto(String id) {
-    print('codigo: $id');
     errorCentroCosto = validatorUtilText(id, 'Centro de costo', {
       'required': '',
     });
@@ -261,14 +280,28 @@ class NuevaClasificacionController extends GetxController {
         centrosCosto.indexWhere((e) => e.idcentrocosto == int.parse(id));
     if (errorCentroCosto == null && index != -1) {
       nuevaClasificacion.centroCosto = centrosCosto[index];
-      print('CENTRO: ${nuevaClasificacion.centroCosto.toJson()}');
       nuevaClasificacion.idcentrocosto = int.parse(id);
-      print('CENTRO CODIGO: ${nuevaClasificacion.idcentrocosto}');
     } else {
       nuevaClasificacion.centroCosto = null;
       nuevaClasificacion.idcentrocosto = null;
     }
     update(['centro_costo']);
+  }
+
+  void changeTipoTarea(String id) {
+    errorTipoTarea = validatorUtilText(id, 'Tipo de tareas', {
+      'required': '',
+    });
+    int index =
+        tipoTareas.indexWhere((e) => e.idtipotarea == int.parse(id));
+    if (errorTipoTarea == null && index != -1) {
+      nuevaClasificacion.tipoTarea = tipoTareas[index];
+      nuevaClasificacion.idtipotarea = int.parse(id);
+    } else {
+      nuevaClasificacion.tipoTarea = null;
+      nuevaClasificacion.idtipotarea = null;
+    }
+    update(['tipo_tarea']);
   }
 
   /* void changeCultivo(String id) {
