@@ -369,7 +369,7 @@ class NuevaSeleccionPage extends StatelessWidget {
                       id: 'kilos_avance',
                       builder: (_) => InputLabelWidget(
                         hintText: 'Kilos avance',
-                        initialValue: _.nuevaSeleccion.kilosavance.toString(),
+                        initialValue: _.nuevaSeleccion.kilosavance == null ? '' : _.nuevaSeleccion.kilosavance.toString(),
                         error: _.errorKilosavance,
                         onChanged: _.changeCantidadAvance,
                         textInputType: TextInputType.number,

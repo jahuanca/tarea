@@ -29,6 +29,7 @@ class PreTareaEsparragoDetalleEntityAdapter
       correlativo: fields[2] as int,
       idusuario: fields[8] as int,
       idlabor: fields[11] as int,
+      linea: fields[16] as int,
       labor: fields[15] as LaborEntity,
       idactividad: fields[12] as int,
       actividad: fields[14] as ActividadEntity,
@@ -39,7 +40,7 @@ class PreTareaEsparragoDetalleEntityAdapter
   @override
   void write(BinaryWriter writer, PreTareaEsparragoDetalleEntity obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.itempretareaesparragodetalle)
       ..writeByte(1)
@@ -69,7 +70,9 @@ class PreTareaEsparragoDetalleEntityAdapter
       ..writeByte(14)
       ..write(obj.actividad)
       ..writeByte(15)
-      ..write(obj.labor);
+      ..write(obj.labor)
+      ..writeByte(16)
+      ..write(obj.linea);
   }
 
   @override

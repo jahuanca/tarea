@@ -1,5 +1,4 @@
 
-import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -178,7 +177,7 @@ class SeleccionController extends GetxController {
     if (tareaMigrada != null) {
       toastExito('Exito', 'Tarea migrada con exito');
       seleccions[index].estadoLocal = 'M';
-      seleccions[index].itempretareaesparragosgrupo = tareaMigrada.itempretareaesparragosgrupo;
+      seleccions[index].itempretareaesparragogrupo = tareaMigrada.itempretareaesparragogrupo;
       await _updateSeleccionUseCase.execute(seleccions[index], seleccions[index].key);
       tareaMigrada = await _uploadFileOfSeleccionUseCase.execute(
           seleccions[index], File(seleccions[index].pathUrl));
@@ -235,7 +234,7 @@ class SeleccionController extends GetxController {
     final result =
         await Get.to<PreTareaEsparragoGrupoEntity>(() => NuevaSeleccionPage());
     if (result != null) {
-      log(result.toJson().toString());
+      result.idusuario=PreferenciasUsuario().idUsuario;
       seleccions.insert(0, result);
       await _createSeleccionUseCase.execute(result);
       update(['tareas']);
@@ -244,13 +243,10 @@ class SeleccionController extends GetxController {
 
   Future<void> editarSeleccion(int index) async {
     NuevaSeleccionBinding().dependencies();
-    print(seleccions[index].horafin);
     final result = await Get.to<PreTareaEsparragoGrupoEntity>(
         () => NuevaSeleccionPage(),
         arguments: {'tarea': seleccions[index]});
     if (result != null) {
-      print(result.horafin);
-      log(result.toJson().toString());
       result.idusuario = PreferenciasUsuario().idUsuario;
       seleccions[index] = result;
       await _updateSeleccionUseCase.execute(seleccions[index], seleccions[index].key);

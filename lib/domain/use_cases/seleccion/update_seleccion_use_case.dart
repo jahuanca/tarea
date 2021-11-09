@@ -7,8 +7,8 @@ class UpdateSeleccionUseCase{
 
   UpdateSeleccionUseCase(this._repository);
 
-  Future<void> execute(PreTareaEsparragoGrupoEntity pesado, int index) async{
-    return await _repository.update(pesado ,index);
+  Future<void> execute(PreTareaEsparragoGrupoEntity pesado, int key) async{
+    return await _repository.update(pesado ,key);
   }
 
 }

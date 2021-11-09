@@ -286,10 +286,10 @@ class ListadoPersonasSeleccionController extends GetxController
             idestado: 1,
             codigotk: barcode.toString(),
             idusuario: PreferenciasUsuario().idUsuario,
-            itempretareaesparragogrupo: preTarea.itempretareaesparragosgrupo));
+            itempretareaesparragogrupo: preTarea.itempretareaesparragogrupo));
         update(['personal_seleccionado']);
         preTarea.detalles=personalSeleccionado;
-        await _updateSeleccionUseCase.execute(preTarea, indexTarea);
+        await _updateSeleccionUseCase.execute(preTarea, preTarea.key);
       } else {
         byLector
             ? toastError('Error', 'No se encuentra en la lista')

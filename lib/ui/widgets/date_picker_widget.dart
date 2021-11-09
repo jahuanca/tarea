@@ -38,7 +38,7 @@ class DatePickerWidget {
   Future<DateTime> selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
-        locale: Locale('es', ''),
+        locale: Locale('es', 'PE'),
         initialDate: minDate ?? dateSelected,
         firstDate: minDate ?? DateTime(minYear),
         lastDate: DateTime(maxYear));

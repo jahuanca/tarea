@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: [
         Locale('en', ''),
-        Locale('es', ''),
+        Locale('es', 'PE'),
       ],
       debugShowCheckedModeBanner: false,
       title: 'Material App',

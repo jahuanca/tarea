@@ -19,7 +19,7 @@ part 'pre_tarea_esparrago_grupo_entity.g.dart';
 @HiveType(typeId: 23)
 class PreTareaEsparragoGrupoEntity {
   PreTareaEsparragoGrupoEntity({
-    this.itempretareaesparragosgrupo,
+    this.itempretareaesparragogrupo,
     this.fecha,
     this.horainicio,
     this.horafin,
@@ -47,7 +47,7 @@ class PreTareaEsparragoGrupoEntity {
   }
 
   @HiveField(0)
-  int itempretareaesparragosgrupo;
+  int itempretareaesparragogrupo;
   @HiveField(1)
   DateTime fecha;
   @HiveField(2)
@@ -136,9 +136,9 @@ class PreTareaEsparragoGrupoEntity {
 
   factory PreTareaEsparragoGrupoEntity.fromJson(Map<String, dynamic> json) =>
       PreTareaEsparragoGrupoEntity(
-        itempretareaesparragosgrupo: json["itempretareaesparragosgrupo"] == null
+        itempretareaesparragogrupo: json["itempretareaesparragogrupo"] == null
             ? null
-            : json["itempretareaesparragosgrupo"],
+            : json["itempretareaesparragogrupo"],
         fecha: json["fecha"] == null ? null : DateTime.parse(json["fecha"]),
         horainicio: json["horainicio"] == null
             ? null
@@ -182,13 +182,13 @@ class PreTareaEsparragoGrupoEntity {
       );
 
   Map<String, dynamic> toJson() => {
-        "itempretareaesparragosgrupo": itempretareaesparragosgrupo == null
+        "itempretareaesparragogrupo": itempretareaesparragogrupo == null
             ? null
-            : itempretareaesparragosgrupo,
+            : itempretareaesparragogrupo,
         "fecha": fecha == null
             ? null
             : "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
-        "horainicio": horainicio == null ? null : horainicio.toIso8601String(),
+        "horainicio": horainicio == null ? null : horainicio?.toIso8601String(),
         "horafin": horafin == null ? null : horafin?.toIso8601String(),
         "pausainicio":
             pausainicio == null ? null : pausainicio?.toIso8601String(),

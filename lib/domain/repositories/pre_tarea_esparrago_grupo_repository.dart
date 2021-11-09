@@ -9,6 +9,6 @@ abstract class PreTareaEsparragoGrupoRepository{
   Future<void> create(PreTareaEsparragoGrupoEntity pesado);
   Future<PreTareaEsparragoGrupoEntity> migrar(PreTareaEsparragoGrupoEntity pesado);
   Future<PreTareaEsparragoGrupoEntity> uploadFile(PreTareaEsparragoGrupoEntity pesado, File fileLocal);
-  Future<void> update(PreTareaEsparragoGrupoEntity pesado , int index);
-  Future<void> delete(int index);
+  Future<void> update(PreTareaEsparragoGrupoEntity pesado , int key);
+  Future<void> delete(int key);
 }

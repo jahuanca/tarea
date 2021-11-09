@@ -18,7 +18,7 @@ class PreTareaEsparragoGrupoEntityAdapter
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return PreTareaEsparragoGrupoEntity(
-      itempretareaesparragosgrupo: fields[0] as int,
+      itempretareaesparragogrupo: fields[0] as int,
       fecha: fields[1] as DateTime,
       horainicio: fields[2] as DateTime,
       horafin: fields[3] as DateTime,
@@ -55,7 +55,7 @@ class PreTareaEsparragoGrupoEntityAdapter
     writer
       ..writeByte(28)
       ..writeByte(0)
-      ..write(obj.itempretareaesparragosgrupo)
+      ..write(obj.itempretareaesparragogrupo)
       ..writeByte(1)
       ..write(obj.fecha)
       ..writeByte(2)
