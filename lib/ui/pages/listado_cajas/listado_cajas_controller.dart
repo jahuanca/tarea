@@ -12,14 +12,15 @@ import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_clientes_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/clasificacion/update_clasificacion_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_clasificacion/listado_personas_clasificacion_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
+import 'package:uuid/uuid.dart';
 
 class ListadoCajasController extends GetxController implements ScannerCallBack {
+  Uuid key=new Uuid();
   List<int> seleccionados = [];
   List<ClienteEntity> clientes = [];
   List<PreTareaEsparragoFormatoEntity> personalSeleccionado = [];
@@ -205,24 +206,11 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
     }
   }
 
-  Future<void> changeOptions(dynamic index, int position) async {
+  Future<void> changeOptions(dynamic index, String key) async {
     switch (index) {
-      /* case 1:
-        AgregarPersonaBinding().dependencies();
-        final result = await Get.to<PreTareoProcesoDetalleEntity>(
-            () => AgregarPersonaPage(),
-            arguments: {
-              'tarea': preTarea,
-              'cantidad': seleccionados.length,
-              'personal': personal
-            });
-        if (result != null) {
-          personalSeleccionado[position] = result;
-          update(['personal_seleccionado']);
-        }
-        break; */
+      
       case 2:
-        goEliminar(position);
+        goEliminar(key);
 
         break;
       default:
@@ -230,16 +218,16 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
     }
   }
 
-  void goEliminar(int index) {
+  void goEliminar(String key) {
     basicDialog(
       Get.overlayContext,
       'Alerta',
-      '¿Esta eliminar el personal?',
+      '¿Esta eliminar la caja?',
       'Si',
       'No',
       () async {
         Get.back();
-        personalSeleccionado.removeAt(index);
+        personalSeleccionado.removeWhere((e) => e.key == key);
         await _updateClasificacionUseCase.execute(preTarea, preTarea.key);
         update(['seleccionados', 'personal_seleccionado']);
       },
@@ -290,12 +278,15 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
         int indexLabor =
             labores.indexWhere((e) => e.idlabor == int.parse(valores[1]));
 
+        
+
         personalSeleccionado.add(PreTareaEsparragoFormatoEntity(
           cliente: clientes[index],
           idcliente: clientes[index].idcliente,
           fecha: DateTime.now(),
           hora: DateTime.now(),
           imei: '1256',
+          key: key.v4(),
           idestado: 1,
           idlabor: labores[indexLabor].idlabor,
           idactividad: labores[indexLabor].idactividad,

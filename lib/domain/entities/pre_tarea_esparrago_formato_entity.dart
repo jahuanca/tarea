@@ -26,6 +26,7 @@ class PreTareaEsparragoFormatoEntity {
     this.actividad,
     this.imei,
     this.detalles,
+    this.key,
   });
 
   @HiveField(0)
@@ -60,6 +61,8 @@ class PreTareaEsparragoFormatoEntity {
   List<PreTareaEsparragoDetalleEntity> detalles;
   @HiveField(17)
   int correlativo;
+  @HiveField(18)
+  String key;
 
   bool get validadoParaAprobar{
     if(idcliente==null || hora==null){
@@ -82,6 +85,7 @@ class PreTareaEsparragoFormatoEntity {
         idlabor: json['idlabor'],
         correlativo: json['correlativo'],
         idestado: json['idestado'],
+        key: json['key'],
         codigotk: json['codigotk'],
         cliente: json['cliente'] == null ? null : ClienteEntity.fromJson(json['cliente']),
         detalles: json['Pre_Tarea_Esparrago_Detalle'] == null
@@ -100,6 +104,7 @@ class PreTareaEsparragoFormatoEntity {
         'hora': hora?.toIso8601String(),
         'imei': imei,
         'idusuario': idusuario,
+        'key': key,
         'fecha': fecha?.toIso8601String(),
         'correlativo': correlativo,
         'idlabor': idlabor,

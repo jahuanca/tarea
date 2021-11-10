@@ -300,7 +300,9 @@ class ListadoCajasPage extends StatelessWidget {
                                     child: CircleAvatar(
                                       backgroundColor: dangerColor,
                                       child: IconButton(
-                                        onPressed: () => _.goEliminar(index),
+                                        onPressed: () => _.goEliminar(
+                                          _.personalSeleccionado[index].key
+                                          ),
                                         icon: Icon(Icons.delete),
                                         color: Colors.white,
                                       ),
