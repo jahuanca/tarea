@@ -71,12 +71,13 @@ class NuevaSeleccionController extends GetxController {
         nuevaSeleccion = Get.arguments['tarea'] as PreTareaEsparragoGrupoEntity;
         if (nuevaSeleccion.detalles == null) nuevaSeleccion.detalles = [];
       }
+      if(nuevaSeleccion == null){
+        nuevaSeleccion = new PreTareaEsparragoGrupoEntity();
+        nuevaSeleccion.turnotareo = 'D';
+        if (nuevaSeleccion.detalles == null) nuevaSeleccion.detalles = [];
+      }
     }
-    if (nuevaSeleccion == null) {
-      nuevaSeleccion = new PreTareaEsparragoGrupoEntity();
-      nuevaSeleccion.turnotareo = 'D';
-      if (nuevaSeleccion.detalles == null) nuevaSeleccion.detalles = [];
-    }
+
     /* nuevaPreTarea.fechamod = fecha; */
   }
 
@@ -129,10 +130,10 @@ class NuevaSeleccionController extends GetxController {
         nuevaSeleccion.digitador = supervisors[0];
       }
     }
-    
+
     changeSupervisor(nuevaSeleccion.supervisor.codigoempresa);
     changeDigitador(nuevaSeleccion.digitador.codigoempresa);
-    
+
     update(['supervisors', 'digitadors']);
     validando = false;
     update(['validando']);

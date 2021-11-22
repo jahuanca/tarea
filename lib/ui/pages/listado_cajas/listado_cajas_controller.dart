@@ -4,7 +4,6 @@ import 'package:flutter_tareo/di/listado_personas_clasificacion_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
-import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_formato_entity.dart';
@@ -12,6 +11,7 @@ import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_clientes_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/clasificacion/update_clasificacion_use_case.dart';
+import 'package:flutter_tareo/ui/pages/listado_personas_clasificacion/listado_personas_clasificacion_controller.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_clasificacion/listado_personas_clasificacion_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -39,6 +39,8 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
   bool editando = false;
   HoneywellScanner honeywellScanner;
 
+  int qrCaja=-1;
+
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   ListadoCajasController(this._getClientesUseCase, this._getActividadsUseCase,
@@ -46,6 +48,7 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
 
   @override
   void onInit() async {
+    super.onInit();
     actividades = await _getActividadsUseCase.execute();
     clientes = await _getClientesUseCase.execute();
     labores = await _getLaborsUseCase.execute();
@@ -64,7 +67,6 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
     honeywellScanner = HoneywellScanner();
     honeywellScanner.setScannerCallBack(this);
     honeywellScanner.setProperties(properties);
-    super.onInit();
     if (Get.arguments != null) {
       if (Get.arguments['otras'] != null) {
         otrasPreTareas =
@@ -93,13 +95,17 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
 
   @override
   void onClose() {
-    honeywellScanner.stopScanner();
     super.onClose();
+    honeywellScanner.stopScanner();
   }
 
   @override
   void onDecoded(String result) {
-    setCodeBar(result, true);
+    if(qrCaja!=-1){
+      Get.find<ListadoPersonasClasificacionController>().setCodeBar(result, true);
+    }else{
+      setCodeBar(result, true);
+    }
   }
 
   @override
@@ -152,8 +158,10 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
 
   Future<void> goListadoDetalles(int index) async {
     List<PreTareaEsparragoFormatoEntity> otras = [];
+    qrCaja=index;
     otras.addAll(preTarea.detalles);
     otras.removeAt(index);
+    //honeywellScanner.pauseScanner();
     ListadoPersonasClasificacionBinding().dependencies();
     final resultados = await Get.to<List<PreTareaEsparragoDetalleEntity>>(
         () => ListadoPersonasClasificacionPage(),
@@ -165,6 +173,8 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
           'index_formato': index,
         });
 
+    //honeywellScanner.resumeScanner();
+    qrCaja=-1;
     if (resultados != null && resultados.isNotEmpty) {
       preTarea.detalles[index].detalles = resultados;
       await _updateClasificacionUseCase.execute(preTarea, preTarea.key);
@@ -276,11 +286,9 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
             : personalSeleccionado.last.numcaja; */
 
         int indexLabor =
-            labores.indexWhere((e) => e.idlabor == int.parse(valores[1]));
+            labores.indexWhere((e) => e.idlabor == int.parse(valores[1]));        
 
-        
-
-        personalSeleccionado.add(PreTareaEsparragoFormatoEntity(
+        personalSeleccionado.insert(0, PreTareaEsparragoFormatoEntity(
           cliente: clientes[index],
           idcliente: clientes[index].idcliente,
           fecha: DateTime.now(),

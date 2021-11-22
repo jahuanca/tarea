@@ -1,4 +1,3 @@
-
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
@@ -23,7 +22,6 @@ import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 
 class NuevaClasificacionController extends GetxController {
-  
   final GetSubdivisonsUseCase _getSubdivisonsUseCase;
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
@@ -62,12 +60,12 @@ class NuevaClasificacionController extends GetxController {
   List<PersonalEmpresaEntity> supervisors = [];
 
   NuevaClasificacionController(
-      this._getSubdivisonsUseCase,
-      this._getPersonalsEmpresaBySubdivisionUseCase,
-      this._getCultivosUseCase,
-      this._getCentroCostosUseCase,
-      this._getTipoTareasUseCase,
-      );
+    this._getSubdivisonsUseCase,
+    this._getPersonalsEmpresaBySubdivisionUseCase,
+    this._getCultivosUseCase,
+    this._getCentroCostosUseCase,
+    this._getTipoTareasUseCase,
+  );
 
   @override
   void onInit() {
@@ -76,11 +74,19 @@ class NuevaClasificacionController extends GetxController {
       if (Get.arguments['tarea'] != null) {
         editando = true;
         nuevaClasificacion = Get.arguments['tarea'] as PreTareaEsparragoEntity;
-        if(nuevaClasificacion.detalles==null) nuevaClasificacion.detalles=[];
+        if (nuevaClasificacion.detalles == null) {
+          nuevaClasificacion.detalles = [];
+        }
       }
     }
-    if (nuevaClasificacion == null) nuevaClasificacion = new PreTareaEsparragoEntity();
-    if(nuevaClasificacion.detalles==null) nuevaClasificacion.detalles=[];
+    if(nuevaClasificacion == null) {
+        nuevaClasificacion = new PreTareaEsparragoEntity();
+        if (nuevaClasificacion.detalles == null) {
+          nuevaClasificacion.detalles = [];
+        }
+        nuevaClasificacion.turnotareo = 'D';
+      }
+
     /* nuevaClasificacion.fechamod = fecha; */
   }
 
@@ -113,21 +119,21 @@ class NuevaClasificacionController extends GetxController {
         .firstWhere((e) => e.idsubdivision == idSubdivision);
     validando = true;
     update(['validando']);
-    supervisors = await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
+    supervisors =
+        await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
     if (supervisors.length > 0) {
       nuevaClasificacion.supervisor = supervisors[0];
       nuevaClasificacion.digitador = supervisors[0];
       changeSupervisor(nuevaClasificacion.supervisor.codigoempresa);
       changeDigitador(nuevaClasificacion.digitador.codigoempresa);
     }
-    update(['supervisors','digitadors']);
+    update(['supervisors', 'digitadors']);
     validando = false;
     update(['validando']);
   }
 
   Future<void> getTipoTarea() async {
-    tipoTareas= await _getTipoTareasUseCase.execute();
-    print(tipoTareas.first.toJson());
+    tipoTareas = await _getTipoTareasUseCase.execute();
     if (!editando) {
       if (tipoTareas.isNotEmpty) {
         nuevaClasificacion.tipoTarea = tipoTareas.first;
@@ -177,8 +183,9 @@ class NuevaClasificacionController extends GetxController {
   }
 
   void changeHoraFin() {
-    errorHoraFin =
-        (nuevaClasificacion.horafin == null) ? 'Debe elegir una hora de fin' : null;
+    errorHoraFin = (nuevaClasificacion.horafin == null)
+        ? 'Debe elegir una hora de fin'
+        : null;
     update(['hora_fin', 'inicio_pausa', 'fin_pausa']);
   }
 
@@ -234,7 +241,8 @@ class NuevaClasificacionController extends GetxController {
   void changeFecha() {
     nuevaClasificacion.fecha = fecha;
     update(['fecha']);
-    errorFecha = (nuevaClasificacion.fecha == null) ? 'Ingrese una fecha' : null;
+    errorFecha =
+        (nuevaClasificacion.fecha == null) ? 'Ingrese una fecha' : null;
     update(['fecha']);
   }
 
@@ -262,8 +270,7 @@ class NuevaClasificacionController extends GetxController {
     int index = supervisors.indexWhere((e) => e.codigoempresa.toString() == id);
     if (errorDigitador == null && index != -1) {
       nuevaClasificacion.digitador = supervisors[index];
-      nuevaClasificacion.codigodigitador =
-          supervisors[index].codigoempresa;
+      nuevaClasificacion.codigodigitador = supervisors[index].codigoempresa;
     } else {
       nuevaClasificacion.digitador = null;
       nuevaClasificacion.codigodigitador = null;
@@ -292,8 +299,7 @@ class NuevaClasificacionController extends GetxController {
     errorTipoTarea = validatorUtilText(id, 'Tipo de tareas', {
       'required': '',
     });
-    int index =
-        tipoTareas.indexWhere((e) => e.idtipotarea == int.parse(id));
+    int index = tipoTareas.indexWhere((e) => e.idtipotarea == int.parse(id));
     if (errorTipoTarea == null && index != -1) {
       nuevaClasificacion.tipoTarea = tipoTareas[index];
       nuevaClasificacion.idtipotarea = int.parse(id);
@@ -323,9 +329,8 @@ class NuevaClasificacionController extends GetxController {
   void goBack() {
     String mensaje = validar();
     if (mensaje == null) {
-
-      nuevaClasificacion.idusuario=PreferenciasUsuario().idUsuario;
-      nuevaClasificacion.estadoLocal='PC';
+      nuevaClasificacion.idusuario = PreferenciasUsuario().idUsuario;
+      nuevaClasificacion.estadoLocal = 'PC';
       Get.back(result: nuevaClasificacion);
     } else {
       toastError('Error', mensaje);
@@ -376,12 +381,14 @@ class NuevaClasificacionController extends GetxController {
     if (errorHoraFin != null) return errorHoraFin;
     if (errorFecha != null) return errorFecha;
 
-    if (nuevaClasificacion.pausainicio != null && nuevaClasificacion.pausafin == null) {
+    if (nuevaClasificacion.pausainicio != null &&
+        nuevaClasificacion.pausafin == null) {
       errorPausaFin = 'Debe ingresar la hora de fin de pausa';
       return errorPausaFin;
     }
     errorPausaFin = null;
-    if (nuevaClasificacion.pausafin != null && nuevaClasificacion.pausainicio == null) {
+    if (nuevaClasificacion.pausafin != null &&
+        nuevaClasificacion.pausainicio == null) {
       errorPausaInicio = 'Debe ingresar la hora de inicio de pausa';
       return errorPausaInicio;
     }

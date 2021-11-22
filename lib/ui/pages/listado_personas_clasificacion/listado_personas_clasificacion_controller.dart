@@ -16,7 +16,7 @@ import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
 
 class ListadoPersonasClasificacionController extends GetxController
-    implements ScannerCallBack {
+    {
   List<int> seleccionados = [];
   List<PersonalEmpresaEntity> personal = [];
   List<PreTareaEsparragoDetalleEntity> personalSeleccionado = [];
@@ -36,7 +36,7 @@ class ListadoPersonasClasificacionController extends GetxController
   final GetLaborsUseCase _getLaborsUseCase;
   bool validando = false;
   bool editando = false;
-  HoneywellScanner honeywellScanner;
+  /* HoneywellScanner honeywellScannerClasificacion; */
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
@@ -48,6 +48,7 @@ class ListadoPersonasClasificacionController extends GetxController
 
   @override
   void onInit() async {
+    super.onInit();
     actividades = await _getActividadsUseCase.execute();
     labores = await _getLaborsUseCase.execute();
     List<CodeFormat> codeFormats = [];
@@ -55,17 +56,17 @@ class ListadoPersonasClasificacionController extends GetxController
     codeFormats.addAll(CodeFormatUtils.ALL_2D_FORMATS);
     Map<String, dynamic> properties = {
       ...CodeFormatUtils.getAsPropertiesComplement(
-          codeFormats), //CodeFormatUtils.getAsPropertiesComplement(...) this function converts a list of CodeFormat enums to its corresponding properties representation.
+          codeFormats),
       'DEC_CODABAR_START_STOP_TRANSMIT':
-          true, //This is the Codabar start/stop digit specific property
+          true,
       'DEC_EAN13_CHECK_DIGIT_TRANSMIT':
-          true, //This is the EAN13 check digit specific property
+          true,
     };
 
-    honeywellScanner = HoneywellScanner();
-    honeywellScanner.setScannerCallBack(this);
-    honeywellScanner.setProperties(properties);
-    super.onInit();
+    /* honeywellScannerClasificacion = HoneywellScanner();
+    honeywellScannerClasificacion.setScannerCallBack(this);
+    honeywellScannerClasificacion.setProperties(properties); */
+    
 
     if (Get.arguments != null) {
       if (Get.arguments['index'] != null) {
@@ -109,16 +110,18 @@ class ListadoPersonasClasificacionController extends GetxController
 
     await flutterLocalNotificationsPlugin.initialize(initSettings,
         onSelectNotification: _onSelectNotification);
-    honeywellScanner.startScanner();
+    /* honeywellScannerClasificacion.startScanner(); */
   }
 
   @override
   void onClose() {
-    honeywellScanner.stopScanner();
     super.onClose();
+    /* honeywellScannerClasificacion.stopScanner(); */
   }
 
-  @override
+
+
+  /* @override
   void onDecoded(String result) {
     setCodeBar(result, true);
   }
@@ -126,7 +129,7 @@ class ListadoPersonasClasificacionController extends GetxController
   @override
   void onError(Exception error) {
     toastError('Error', error.toString());
-  }
+  } */
 
   Future<void> _showNotification(bool success, String mensaje) async {
     final android = AndroidNotificationDetails(
@@ -137,7 +140,7 @@ class ListadoPersonasClasificacionController extends GetxController
     false;
 
     await flutterLocalNotificationsPlugin?.show(
-      1,
+      2,
       success ? 'Exito' : 'Error',
       mensaje,
       platform,
@@ -270,7 +273,8 @@ class ListadoPersonasClasificacionController extends GetxController
 
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
     if (barcode != null && barcode != -1) {
-      for (var element in otrasCajas) {
+      /* for (var element in otrasCajas) {
+        if(element.detalles==null) continue;
         int indexOtra = element.detalles.indexWhere(
             (e) => e.codigotk.toString().trim() == barcode.toString().trim());
         if (indexOtra != -1) {
@@ -279,7 +283,7 @@ class ListadoPersonasClasificacionController extends GetxController
               : _showNotification(false, 'Se encuentra en otra tarea');
           return;
         }
-      }
+      } */
 
       int indexEncontrado = personalSeleccionado
           .indexWhere((e) => e.codigotk == barcode.toString());

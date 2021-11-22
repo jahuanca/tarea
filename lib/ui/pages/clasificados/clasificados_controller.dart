@@ -147,6 +147,7 @@ class ClasificadosController extends GetxController {
 
   Future<void> goMigrar(int index) async {
     if (clasificados[index].estadoLocal == 'A') {
+      //if (true) {
       basicDialog(
         Get.overlayContext,
         'Alerta',

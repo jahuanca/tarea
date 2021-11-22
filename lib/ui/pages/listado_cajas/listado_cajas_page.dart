@@ -127,10 +127,11 @@ class ListadoCajasPage extends StatelessWidget {
                               child: Padding(
                                 padding: EdgeInsets.symmetric(vertical: 5),
                                 child: Container(
-                                  color: primaryColor,
+                                  child: Text(_.preTarea.detalles[index].correlativo.toString()),
+                                  //color: primaryColor,
                                 ),
                               ),
-                              flex: 1),
+                              flex: 3),
                           Flexible(child: Container(), flex: 1),
                           Flexible(
                             child: Container(
@@ -143,21 +144,6 @@ class ListadoCajasPage extends StatelessWidget {
                             ),
                             flex: 10,
                           ),
-                          /* Flexible(child: Container(), flex: 1),
-                          Flexible(
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                _.preTarea.detalles[index].laboresCultivoPacking.actividad
-                                        ?.descripcion ??
-                                    '',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                            flex: 15,
-                          ), */
                           Flexible(child: Container(), flex: 1),
                           Flexible(
                               child: Container(
@@ -190,7 +176,7 @@ class ListadoCajasPage extends StatelessWidget {
                                     onChanged: (value) =>{}
                                         /* _.onChangedMenu(value, index) */),
                               ),
-                              flex: 5),
+                              flex: 4),
                           Flexible(child: Container(), flex: 1),
                         ],
                       ),

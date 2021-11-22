@@ -126,6 +126,15 @@ class ListadoPersonasClasificacionPage extends StatelessWidget {
                         child: Container(
                           child: Row(
                             children: [
+                              /* Flexible(child: Container(), flex: 1),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(_.personalSeleccionado[index]
+                                          .correlativo.toString()),
+                                ),
+                                flex: 5,
+                              ), */
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                 child: Container(

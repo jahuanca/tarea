@@ -12,6 +12,7 @@
    <application
         android:label="AGV Controles"
         android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic='true'
         tools:replace="android:label"
         android:icon="@mipmap/launcher_icon">
 
