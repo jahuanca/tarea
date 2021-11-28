@@ -100,7 +100,7 @@ Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey) {
                   () => _.goEsparragos(scaffoldKey)),
 
             _itemDrawer(
-                size, Icons.construction, 'Herramientas', _.goMisEventos),
+                size, Icons.construction, 'Herramientas', () => _.goHerramientas(scaffoldKey)),
             _itemDrawer(size, Icons.settings, 'Configuración', _.goMisEventos),
             _itemDrawer(
                 size, Icons.exit_to_app, 'Cerrar sesión', _.cerrarSesion),

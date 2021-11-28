@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
+import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
 
 class ListadoPersonasPreTareoController extends GetxController
     implements ScannerCallBack {
@@ -27,6 +29,7 @@ class ListadoPersonasPreTareoController extends GetxController
   bool validando = false;
   bool editando = false;
   HoneywellScanner honeywellScanner;
+  SunmiBarcodePlugin sunmiBarcodePlugin;
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
@@ -36,21 +39,7 @@ class ListadoPersonasPreTareoController extends GetxController
 
   @override
   void onInit() async {
-    List<CodeFormat> codeFormats = [];
-    codeFormats.addAll(CodeFormatUtils.ALL_1D_FORMATS);
-    codeFormats.addAll(CodeFormatUtils.ALL_2D_FORMATS);
-    Map<String, dynamic> properties = {
-      ...CodeFormatUtils.getAsPropertiesComplement(
-          codeFormats), //CodeFormatUtils.getAsPropertiesComplement(...) this function converts a list of CodeFormat enums to its corresponding properties representation.
-      'DEC_CODABAR_START_STOP_TRANSMIT':
-          true, //This is the Codabar start/stop digit specific property
-      'DEC_EAN13_CHECK_DIGIT_TRANSMIT':
-          true, //This is the EAN13 check digit specific property
-    };
 
-    honeywellScanner = HoneywellScanner();
-    honeywellScanner.setScannerCallBack(this);
-    honeywellScanner.setProperties(properties);
     super.onInit();
     if (Get.arguments != null) {
       if(Get.arguments['otras'] != null){
@@ -89,12 +78,52 @@ class ListadoPersonasPreTareoController extends GetxController
 
     await flutterLocalNotificationsPlugin.initialize(initSettings,
         onSelectNotification: _onSelectNotification);
+    sunmiBarcodePlugin = SunmiBarcodePlugin();
+    if (await sunmiBarcodePlugin.isScannerAvailable()) {
+      initPlatformState();
+      print('es valido');
+      sunmiBarcodePlugin.onBarcodeScanned().listen((event) {
+        print(event);
+        setCodeBar(event, true);
+      });
+    } else {
+      print('no es valido SUNMI');
+      initHoneyScanner();
+    }
+  }
+
+  Future<void> initPlatformState() async {
+    String modelVersion;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      modelVersion = (await sunmiBarcodePlugin.getScannerModel()).toString();
+      print(modelVersion);
+    } on PlatformException {
+      modelVersion = 'Failed to get model version.';
+    }
+  }
+
+  void initHoneyScanner() {
+    List<CodeFormat> codeFormats = [];
+    codeFormats.addAll(CodeFormatUtils.ALL_1D_FORMATS);
+    codeFormats.addAll(CodeFormatUtils.ALL_2D_FORMATS);
+    Map<String, dynamic> properties = {
+      ...CodeFormatUtils.getAsPropertiesComplement(codeFormats),
+      'DEC_CODABAR_START_STOP_TRANSMIT': true,
+      'DEC_EAN13_CHECK_DIGIT_TRANSMIT': true,
+    };
+
+    honeywellScanner = HoneywellScanner();
+    honeywellScanner.setScannerCallBack(this);
+    honeywellScanner.setProperties(properties);
     honeywellScanner.startScanner();
   }
 
   @override
-  void onClose() {
-    honeywellScanner.stopScanner();
+  void onClose() async{
+    if(await honeywellScanner?.isSupported() ?? false){
+      honeywellScanner.stopScanner();
+    }
     super.onClose();
   }
 
@@ -249,7 +278,7 @@ class ListadoPersonasPreTareoController extends GetxController
   }
 
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
-    if (barcode != null && barcode != -1) {
+    if (barcode != null && barcode != '-1') {
 
       for (var element in otrasPreTareas) {
         int indexOtra= element.detalles.indexWhere((e) => e.codigotk.toString().trim() == barcode.toString().trim());

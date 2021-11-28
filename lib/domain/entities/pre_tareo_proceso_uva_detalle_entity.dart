@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
@@ -25,6 +27,7 @@ class PreTareoProcesoUvaDetalleEntity {
     this.presentacion,
     this.idactividad,
     this.idlabor,
+    this.key,
   });
 
   @HiveField(0)
@@ -61,6 +64,8 @@ class PreTareoProcesoUvaDetalleEntity {
   LaborEntity labor;
   @HiveField(16)
   PresentacionLineaEntity presentacion;
+  @HiveField(17)
+  int key;
 
   bool get validadoParaAprobar{
     if(codigoempresa==null || hora==null){
@@ -80,6 +85,7 @@ class PreTareoProcesoUvaDetalleEntity {
         idlabor: json['idlabor'],
         idactividad: json['idactividad'],
         imei: json['imei'],
+        key: json['key'],
         fecha: DateTime?.parse(json['fecha']),
         idestado: json['idestado'],
         idusuario: json['idusuario'],
@@ -96,9 +102,14 @@ class PreTareoProcesoUvaDetalleEntity {
         'idlabor': idlabor,
         'idactividad': idactividad,
         'imei': imei,
+        'key': key,
         'fecha': fecha?.toIso8601String(),
         'idestado': idestado,
         'idusuario': idusuario,
         'codigotk': codigotk,
       };
 }
+
+List<PreTareoProcesoUvaDetalleEntity> preTareoProcesoUvaDetalleEntityFromJson(String str) => List<PreTareoProcesoUvaDetalleEntity>.from(json.decode(str).map((x) => PreTareoProcesoUvaDetalleEntity.fromJson(x)));
+
+String preTareoProcesoUvaDetalleEntityToJson(List<PreTareoProcesoUvaDetalleEntity> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));

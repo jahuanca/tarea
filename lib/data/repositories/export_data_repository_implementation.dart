@@ -5,6 +5,7 @@ import 'package:excel/excel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/repositories/export_data_repository.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/listas.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -94,6 +96,53 @@ class ExportDataRepositoryImplementation extends ExportDataRepository{
     String fecha=formatoFechaHora(data.fecha).replaceAll(RegExp('/'), '_');
     titulo+=fecha+'.xlsx';
     return titulo;
+  }
+
+  @override
+  Future<void> exportToExcelPacking(int key) async{
+    var excel = Excel.createExcel();
+    Sheet sheetObject = excel['Data'];
+    int initialRow=5;
+
+    Box<PreTareoProcesoUvaEntity> tareas=await Hive.openBox('pre_tareos_uva_sincronizar');
+    PreTareoProcesoUvaEntity data=tareas.get(key);
+    await tareas.close();
+
+    List<String> encabezados=listaEncabezados(data.toJson());
+    encabezados.removeLast();
+    sheetObject.insertRowIterables(encabezados, 1);
+    sheetObject.insertRowIterables(listaItem(data.toJson()), 2);
+
+    Box<PreTareoProcesoUvaDetalleEntity> boxDetalles=await Hive.openBox('uva_detalle_$key');
+    List<PreTareoProcesoUvaDetalleEntity> detalles=await boxDetalles.values.toList();
+    await tareas.close();
+    sheetObject.insertRowIterables(listaEncabezados(detalles.first.toJson()), 4);
+    for (var i = 0; i < detalles.length ; i++) {
+      var d=detalles[i];
+      sheetObject.insertRowIterables(listaItem(d.toJson()), i+ initialRow);
+    }
+
+    var fileBytes = excel.save();
+
+    if(await _checkPermission()==false){
+      print('No hay permisos');
+      return;
+    }
+
+    this.platform = Theme.of(Get.overlayContext).platform;
+
+    final directory = this.platform == TargetPlatform.android
+        ? '/storage/emulated/0/Android/data/com.example.flutter_tareo/files'
+        : (await getApplicationDocumentsDirectory()).path +
+            Platform.pathSeparator +
+            'Download';
+    String ruta='$directory/${getTitulo(data)}';
+    File(ruta)
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(fileBytes);
+
+    toastExito('Exito', 'Archivo ubicado en $ruta');
+    return;
   }
 
 }

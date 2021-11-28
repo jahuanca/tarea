@@ -4,9 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/di/listado_personas_pre_tareo_uva_binding.dart';
 import 'package:flutter_tareo/di/nueva_pre_tarea_uva_binding.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
-import 'package:flutter_tareo/domain/use_cases/others/export_data_to_excel_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/others/export_packing_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/create_pre_tareo_proceso_uva_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/delete_pre_tareo_proceso_uva_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/get_all_pre_tareo_proceso_uva_use_case.dart';
@@ -27,7 +26,7 @@ class PreTareosUvaController extends GetxController {
   final DeletePreTareoProcesoUvaUseCase _deletePreTareoProcesoUvaUseCase;
   final MigrarAllPreTareoUvaUseCase _migrarAllPreTareoUvaUseCase;
   final UploadFileOfPreTareoUvaUseCase _uploadFileOfPreTareoUvaUseCase;
-  final ExportDataToExcelUseCase _exportDataToExcelUseCase;
+  final ExportPackingToExcelUseCase _exportPackingToExcelUseCase;
 
   bool validando = false;
 
@@ -38,7 +37,7 @@ class PreTareosUvaController extends GetxController {
     this._deletePreTareoProcesoUvaUseCase,
     this._migrarAllPreTareoUvaUseCase,
     this._uploadFileOfPreTareoUvaUseCase,
-    this._exportDataToExcelUseCase,
+    this._exportPackingToExcelUseCase,
   );
 
   @override
@@ -58,7 +57,7 @@ class PreTareosUvaController extends GetxController {
     return;
   }
 
-  void onChangedMenu(dynamic value, int index) async {
+  Future<void> onChangedMenu(dynamic value, int index) async {
     switch (value.toInt()) {
       case 1:
         break;
@@ -69,16 +68,19 @@ class PreTareosUvaController extends GetxController {
         goEliminar(index);
         break;
       case 4:
-        goExcel(index);
+        await goExcel(index);
         break;
       default:
         break;
     }
   }
 
-  void goExcel(int index) async {
-    await _exportDataToExcelUseCase.execute(preTareosUva[index]);
-    print('exportando');
+  Future<void> goExcel(int index) async {
+    validando=true;
+    update(['validando']);
+    await _exportPackingToExcelUseCase.execute(preTareosUva[index].key);
+    validando=false;
+    update(['validando']);
   }
 
   void goAprobar(int index) async {
@@ -121,7 +123,7 @@ class PreTareosUvaController extends GetxController {
         preTareosUva[index].estadoLocal = 'A';
         await _updatePreTareoProcesoUvaUseCase.execute(
             preTareosUva[index], preTareosUva[index].key);
-        update(['seleccionado']);
+        update(['seleccionado', 'tareas']);
       }
     }).catchError((er) {
       print(er);
@@ -130,15 +132,15 @@ class PreTareosUvaController extends GetxController {
 
   Future<String> validarParaAprobar(int index) async {
     PreTareoProcesoUvaEntity tarea = preTareosUva[index];
-    if (tarea.detalles == null || tarea.detalles.isEmpty) {
+    if (tarea.sizeDetails == null || tarea.sizeDetails == 0) {
       return 'No se puede aprobar una actividad que no tiene personal';
-    } else {
+    }/*  else {
       for (var item in tarea.detalles) {
         if (!item.validadoParaAprobar) {
           return 'Verifique que todos los datos del personal esten llenos';
         }
       }
-    }
+    } */
     return null;
   }
 
@@ -171,7 +173,7 @@ class PreTareosUvaController extends GetxController {
     validando = true;
     update(['validando']);
     PreTareoProcesoUvaEntity tareaMigrada =
-        await _migrarAllPreTareoUvaUseCase.execute(preTareosUva[index]);
+        await _migrarAllPreTareoUvaUseCase.execute(preTareosUva[index].key);
     if (tareaMigrada != null) {
       toastExito('Exito', 'Tarea migrada con exito');
       preTareosUva[index].estadoLocal = 'M';
@@ -198,7 +200,7 @@ class PreTareosUvaController extends GetxController {
     otras.addAll(preTareosUva);
     otras.removeAt(index);
     ListadoPersonasPreTareoUvaBinding().dependencies();
-    final resultados = await Get.to<List<PreTareoProcesoUvaDetalleEntity>>(
+    final resultado = await Get.to<int>(
         () => ListadoPersonasPreTareoUvaPage(),
         arguments: {
           'otras': otras,
@@ -206,11 +208,11 @@ class PreTareosUvaController extends GetxController {
           'index': index,
         });
 
-    if (resultados != null && resultados.isNotEmpty) {
-      preTareosUva[index].detalles = resultados;
+    if (resultado != null) {
+      preTareosUva[index].sizeDetails=resultado;
+      /* preTareosUva[index].detalles = resultados;*/
       await _updatePreTareoProcesoUvaUseCase.execute(
           preTareosUva[index], preTareosUva[index].key);
-      print(resultados.first.toJson());
     }
     update(['tareas']);
   }

@@ -68,6 +68,8 @@ class PreTareaEsparragoGrupoRepositoryImplementation
     int id = await tareas.add(pesado);
     pesado.key = id;
     await tareas.put(id, pesado);
+    
+    await tareas.close();
     return id;
   }
 
@@ -75,7 +77,10 @@ class PreTareaEsparragoGrupoRepositoryImplementation
   Future<void> delete(int uuid) async {
     var tareas = await Hive.openBox<PreTareaEsparragoGrupoEntity>(
         'seleccion_sincronizar');
-    return await tareas.delete(uuid);
+    await tareas.delete(uuid);
+    
+     await tareas.close();
+    return;
   }
 
   @override
@@ -83,7 +88,10 @@ class PreTareaEsparragoGrupoRepositoryImplementation
       PreTareaEsparragoGrupoEntity pesado, int id) async {
     var tareas = await Hive.openBox<PreTareaEsparragoGrupoEntity>(
         'seleccion_sincronizar');
-    return await tareas.put(id, pesado);
+    await tareas.put(id, pesado);
+    
+    await tareas.close();
+    return ;
   }
 
   @override

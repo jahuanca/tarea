@@ -17,7 +17,7 @@ AppBar getAppBar(String titulo, List<Widget> actions,[bool bandera = false]) {
         Text(
           titulo,
           style: TextStyle(
-              fontSize: 18,
+              fontSize: 17,
               color: PreferenciasUsuario().modoDark ? Colors.white : Colors.black),
         ),
 
@@ -27,7 +27,7 @@ AppBar getAppBar(String titulo, List<Widget> actions,[bool bandera = false]) {
           child: Text(
             '${PreferenciasUsuario().lastVersion} - ${PreferenciasUsuario().lastVersionDate}',
             style: TextStyle(
-                fontSize: 11,
+                fontSize: 10,
                 color: PreferenciasUsuario().modoDark ? Colors.white : Colors.grey),
           ),
         ),

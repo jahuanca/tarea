@@ -71,11 +71,11 @@ class NuevaSeleccionController extends GetxController {
         nuevaSeleccion = Get.arguments['tarea'] as PreTareaEsparragoGrupoEntity;
         if (nuevaSeleccion.detalles == null) nuevaSeleccion.detalles = [];
       }
-      if(nuevaSeleccion == null){
-        nuevaSeleccion = new PreTareaEsparragoGrupoEntity();
-        nuevaSeleccion.turnotareo = 'D';
-        if (nuevaSeleccion.detalles == null) nuevaSeleccion.detalles = [];
-      }
+    }
+    if (nuevaSeleccion == null) {
+      nuevaSeleccion = new PreTareaEsparragoGrupoEntity();
+      nuevaSeleccion.turnotareo = 'D';
+      if (nuevaSeleccion.detalles == null) nuevaSeleccion.detalles = [];
     }
 
     /* nuevaPreTarea.fechamod = fecha; */

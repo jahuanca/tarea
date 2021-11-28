@@ -1,18 +1,25 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_tareo/core/tarea.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/create_uva_detalle_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/delete_uva_detalle_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/get_all_uva_detalles_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/update_uva_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/update_pre_tareo_proceso_uva_use_case.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
+import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
 
 class ListadoPersonasPreTareoUvaController extends GetxController
     implements ScannerCallBack {
@@ -22,49 +29,43 @@ class ListadoPersonasPreTareoUvaController extends GetxController
   List<PreTareoProcesoUvaDetalleEntity> personalSeleccionado = [];
   int indexTarea;
   PreTareoProcesoUvaEntity preTarea;
-  List<PreTareoProcesoUvaEntity> otrasPreTareas=[];
+  List<PreTareoProcesoUvaEntity> otrasPreTareas = [];
   final GetLaborsUseCase _getLaborsUseCase;
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
-  final UpdatePreTareoProcesoUvaUseCase _updatePreTareoProcesoUvaUseCase;
+  final CreateUvaDetalleUseCase _createUvaDetalleUseCase;
+  final UpdateUvaDetalleUseCase _updateUvaDetalleUseCase;
+  final DeleteUvaDetalleUseCase _deleteUvaDetalleUseCase;
+  final GetAllUvaDetallesUseCase _getAllUvaDetallesUseCase;
   bool validando = false;
   bool editando = false;
   HoneywellScanner honeywellScanner;
+  SunmiBarcodePlugin sunmiBarcodePlugin;
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   ListadoPersonasPreTareoUvaController(
       this._getLaborsUseCase,
       this._getPersonalsEmpresaBySubdivisionUseCase,
-      this._updatePreTareoProcesoUvaUseCase);
+      this._createUvaDetalleUseCase,
+      this._updateUvaDetalleUseCase,
+      this._deleteUvaDetalleUseCase,
+      this._getAllUvaDetallesUseCase,
+      );
 
   @override
   void onInit() async {
-    List<CodeFormat> codeFormats = [];
-    codeFormats.addAll(CodeFormatUtils.ALL_1D_FORMATS);
-    codeFormats.addAll(CodeFormatUtils.ALL_2D_FORMATS);
-    Map<String, dynamic> properties = {
-      ...CodeFormatUtils.getAsPropertiesComplement(
-          codeFormats), //CodeFormatUtils.getAsPropertiesComplement(...) this function converts a list of CodeFormat enums to its corresponding properties representation.
-      'DEC_CODABAR_START_STOP_TRANSMIT':
-          true, //This is the Codabar start/stop digit specific property
-      'DEC_EAN13_CHECK_DIGIT_TRANSMIT':
-          true, //This is the EAN13 check digit specific property
-    };
-    await getLabores();
-    honeywellScanner = HoneywellScanner();
-    honeywellScanner.setScannerCallBack(this);
-    honeywellScanner.setProperties(properties);
     super.onInit();
     if (Get.arguments != null) {
-
       if (Get.arguments['otras'] != null) {
-        otrasPreTareas = Get.arguments['otras'] as List<PreTareoProcesoUvaEntity>;
+        otrasPreTareas =
+            Get.arguments['otras'] as List<PreTareoProcesoUvaEntity>;
       }
 
       if (Get.arguments['tarea'] != null) {
         preTarea = Get.arguments['tarea'] as PreTareoProcesoUvaEntity;
-        personalSeleccionado = preTarea.detalles;
+        print(preTarea.key);
+        personalSeleccionado = [];
         update(['personal_seleccionado']);
       }
 
@@ -79,8 +80,6 @@ class ListadoPersonasPreTareoUvaController extends GetxController
       } else {
         validando = true;
         update(['validando']);
-        /* personal = await _getPersonalsEmpresaBySubdivisionUseCase.execute(
-            (Get.arguments['sede'] as SubdivisionEntity).idsubdivision); */
         personal = await _getPersonalsEmpresaBySubdivisionUseCase
             .execute(PreferenciasUsuario().idSede);
 
@@ -95,8 +94,94 @@ class ListadoPersonasPreTareoUvaController extends GetxController
 
     await flutterLocalNotificationsPlugin.initialize(initSettings,
         onSelectNotification: _onSelectNotification);
+    sunmiBarcodePlugin = SunmiBarcodePlugin();
+    await getLabores();
+    if (await sunmiBarcodePlugin.isScannerAvailable()) {
+      initPlatformState();
+      print('es valido');
+      sunmiBarcodePlugin.onBarcodeScanned().listen((event) {
+        setCodeBar(event, true);
+      });
+    } else {
+      print('no es valido SUNMI');
+      initHoneyScanner();
+    }
+  }
+
+  Future<void> initPlatformState() async {
+    try {
+      await sunmiBarcodePlugin.getScannerModel();
+    } on PlatformException {
+      
+    }
+  }
+
+  void initHoneyScanner() {
+    List<CodeFormat> codeFormats = [];
+    codeFormats.addAll(CodeFormatUtils.ALL_1D_FORMATS);
+    codeFormats.addAll(CodeFormatUtils.ALL_2D_FORMATS);
+    Map<String, dynamic> properties = {
+      ...CodeFormatUtils.getAsPropertiesComplement(codeFormats),
+      'DEC_CODABAR_START_STOP_TRANSMIT': true,
+      'DEC_EAN13_CHECK_DIGIT_TRANSMIT': true,
+    };
+
+    honeywellScanner = HoneywellScanner();
+    honeywellScanner.setScannerCallBack(this);
+    honeywellScanner.setProperties(properties);
     honeywellScanner.startScanner();
   }
+
+  @override
+  void onReady() async{
+    super.onReady();
+    personalSeleccionado= await _getAllUvaDetallesUseCase.execute('uva_detalle_${preTarea.key}');
+    for (var i = 0; i < otrasPreTareas.length; i++) {
+      if(otrasPreTareas[i].detalles==null) otrasPreTareas[i].detalles=[];
+      otrasPreTareas[i].detalles=await _getAllUvaDetallesUseCase.execute('uva_detalle_${otrasPreTareas[i].key}');
+    }
+    update(['personal_seleccionado']);
+    //setValues();
+  }
+
+  Future<void> setValues() async {
+    Stopwatch stopwatch = new Stopwatch();
+    stopwatch.start();
+    
+    var tareas1 =
+          await Hive.openBox<PreTareoProcesoUvaDetalleEntity>('detalles');
+    await tareas1.deleteFromDisk();
+    PreTareoProcesoUvaEntity data =
+        new PreTareoProcesoUvaEntity.fromJson(TAREAJSON);
+    for (var i = 0; i < data.detalles.length; i++) {
+      var d = data.detalles[i];
+      if (preTarea.detalles == null) {
+        preTarea.detalles = [];
+      }
+      preTarea.detalles.add(d);
+      /* await _updatePreTareoProcesoUvaUseCase.execute(preTarea, preTarea.key); */
+      
+      var tareas =
+          await Hive.openBox<PreTareoProcesoUvaDetalleEntity>('detalles');
+      int key = await tareas.add(d);
+      d.itempretareoprocesouvadetalle=key;
+      await tareas.put(key, d);
+      await tareas.close();
+      
+      /* d.itempretareoprocesouvadetalle=key;
+      await tareas.put(key, d); */
+      if (i % 100 == 0) {
+        update(['seleccionados', 'personal_seleccionado']);
+        print(i);
+        print('Demora ' + (stopwatch.elapsedMilliseconds / 1000).toString());
+      }
+    }
+    stopwatch.stop();
+    print('Demora ' + (stopwatch.elapsedMilliseconds / 1000).toString());
+//    await tareas.close();
+    return;
+  }
+
 
   Future<void> getLabores() async {
     labores = await _getLaborsUseCase.execute();
@@ -104,8 +189,10 @@ class ListadoPersonasPreTareoUvaController extends GetxController
   }
 
   @override
-  void onClose() {
-    honeywellScanner.stopScanner();
+  void onClose() async{
+    if(await honeywellScanner?.isSupported() ?? false){
+      honeywellScanner.stopScanner();
+    }
     super.onClose();
   }
 
@@ -158,7 +245,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
         return false;
       }
     });
-    Get.back(result: personalSeleccionado);
+    Get.back(result: personalSeleccionado.length);
     return true;
   }
 
@@ -209,7 +296,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
     }
   }
 
-  Future<void> changeOptions(dynamic index, int position) async {
+  Future<void> changeOptions(dynamic index, int key) async {
     switch (index) {
       case 1:
         AgregarPersonaBinding().dependencies();
@@ -221,12 +308,14 @@ class ListadoPersonasPreTareoUvaController extends GetxController
               'personal': personal
             });
         if (result != null) {
-          personalSeleccionado[position] = result;
+          int index=personalSeleccionado.indexWhere((e) => e.key == key);
+          if(index!=-1)
+          personalSeleccionado[index] = result;
           update(['personal_seleccionado']);
         }
         break;
       case 2:
-        goEliminar(position);
+        goEliminar(key);
 
         break;
       default:
@@ -234,7 +323,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
     }
   }
 
-  void goEliminar(int index) {
+  void goEliminar(int key) {
     basicDialog(
       Get.overlayContext,
       'Alerta',
@@ -243,9 +332,9 @@ class ListadoPersonasPreTareoUvaController extends GetxController
       'No',
       () async {
         Get.back();
-        print(index);
-        personalSeleccionado?.removeAt(index);
-        await _updatePreTareoProcesoUvaUseCase.execute(preTarea, preTarea.key);
+        
+        personalSeleccionado?.removeWhere((e) => e.key == key);
+        await _deleteUvaDetalleUseCase.execute('uva_detalle_${preTarea.key}', key);
         update(['seleccionados', 'personal_seleccionado']);
       },
       () => Get.back(),
@@ -263,17 +352,15 @@ class ListadoPersonasPreTareoUvaController extends GetxController
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
     if (barcode != null && barcode != '-1') {
       for (var element in otrasPreTareas) {
-        int indexOtra= element.detalles.indexWhere(
-          (e) => e.codigotk.toString().trim() == barcode.toString().trim());
-        if(indexOtra != -1){
+        int indexOtra = element.detalles.indexWhere(
+            (e) => e.codigotk.toString().trim() == barcode.toString().trim());
+        if (indexOtra != -1) {
           byLector
-            ? toastError('Error', 'Se encuentra en otra tarea')
-            : _showNotification(false, 'Se encuentra en otra tarea');
+              ? toastError('Error', 'Se encuentra en otra tarea')
+              : _showNotification(false, 'Se encuentra en otra tarea');
           return;
         }
       }
-
-
 
       int indexEncontrado = personalSeleccionado
           .indexWhere((e) => e.codigotk.trim() == barcode.toString().trim());
@@ -287,14 +374,14 @@ class ListadoPersonasPreTareoUvaController extends GetxController
       int index = personal.indexWhere((e) => e.codigoempresa == valores[0]);
       if (index != -1) {
         LaborEntity labor =
-            labores.firstWhere((e) => e.idlabor == int.parse(valores[1]));
+            labores?.firstWhere((e) => e.idlabor == int.parse(valores[1]));
         byLector
             ? toastExito('Éxito', 'Registrado con exito')
             : _showNotification(true, 'Registrado con exito');
         int lasItem = (personalSeleccionado.isEmpty)
             ? 0
             : personalSeleccionado.last.numcaja;
-        personalSeleccionado.add(PreTareoProcesoUvaDetalleEntity(
+        PreTareoProcesoUvaDetalleEntity d=PreTareoProcesoUvaDetalleEntity(
             idlabor: labor.idlabor,
             personal: personal[index],
             labor: labor,
@@ -308,10 +395,12 @@ class ListadoPersonasPreTareoUvaController extends GetxController
             idestado: 1,
             codigotk: barcode.toString().trim(),
             idusuario: PreferenciasUsuario().idUsuario,
-            itempretareaprocesouva: preTarea.itempretareaprocesouva));
+            itempretareaprocesouva: preTarea.itempretareaprocesouva);
+        int key=await _createUvaDetalleUseCase.execute('uva_detalle_${preTarea.key}', d);
+        d.key=key;
+        personalSeleccionado.add(d);
         update(['personal_seleccionado']);
-        preTarea.detalles = personalSeleccionado;
-        await _updatePreTareoProcesoUvaUseCase.execute(preTarea, preTarea.key);
+        
       } else {
         byLector
             ? toastError('Error', 'No se encuentra en la lista')

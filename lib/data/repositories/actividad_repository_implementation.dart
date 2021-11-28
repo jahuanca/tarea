@@ -14,6 +14,7 @@ class ActividadRepositoryImplementation extends ActividadRepository {
           await Hive.openBox<ActividadEntity>('actividades_sincronizar');
       List<ActividadEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
+      await dataHive.compact();
       await dataHive.close();
       return local;
     }
@@ -44,6 +45,7 @@ class ActividadRepositoryImplementation extends ActividadRepository {
         });
         if (guardar) local.add(e);
       });
+      await dataHive.compact();
       await dataHive.close();
       return local;
     }

@@ -34,13 +34,14 @@ class PreTareoProcesoUvaDetalleEntityAdapter
       presentacion: fields[16] as PresentacionLineaEntity,
       idactividad: fields[12] as int,
       idlabor: fields[11] as int,
+      key: fields[17] as int,
     )..idpresentacion = fields[13] as int;
   }
 
   @override
   void write(BinaryWriter writer, PreTareoProcesoUvaDetalleEntity obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.itempretareoprocesouvadetalle)
       ..writeByte(1)
@@ -74,7 +75,9 @@ class PreTareoProcesoUvaDetalleEntityAdapter
       ..writeByte(15)
       ..write(obj.labor)
       ..writeByte(16)
-      ..write(obj.presentacion);
+      ..write(obj.presentacion)
+      ..writeByte(17)
+      ..write(obj.key);
   }
 
   @override

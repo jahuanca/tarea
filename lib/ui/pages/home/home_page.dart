@@ -20,7 +20,7 @@ class HomePage extends StatelessWidget {
           children: [
             Flexible(
                 child: Container(
-                  padding: EdgeInsets.all(25),
+                  padding: EdgeInsets.all(15),
                   child: Image.asset('assets/images/ic_logo.png'),
                 ),
                 flex: 1),

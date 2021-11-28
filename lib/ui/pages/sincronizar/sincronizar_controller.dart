@@ -94,6 +94,7 @@ class SincronizarController extends GetxController{
     
     await clientesSincronizados?.clear();
     await clientesSincronizados.addAll(clientes);
+    await clientesSincronizados.compact();
     await clientesSincronizados.close();
     update(['clientes']);
     return true;
@@ -105,6 +106,7 @@ class SincronizarController extends GetxController{
     
     await tipoTareasSincronizados?.clear();
     await tipoTareasSincronizados.addAll(tipoTareas);
+    await tipoTareasSincronizados.compact();
     await tipoTareasSincronizados.close();
     update(['tipo_tareas']);
     return true;
@@ -116,6 +118,7 @@ class SincronizarController extends GetxController{
     
     await preTareosSincronizados?.clear();
     await preTareosSincronizados.addAll(preTareos);
+    await preTareosSincronizados.compact();
     await preTareosSincronizados.close();
     update(['pre_tareos']);
     return true;
@@ -127,6 +130,7 @@ class SincronizarController extends GetxController{
     
     await laboresCultivoPackingSincronizados?.clear();
     await laboresCultivoPackingSincronizados.addAll(laboresCultivoPacking);
+    await laboresCultivoPackingSincronizados.compact();
     await laboresCultivoPackingSincronizados.close();
     update(['labores_cultivo_packing']);
     return true;
@@ -138,6 +142,7 @@ class SincronizarController extends GetxController{
     
     await actividadesSincronizadas?.clear();
     await actividadesSincronizadas.addAll(actividades);
+    await actividadesSincronizadas.compact();
     await actividadesSincronizadas.close();
     update(['actividades']);
     return true;
@@ -148,6 +153,7 @@ class SincronizarController extends GetxController{
     var sedesSincronizadas = await Hive.openBox<SubdivisionEntity>('sedes_sincronizar');
     await sedesSincronizadas.clear();
     await sedesSincronizadas.addAll(sedes);
+    await sedesSincronizadas.compact();
     await sedesSincronizadas.close();
     update(['sedes']);
   }
@@ -157,6 +163,7 @@ class SincronizarController extends GetxController{
     var cultivosSincronizadas = await Hive.openBox<CultivoEntity>('cultivos_sincronizar');
     await cultivosSincronizadas.clear();
     await cultivosSincronizadas.addAll(cultivos);
+    await cultivosSincronizadas.compact();
     await cultivosSincronizadas.close();
     update(['cultivos']);
   }
@@ -166,6 +173,7 @@ class SincronizarController extends GetxController{
     var laboresSincronizadas = await Hive.openBox<LaborEntity>('labores_sincronizar');
     await laboresSincronizadas.clear();
     await laboresSincronizadas.addAll(labores);
+    await laboresSincronizadas.compact();
     await laboresSincronizadas.close();
     update(['labores']);
   }
@@ -194,6 +202,7 @@ class SincronizarController extends GetxController{
     var usuariosSincronizadas = await Hive.openBox<UsuarioEntity>('usuarios_sincronizar');
     await usuariosSincronizadas.clear();
     await usuariosSincronizadas.addAll(usuarios);
+    await usuariosSincronizadas.compact();
     await usuariosSincronizadas.close();
     update(['usuarios']);
 
@@ -204,6 +213,7 @@ class SincronizarController extends GetxController{
     var personalSincronizadas = await Hive.openBox<PersonalEmpresaEntity>('personal_sincronizar');
     await personalSincronizadas.clear();
     await personalSincronizadas.addAll(personal);
+    await personalSincronizadas.compact();
     await personalSincronizadas.close();
     update(['personal_empresa']);
   }
@@ -213,6 +223,7 @@ class SincronizarController extends GetxController{
     Box<CentroCostoEntity> centrosCostoSincronizados = await Hive.openBox<CentroCostoEntity>('centros_costo_sincronizar');
     await centrosCostoSincronizados.clear();
     await centrosCostoSincronizados.addAll(centrosCosto);
+    await centrosCostoSincronizados.compact();
     await centrosCostoSincronizados.close();
     update(['centro_costo']);
   }

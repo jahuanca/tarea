@@ -79,13 +79,13 @@ class NuevaClasificacionController extends GetxController {
         }
       }
     }
-    if(nuevaClasificacion == null) {
-        nuevaClasificacion = new PreTareaEsparragoEntity();
-        if (nuevaClasificacion.detalles == null) {
-          nuevaClasificacion.detalles = [];
-        }
-        nuevaClasificacion.turnotareo = 'D';
+    if (nuevaClasificacion == null) {
+      nuevaClasificacion = new PreTareaEsparragoEntity();
+      if (nuevaClasificacion.detalles == null) {
+        nuevaClasificacion.detalles = [];
       }
+      nuevaClasificacion.turnotareo = 'D';
+    }
 
     /* nuevaClasificacion.fechamod = fecha; */
   }
@@ -368,11 +368,12 @@ class NuevaClasificacionController extends GetxController {
     changeFecha();
     /* changeCultivo(nuevaClasificacion.idcultivo.toString()); */
     changeCentroCosto(nuevaClasificacion.idcentrocosto.toString());
+    changeTurno(nuevaClasificacion?.turnotareo ?? 'D');
     changeSupervisor(nuevaClasificacion.codigosupervisor.toString());
     changeHoraInicio();
     changeDiaSiguiente(nuevaClasificacion.diasiguiente ?? false);
     changeHoraFin();
-    //TODO: VALIDAR: fechas por TURNO NOCHE
+
     if (errorActividad != null) return errorActividad;
     if (errorCultivo != null) return errorCultivo;
     if (errorLabor != null) return errorLabor;

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tareo/data/repositories/storage_repository_implementation.dart';
 import 'package:flutter_tareo/di/aprobar_binding.dart';
 import 'package:flutter_tareo/di/esparragos_binding.dart';
+import 'package:flutter_tareo/di/herramientas_binding.dart';
 import 'package:flutter_tareo/di/home_binding.dart';
 import 'package:flutter_tareo/di/login_binding.dart';
 import 'package:flutter_tareo/di/migrar_binding.dart';
@@ -79,6 +80,11 @@ class NavigationDrawerController extends GetxController{
   void goMisEventos(){
     /* MisEventosBinding().dependencies();
     Get.to(()=> MisEventosPage()); */
+  }
+
+  void goHerramientas(GlobalKey<ScaffoldState> scaffoldKey){
+    HerramientasBinding().dependencies();
+    Get.find<NavigationController>().eventos(7, scaffoldKey);
   }
 
 

@@ -19,6 +19,8 @@ class TareaProcesoRepositoryImplementation extends TareaProcesoRepository {
     int id=await tareas.add(tareaProcesoEntity);
     tareaProcesoEntity.key=id;
     await tareas.put(id, tareaProcesoEntity);
+    
+    await tareas.close();
     return id;
   }
 
@@ -31,13 +33,19 @@ class TareaProcesoRepositoryImplementation extends TareaProcesoRepository {
   @override
   Future<void> delete(int key) async {
     var tareas = await Hive.openBox<TareaProcesoEntity>('tarea_proceso');
-    return await tareas.delete(key);
+    await tareas.delete(key);
+    
+    await tareas.close();
+    return;
   }
 
   @override
   Future<void> update(TareaProcesoEntity tareaProcesoEntity, int key) async {
     var tareas = await Hive.openBox<TareaProcesoEntity>('tarea_proceso');
-    return await tareas.put(key, tareaProcesoEntity);
+    await tareas.put(key, tareaProcesoEntity);
+    
+    await tareas.close();
+    return;
   }
 
   @override

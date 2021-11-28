@@ -14,6 +14,7 @@ class ClienteRepositoryImplementation extends ClienteRepository {
           await Hive.openBox<ClienteEntity>('clientes_sincronizar');
       List<ClienteEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
+      await dataHive.compact();
       await dataHive.close();
       return local;
     }
@@ -44,6 +45,7 @@ class ClienteRepositoryImplementation extends ClienteRepository {
         });
         if (guardar) local.add(e);
       });
+      await dataHive.compact();
       await dataHive.close();
       return local;
     }

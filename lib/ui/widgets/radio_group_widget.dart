@@ -35,7 +35,7 @@ class RadioGroupWidget extends StatelessWidget {
           child: Column(
             children: items
                 .map((data) => Container(
-                      padding: EdgeInsets.only(bottom: 15),
+                      padding: EdgeInsets.only(bottom: 10),
                       child: Container(
                         decoration: BoxDecoration(
                             color: (PreferenciasUsuario().modoDark) ? cardColorDark : cardColor,

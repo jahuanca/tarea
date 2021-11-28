@@ -126,7 +126,7 @@ class ListadoPersonasPreTareoUvaPage extends StatelessWidget {
                         child: Container(
                           child: Row(
                             children: [
-                              Flexible(child: Container(), flex: 1),
+                              
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
@@ -175,7 +175,7 @@ class ListadoPersonasPreTareoUvaPage extends StatelessWidget {
                                                   value: e['key'],
                                                   child: Text(e['value'])))
                                               .toList(),
-                                      onChanged: (value)=> _.changeOptions(value, index),
+                                      onChanged: (value)=> _.changeOptions(value, _.personalSeleccionado[index].key),
                                     ),
                                   ),
                                   flex: 5),
@@ -230,7 +230,8 @@ class ListadoPersonasPreTareoUvaPage extends StatelessWidget {
                               Expanded(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(_.personalSeleccionado[index].numcaja.toString()),
+                                  //child: Text(_.personalSeleccionado[index].numcaja.toString()),
+                                  child: Text((index+1).toString()),
                                 ),
                                 flex: 4,
                               ),

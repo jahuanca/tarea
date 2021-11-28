@@ -1,4 +1,5 @@
 
+import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
+import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
 
 class ListadoPersonasController extends GetxController
     implements ScannerCallBack {
@@ -28,27 +30,14 @@ class ListadoPersonasController extends GetxController
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   HoneywellScanner honeywellScanner;
+  SunmiBarcodePlugin sunmiBarcodePlugin;
 
   ListadoPersonasController(this._getPersonalsEmpresaBySubdivisionUseCase,
       this._updateTareaProcesoUseCase);
 
   @override
   void onInit() async {
-    List<CodeFormat> codeFormats = [];
-    codeFormats.addAll(CodeFormatUtils.ALL_1D_FORMATS);
-    codeFormats.addAll(CodeFormatUtils.ALL_2D_FORMATS);
-    Map<String, dynamic> properties = {
-      ...CodeFormatUtils.getAsPropertiesComplement(
-          codeFormats), //CodeFormatUtils.getAsPropertiesComplement(...) this function converts a list of CodeFormat enums to its corresponding properties representation.
-      'DEC_CODABAR_START_STOP_TRANSMIT':
-          true, //This is the Codabar start/stop digit specific property
-      'DEC_EAN13_CHECK_DIGIT_TRANSMIT':
-          true, //This is the EAN13 check digit specific property
-    };
-
-    honeywellScanner = HoneywellScanner();
-    honeywellScanner.setScannerCallBack(this);
-    honeywellScanner.setProperties(properties);
+    
     super.onInit();
     if (Get.arguments != null) {
       if (Get.arguments['tarea'] != null) {
@@ -81,12 +70,52 @@ class ListadoPersonasController extends GetxController
 
     await flutterLocalNotificationsPlugin.initialize(initSettings,
         onSelectNotification: _onSelectNotification);
+    var sunmiBarcodePlugin = SunmiBarcodePlugin();
+    if (await sunmiBarcodePlugin.isScannerAvailable()) {
+      initPlatformState();
+      print('es valido');
+      sunmiBarcodePlugin.onBarcodeScanned().listen((event) {
+        print(event);
+        setCodeBar(event, true);
+      });
+    } else {
+      print('no es valido SUNMI');
+      initHoneyScanner();
+    }
+  }
+
+  Future<void> initPlatformState() async {
+    String modelVersion;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      modelVersion = (await sunmiBarcodePlugin.getScannerModel()).toString();
+      print(modelVersion);
+    } on PlatformException {
+      modelVersion = 'Failed to get model version.';
+    }
+  }
+
+  void initHoneyScanner() {
+    List<CodeFormat> codeFormats = [];
+    codeFormats.addAll(CodeFormatUtils.ALL_1D_FORMATS);
+    codeFormats.addAll(CodeFormatUtils.ALL_2D_FORMATS);
+    Map<String, dynamic> properties = {
+      ...CodeFormatUtils.getAsPropertiesComplement(codeFormats),
+      'DEC_CODABAR_START_STOP_TRANSMIT': true,
+      'DEC_EAN13_CHECK_DIGIT_TRANSMIT': true,
+    };
+
+    honeywellScanner = HoneywellScanner();
+    honeywellScanner.setScannerCallBack(this);
+    honeywellScanner.setProperties(properties);
     honeywellScanner.startScanner();
   }
 
   @override
-  void onClose() {
-    honeywellScanner.stopScanner();
+  void onClose() async{
+    if(await honeywellScanner?.isSupported() ?? false){
+      honeywellScanner.stopScanner();
+    }
     super.onClose();
   }
 
@@ -243,25 +272,32 @@ class ListadoPersonasController extends GetxController
     });
   }
 
-  Future<void> setCodeBar(dynamic barcode)async{
+  Future<void> setCodeBar(dynamic barcode, [bool byLector = false])async{
     if (barcode != null) {
         int indexEncontrado = personalSeleccionado
             .indexWhere((e) => e.personal.nrodocumento == barcode.toString());
         if (indexEncontrado != -1) {
-          _showNotification(false, 'Ya se encuentra registrado');
+          byLector
+            ? toastError('Error', 'Ya se encuentra registrado')
+            : _showNotification(false, 'Ya se encuentra registrado');
+          update(['personal_seleccionado']);
           return;
         }
         int index =
             personal.indexWhere((e) => e.nrodocumento == barcode.toString());
         if (index != -1) {
-          _showNotification(true, 'Registrado con exito');
+          byLector
+            ? toastExito('Éxito', 'Registrado con exito')
+            : _showNotification(true, 'Registrado con exito');
           personalSeleccionado.add(PersonalTareaProcesoEntity(
             personal: personal[index],
             codigoempresa: personal[index].codigoempresa,
           ));
           update(['personal_seleccionado']);
         } else {
-          _showNotification(false, 'No se encuentra en la lista');
+          byLector
+            ? toastError('Error', 'No se encuentra en la lista')
+            : _showNotification(false, 'No se encuentra en la lista');
         }
         await Future.delayed(Duration(seconds: 2));
       }

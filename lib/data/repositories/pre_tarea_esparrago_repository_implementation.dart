@@ -23,6 +23,7 @@ class PreTareaEsparragoRepositoryImplementation
       List<PreTareaEsparragoEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       local.sort((a, b) => b.fecha.compareTo(a.fecha));
+      await dataHive.compact();
       await dataHive.close();
       return local;
     }
@@ -54,6 +55,7 @@ class PreTareaEsparragoRepositoryImplementation
         });
         if (guardar) local.add(e);
       });
+      await dataHive.compact();
       await dataHive.close();
       return local;
     }
@@ -68,6 +70,8 @@ class PreTareaEsparragoRepositoryImplementation
     int id = await tareas.add(pesado);
     pesado.key = id;
     await tareas.put(id, pesado);
+    
+    await tareas.close();
     return id;
   }
 
@@ -75,7 +79,10 @@ class PreTareaEsparragoRepositoryImplementation
   Future<void> delete(int uuid) async {
     var tareas = await Hive.openBox<PreTareaEsparragoEntity>(
         'clasificacion_sincronizar');
-    return await tareas.delete(uuid);
+    await tareas.delete(uuid);
+    
+    await tareas.close();
+    return;
   }
 
   @override
@@ -83,7 +90,10 @@ class PreTareaEsparragoRepositoryImplementation
       PreTareaEsparragoEntity pesado, int id) async {
     var tareas = await Hive.openBox<PreTareaEsparragoEntity>(
         'clasificacion_sincronizar');
-    return await tareas.put(id, pesado);
+    await tareas.put(id, pesado);
+    
+    await tareas.close();
+    return;
   }
 
   @override

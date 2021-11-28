@@ -41,8 +41,10 @@ class PreTareoProcesoUvaEntity {
     this.idcultivo,
     this.cultivo,
     this.key,
+    this.estadoLocal,
+    this.sizeDetails,
   }){
-    estadoLocal='P';
+    estadoLocal ??='P';
   }
 
   @HiveField(0)
@@ -71,7 +73,7 @@ class PreTareoProcesoUvaEntity {
   bool activo;
   @HiveField(12)
   int idusuario;
-  @HiveField(13)
+  /* @HiveField(13) */
   List<PreTareoProcesoUvaDetalleEntity> detalles;
   @HiveField(14)
   SubdivisionEntity sede;
@@ -99,6 +101,8 @@ class PreTareoProcesoUvaEntity {
   CultivoEntity cultivo;
   @HiveField(26)
   int key;
+  @HiveField(27)
+  int sizeDetails;
 
   String get fechaHora {
     if (fecha == null || horainicio == null) {
@@ -148,6 +152,7 @@ class PreTareoProcesoUvaEntity {
         pausafin:
             json["pausafin"] == null ? null : DateTime.parse(json["pausafin"]),
         linea: json["linea"] == null ? null : json["linea"],
+        sizeDetails: json["sizeDetails"] == null ? null : json["sizeDetails"],
         idcentrocosto:
             json["idcentrocosto"] == null ? null : json["idcentrocosto"],
         codigoempresasupervisor: json["codigoempresasupervisor"] == null
@@ -165,6 +170,7 @@ class PreTareoProcesoUvaEntity {
         diasiguiente: json["diasiguiente"] == null ? null : json["diasiguiente"],
         turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
         key: json["key"] == null ? null : json["key"],
+        estadoLocal: json["estadoLocal"] == null ? null : json["estadoLocal"],
         centroCosto: json['Centro_Costo'] == null ? null : CentroCostoEntity.fromJson(json['Centro_Costo']),
         presentacion: json['Presentacion_Linea'] == null ? null : PresentacionLineaEntity.fromJson(json['Presentacion_Linea']),
         cultivo: json['Cultivo'] == null ? null : CultivoEntity.fromJson(json['Cultivo']),
@@ -196,11 +202,12 @@ class PreTareoProcesoUvaEntity {
         "activo": activo == null ? null : activo,
         "turnotareo": turnotareo == null ? null : turnotareo,
         "key": key == null ? null : key,
+        "estadoLocal": estadoLocal == null ? null : estadoLocal,
         "firmasupervisor": firmaSupervisor == null ? null : firmaSupervisor,
         "diasiguiente": diasiguiente == null ? null : diasiguiente,
         "idusuario": idusuario == null ? null : idusuario,
         "idcultivo": idcultivo == null ? null : idcultivo,
-        
+        "sizeDetails": sizeDetails == null ? null : sizeDetails, 
         "Pre_Tareo_Proceso_Uva_Detalles": detalles == null
             ? null
             : List<dynamic>.from(detalles.map((x) => x.toJson())),

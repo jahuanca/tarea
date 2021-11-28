@@ -173,7 +173,7 @@ class PreTareosUvaPage extends StatelessWidget {
                                               value: e['key'],
                                               child: Text(e['value'])))
                                           .toList(),
-                                  onChanged: (value) =>
+                                  onChanged: (value) async=>
                                       _.onChangedMenu(value, index)),
                             ),
                             flex: 5),
@@ -226,8 +226,8 @@ class PreTareosUvaPage extends StatelessWidget {
                                 Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text(_
-                                        .preTareosUva[index].detalles.length
+                                    child: Text((_
+                                        .preTareosUva[index].sizeDetails ?? 0)
                                         .toString())),
                                 Icon(
                                   Icons.people,

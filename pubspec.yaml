@@ -56,6 +56,9 @@ dependencies:
   uuid: ^3.0.5
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons:
+  permission_handler:
+  ext_storage: ^1.0.3
+  sunmi_barcode_plugin: ^0.0.3
   #cupertino_icons: ^1.0.2
 
 dev_dependencies:
@@ -91,6 +94,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/json/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

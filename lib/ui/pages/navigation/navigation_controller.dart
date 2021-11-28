@@ -1,5 +1,6 @@
 import 'package:flutter_tareo/ui/pages/aprobar/aprobar_page.dart';
 import 'package:flutter_tareo/ui/pages/esparragos/esparragos_page.dart';
+import 'package:flutter_tareo/ui/pages/herramientas/herramientas_page.dart';
 import 'package:flutter_tareo/ui/pages/home/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class NavigationController extends GetxController {
     PreTareosPage(),
     PreTareosUvaPage(),
     EsparragosPage(),
-    Container(),
+    HerramientasPage(),
   ];
 
   int indexWidget = 0;
@@ -90,6 +91,13 @@ class NavigationController extends GetxController {
       
       case 6:
         titulo = 'Esparrago';
+        scaffoldKey.currentState.openEndDrawer();
+        indexWidget = index;
+        update(['bottom_navigation']);
+        break;
+
+      case 7:
+        titulo = 'Herramientas';
         scaffoldKey.currentState.openEndDrawer();
         indexWidget = index;
         update(['bottom_navigation']);

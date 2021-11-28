@@ -14,6 +14,7 @@ class CentroCostoRepositoryImplementation extends CentroCostoRepository {
           await Hive.openBox<CentroCostoEntity>('centros_costo_sincronizar');
       List<CentroCostoEntity> local = [];
       sedesHive.toMap().forEach((key, value) => local.add(value));
+      await sedesHive.compact();
       await sedesHive.close();
       return local;
     }

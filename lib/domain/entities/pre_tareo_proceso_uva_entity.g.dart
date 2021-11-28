@@ -31,7 +31,6 @@ class PreTareoProcesoUvaEntityAdapter
       fechamod: fields[10] as DateTime,
       activo: fields[11] as bool,
       idusuario: fields[12] as int,
-      detalles: (fields[13] as List)?.cast<PreTareoProcesoUvaDetalleEntity>(),
       centroCosto: fields[18] as CentroCostoEntity,
       presentacion: fields[23] as PresentacionLineaEntity,
       turnotareo: fields[19] as String,
@@ -40,10 +39,11 @@ class PreTareoProcesoUvaEntityAdapter
       idcultivo: fields[24] as int,
       cultivo: fields[25] as CultivoEntity,
       key: fields[26] as int,
+      estadoLocal: fields[16] as String,
+      sizeDetails: fields[27] as int,
     )
       ..sede = fields[14] as SubdivisionEntity
       ..pathUrl = fields[15] as String
-      ..estadoLocal = fields[16] as String
       ..supervisor = fields[20] as PersonalEmpresaEntity
       ..digitador = fields[21] as PersonalEmpresaEntity;
   }
@@ -78,8 +78,6 @@ class PreTareoProcesoUvaEntityAdapter
       ..write(obj.activo)
       ..writeByte(12)
       ..write(obj.idusuario)
-      ..writeByte(13)
-      ..write(obj.detalles)
       ..writeByte(14)
       ..write(obj.sede)
       ..writeByte(15)
@@ -105,7 +103,9 @@ class PreTareoProcesoUvaEntityAdapter
       ..writeByte(25)
       ..write(obj.cultivo)
       ..writeByte(26)
-      ..write(obj.key);
+      ..write(obj.key)
+      ..writeByte(27)
+      ..write(obj.sizeDetails);
   }
 
   @override

@@ -23,6 +23,7 @@ class PreTareoProcesoRepositoryImplementation
       List<PreTareoProcesoEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       local.sort((a, b) => b.fechamod.compareTo(a.fechamod));
+      await dataHive.compact();
       await dataHive.close();
       return local;
     }
@@ -64,14 +65,20 @@ class PreTareoProcesoRepositoryImplementation
   Future<void> create(PreTareoProcesoEntity tareaProcesoEntity) async {
     var tareas =
         await Hive.openBox<PreTareoProcesoEntity>('pre_tareos_sincronizar');
-    return await tareas.add(tareaProcesoEntity);
+    await tareas.add(tareaProcesoEntity);
+    
+    await tareas.close();
+    return;
   }
 
   @override
   Future<void> delete(int index) async {
     var tareas =
         await Hive.openBox<PreTareoProcesoEntity>('pre_tareos_sincronizar');
-    return await tareas.deleteAt(index);
+    await tareas.deleteAt(index);
+    
+    await tareas.close();
+    return;
   }
 
   @override
@@ -79,7 +86,10 @@ class PreTareoProcesoRepositoryImplementation
       PreTareoProcesoEntity tareaProcesoEntity, int index) async {
     var tareas =
         await Hive.openBox<PreTareoProcesoEntity>('pre_tareos_sincronizar');
-    return await tareas.putAt(index, tareaProcesoEntity);
+    await tareas.putAt(index, tareaProcesoEntity);
+    
+    await tareas.close();
+    return;
   }
 
   @override

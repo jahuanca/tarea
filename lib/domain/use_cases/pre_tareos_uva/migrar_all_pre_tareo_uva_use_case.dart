@@ -7,7 +7,7 @@ class MigrarAllPreTareoUvaUseCase{
 
   MigrarAllPreTareoUvaUseCase(this._preTareoProcesoUvaRepository);
 
-  Future<PreTareoProcesoUvaEntity> execute(PreTareoProcesoUvaEntity preTareoProcesoUvaEntity)async{
-    return await _preTareoProcesoUvaRepository.migrar(preTareoProcesoUvaEntity);
+  Future<PreTareoProcesoUvaEntity> execute(int key)async{
+    return await _preTareoProcesoUvaRepository.migrar(key);
   } 
 }
