@@ -120,8 +120,8 @@ class ListadoPersonasController extends GetxController
   }
 
   @override
-  void onDecoded(String result) {
-    setCodeBar(result);
+  void onDecoded(String result) async{
+    await setCodeBar(result);
   }
 
   @override

@@ -197,8 +197,8 @@ class ListadoPersonasPreTareoUvaController extends GetxController
   }
 
   @override
-  void onDecoded(String result) {
-    setCodeBar(result, true);
+  void onDecoded(String result) async{
+    await setCodeBar(result, true);
   }
 
   @override
