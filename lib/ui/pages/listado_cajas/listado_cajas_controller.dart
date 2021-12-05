@@ -131,12 +131,12 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
   }
 
   @override
-  void onDecoded(String result) {
+  void onDecoded(String result) async{
     if (qrCaja != -1) {
-      Get.find<ListadoPersonasClasificacionController>()
+      await Get.find<ListadoPersonasClasificacionController>()
           .setCodeBar(result, true);
     } else {
-      setCodeBar(result, true);
+      await setCodeBar(result, true);
     }
   }
 

@@ -82,9 +82,8 @@ class ListadoPersonasPreTareoController extends GetxController
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
       print('es valido');
-      sunmiBarcodePlugin.onBarcodeScanned().listen((event) {
-        print(event);
-        setCodeBar(event, true);
+      sunmiBarcodePlugin.onBarcodeScanned().listen((event) async{
+        await setCodeBar(event, true);
       });
     } else {
       print('no es valido SUNMI');
