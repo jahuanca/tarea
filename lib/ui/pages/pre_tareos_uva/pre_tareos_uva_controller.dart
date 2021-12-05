@@ -210,7 +210,6 @@ class PreTareosUvaController extends GetxController {
 
     if (resultado != null) {
       preTareosUva[index].sizeDetails=resultado;
-      /* preTareosUva[index].detalles = resultados;*/
       await _updatePreTareoProcesoUvaUseCase.execute(
           preTareosUva[index], preTareosUva[index].key);
     }
