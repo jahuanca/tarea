@@ -99,8 +99,8 @@ class ListadoPersonasPreTareoUvaController extends GetxController
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
       print('es valido');
-      sunmiBarcodePlugin.onBarcodeScanned().listen((event) {
-        setCodeBar(event, true);
+      sunmiBarcodePlugin.onBarcodeScanned().listen((event) async{
+        await setCodeBar(event, true);
       });
     } else {
       print('no es valido SUNMI');
@@ -367,7 +367,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
       if (indexEncontrado != -1) {
         byLector
             ? toastError('Error', 'Ya se encuentra registrado')
-            : _showNotification(false, 'Ya se encuentra registrado');
+            : await _showNotification(false, 'Ya se encuentra registrado');
         return;
       }
       List<String> valores = barcode.toString().split('_');
@@ -377,7 +377,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
             labores?.firstWhere((e) => e.idlabor == int.parse(valores[1]));
         byLector
             ? toastExito('Éxito', 'Registrado con exito')
-            : _showNotification(true, 'Registrado con exito');
+            : await _showNotification(true, 'Registrado con exito');
         int lasItem = (personalSeleccionado.isEmpty)
             ? 0
             : personalSeleccionado.last.numcaja;

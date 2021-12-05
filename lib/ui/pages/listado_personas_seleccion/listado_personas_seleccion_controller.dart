@@ -80,9 +80,9 @@ class ListadoPersonasSeleccionController extends GetxController
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
       print('es valido');
-      sunmiBarcodePlugin.onBarcodeScanned().listen((event) {
+      sunmiBarcodePlugin.onBarcodeScanned().listen((event) async{
         print(event);
-        setCodeBar(event, true);
+        await setCodeBar(event, true);
       });
     } else {
       print('no es valido SUNMI');
