@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:excel/excel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_grupo_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_grupo_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
@@ -115,6 +117,53 @@ class ExportDataRepositoryImplementation extends ExportDataRepository{
 
     Box<PreTareoProcesoUvaDetalleEntity> boxDetalles=await Hive.openBox('uva_detalle_$key');
     List<PreTareoProcesoUvaDetalleEntity> detalles=await boxDetalles.values.toList();
+    await tareas.close();
+    sheetObject.insertRowIterables(listaEncabezados(detalles.first.toJson()), 4);
+    for (var i = 0; i < detalles.length ; i++) {
+      var d=detalles[i];
+      sheetObject.insertRowIterables(listaItem(d.toJson()), i+ initialRow);
+    }
+
+    var fileBytes = excel.save();
+
+    if(await _checkPermission()==false){
+      print('No hay permisos');
+      return;
+    }
+
+    this.platform = Theme.of(Get.overlayContext).platform;
+
+    final directory = this.platform == TargetPlatform.android
+        ? '/storage/emulated/0/Android/data/com.example.flutter_tareo/files'
+        : (await getApplicationDocumentsDirectory()).path +
+            Platform.pathSeparator +
+            'Download';
+    String ruta='$directory/${getTitulo(data)}';
+    File(ruta)
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(fileBytes);
+
+    toastExito('Exito', 'Archivo ubicado en $ruta');
+    return;
+  }
+
+  @override
+  Future<void> exportToExcelSeleccion(int key) async{
+    var excel = Excel.createExcel();
+    Sheet sheetObject = excel['Data'];
+    int initialRow=5;
+
+    Box<PreTareaEsparragoGrupoEntity> tareas=await Hive.openBox('seleccion_sincronizar');
+    PreTareaEsparragoGrupoEntity data=tareas.get(key);
+    await tareas.close();
+
+    List<String> encabezados=listaEncabezados(data.toJson());
+    encabezados.removeLast();
+    sheetObject.insertRowIterables(encabezados, 1);
+    sheetObject.insertRowIterables(listaItem(data.toJson()), 2);
+
+    Box<PreTareaEsparragoDetalleGrupoEntity> boxDetalles=await Hive.openBox('seleccion_detalles_$key');
+    List<PreTareaEsparragoDetalleGrupoEntity> detalles=await boxDetalles.values.toList();
     await tareas.close();
     sheetObject.insertRowIterables(listaEncabezados(detalles.first.toJson()), 4);
     for (var i = 0; i < detalles.length ; i++) {

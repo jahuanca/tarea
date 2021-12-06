@@ -3,7 +3,6 @@ import 'package:flutter_tareo/data/repositories/export_data_repository_implement
 import 'package:flutter_tareo/data/repositories/pre_tareo_proceso_uva_repository_implementation.dart';
 import 'package:flutter_tareo/domain/repositories/export_data_repository.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tareo_proceso_uva_repository.dart';
-import 'package:flutter_tareo/domain/use_cases/others/export_data_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_packing_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/create_pre_tareo_proceso_uva_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/delete_pre_tareo_proceso_uva_use_case.dart';

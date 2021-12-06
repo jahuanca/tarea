@@ -175,7 +175,7 @@ class ListadoPersonasSeleccionPage extends StatelessWidget {
                                                   value: e['key'],
                                                   child: Text(e['value'])))
                                               .toList(),
-                                      onChanged: (value) => _.changeOptions(value, index),
+                                      onChanged: (value) => _.changeOptions(value, _.personalSeleccionado[index].key),
                                     ),
                                   ),
                                   flex: 5),

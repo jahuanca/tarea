@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tareo/di/listado_personas_seleccion_binding.dart';
 import 'package:flutter_tareo/di/nueva_seleccion_binding.dart';
 import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
-import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_grupo_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_grupo_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_data_to_excel_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/others/export_seleccion_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/seleccion/create_seleccion_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/seleccion/delete_seleccion_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/seleccion/get_all_seleccion_use_case.dart';
@@ -29,7 +29,7 @@ class SeleccionController extends GetxController {
   final DeleteSeleccionUseCase _deleteSeleccionUseCase;
   final MigrarAllSeleccionUseCase _migrarAllSeleccionUseCase;
   final UploadFileOfSeleccionUseCase _uploadFileOfSeleccionUseCase;
-  final ExportDataToExcelUseCase _exportDataToExcelUseCase;
+  final ExportSeleccionToExcelUseCase _exportSeleccionToExcelUseCase;
 
   bool validando = false;
 
@@ -40,7 +40,7 @@ class SeleccionController extends GetxController {
       this._deleteSeleccionUseCase,
       this._migrarAllSeleccionUseCase,
       this._uploadFileOfSeleccionUseCase,
-      this._exportDataToExcelUseCase);
+      this._exportSeleccionToExcelUseCase);
 
   @override
   void onInit() async {
@@ -60,27 +60,26 @@ class SeleccionController extends GetxController {
     return;
   }
 
-  void onChangedMenu(dynamic value, int index) async {
+  void onChangedMenu(dynamic value, int key) async {
     switch (value.toInt()) {
       case 1:
         break;
       case 2:
-        goCopiar(index);
+        goCopiar(key);
         break;
       case 3:
-        goEliminar(index);
+        goEliminar(key);
         break;
       case 4:
-        goExcel(index);
+        goExcel(key);
         break;
       default:
         break;
     }
   }
 
-  void goExcel(int index) async {
-    await _exportDataToExcelUseCase.execute(seleccions[index]);
-    print('exportando');
+  void goExcel(int key) async {
+    await _exportSeleccionToExcelUseCase.execute(key);
   }
 
   void goAprobar(int index) async {
@@ -132,19 +131,20 @@ class SeleccionController extends GetxController {
 
   Future<String> validarParaAprobar(int index) async {
     PreTareaEsparragoGrupoEntity tarea = seleccions[index];
-    if (tarea.detalles == null || tarea.detalles.isEmpty) {
+    if (tarea.sizeDetails == null || tarea.sizeDetails == 0) {
       return 'No se puede aprobar una actividad que no tiene personal';
     } else {
-      for (var item in tarea.detalles) {
+      /* for (var item in tarea.detalles) {
         if (!item.validadoParaAprobar) {
           return 'Verifique que todos los datos del personal esten llenos';
         }
-      }
+      } */
     }
     return null;
   }
 
-  Future<void> goMigrar(int index) async {
+  Future<void> goMigrar(int key) async {
+    int index=seleccions.indexWhere((element) => element.key == key);
     if (seleccions[index].estadoLocal == 'A') {
       basicDialog(
         Get.overlayContext,
@@ -173,7 +173,7 @@ class SeleccionController extends GetxController {
     validando = true;
     update(['validando']);
     PreTareaEsparragoGrupoEntity tareaMigrada =
-        await _migrarAllSeleccionUseCase.execute(seleccions[index]);
+        await _migrarAllSeleccionUseCase.execute(seleccions[index].key);
     if (tareaMigrada != null) {
       toastExito('Exito', 'Tarea migrada con exito');
       seleccions[index].estadoLocal = 'M';
@@ -195,7 +195,7 @@ class SeleccionController extends GetxController {
     otras.addAll(seleccions);
     otras.removeAt(index);
     ListadoPersonasSeleccionBinding().dependencies();
-    final resultados = await Get.to<List<PreTareaEsparragoDetalleGrupoEntity>>(
+    final resultado = await Get.to<int>(
         () => ListadoPersonasSeleccionPage(),
         arguments: {
           'otras': otras,
@@ -203,16 +203,17 @@ class SeleccionController extends GetxController {
           'index': index,
         });
 
-    if (resultados != null && resultados.isNotEmpty) {
-      seleccions[index].detalles = resultados;
+    if (resultado != null) {
+      seleccions[index].sizeDetails = resultado;
       await _updateSeleccionUseCase.execute(seleccions[index], seleccions[index].key);
-      print(resultados.first.toJson());
+      
       update(['tareas']);
     }
   }
 
-  Future<void> delete(int index) async {
-    await _deleteSeleccionUseCase.execute(seleccions[index].key);
+  Future<void> delete(int key) async {
+    await _deleteSeleccionUseCase.execute(key);
+    int index=seleccions.indexWhere((element) => element.key == key);
     seleccions.removeAt(index);
   }
 
@@ -235,8 +236,9 @@ class SeleccionController extends GetxController {
         await Get.to<PreTareaEsparragoGrupoEntity>(() => NuevaSeleccionPage());
     if (result != null) {
       result.idusuario=PreferenciasUsuario().idUsuario;
+      int key=await _createSeleccionUseCase.execute(result);
+      result.key=key;
       seleccions.insert(0, result);
-      await _createSeleccionUseCase.execute(result);
       update(['tareas']);
     }
   }
@@ -266,7 +268,7 @@ class SeleccionController extends GetxController {
     }
   }
 
-  void goEliminar(int index) {
+  void goEliminar(int key) {
     basicDialog(
       Get.overlayContext,
       'Alerta',
@@ -274,7 +276,7 @@ class SeleccionController extends GetxController {
       'Si',
       'No',
       () async {
-        await delete(index);
+        await delete(key);
         update(['tareas']);
         Get.back();
       },

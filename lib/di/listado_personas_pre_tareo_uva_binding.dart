@@ -11,7 +11,6 @@ import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/de
 import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/get_all_uva_detalles_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/update_uva_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/update_pre_tareo_proceso_uva_use_case.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo_uva/listado_personas_pre_tareo_uva_controller.dart';
 import 'package:get/get.dart';
 

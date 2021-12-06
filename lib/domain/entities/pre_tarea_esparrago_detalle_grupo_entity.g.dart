@@ -28,13 +28,14 @@ class PreTareaEsparragoDetalleGrupoEntityAdapter
       codigotk: fields[10] as String,
       idusuario: fields[8] as int,
       imei: fields[5] as String,
+      key: fields[11] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, PreTareaEsparragoDetalleGrupoEntity obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.itempretareaesparragodetallegrupo)
       ..writeByte(1)
@@ -54,7 +55,9 @@ class PreTareaEsparragoDetalleGrupoEntityAdapter
       ..writeByte(9)
       ..write(obj.personal)
       ..writeByte(10)
-      ..write(obj.codigotk);
+      ..write(obj.codigotk)
+      ..writeByte(11)
+      ..write(obj.key);
   }
 
   @override

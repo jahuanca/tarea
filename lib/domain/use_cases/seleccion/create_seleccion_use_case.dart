@@ -7,7 +7,7 @@ class CreateSeleccionUseCase{
 
   CreateSeleccionUseCase(this._repository);
 
-  Future<void> execute(PreTareaEsparragoGrupoEntity pesado) async{
+  Future<int> execute(PreTareaEsparragoGrupoEntity pesado) async{
     return await _repository.create(pesado);
   }
 

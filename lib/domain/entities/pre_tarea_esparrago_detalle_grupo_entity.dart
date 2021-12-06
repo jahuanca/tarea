@@ -16,6 +16,7 @@ class PreTareaEsparragoDetalleGrupoEntity {
     this.codigotk,
     this.idusuario,
     this.imei,
+    this.key,
   });
 
   @HiveField(0)
@@ -38,6 +39,8 @@ class PreTareaEsparragoDetalleGrupoEntity {
   PersonalEmpresaEntity personal;
   @HiveField(10)
   String codigotk;
+  @HiveField(11)
+  int key;
 
   bool get validadoParaAprobar{
     if(codigoempresa==null || hora==null){

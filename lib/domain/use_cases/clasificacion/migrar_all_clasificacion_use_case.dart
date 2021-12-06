@@ -8,7 +8,7 @@ class MigrarAllClasificacionUseCase{
 
   MigrarAllClasificacionUseCase(this._repository);
 
-  Future<PreTareaEsparragoEntity> execute(PreTareaEsparragoEntity pesado)async{
-    return await _repository.migrar(pesado);
+  Future<PreTareaEsparragoEntity> execute(int key)async{
+    return await _repository.migrar(key);
   } 
 }

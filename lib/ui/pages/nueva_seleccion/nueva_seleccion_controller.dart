@@ -69,13 +69,13 @@ class NuevaSeleccionController extends GetxController {
       if (Get.arguments['tarea'] != null) {
         editando = true;
         nuevaSeleccion = Get.arguments['tarea'] as PreTareaEsparragoGrupoEntity;
-        if (nuevaSeleccion.detalles == null) nuevaSeleccion.detalles = [];
+        if (nuevaSeleccion.sizeDetails == null) nuevaSeleccion.sizeDetails = 0;
       }
     }
     if (nuevaSeleccion == null) {
       nuevaSeleccion = new PreTareaEsparragoGrupoEntity();
       nuevaSeleccion.turnotareo = 'D';
-      if (nuevaSeleccion.detalles == null) nuevaSeleccion.detalles = [];
+      if (nuevaSeleccion.sizeDetails== null) nuevaSeleccion.sizeDetails = 0;
     }
 
     /* nuevaPreTarea.fechamod = fecha; */
@@ -205,41 +205,10 @@ class NuevaSeleccionController extends GetxController {
   }
 
   void changeInicioPausa() {
-    /* if (nuevaPreTarea.pausainicio != null) {
-      if (nuevaPreTarea.turnotareo == 'N') {
-        update(['inicio_pausa']);
-        return;
-      }
-      if (nuevaPreTarea.pausainicio.isBefore(nuevaPreTarea.horainicio) ||
-          nuevaPreTarea.pausainicio.isAfter(nuevaPreTarea.horafin)) {
-        mostrarDialog(
-            'La hora seleccionada no se encuentra en el rango de inicio y fin');
-        nuevaPreTarea.pausainicio = null;
-      }
-      update(['inicio_pausa']);
-    } */
     update(['inicio_pausa']);
   }
 
   void changeFinPausa() {
-    /* if (nuevaPreTarea.pausafin != null && nuevaPreTarea.turnotareo == 'D') {
-      if (nuevaPreTarea.turnotareo == 'N') {
-        update(['inicio_pausa']);
-        return;
-      }
-      if (nuevaPreTarea.pausafin.isBefore(nuevaPreTarea.horainicio) ||
-          nuevaPreTarea.pausafin.isAfter(nuevaPreTarea.horafin)) {
-        mostrarDialog(
-            'La hora seleccionada no se encuentra en el rango de inicio y fin');
-        nuevaPreTarea.pausafin = null;
-      }
-      if (nuevaPreTarea.pausainicio != null &&
-          nuevaPreTarea.pausainicio.isAfter(nuevaPreTarea?.pausafin)) {
-        mostrarDialog('La hora debe ser mayor a la hora de pausa');
-        nuevaPreTarea.pausafin = null;
-      }
-      update(['fin_pausa']);
-    } */
     update(['fin_pausa']);
   }
 
@@ -350,18 +319,6 @@ class NuevaSeleccionController extends GetxController {
       Get.back(result: nuevaSeleccion);
     } else {
       toastError('Error', mensaje);
-    }
-  }
-
-  Future<void> goListadoPersonas() async {
-    ListadoPersonasBinding().dependencies();
-    final resultados = await Get.to<List<PreTareaEsparragoDetalleGrupoEntity>>(
-        () => ListadoPersonasPreTareoUvaPage(),
-        arguments: {'tarea': nuevaSeleccion, 'personal': supervisors});
-
-    if (resultados != null) {
-      nuevaSeleccion.detalles = resultados;
-      update(['personal']);
     }
   }
 

@@ -36,12 +36,13 @@ class PreTareaEsparragoGrupoEntity {
     this.idactividad,
     this.actividad,
     this.idusuario,
-    this.detalles,
+    /* this.detalles, */
     this.centroCosto,
     this.turnotareo,
     this.firmaSupervisor,
     this.key,
     this.kilosavance,
+    this.sizeDetails,
   }) {
     estadoLocal = 'P';
   }
@@ -70,7 +71,7 @@ class PreTareaEsparragoGrupoEntity {
   int idusuario;
   @HiveField(11)
   int idestado;
-  @HiveField(12)
+  /* @HiveField(12) */
   List<PreTareaEsparragoDetalleGrupoEntity> detalles;
   @HiveField(13)
   SubdivisionEntity sede;
@@ -102,6 +103,8 @@ class PreTareaEsparragoGrupoEntity {
   ActividadEntity actividad;
   @HiveField(27)
   double kilosavance;
+  @HiveField(28)
+  int sizeDetails;
 
   String get fechaHora {
     if (fecha == null || horainicio == null) {
@@ -174,11 +177,11 @@ class PreTareaEsparragoGrupoEntity {
             json['Labor'] == null ? null : LaborEntity.fromJson(json['Labor']),
         actividad:
             json['Actividad'] == null ? null : ActividadEntity.fromJson(json['Actividad']),
-        detalles: json['Pre_Tarea_Esparrago_Detalle_Grupo'] == null
+        /* detalles: json['Pre_Tarea_Esparrago_Detalle_Grupo'] == null
             ? null
             : List<PreTareaEsparragoDetalleGrupoEntity>.from(
                 json["Pre_Tarea_Esparrago_Detalle_Grupo"].map(
-                    (x) => PreTareaEsparragoDetalleGrupoEntity.fromJson(x))),
+                    (x) => PreTareaEsparragoDetalleGrupoEntity.fromJson(x))), */
       );
 
   Map<String, dynamic> toJson() => {

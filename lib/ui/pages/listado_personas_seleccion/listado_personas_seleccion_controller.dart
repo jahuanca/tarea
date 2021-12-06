@@ -4,8 +4,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_grupo_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_grupo_entity.dart';
+import 'package:flutter_tareo/domain/use_cases/listado_personas_seleccion/create_seleccion_detalle_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/listado_personas_seleccion/delete_seleccion_detalle_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/listado_personas_seleccion/get_all_seleccion_detalles_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/seleccion/update_seleccion_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
@@ -23,7 +25,10 @@ class ListadoPersonasSeleccionController extends GetxController
 
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
-  final UpdateSeleccionUseCase _updateSeleccionUseCase;
+  final GetAllSeleccionDetallesUseCase _getAllSeleccionDetallesUseCase;
+  final CreateSeleccionDetalleUseCase _createSeleccionDetalleUseCase;
+  final DeleteSeleccionDetalleUseCase _deleteSeleccionDetalleUseCase;
+  /* final UpdateSeleccionUseCase _updateSeleccionUseCase; */
   bool validando = false;
   bool editando = false;
   HoneywellScanner honeywellScanner;
@@ -32,12 +37,21 @@ class ListadoPersonasSeleccionController extends GetxController
   SunmiBarcodePlugin sunmiBarcodePlugin;
 
   ListadoPersonasSeleccionController(
-      this._getPersonalsEmpresaBySubdivisionUseCase,
-      this._updateSeleccionUseCase);
+    this._getPersonalsEmpresaBySubdivisionUseCase,
+    this._getAllSeleccionDetallesUseCase,
+    this._createSeleccionDetalleUseCase,
+    this._deleteSeleccionDetalleUseCase,
+    /* this._updateSeleccionUseCase */
+  );
+
+  Future<void> getDetalles() async {
+    personalSeleccionado = await _getAllSeleccionDetallesUseCase
+        .execute('seleccion_detalles_${preTarea.key}');
+    update(['personal_seleccionado']);
+  }
 
   @override
   void onInit() async {
-    
     super.onInit();
     if (Get.arguments != null) {
       /* if(Get.arguments['otras'] != null){
@@ -45,8 +59,7 @@ class ListadoPersonasSeleccionController extends GetxController
       } */
       if (Get.arguments['tarea'] != null) {
         preTarea = Get.arguments['tarea'] as PreTareaEsparragoGrupoEntity;
-        personalSeleccionado = preTarea.detalles;
-        update(['personal_seleccionado']);
+        await getDetalles();
       }
 
       if (Get.arguments['index'] != null) {
@@ -60,11 +73,10 @@ class ListadoPersonasSeleccionController extends GetxController
       } else {
         validando = true;
         update(['validando']);
-        /* personal = await _getPersonalsEmpresaBySubdivisionUseCase.execute(
-            (Get.arguments['sede'] as SubdivisionEntity).idsubdivision); */
         personal = await _getPersonalsEmpresaBySubdivisionUseCase
             .execute(PreferenciasUsuario().idSede);
-
+        print(personal.first.nrodocumento);
+        print(personal.last.nrodocumento);
         validando = false;
         update(['validando']);
       }
@@ -80,7 +92,7 @@ class ListadoPersonasSeleccionController extends GetxController
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
       print('es valido');
-      sunmiBarcodePlugin.onBarcodeScanned().listen((event) async{
+      sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
         print(event);
         await setCodeBar(event, true);
       });
@@ -118,15 +130,15 @@ class ListadoPersonasSeleccionController extends GetxController
   }
 
   @override
-  void onClose() async{
-    if(await honeywellScanner?.isSupported() ?? false){
+  void onClose() async {
+    if (await honeywellScanner?.isSupported() ?? false) {
       honeywellScanner.stopScanner();
     }
     super.onClose();
   }
 
   @override
-  void onDecoded(String result) async{
+  void onDecoded(String result) async {
     await setCodeBar(result, true);
   }
 
@@ -167,29 +179,16 @@ class ListadoPersonasSeleccionController extends GetxController
   }
 
   Future<bool> onWillPop() async {
-    personalSeleccionado.forEach((e) {
+    /* personalSeleccionado.forEach((e) {
       if (e.hora == null) {
         toastError('Error',
             'Existe un personal con datos vacios. Por favor, ingreselos.');
         return false;
       }
-    });
-    Get.back(result: personalSeleccionado);
+    }); */
+    Get.back(result: personalSeleccionado.length);
     return true;
   }
-
-  /* void goNuevoPersonaTareaProceso() async {
-    AgregarPersonaBinding().dependencies();
-    final result = await Get.to<PreTareoProcesoDetalleEntity>(
-        () => AgregarPersonaPage(),
-        arguments: {'personal': personal, 'tarea': preTarea});
-    if (result != null) {
-      personalSeleccionado.add(result);
-      update(['personal_seleccionado']);
-      seleccionados.clear();
-      update(['listado']);
-    }
-  } */
 
   Future<void> changeOptionsGlobal(dynamic index) async {
     switch (index) {
@@ -204,45 +203,15 @@ class ListadoPersonasSeleccionController extends GetxController
         seleccionados.clear();
         update(['seleccionados', 'personal_seleccionado']);
         break;
-      /* case 3:
-        AgregarPersonaBinding().dependencies();
-        final result = await Get.to<List<PreTareoProcesoDetalleEntity>>(
-            () => AgregarPersonaPage(),
-            arguments: {
-              'cantidad': seleccionados.length,
-              'personal': personal
-            });
-        if (result != null) {
-          for (int i = 0; i < seleccionados.length; i++) {
-            personalSeleccionado[seleccionados[i]] = result[i];
-          }
-          update(['personal_seleccionado']);
-          seleccionados.clear();
-          update(['seleccionados']);
-        }
-        break; */
       default:
+        break;
     }
   }
 
-  Future<void> changeOptions(dynamic index, int position) async {
+  Future<void> changeOptions(dynamic index, int key) async {
     switch (index) {
-      /* case 1:
-        AgregarPersonaBinding().dependencies();
-        final result = await Get.to<PreTareoProcesoDetalleEntity>(
-            () => AgregarPersonaPage(),
-            arguments: {
-              'tarea': preTarea,
-              'cantidad': seleccionados.length,
-              'personal': personal
-            });
-        if (result != null) {
-          personalSeleccionado[position] = result;
-          update(['personal_seleccionado']);
-        }
-        break; */
       case 2:
-        goEliminar(position);
+        goEliminar(key);
 
         break;
       default:
@@ -250,17 +219,18 @@ class ListadoPersonasSeleccionController extends GetxController
     }
   }
 
-  void goEliminar(int index) {
+  void goEliminar(int key) {
     basicDialog(
       Get.overlayContext,
       'Alerta',
-      '¿Esta eliminar el personal?',
+      '¿Desea eliminar el personal?',
       'Si',
       'No',
       () async {
         Get.back();
-        personalSeleccionado.removeAt(index);
-        await _updateSeleccionUseCase.execute(preTarea, preTarea.key);
+        personalSeleccionado.removeWhere((e) => e.key == key);
+        await _deleteSeleccionDetalleUseCase.execute(
+            'seleccion_detalles_${preTarea.key}', key);
         update(['seleccionados', 'personal_seleccionado']);
       },
       () => Get.back(),
@@ -278,47 +248,38 @@ class ListadoPersonasSeleccionController extends GetxController
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
     if (barcode != null && barcode != '-1') {
 
-      /* for (var element in otrasPreTareas) {
-        int indexOtra= element.detalles.indexWhere((e) => e.codigotk.toString().trim() == barcode.toString().trim());
-        if(indexOtra != -1){
-          byLector
-            ? toastError('Error', 'Se encuentra en otra tarea')
-            : _showNotification(false, 'Se encuentra en otra tarea');
-          return;
-        }
-      } */
-
       int indexEncontrado = personalSeleccionado
-          .indexWhere((e) => e.codigotk == barcode.toString());
+          .indexWhere((e) => e.codigotk.toString().trim() == barcode.toString().trim());
       if (indexEncontrado != -1) {
         byLector
             ? toastError('Error', 'Ya se encuentra registrado')
-            : _showNotification(false, 'Ya se encuentra registrado');
+            : await _showNotification(false, 'Ya se encuentra registrado');
         return;
       }
-      print(barcode);
-      
-      int index = personal.indexWhere((e) => e.nrodocumento.trim() == barcode.toString().trim());
+
+      int index = personal.indexWhere(
+          (e) => e.nrodocumento.trim() == barcode.toString().trim());
       if (index != -1) {
         byLector
             ? toastExito('Éxito', 'Registrado con exito')
-            : _showNotification(true, 'Registrado con exito');
-        /* int lasItem = (personalSeleccionado.isEmpty)
-            ? 0
-            : personalSeleccionado.last.numcaja; */
-        personalSeleccionado.add(PreTareaEsparragoDetalleGrupoEntity(
-            personal: personal[index],
-            codigoempresa: personal[index].codigoempresa,
-            fecha: DateTime.now(),
-            hora: DateTime.now(),
-            imei: '1256',
-            idestado: 1,
-            codigotk: barcode.toString(),
-            idusuario: PreferenciasUsuario().idUsuario,
-            itempretareaesparragogrupo: preTarea.itempretareaesparragogrupo));
+            : await _showNotification(true, 'Registrado con exito');
+
+        PreTareaEsparragoDetalleGrupoEntity d =
+            PreTareaEsparragoDetalleGrupoEntity(
+                personal: personal[index],
+                codigoempresa: personal[index].codigoempresa,
+                fecha: DateTime.now(),
+                hora: DateTime.now(),
+                imei: '1256',
+                idestado: 1,
+                codigotk: barcode.toString().trim(),
+                idusuario: PreferenciasUsuario().idUsuario,
+                itempretareaesparragogrupo:
+                    preTarea.itempretareaesparragogrupo);
+        int key=await _createSeleccionDetalleUseCase.execute('seleccion_detalles_${preTarea.key}', d);
+        d.key=key;
+        personalSeleccionado.add(d);
         update(['personal_seleccionado']);
-        preTarea.detalles=personalSeleccionado;
-        await _updateSeleccionUseCase.execute(preTarea, preTarea.key);
       } else {
         byLector
             ? toastError('Error', 'No se encuentra en la lista')

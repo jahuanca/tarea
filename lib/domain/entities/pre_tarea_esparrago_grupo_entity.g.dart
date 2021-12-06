@@ -35,13 +35,12 @@ class PreTareaEsparragoGrupoEntityAdapter
       idactividad: fields[25] as int,
       actividad: fields[26] as ActividadEntity,
       idusuario: fields[10] as int,
-      detalles:
-          (fields[12] as List)?.cast<PreTareaEsparragoDetalleGrupoEntity>(),
       centroCosto: fields[17] as CentroCostoEntity,
       turnotareo: fields[18] as String,
       firmaSupervisor: fields[16] as String,
       key: fields[22] as int,
       kilosavance: fields[27] as double,
+      sizeDetails: fields[28] as int,
     )
       ..sede = fields[13] as SubdivisionEntity
       ..pathUrl = fields[14] as String
@@ -78,8 +77,6 @@ class PreTareaEsparragoGrupoEntityAdapter
       ..write(obj.idusuario)
       ..writeByte(11)
       ..write(obj.idestado)
-      ..writeByte(12)
-      ..write(obj.detalles)
       ..writeByte(13)
       ..write(obj.sede)
       ..writeByte(14)
@@ -109,7 +106,9 @@ class PreTareaEsparragoGrupoEntityAdapter
       ..writeByte(26)
       ..write(obj.actividad)
       ..writeByte(27)
-      ..write(obj.kilosavance);
+      ..write(obj.kilosavance)
+      ..writeByte(28)
+      ..write(obj.sizeDetails);
   }
 
   @override

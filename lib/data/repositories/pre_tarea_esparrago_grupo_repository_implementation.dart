@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_tareo/core/strings.dart';
 import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_grupo_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_grupo_entity.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tarea_esparrago_grupo_repository.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -12,7 +13,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 class PreTareaEsparragoGrupoRepositoryImplementation
-    extends PreTareaEsparragoGrupoRepository{
+    extends PreTareaEsparragoGrupoRepository {
   final urlModule = '/pre_tarea_esparrago_grupo';
 
   @override
@@ -68,42 +69,61 @@ class PreTareaEsparragoGrupoRepositoryImplementation
     int id = await tareas.add(pesado);
     pesado.key = id;
     await tareas.put(id, pesado);
-    
+
     await tareas.close();
     return id;
   }
 
   @override
-  Future<void> delete(int uuid) async {
-    var tareas = await Hive.openBox<PreTareaEsparragoGrupoEntity>(
-        'seleccion_sincronizar');
-    await tareas.delete(uuid);
-    
-     await tareas.close();
+  Future<void> delete(int key) async {
+    Box<PreTareaEsparragoDetalleGrupoEntity> d =
+        await Hive.openBox<PreTareaEsparragoDetalleGrupoEntity>(
+            'seleccion_detalles_$key');
+    await d.deleteFromDisk();
+
+    Box<PreTareaEsparragoGrupoEntity> tareas =
+        await Hive.openBox<PreTareaEsparragoGrupoEntity>(
+            'seleccion_sincronizar');
+    await tareas.delete(key);
+
+    await tareas.close();
     return;
   }
 
   @override
-  Future<void> update(
-      PreTareaEsparragoGrupoEntity pesado, int id) async {
+  Future<void> update(PreTareaEsparragoGrupoEntity pesado, int id) async {
     var tareas = await Hive.openBox<PreTareaEsparragoGrupoEntity>(
         'seleccion_sincronizar');
     await tareas.put(id, pesado);
-    
+
     await tareas.close();
-    return ;
+    return;
   }
 
   @override
-  Future<PreTareaEsparragoGrupoEntity> migrar(
-      PreTareaEsparragoGrupoEntity pesado) async {
+  Future<PreTareaEsparragoGrupoEntity> migrar(int key) async {
     final AppHttpManager http = AppHttpManager();
+
+    Box<PreTareaEsparragoGrupoEntity> tareas =
+        await Hive.openBox<PreTareaEsparragoGrupoEntity>(
+            'seleccion_sincronizar');
+    Box<PreTareaEsparragoDetalleGrupoEntity> detalles =
+        await Hive.openBox<PreTareaEsparragoDetalleGrupoEntity>(
+            'seleccion_detalles_$key');
+
+    PreTareaEsparragoGrupoEntity tarea = tareas.get(key);
+
+    if (tarea.detalles == null) tarea.detalles = [];
+    tarea.detalles = detalles.values.toList();
+
     final res = await http.post(
       url: '$urlModule/createAll',
-      body: pesado?.toJson(),
+      body: tarea?.toJson(),
     );
 
-    return res == null ? null : PreTareaEsparragoGrupoEntity.fromJson(jsonDecode(res));
+    return res == null
+        ? null
+        : PreTareaEsparragoGrupoEntity.fromJson(jsonDecode(res));
   }
 
   @override
@@ -122,9 +142,7 @@ class PreTareaEsparragoGrupoRepositoryImplementation
       request.headers[HttpHeaders.contentTypeHeader] = 'multipart/form-data';
       //request.headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
 
-      for (var i = 0;
-          i < pesado.toJson().entries.length;
-          i++) {
+      for (var i = 0; i < pesado.toJson().entries.length; i++) {
         MapEntry map = pesado.toJson().entries.elementAt(i);
         request.fields.addAll({map.key: map.value.toString()});
       }
@@ -146,7 +164,7 @@ class PreTareaEsparragoGrupoRepositoryImplementation
       pesado.firmaSupervisor = respuesta.firmaSupervisor;
       return pesado;
     } catch (e) {
-      if(mostrarLog){
+      if (mostrarLog) {
         print('Error');
         log(e.toString());
       }

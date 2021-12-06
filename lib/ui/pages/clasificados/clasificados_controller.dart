@@ -175,7 +175,7 @@ class ClasificadosController extends GetxController {
     validando = true;
     update(['validando']);
     PreTareaEsparragoEntity tareaMigrada =
-        await _migrarAllPreTareoUseCase.execute(clasificados[index]);
+        await _migrarAllPreTareoUseCase.execute(clasificados[index].key);
     if (tareaMigrada != null) {
       toastExito('Exito', 'Tarea migrada con exito');
       clasificados[index].estadoLocal = 'M';

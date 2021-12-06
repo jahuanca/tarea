@@ -59,58 +59,6 @@ class NuevaSeleccionPage extends StatelessWidget {
                     SizedBox(
                       height: size.height * 0.01,
                     ),
-                    /* GetBuilder<NuevaSeleccionController>(
-                      id: 'presentacion',
-                      builder: (_) => DropdownSearchWidget(
-                        label: 'Presentación',
-                        /* error: _.errorCentroCosto, */
-                        labelText: 'name',
-                        labelValue: '_id',
-                        selectedItem: _.nuevaPreTarea?.laboresCultivoPacking?.presentacionLinea == null
-                            ? null
-                            : {
-                                'name':
-                                    '${_.nuevaPreTarea.laboresCultivoPacking.presentacionLinea.descripcion.trim()}',
-                                '_id': _.nuevaPreTarea.laboresCultivoPacking.item,
-                              },
-                        onChanged: _.changePresentacion,
-                        items: controller.presentaciones.length == 0
-                            ? []
-                            : controller.presentaciones
-                                .map((e) => {
-                                      'name':
-                                          '${e.descripcion.trim()}',
-                                      '_id': e.idpresentacion,
-                                    })
-                                .toList(),
-                      ),
-                    ), */
-                    /* GetBuilder<NuevaSeleccionController>(
-                      id: 'cultivo',
-                      builder: (_) => DropdownSearchWidget(
-                        label: 'Cultivo',
-                        error: _.errorCultivo,
-                        labelText: 'name',
-                        labelValue: '_id',
-                        selectedItem: _.nuevaPreTarea?.cultivo == null
-                            ? null
-                            : {
-                                'name':
-                                    '${_.nuevaPreTarea.cultivo.detallecultivo.trim()} - ${_.nuevaPreTarea.cultivo.cultivo.trim()}',
-                                '_id': _.nuevaPreTarea.cultivo.idcultivo,
-                              },
-                        onChanged: _.changeCultivo,
-                        items: controller.cultivos.length == 0
-                            ? []
-                            : controller.cultivos
-                                .map((e) => {
-                                      'name':
-                                          '${e.detallecultivo.trim()} - ${e.cultivo.trim()}',
-                                      '_id': e.idcultivo,
-                                    })
-                                .toList(),
-                      ),
-                    ), */
                     GetBuilder<NuevaSeleccionController>(
                       id: 'centro_costo',
                       builder: (_) => DropdownSearchWidget(
@@ -424,7 +372,7 @@ class NuevaSeleccionPage extends StatelessWidget {
                 builder: (_) => Container(
                   alignment: Alignment.center,
                   child: Text(
-                    '${_.nuevaSeleccion.detalles.length} personas',
+                    '${_.nuevaSeleccion.sizeDetails} personas',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w300,
@@ -455,19 +403,6 @@ class NuevaSeleccionPage extends StatelessWidget {
                   child: Container(),
                   flex: 1,
                 ),
-                /* Flexible(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: IconButton(
-                        onPressed: controller.goAgregarPersona,
-                        icon: Icon(Icons.person_add, size: 40),
-                      ),
-                    ),
-                    flex: 1),
-                Flexible(
-                  child: Container(),
-                  flex: 1,
-                ), */
               ],
             ),
           ),

@@ -12,8 +12,7 @@ import 'package:flutter_tareo/data/http_manager/http_manager.dart';
 import 'package:flutter_tareo/domain/exceptions/app_exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const timeout = Duration(seconds: 45);
-//FIXME: error de NETWORKEXCEPTION with /PERSONAL_EMPRESA
+const timeout = Duration(seconds: 50);
 
 class AppHttpManager implements HttpManager {
   @override

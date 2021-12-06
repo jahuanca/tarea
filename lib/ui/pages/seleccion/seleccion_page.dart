@@ -178,7 +178,7 @@ class SeleccionPage extends StatelessWidget {
                                               child: Text(e['value'])))
                                           .toList(),
                                   onChanged: (value) =>
-                                      _.onChangedMenu(value, index)),
+                                      _.onChangedMenu(value, _.seleccions[index].key)),
                             ),
                             flex: 5),
                         Flexible(child: Container(), flex: 1),
@@ -230,8 +230,8 @@ class SeleccionPage extends StatelessWidget {
                                 Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text(_
-                                        .seleccions[index].detalles.length
+                                    child: Text((_
+                                        .seleccions[index].sizeDetails ?? 0)
                                         .toString())),
                                 Icon(
                                   Icons.people,
@@ -274,7 +274,7 @@ class SeleccionPage extends StatelessWidget {
                                     backgroundColor: infoColor,
                                     child: IconButton(
                                         onPressed: () =>
-                                            _.goMigrar(index),
+                                            _.goMigrar(_.seleccions[index].key),
                                         icon: Icon(
                                           Icons.sync,
                                           color: Colors.white,
@@ -305,7 +305,7 @@ class SeleccionPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: dangerColor,
                                     child: IconButton(
-                                      onPressed: () => _.goEliminar(index),
+                                      onPressed: () => _.goEliminar(_.seleccions[index].key),
                                       icon: Icon(Icons.delete),
                                       color: Colors.white,
                                     ),
