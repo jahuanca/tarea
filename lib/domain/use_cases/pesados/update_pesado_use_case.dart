@@ -7,8 +7,8 @@ class UpdatePesadoUseCase{
 
   UpdatePesadoUseCase(this._repository);
 
-  Future<void> execute(PreTareaEsparragoVariosEntity pesado, int index) async{
-    return await _repository.update(pesado ,index);
+  Future<void> execute(PreTareaEsparragoVariosEntity pesado, int key) async{
+    return await _repository.update(pesado ,key);
   }
 
 }

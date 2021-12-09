@@ -29,14 +29,17 @@ class PreTareaEsparragoVariosEntityAdapter
       codigosupervisor: fields[8] as String,
       codigodigitador: fields[9] as String,
       idusuario: fields[10] as int,
-      detalles:
-          (fields[12] as List)?.cast<PreTareaEsparragoDetalleVariosEntity>(),
       centroCosto: fields[17] as CentroCostoEntity,
       turnotareo: fields[18] as String,
       diasiguiente: fields[21] as bool,
       firmaSupervisor: fields[16] as String,
       key: fields[22] as int,
       idestado: fields[11] as int,
+      sizeDetails: fields[23] as int,
+      idtipotarea: fields[24] as int,
+      tipoTarea: fields[25] as TipoTareaEntity,
+      sizeTipoCaja: fields[27] as int,
+      sizeTipoPersona: fields[26] as int,
     )
       ..sede = fields[13] as SubdivisionEntity
       ..pathUrl = fields[14] as String
@@ -48,7 +51,7 @@ class PreTareaEsparragoVariosEntityAdapter
   @override
   void write(BinaryWriter writer, PreTareaEsparragoVariosEntity obj) {
     writer
-      ..writeByte(23)
+      ..writeByte(27)
       ..writeByte(0)
       ..write(obj.itempretareaesparragosvarios)
       ..writeByte(1)
@@ -73,8 +76,6 @@ class PreTareaEsparragoVariosEntityAdapter
       ..write(obj.idusuario)
       ..writeByte(11)
       ..write(obj.idestado)
-      ..writeByte(12)
-      ..write(obj.detalles)
       ..writeByte(13)
       ..write(obj.sede)
       ..writeByte(14)
@@ -94,7 +95,17 @@ class PreTareaEsparragoVariosEntityAdapter
       ..writeByte(21)
       ..write(obj.diasiguiente)
       ..writeByte(22)
-      ..write(obj.key);
+      ..write(obj.key)
+      ..writeByte(23)
+      ..write(obj.sizeDetails)
+      ..writeByte(24)
+      ..write(obj.idtipotarea)
+      ..writeByte(25)
+      ..write(obj.tipoTarea)
+      ..writeByte(26)
+      ..write(obj.sizeTipoPersona)
+      ..writeByte(27)
+      ..write(obj.sizeTipoCaja);
   }
 
   @override

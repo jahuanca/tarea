@@ -7,7 +7,7 @@ class MigrarAllPesadoUseCase{
 
   MigrarAllPesadoUseCase(this._repository);
 
-  Future<PreTareaEsparragoVariosEntity> execute(PreTareaEsparragoVariosEntity pesado)async{
-    return await _repository.migrar(pesado);
+  Future<PreTareaEsparragoVariosEntity> execute(int key)async{
+    return await _repository.migrar(key);
   } 
 }

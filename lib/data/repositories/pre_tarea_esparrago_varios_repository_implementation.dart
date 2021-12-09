@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_tareo/core/strings.dart';
 import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tarea_esparrago_varios_repository.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -76,21 +77,24 @@ class PreTareaEsparragoVariosRepositoryImplementation
   }
 
   @override
-  Future<void> delete(int uuid) async {
+  Future<void> delete(int key) async {
     var tareas = await Hive.openBox<PreTareaEsparragoVariosEntity>(
         'pesados_sincronizar');
-    await tareas.delete(uuid);
+    await tareas.delete(key);
     
+    Box detalles=await Hive.openBox<PreTareaEsparragoVariosEntity>(
+        'pesado_detalles_$key');
+    await detalles.deleteFromDisk();
     await tareas.close();
     return;
   }
 
   @override
   Future<void> update(
-      PreTareaEsparragoVariosEntity pesado, int id) async {
+      PreTareaEsparragoVariosEntity pesado, int key) async {
     var tareas = await Hive.openBox<PreTareaEsparragoVariosEntity>(
         'pesados_sincronizar');
-    await tareas.put(id, pesado);
+    await tareas.put(key, pesado);
     
     await tareas.close();
     return;
@@ -98,11 +102,23 @@ class PreTareaEsparragoVariosRepositoryImplementation
 
   @override
   Future<PreTareaEsparragoVariosEntity> migrar(
-      PreTareaEsparragoVariosEntity pesado) async {
+      int key) async {
+    
+    Box<PreTareaEsparragoVariosEntity> tareas = await Hive.openBox<PreTareaEsparragoVariosEntity>(
+        'pesados_sincronizar');
+    PreTareaEsparragoVariosEntity t=tareas.get(key);
+
+    Box<PreTareaEsparragoDetalleVariosEntity> detalles = await Hive.openBox<PreTareaEsparragoDetalleVariosEntity>(
+        'pesado_detalles_${key}');
+    if(t.detalles==null) t.detalles=[];
+    t.detalles=detalles.values.toList();
+    await tareas.close();
+    await detalles.close();
+    
     final AppHttpManager http = AppHttpManager();
     final res = await http.post(
       url: '$urlModule/createAll',
-      body: pesado.toJson(),
+      body: t.toJson(),
     );
 
     return res == null ? null : PreTareaEsparragoVariosEntity.fromJson(jsonDecode(res));

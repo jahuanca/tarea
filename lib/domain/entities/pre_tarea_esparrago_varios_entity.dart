@@ -9,6 +9,7 @@ import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
+import 'package:flutter_tareo/domain/entities/tipo_tarea_entity.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
@@ -35,6 +36,11 @@ class PreTareaEsparragoVariosEntity {
     this.firmaSupervisor,
     this.key,
     this.idestado,
+    this.sizeDetails,
+    this.idtipotarea,
+    this.tipoTarea,
+    this.sizeTipoCaja,
+    this.sizeTipoPersona,
   }){
     estadoLocal='P';
   }
@@ -63,7 +69,7 @@ class PreTareaEsparragoVariosEntity {
   int idusuario;
   @HiveField(11)
   int idestado;
-  @HiveField(12)
+  /* @HiveField(12) */
   List<PreTareaEsparragoDetalleVariosEntity> detalles;
   @HiveField(13)
   SubdivisionEntity sede;
@@ -85,6 +91,16 @@ class PreTareaEsparragoVariosEntity {
   bool diasiguiente;
   @HiveField(22)
   int key;
+  @HiveField(23)
+  int sizeDetails;
+  @HiveField(24)
+  int idtipotarea;
+  @HiveField(25)
+  TipoTareaEntity tipoTarea;
+  @HiveField(26)
+  int sizeTipoPersona;
+  @HiveField(27)
+  int sizeTipoCaja;
 
   String get fechaHora {
     if (fecha == null || horainicio == null) {
@@ -143,10 +159,15 @@ class PreTareaEsparragoVariosEntity {
             ? null
             : json["codigodigitador"],
         firmaSupervisor: json["firmasupervisor"] == null ? null : json["firmasupervisor"],
+        sizeTipoPersona: json["sizeTipoPersona"] == null ? null : json["sizeTipoPersona"],
+        sizeTipoCaja: json["sizeTipoCaja"] == null ? null : json["sizeTipoCaja"],
         idusuario: json["idusuario"] == null ? null : json["idusuario"],
+        idtipotarea: json["idtipotarea"] == null ? null : json["idtipotarea"],
+        tipoTarea: json["tipoTarea"] == null ? null : json["tipoTarea"],
         diasiguiente: json["diasiguiente"] == null ? null : json["diasiguiente"],
         turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
         key: json["key"] == null ? null : json["key"],
+        sizeDetails: json["sizeDetails"] == null ? null : json["sizeDetails"],
         centroCosto: json['Centro_Costo'] == null ? null : CentroCostoEntity.fromJson(json['Centro_Costo']),
         detalles: json['Pre_Tarea_Esparrago_Detalle_Varios'] == null
             ? null
@@ -168,12 +189,17 @@ class PreTareaEsparragoVariosEntity {
         "pausafin": pausafin == null ? null : pausafin.toIso8601String(),
         "linea": linea == null ? null : linea,
         "idcentrocosto": idcentrocosto == null ? null : idcentrocosto,
+        "sizeTipoPersona": sizeTipoPersona == null ? null : sizeTipoPersona,
+        "sizeTipoCaja": sizeTipoCaja == null ? null : sizeTipoCaja,
         "codigosupervisor":
             codigosupervisor == null ? null : codigosupervisor,
         "codigodigitador":
             codigodigitador == null ? null : codigodigitador,
         "turnotareo": turnotareo == null ? null : turnotareo,
         "key": key == null ? null : key,
+        "idtipotarea": idtipotarea == null ? null : idtipotarea,
+        "tipoTarea": tipoTarea == null ? null : tipoTarea,
+        "sizeDetails": sizeDetails == null ? null : sizeDetails,
         "firmasupervisor": firmaSupervisor == null ? null : firmaSupervisor,
         "diasiguiente": diasiguiente == null ? null : diasiguiente,
         "idusuario": idusuario == null ? null : idusuario,

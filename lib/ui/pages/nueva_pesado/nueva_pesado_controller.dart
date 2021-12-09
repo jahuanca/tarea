@@ -10,6 +10,8 @@ import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.
 import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
+import 'package:flutter_tareo/domain/entities/tipo_tarea_entity.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_tipo_tareas_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
@@ -26,14 +28,14 @@ class NuevaPesadoController extends GetxController {
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
   final GetCentroCostosUseCase _getCentroCostosUseCase;
-  final GetCultivosUseCase _getCultivosUseCase;
+  final GetTipoTareasUseCase _getTipoTareasUseCase;
 
   DateTime fecha = DateTime.now();
   String errorActividad,
       errorLabor,
       errorPresentacion,
       errorCentroCosto,
-      errorCultivo,
+      errorTipoTarea,
       errorSupervisor,
       errorDigitador,
       errorHoraInicio,
@@ -50,7 +52,7 @@ class NuevaPesadoController extends GetxController {
   List<ActividadEntity> actividades = [];
   List<LaborEntity> labores = [];
   List<CentroCostoEntity> centrosCosto = [];
-  List<CultivoEntity> cultivos = [];
+  List<TipoTareaEntity> tiposTarea = [];
   List<SubdivisionEntity> subdivisions = [];
   List<LaboresCultivoPackingEntity> laboresCultivoPacking = [];
   List<PresentacionLineaEntity> presentaciones = [];
@@ -59,7 +61,7 @@ class NuevaPesadoController extends GetxController {
   NuevaPesadoController(
       this._getSubdivisonsUseCase,
       this._getPersonalsEmpresaBySubdivisionUseCase,
-      this._getCultivosUseCase,
+      this._getTipoTareasUseCase,
       this._getCentroCostosUseCase);
 
   @override
@@ -90,7 +92,7 @@ class NuevaPesadoController extends GetxController {
     validando = true;
     update(['validando']);
 
-    /* await getCultivos(); */
+    await getTiposTarea();
     await getCentrosCosto();
     await getSupervisors(PreferenciasUsuario().idSede);
     changeTurno(editando ? nuevaPreTarea.turnotareo : 'D');
@@ -128,16 +130,16 @@ class NuevaPesadoController extends GetxController {
     update(['centro_costo']);
   }
 
-  /* Future<void> getCultivos() async {
-    cultivos = await _getCultivosUseCase.execute();
+  Future<void> getTiposTarea() async {
+    tiposTarea = await _getTipoTareasUseCase.execute();
     if (!editando) {
-      if (cultivos.isNotEmpty) {
-        nuevaPreTarea.cultivo = cultivos.first;
+      if (tiposTarea.isNotEmpty) {
+        nuevaPreTarea.tipoTarea = tiposTarea.first;
       }
     }
-    changeCultivo(nuevaPreTarea.cultivo.idcultivo.toString());
+    changeTipoTarea(nuevaPreTarea.tipoTarea.idtipotarea.toString());
     update(['cultivos']);
-  } */
+  }
 
   void changeTurno(String id) {
     nuevaPreTarea.turnotareo = id;
@@ -271,21 +273,21 @@ class NuevaPesadoController extends GetxController {
     update(['centro_costo']);
   }
 
-  /* void changeCultivo(String id) {
-    errorCultivo = validatorUtilText(id, 'Cultivo', {
+  void changeTipoTarea(String id) {
+    errorTipoTarea = validatorUtilText(id, 'Tipo de tarea', {
       'required': '',
     });
     int index =
-        cultivos.indexWhere((e) => e.idcultivo== int.parse(id));
-    if (errorCultivo == null && index != -1) {
-      nuevaPreTarea.cultivo = cultivos[index];
-      nuevaPreTarea.idcultivo = int.parse(id);
+        tiposTarea.indexWhere((e) => e.idtipotarea== int.parse(id));
+    if (errorTipoTarea == null && index != -1) {
+      nuevaPreTarea.tipoTarea = tiposTarea[index];
+      nuevaPreTarea.idtipotarea = int.parse(id);
     } else {
-      nuevaPreTarea.cultivo = null;
-      nuevaPreTarea.idcultivo = null;
+      nuevaPreTarea.tipoTarea = null;
+      nuevaPreTarea.idtipotarea = null;
     }
-    update(['cultivo']);
-  } */
+    update(['tipo_tarea']);
+  }
 
   void goBack() {
     String mensaje = validar();
@@ -328,7 +330,7 @@ class NuevaPesadoController extends GetxController {
 
   String validar() {
     changeFecha();
-    /* changeCultivo(nuevaPreTarea.idcultivo.toString()); */
+    changeTipoTarea(nuevaPreTarea.idtipotarea.toString());
     changeCentroCosto(nuevaPreTarea.idcentrocosto.toString());
     changeSupervisor(nuevaPreTarea.codigosupervisor.toString());
     changeHoraInicio();
@@ -336,7 +338,7 @@ class NuevaPesadoController extends GetxController {
     changeHoraFin();
     //TODO: VALIDAR: fechas por TURNO NOCHE
     if (errorActividad != null) return errorActividad;
-    if (errorCultivo != null) return errorCultivo;
+    if (errorTipoTarea != null) return errorTipoTarea;
     if (errorLabor != null) return errorLabor;
     if (errorSupervisor != null) return errorSupervisor;
     if (errorHoraInicio != null) return errorHoraInicio;

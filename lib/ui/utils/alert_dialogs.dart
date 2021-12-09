@@ -49,7 +49,7 @@ Future<dynamic> basicAlert(
   );
 }
 
-void toastExito(String titulo, String mensaje, [int duration = 3000]) {
+void toastExito(String titulo, String mensaje, [int duration = 1000]) {
   Get.snackbar(
     titulo,
     mensaje,

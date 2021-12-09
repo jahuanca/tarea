@@ -20,7 +20,7 @@ class PesadosPage extends StatelessWidget {
       builder: (_) => Stack(
         children: [
           Scaffold(
-            appBar: getAppBar('Pesados', []),
+            appBar: getAppBar('Varios', []),
             backgroundColor: secondColor,
             body: GetBuilder<PesadosController>(
               id: 'seleccionado',
@@ -133,21 +133,6 @@ class PesadosPage extends StatelessWidget {
                           ),
                           flex: 10,
                         ),
-                        /* Flexible(child: Container(), flex: 1),
-                        Flexible(
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              _.pesados[index].laboresCultivoPacking.actividad
-                                      ?.descripcion ??
-                                  '',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          flex: 15,
-                        ), */
                         Flexible(child: Container(), flex: 1),
                         Flexible(
                             child: Container(
@@ -178,7 +163,7 @@ class PesadosPage extends StatelessWidget {
                                               child: Text(e['value'])))
                                           .toList(),
                                   onChanged: (value) =>
-                                      _.onChangedMenu(value, index)),
+                                      _.onChangedMenu(value, _.pesados[index].key)),
                             ),
                             flex: 5),
                         Flexible(child: Container(), flex: 1),
@@ -192,16 +177,6 @@ class PesadosPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Flexible(child: Container(), flex: 1),
-                        /* Flexible(
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(_.pesados[index].laboresCultivoPacking
-                                    .labor?.descripcion ??
-                                ''),
-                          ),
-                          flex: 10,
-                        ),
-                        Flexible(child: Container(), flex: 1), */
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
@@ -230,8 +205,8 @@ class PesadosPage extends StatelessWidget {
                                 Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text(_
-                                        .pesados[index].detalles.length
+                                    child: Text((_
+                                        .pesados[index].sizeDetails ?? 0)
                                         .toString())),
                                 Icon(
                                   Icons.people,
@@ -247,7 +222,7 @@ class PesadosPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                                _.pesados[index].sede?.detallesubdivision ??
+                                _.pesados[index].tipoTarea?.descripcion ??
                                     ''),
                           ),
                           flex: 10,
@@ -274,7 +249,7 @@ class PesadosPage extends StatelessWidget {
                                     backgroundColor: infoColor,
                                     child: IconButton(
                                         onPressed: () =>
-                                            _.goMigrar(index),
+                                            _.goMigrar(_.pesados[index].key),
                                         icon: Icon(
                                           Icons.sync,
                                           color: Colors.white,
@@ -341,7 +316,7 @@ class PesadosPage extends StatelessWidget {
                                     backgroundColor: successColor,
                                     child: IconButton(
                                       onPressed: () =>
-                                          _.goAprobar(index),
+                                          _.goAprobar(_.pesados[index].key),
                                       icon: Icon(Icons.check_rounded),
                                       color: Colors.white,
                                     ),
@@ -358,7 +333,7 @@ class PesadosPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: alertColor,
                                     child: IconButton(
-                                      onPressed: () => _.goEditar(index),
+                                      onPressed: () => _.goEditar(_.pesados[index].key),
                                       icon: Icon(Icons.edit),
                                       color: Colors.white,
                                     ),

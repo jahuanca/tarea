@@ -6,8 +6,8 @@ class DeletePesadoUseCase{
 
   DeletePesadoUseCase(this._repository);
 
-  Future<void> execute(int index) async{
-    return await _repository.delete(index);
+  Future<void> execute(int key) async{
+    return await _repository.delete(key);
   }
 
 }

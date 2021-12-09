@@ -1,3 +1,4 @@
+import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
@@ -23,6 +24,12 @@ class PreTareaEsparragoDetalleVariosEntity {
     this.idactividad,
     this.actividad,
     this.imei,
+    this.key,
+    this.linea,
+    this.esCaja,
+    this.idcliente,
+    this.cliente,
+    this.itemtipotk,
   });
 
   @HiveField(0)
@@ -55,45 +62,70 @@ class PreTareaEsparragoDetalleVariosEntity {
   ActividadEntity actividad;
   @HiveField(15)
   LaborEntity labor;
+  @HiveField(16)
+  int key;
+  @HiveField(17)
+  int linea;
+  @HiveField(18)
+  bool esCaja;
+  @HiveField(19)
+  int idcliente;
+  @HiveField(20)
+  ClienteEntity cliente;
+  @HiveField(21)
+  int itemtipotk;
 
-  bool get validadoParaAprobar{
-    if(codigoempresa==null || hora==null){
+  bool get validadoParaAprobar {
+    if (codigoempresa == null || hora == null) {
       return false;
     }
-    
+
     return true;
   }
 
-  factory PreTareaEsparragoDetalleVariosEntity.fromJson(Map<String, dynamic> json) =>
+  factory PreTareaEsparragoDetalleVariosEntity.fromJson(
+          Map<String, dynamic> json) =>
       PreTareaEsparragoDetalleVariosEntity(
-        itempretareaesparragodetallevarios: json['itempretareaesparragodetallevarios'],
+        itempretareaesparragodetallevarios:
+            json['itempretareaesparragodetallevarios'],
         itempretareaesparragovarios: json['itempretareaproceso'],
         codigoempresa: json['codigoempresa'],
         idactividad: json['idactividad'],
         hora: DateTime?.parse(json['hora']),
         imei: json['imei'],
+        key: json['key'],
+        idcliente: json['idcliente'],
+        cliente: json['Cliente'] == null ? null : ClienteEntity.fromJson(json['Cliente']),
+        linea: json['linea'],
         idusuario: json['idusuario'],
         correlativo: json['correlativo'],
+        esCaja: json['esCaja'],
         fecha: DateTime?.parse(json['fecha']),
         idlabor: json['idlabor'],
         idestado: json['idestado'],
         codigotk: json['codigotk'],
-
+        itemtipotk: json['itemtipotk'],
       );
 
   Map<String, dynamic> toJson() => {
-        'itempretareaesparragodetallevarios': itempretareaesparragodetallevarios,
+        'itempretareaesparragodetallevarios':
+            itempretareaesparragodetallevarios,
         'itempretareaesparragovarios': itempretareaesparragovarios,
         'codigoempresa': codigoempresa,
+        'itemtipotk': itemtipotk,
         'idactividad': idactividad,
         'hora': hora?.toIso8601String(),
         'imei': imei,
+        'key': key,
         'idusuario': idusuario,
         'correlativo': correlativo,
+        'esCaja': esCaja,
+        'linea': linea,
         'fecha': fecha?.toIso8601String(),
-        
         'idlabor': idlabor,
         'idestado': idestado,
+        'idcliente': idcliente,
+        'Cliente': cliente?.toJson(),
         'codigotk': codigotk,
       };
 }

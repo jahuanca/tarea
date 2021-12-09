@@ -4,6 +4,7 @@ import 'package:flutter_tareo/data/repositories/pre_tarea_esparrago_varios_repos
 import 'package:flutter_tareo/domain/repositories/export_data_repository.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tarea_esparrago_varios_repository.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_data_to_excel_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/others/export_pesado_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/create_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/delete_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/get_all_pesado_use_case.dart';
@@ -28,7 +29,7 @@ class PesadosBinding extends Bindings{
       Get.lazyReplace<DeletePesadoUseCase>(() => DeletePesadoUseCase(Get.find()));
       Get.lazyReplace<MigrarAllPesadoUseCase>(() => MigrarAllPesadoUseCase(Get.find()));
       Get.lazyReplace<UploadFileOfPesadoUseCase>(() => UploadFileOfPesadoUseCase(Get.find()));
-      Get.lazyReplace<ExportDataToExcelUseCase>(() => ExportDataToExcelUseCase(Get.find()));
+      Get.lazyReplace<ExportPesadoToExcelUseCase>(() => ExportPesadoToExcelUseCase(Get.find()));
 
     Get.lazyPut<PesadosController>(() => PesadosController(Get.find(), Get.find() , Get.find(), Get.find(), Get.find(), Get.find(), Get.find()));
     

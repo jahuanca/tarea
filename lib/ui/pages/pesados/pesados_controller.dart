@@ -1,13 +1,12 @@
-
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/di/listado_personas_pesado_binding.dart';
 import 'package:flutter_tareo/di/nueva_pesado_binding.dart';
 import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
-import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_data_to_excel_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/others/export_pesado_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/create_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/delete_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/get_all_pesado_use_case.dart';
@@ -30,7 +29,7 @@ class PesadosController extends GetxController {
   final DeletePesadoUseCase _deletePesadoUseCase;
   final MigrarAllPesadoUseCase _migrarAllPesadoUseCase;
   final UploadFileOfPesadoUseCase _uploadFileOfPesadoUseCase;
-  final ExportDataToExcelUseCase _exportDataToExcelUseCase;
+  final ExportPesadoToExcelUseCase _exportDataToExcelUseCase;
 
   bool validando = false;
 
@@ -55,36 +54,37 @@ class PesadosController extends GetxController {
   }
 
   Future<void> getTareas() async {
-    pesados=[];
+    pesados = [];
     pesados = await _getAllPesadoUseCase.execute();
     update(['tareas']);
     return;
   }
 
-  void onChangedMenu(dynamic value, int index) async {
+  void onChangedMenu(dynamic value, int key) async {
     switch (value.toInt()) {
       case 1:
         break;
       case 2:
-        goCopiar(index);
+        goCopiar(key);
         break;
       case 3:
-        goEliminar(index);
+        goEliminar(key);
         break;
       case 4:
-        goExcel(index);
+        goExcel(key);
         break;
       default:
         break;
     }
   }
 
-  void goExcel(int index) async {
-    await _exportDataToExcelUseCase.execute(pesados[index]);
+  void goExcel(int key) async {
+    await _exportDataToExcelUseCase.execute(key);
     print('exportando');
   }
 
-  void goAprobar(int index) async {
+  void goAprobar(int key) async {
+    int index = pesados.indexWhere((element) => element.key == key);
     String mensaje = await validarParaAprobar(index);
     if (mensaje != null) {
       basicAlert(
@@ -133,19 +133,14 @@ class PesadosController extends GetxController {
 
   Future<String> validarParaAprobar(int index) async {
     PreTareaEsparragoVariosEntity tarea = pesados[index];
-    if (tarea.detalles == null || tarea.detalles.isEmpty) {
+    if (tarea.sizeDetails == null || tarea.sizeDetails == 0) {
       return 'No se puede aprobar una actividad que no tiene personal';
-    } else {
-      for (var item in tarea.detalles) {
-        if (!item.validadoParaAprobar) {
-          return 'Verifique que todos los datos del personal esten llenos';
-        }
-      }
     }
     return null;
   }
 
-  Future<void> goMigrar(int index) async {
+  Future<void> goMigrar(int key) async {
+    int index = pesados.indexWhere((element) => element.key == key);
     if (pesados[index].estadoLocal == 'A') {
       basicDialog(
         Get.overlayContext,
@@ -174,11 +169,12 @@ class PesadosController extends GetxController {
     validando = true;
     update(['validando']);
     PreTareaEsparragoVariosEntity tareaMigrada =
-        await _migrarAllPesadoUseCase.execute(pesados[index]);
+        await _migrarAllPesadoUseCase.execute(pesados[index].key);
     if (tareaMigrada != null) {
       toastExito('Exito', 'Tarea migrada con exito');
       pesados[index].estadoLocal = 'M';
-      pesados[index].itempretareaesparragosvarios = tareaMigrada.itempretareaesparragosvarios;
+      pesados[index].itempretareaesparragosvarios =
+          tareaMigrada.itempretareaesparragosvarios;
       await _updatePesadoUseCase.execute(pesados[index], pesados[index].key);
       tareaMigrada = await _uploadFileOfPesadoUseCase.execute(
           pesados[index], File(pesados[index].pathUrl));
@@ -189,27 +185,21 @@ class PesadosController extends GetxController {
     update(['validando', 'tareas']);
   }
 
-  /* Future<void> goMigrarPreTareo(int index) async {
-    await _migrarAllPesadoUseCase.execute(preTareos[index]);
-  } */
-
   Future<void> goListadoPersonas(int index) async {
     List<PreTareaEsparragoVariosEntity> otras = [];
     otras.addAll(pesados);
     otras.removeAt(index);
     ListadoPersonasPesadoBinding().dependencies();
-    final resultados = await Get.to<List<PreTareaEsparragoDetalleVariosEntity>>(
-        () => ListadoPersonasPesadoPage(),
-        arguments: {
-          'otras': otras,
-          'tarea': pesados[index],
-          'index': index,
-        });
+    final resultado =
+        await Get.to<int>(() => ListadoPersonasPesadoPage(), arguments: {
+      'otras': otras,
+      'tarea': pesados[index],
+      'index': index,
+    });
 
-    if (resultados != null && resultados.isNotEmpty) {
-      pesados[index].detalles = resultados;
+    if (resultado != null) {
+      pesados[index].sizeDetails = resultado;
       await _updatePesadoUseCase.execute(pesados[index], pesados[index].key);
-      print(resultados.first.toJson());
       update(['tareas']);
     }
   }
@@ -243,9 +233,9 @@ class PesadosController extends GetxController {
     }
   }
 
-  Future<void> editarPesado(int index) async {
+  Future<void> editarPesado(int key) async {
     NuevaPreTareaBinding().dependencies();
-    print(pesados[index].horafin);
+    int index = pesados.indexWhere((element) => element.key == key);
     final result = await Get.to<PreTareaEsparragoVariosEntity>(
         () => NuevaPreTareaPage(),
         arguments: {'tarea': pesados[index]});
@@ -260,7 +250,8 @@ class PesadosController extends GetxController {
 
   Future<void> copiarPesado(int index) async {
     NuevaPreTareaBinding().dependencies();
-    final result = await Get.to<PreTareaEsparragoVariosEntity>(() => NuevaTareaPage(),
+    final result = await Get.to<PreTareaEsparragoVariosEntity>(
+        () => NuevaTareaPage(),
         arguments: {'tarea': pesados[index]});
     if (result != null) {
       result.idusuario = PreferenciasUsuario().idUsuario;
@@ -270,7 +261,8 @@ class PesadosController extends GetxController {
     }
   }
 
-  void goEliminar(int index) {
+  void goEliminar(int key) {
+    int index = pesados.indexWhere((element) => element.key == key);
     basicDialog(
       Get.overlayContext,
       'Alerta',
@@ -286,7 +278,8 @@ class PesadosController extends GetxController {
     );
   }
 
-  void goCopiar(int index) {
+  void goCopiar(int key) {
+    int index = pesados.indexWhere((element) => element.key == key);
     basicDialog(
       Get.overlayContext,
       'Alerta',

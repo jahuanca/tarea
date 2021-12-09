@@ -7,8 +7,8 @@ abstract class PreTareaEsparragoVariosRepository{
   Future<List<PreTareaEsparragoVariosEntity>> getAll();
   Future<List<PreTareaEsparragoVariosEntity>> getAllByValue(Map<String,dynamic> valores);
   Future<void> create(PreTareaEsparragoVariosEntity pesado);
-  Future<PreTareaEsparragoVariosEntity> migrar(PreTareaEsparragoVariosEntity pesado);
+  Future<PreTareaEsparragoVariosEntity> migrar(int key);
   Future<PreTareaEsparragoVariosEntity> uploadFile(PreTareaEsparragoVariosEntity pesado, File fileLocal);
-  Future<void> update(PreTareaEsparragoVariosEntity pesado , int index);
-  Future<void> delete(int index);
+  Future<void> update(PreTareaEsparragoVariosEntity pesado , int key);
+  Future<void> delete(int key);
 }

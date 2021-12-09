@@ -29,11 +29,11 @@ class EsparragosPage extends StatelessWidget {
                     child: Container(),
                     flex: 1,
                   ),
-                  /* contenedor('PESADO', controller.goPesados),
+                  contenedor('VARIOS', controller.goVarios),
                   Expanded(
                     child: Container(),
                     flex: 1,
-                  ), */
+                  ),
                   contenedor('SELECCIÓN', controller.goSeleccion),
                   Expanded(
                     child: Container(),

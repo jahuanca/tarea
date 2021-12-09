@@ -314,7 +314,7 @@ class ListadoPersonasClasificacionController extends GetxController
       } */
 
       int indexEncontrado = personalSeleccionado
-          .indexWhere((e) => e.codigotk == barcode.toString());
+          .indexWhere((e) => e.codigotk == barcode.toString().trim());  
       if (indexEncontrado != -1) {
         byLector
             ? toastError('Error', 'Ya se encuentra registrado')

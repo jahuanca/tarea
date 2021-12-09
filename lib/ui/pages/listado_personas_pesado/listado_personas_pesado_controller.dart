@@ -2,17 +2,25 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
+import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_clientes_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/pesados/get_all_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/update_pesado_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/pesados_seleccion/create_pesado_detalle_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/pesados_seleccion/delete_pesado_detalle_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/pesados_seleccion/get_all_pesado_detalles_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/pesados_seleccion/update_pesado_detalle_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
 import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
 
@@ -20,19 +28,26 @@ class ListadoPersonasPesadoController extends GetxController
     implements ScannerCallBack {
   List<int> seleccionados = [];
   List<PersonalEmpresaEntity> personal = [];
+  List<ClienteEntity> clientes = [];
   List<PreTareaEsparragoDetalleVariosEntity> personalSeleccionado = [];
   int indexTarea;
   PreTareaEsparragoVariosEntity preTarea;
-  List<PreTareaEsparragoVariosEntity> otrasPreTareas=[];
+  List<PreTareaEsparragoVariosEntity> otrasPreTareas = [];
 
-  List<ActividadEntity> actividades=[];
-  List<LaborEntity> labores=[];
+  List<ActividadEntity> actividades = [];
+  List<LaborEntity> labores = [];
 
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
   final UpdatePesadoUseCase _updatePesadoUseCase;
   final GetActividadsUseCase _getActividadsUseCase;
   final GetLaborsUseCase _getLaborsUseCase;
+  final GetClientesUseCase _getClientesUseCase;
+
+  final GetAllPesadoDetallesUseCase _getAllPesadoDetallesUseCase;
+  final CreatePesadoDetalleUseCase _createPesadoDetalleUseCase;
+  final UpdatePesadoDetalleUseCase _updatePesadoDetalleUseCase;
+  final DeletePesadoDetalleUseCase _deletePesadoDetalleUseCase;
   bool validando = false;
   bool editando = false;
   HoneywellScanner honeywellScanner;
@@ -41,25 +56,33 @@ class ListadoPersonasPesadoController extends GetxController
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   ListadoPersonasPesadoController(
-      this._getPersonalsEmpresaBySubdivisionUseCase,
-      this._getActividadsUseCase,
-      this._getLaborsUseCase,
-      this._updatePesadoUseCase);
+    this._getPersonalsEmpresaBySubdivisionUseCase,
+    this._getActividadsUseCase,
+    this._getLaborsUseCase,
+    this._getClientesUseCase,
+    this._updatePesadoUseCase,
+    this._getAllPesadoDetallesUseCase,
+    this._createPesadoDetalleUseCase,
+    this._updatePesadoDetalleUseCase,
+    this._deletePesadoDetalleUseCase,
+  );
 
   @override
   void onInit() async {
+    actividades = await _getActividadsUseCase.execute();
+    labores = await _getLaborsUseCase.execute();
+    clientes = await _getClientesUseCase.execute();
 
-    actividades= await _getActividadsUseCase.execute();
-    labores= await _getLaborsUseCase.execute();
-    
     super.onInit();
     if (Get.arguments != null) {
-      if(Get.arguments['otras'] != null){
-        otrasPreTareas= Get.arguments['otras'] as List<PreTareaEsparragoVariosEntity>;
+      if (Get.arguments['otras'] != null) {
+        otrasPreTareas =
+            Get.arguments['otras'] as List<PreTareaEsparragoVariosEntity>;
       }
       if (Get.arguments['tarea'] != null) {
         preTarea = Get.arguments['tarea'] as PreTareaEsparragoVariosEntity;
-        personalSeleccionado = preTarea.detalles;
+        personalSeleccionado = await _getAllPesadoDetallesUseCase
+            .execute('pesado_detalles_${preTarea.key}');
         update(['personal_seleccionado']);
       }
 
@@ -94,12 +117,10 @@ class ListadoPersonasPesadoController extends GetxController
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
       print('es valido');
-      sunmiBarcodePlugin.onBarcodeScanned().listen((event) {
-        print(event);
-        setCodeBar(event, true);
+      sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
+        await setCodeBar(event, true);
       });
     } else {
-      print('no es valido SUNMI');
       initHoneyScanner();
     }
   }
@@ -132,15 +153,15 @@ class ListadoPersonasPesadoController extends GetxController
   }
 
   @override
-  void onClose() async{
-    if(await honeywellScanner?.isSupported() ?? false){
+  void onClose() async {
+    if (await honeywellScanner?.isSupported() ?? false) {
       honeywellScanner.stopScanner();
     }
     super.onClose();
   }
 
   @override
-  void onDecoded(String result) async{
+  void onDecoded(String result) async {
     await setCodeBar(result, true);
   }
 
@@ -181,29 +202,9 @@ class ListadoPersonasPesadoController extends GetxController
   }
 
   Future<bool> onWillPop() async {
-    personalSeleccionado.forEach((e) {
-      if (e.hora == null) {
-        toastError('Error',
-            'Existe un personal con datos vacios. Por favor, ingreselos.');
-        return false;
-      }
-    });
-    Get.back(result: personalSeleccionado);
+    Get.back(result: personalSeleccionado.length);
     return true;
   }
-
-  /* void goNuevoPersonaTareaProceso() async {
-    AgregarPersonaBinding().dependencies();
-    final result = await Get.to<PreTareoProcesoDetalleEntity>(
-        () => AgregarPersonaPage(),
-        arguments: {'personal': personal, 'tarea': preTarea});
-    if (result != null) {
-      personalSeleccionado.add(result);
-      update(['personal_seleccionado']);
-      seleccionados.clear();
-      update(['listado']);
-    }
-  } */
 
   Future<void> changeOptionsGlobal(dynamic index) async {
     switch (index) {
@@ -218,45 +219,17 @@ class ListadoPersonasPesadoController extends GetxController
         seleccionados.clear();
         update(['seleccionados', 'personal_seleccionado']);
         break;
-      /* case 3:
-        AgregarPersonaBinding().dependencies();
-        final result = await Get.to<List<PreTareoProcesoDetalleEntity>>(
-            () => AgregarPersonaPage(),
-            arguments: {
-              'cantidad': seleccionados.length,
-              'personal': personal
-            });
-        if (result != null) {
-          for (int i = 0; i < seleccionados.length; i++) {
-            personalSeleccionado[seleccionados[i]] = result[i];
-          }
-          update(['personal_seleccionado']);
-          seleccionados.clear();
-          update(['seleccionados']);
-        }
-        break; */
+
       default:
     }
   }
 
-  Future<void> changeOptions(dynamic index, int position) async {
+  Future<void> changeOptions(dynamic index, int key) async {
     switch (index) {
-      /* case 1:
-        AgregarPersonaBinding().dependencies();
-        final result = await Get.to<PreTareoProcesoDetalleEntity>(
-            () => AgregarPersonaPage(),
-            arguments: {
-              'tarea': preTarea,
-              'cantidad': seleccionados.length,
-              'personal': personal
-            });
-        if (result != null) {
-          personalSeleccionado[position] = result;
-          update(['personal_seleccionado']);
-        }
-        break; */
       case 2:
-        goEliminar(position);
+        int index =
+            personalSeleccionado.indexWhere((element) => element.key == key);
+        goEliminar(index);
 
         break;
       default:
@@ -273,81 +246,111 @@ class ListadoPersonasPesadoController extends GetxController
       'No',
       () async {
         Get.back();
-        personalSeleccionado.removeAt(index);
-        await _updatePesadoUseCase.execute(preTarea, preTarea.key);
+        PreTareaEsparragoDetalleVariosEntity item =
+            personalSeleccionado.removeAt(index);
+        await _deletePesadoDetalleUseCase.execute(
+            'pesado_detalles_${preTarea.key}', item.key);
         update(['seleccionados', 'personal_seleccionado']);
       },
       () => Get.back(),
     );
   }
 
-  void goLectorCode() {
-    FlutterBarcodeScanner.getBarcodeStreamReceiver(
+  Future<void> goLectorCode() async {
+    await FlutterBarcodeScanner.getBarcodeStreamReceiver(
             "#ff6666", "Cancelar", false, ScanMode.DEFAULT)
         .listen((barcode) async {
       await setCodeBar(barcode);
     });
   }
 
-  Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
-    if (barcode != null && barcode != '-1') {
+  bool buscando = false;
 
+  Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
+    if (barcode != null && barcode != '-1' && buscando == false) {
+      buscando = true;
       for (var element in otrasPreTareas) {
-        int indexOtra= element.detalles.indexWhere((e) => e.codigotk.toString().trim() == barcode.toString().trim());
-        if(indexOtra != -1){
+        Box<PreTareaEsparragoDetalleVariosEntity> detalles =
+            await Hive.openBox<PreTareaEsparragoDetalleVariosEntity>(
+                'pesado_detalles_${element.key}');
+        int indexOtra = detalles.values.toList().indexWhere(
+            (e) => e.codigotk.toString().trim() == barcode.toString().trim());
+        if (indexOtra != -1) {
           byLector
-            ? toastError('Error', 'Se encuentra en otra tarea')
-            : _showNotification(false, 'Se encuentra en otra tarea');
+              ? toastError('Error', 'Se encuentra en otra tarea')
+              : await _showNotification(false, 'Se encuentra en otra tarea');
+          await detalles.close();
+          buscando = false;
           return;
         }
+        await detalles.close();
       }
 
-      int indexEncontrado = personalSeleccionado
-          .indexWhere((e) => e.codigotk == barcode.toString());
+      int indexEncontrado = personalSeleccionado.indexWhere(
+          (e) => e.codigotk.toString().trim() == barcode.toString().trim());
       if (indexEncontrado != -1) {
         byLector
             ? toastError('Error', 'Ya se encuentra registrado')
-            : _showNotification(false, 'Ya se encuentra registrado');
+            : await _showNotification(false, 'Ya se encuentra registrado');
+        buscando = false;
         return;
       }
 
-      
-
-
-
-
       List<String> valores = barcode.toString().split('_');
-      int index = personal.indexWhere((e) => e.codigoempresa == valores[0]);
+      bool esCaja = (valores.length == 3) ? true : false;
+      int index = 0;
+      if (!esCaja) {
+        index = personal.indexWhere((e) => e.codigoempresa == valores[0]);
+      }
+      int indexCliente = clientes
+          .indexWhere((e) => e.idcliente == int.parse(valores[esCaja ? 0 : 1]));
+      if (indexCliente == -1) {
+        byLector
+            ? toastError('Error', 'No se encontro al cliente.')
+            : await _showNotification(false, 'No se encontro al cliente.');
+        buscando = false;
+        return;
+      }
       if (index != -1) {
+        int indexLabor = await labores
+            .indexWhere((e) => e.idlabor == int.parse(valores[esCaja ? 1 : 2]));
+        PreTareaEsparragoDetalleVariosEntity d =
+            PreTareaEsparragoDetalleVariosEntity(
+                personal: esCaja ? null : personal[index],
+                codigoempresa: esCaja ? null : personal[index].codigoempresa,
+                fecha: DateTime.now(),
+                hora: DateTime.now(),
+                imei: '1256',
+                idestado: 1,
+                linea: esCaja ? 0 : 3,
+                esCaja: esCaja,
+                cliente: clientes[indexCliente],
+                idcliente: clientes[indexCliente].idcliente,
+                idactividad: labores[indexLabor].idactividad,
+                idlabor: labores[indexLabor].idlabor,
+                labor: labores[indexLabor],
+                correlativo: int.parse(valores[esCaja ? 2 : 4]),
+                codigotk: barcode.toString().trim(),
+                idusuario: PreferenciasUsuario().idUsuario,
+                itemtipotk: esCaja ? 1 : 2,
+                itempretareaesparragovarios:
+                    preTarea.itempretareaesparragosvarios);
+        update(['personal_seleccionado']);
+        int key = await _createPesadoDetalleUseCase.execute(
+            'pesado_detalles_${preTarea.key}', d);
+        d.key = key;
+        personalSeleccionado.add(d);
         byLector
             ? toastExito('Éxito', 'Registrado con exito')
-            : _showNotification(true, 'Registrado con exito');
-        /* int lasItem = (personalSeleccionado.isEmpty)
-            ? 0
-            : personalSeleccionado.last.numcaja; */
-
-        int indexLabor=labores.indexWhere((e) => e.idlabor == int.parse(valores[1]));
-        
-        personalSeleccionado.add(PreTareaEsparragoDetalleVariosEntity(
-            personal: personal[index],
-            codigoempresa: personal[index].codigoempresa,
-            fecha: DateTime.now(),
-            hora: DateTime.now(),
-            imei: '1256',
-            idestado: 1,
-            idlabor: labores[indexLabor].idlabor,
-            labor: labores[indexLabor],
-            correlativo: int.parse(valores[2]),
-            codigotk: barcode.toString(),
-            idusuario: PreferenciasUsuario().idUsuario,
-            itempretareaesparragovarios: preTarea.itempretareaesparragosvarios));
-        update(['personal_seleccionado']);
-        preTarea.detalles=personalSeleccionado;
-        await _updatePesadoUseCase.execute(preTarea, indexTarea);
+            : await _showNotification(true, 'Registrado con exito');
+        buscando = false;
+        return;
       } else {
         byLector
             ? toastError('Error', 'No se encuentra en la lista')
             : _showNotification(false, 'No se encuentra en la lista');
+        buscando=false;
+        return;
       }
     }
   }

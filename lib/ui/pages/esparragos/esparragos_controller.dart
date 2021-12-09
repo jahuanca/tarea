@@ -28,7 +28,7 @@ class EsparragosController extends GetxController {
     Get.to(() => ClasificadosPage());
   }
 
-  void goPesados(){
+  void goVarios(){
     PesadosBinding().dependencies();
     Get.to(() => PesadosPage());
   }
