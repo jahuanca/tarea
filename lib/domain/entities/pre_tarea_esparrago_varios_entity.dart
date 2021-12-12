@@ -41,6 +41,7 @@ class PreTareaEsparragoVariosEntity {
     this.tipoTarea,
     this.sizeTipoCaja,
     this.sizeTipoPersona,
+    this.imei,
   }){
     estadoLocal='P';
   }
@@ -101,6 +102,8 @@ class PreTareaEsparragoVariosEntity {
   int sizeTipoPersona;
   @HiveField(27)
   int sizeTipoCaja;
+  @HiveField(28)
+  String imei;
 
   String get fechaHora {
     if (fecha == null || horainicio == null) {
@@ -167,6 +170,7 @@ class PreTareaEsparragoVariosEntity {
         diasiguiente: json["diasiguiente"] == null ? null : json["diasiguiente"],
         turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
         key: json["key"] == null ? null : json["key"],
+        imei: json["imei"] == null ? null : json["imei"],
         sizeDetails: json["sizeDetails"] == null ? null : json["sizeDetails"],
         centroCosto: json['Centro_Costo'] == null ? null : CentroCostoEntity.fromJson(json['Centro_Costo']),
         detalles: json['Pre_Tarea_Esparrago_Detalle_Varios'] == null
@@ -188,6 +192,7 @@ class PreTareaEsparragoVariosEntity {
             pausainicio == null ? null : pausainicio.toIso8601String(),
         "pausafin": pausafin == null ? null : pausafin.toIso8601String(),
         "linea": linea == null ? null : linea,
+        "imei": imei == null ? null : imei,
         "idcentrocosto": idcentrocosto == null ? null : idcentrocosto,
         "sizeTipoPersona": sizeTipoPersona == null ? null : sizeTipoPersona,
         "sizeTipoCaja": sizeTipoCaja == null ? null : sizeTipoCaja,

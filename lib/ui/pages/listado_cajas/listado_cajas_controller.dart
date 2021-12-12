@@ -85,8 +85,8 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
       print('es valido');
-      sunmiBarcodePlugin.onBarcodeScanned().listen((event) {
-        setCodeBar(event, true);
+      sunmiBarcodePlugin.onBarcodeScanned().listen((event) async{
+        await setCodeBar(event, true);
       });
     } else {
       print('no es valido SUNMI');
@@ -270,15 +270,19 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
     });
   }
 
+  bool buscando=false;
+
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
-    if (barcode != null && barcode != '-1') {
+    if (barcode != null && barcode != '-1' && buscando==false) {
+      buscando=true;
       for (var element in otrasPreTareas) {
         int indexOtra = element.detalles.indexWhere(
             (e) => e.codigotk.toString().trim() == barcode.toString().trim());
         if (indexOtra != -1) {
           byLector
               ? toastError('Error', 'Se encuentra en otra tarea')
-              : _showNotification(false, 'Se encuentra en otra tarea');
+              : await _showNotification(false, 'Se encuentra en otra tarea');
+          buscando=false;
           return;
         }
       }
@@ -288,7 +292,8 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
       if (indexEncontrado != -1) {
         byLector
             ? toastError('Error', 'Ya se encuentra registrado')
-            : _showNotification(false, 'Ya se encuentra registrado');
+            : await _showNotification(false, 'Ya se encuentra registrado');
+        buscando=false;
         update(['personal_seleccionado']);
         return;
       }
@@ -297,12 +302,6 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
       int index =
           clientes.indexWhere((e) => e.idcliente == int.parse(valores[0]));
       if (index != -1) {
-        byLector
-            ? toastExito('Éxito', 'Registrado con exito')
-            : _showNotification(true, 'Registrado con exito');
-        /* int lasItem = (personalSeleccionado.isEmpty)
-            ? 0
-            : personalSeleccionado.last.numcaja; */
 
         int indexLabor =
             labores.indexWhere((e) => e.idlabor == int.parse(valores[1]));
@@ -314,7 +313,7 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
               idcliente: clientes[index].idcliente,
               fecha: DateTime.now(),
               hora: DateTime.now(),
-              imei: '1256',
+              imei: PreferenciasUsuario().imei ?? '',
               key: key.v4(),
               idestado: 1,
               linea: 1,
@@ -328,10 +327,17 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
         update(['personal_seleccionado']);
         preTarea.detalles = personalSeleccionado;
         await _updateClasificacionUseCase.execute(preTarea, preTarea.key);
+        byLector
+            ? toastExito('Éxito', 'Registrado con exito')
+            : await _showNotification(true, 'Registrado con exito');
+        buscando=false;        
+        return;
       } else {
         byLector
             ? toastError('Error', 'No se encuentra en la lista')
-            : _showNotification(false, 'No se encuentra en la lista');
+            : await _showNotification(false, 'No se encuentra en la lista');
+        buscando=false;
+        return;
       }
     }
   }

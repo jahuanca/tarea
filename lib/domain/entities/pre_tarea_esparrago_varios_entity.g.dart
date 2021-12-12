@@ -40,6 +40,7 @@ class PreTareaEsparragoVariosEntityAdapter
       tipoTarea: fields[25] as TipoTareaEntity,
       sizeTipoCaja: fields[27] as int,
       sizeTipoPersona: fields[26] as int,
+      imei: fields[28] as String,
     )
       ..sede = fields[13] as SubdivisionEntity
       ..pathUrl = fields[14] as String
@@ -51,7 +52,7 @@ class PreTareaEsparragoVariosEntityAdapter
   @override
   void write(BinaryWriter writer, PreTareaEsparragoVariosEntity obj) {
     writer
-      ..writeByte(27)
+      ..writeByte(28)
       ..writeByte(0)
       ..write(obj.itempretareaesparragosvarios)
       ..writeByte(1)
@@ -105,7 +106,9 @@ class PreTareaEsparragoVariosEntityAdapter
       ..writeByte(26)
       ..write(obj.sizeTipoPersona)
       ..writeByte(27)
-      ..write(obj.sizeTipoCaja);
+      ..write(obj.sizeTipoCaja)
+      ..writeByte(28)
+      ..write(obj.imei);
   }
 
   @override

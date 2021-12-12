@@ -11,7 +11,6 @@ import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_clientes_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pesados/get_all_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/update_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados_seleccion/create_pesado_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados_seleccion/delete_pesado_detalle_use_case.dart';
@@ -50,6 +49,8 @@ class ListadoPersonasPesadoController extends GetxController
   final DeletePesadoDetalleUseCase _deletePesadoDetalleUseCase;
   bool validando = false;
   bool editando = false;
+  int sizeDetailsCaja = 0;
+  int sizeDetailsPersona = 0;
   HoneywellScanner honeywellScanner;
   SunmiBarcodePlugin sunmiBarcodePlugin;
 
@@ -81,8 +82,11 @@ class ListadoPersonasPesadoController extends GetxController
       }
       if (Get.arguments['tarea'] != null) {
         preTarea = Get.arguments['tarea'] as PreTareaEsparragoVariosEntity;
+        sizeDetailsCaja = preTarea.sizeTipoCaja ?? 0;
+        sizeDetailsPersona = preTarea.sizeTipoPersona ?? 0;
         personalSeleccionado = await _getAllPesadoDetallesUseCase
             .execute('pesado_detalles_${preTarea.key}');
+
         update(['personal_seleccionado']);
       }
 
@@ -202,7 +206,11 @@ class ListadoPersonasPesadoController extends GetxController
   }
 
   Future<bool> onWillPop() async {
-    Get.back(result: personalSeleccionado.length);
+    Get.back(result: [
+      personalSeleccionado.length,
+      preTarea.sizeTipoCaja,
+      preTarea.sizeTipoPersona
+    ]);
     return true;
   }
 
@@ -248,6 +256,15 @@ class ListadoPersonasPesadoController extends GetxController
         Get.back();
         PreTareaEsparragoDetalleVariosEntity item =
             personalSeleccionado.removeAt(index);
+        item.esCaja
+            ? sizeDetailsCaja = sizeDetailsCaja - 1
+            : sizeDetailsPersona = sizeDetailsPersona - 1;
+
+        preTarea.sizeTipoCaja = sizeDetailsCaja;
+        preTarea.sizeDetails = personalSeleccionado.length;
+        preTarea.sizeTipoPersona = sizeDetailsPersona;
+        await _updatePesadoUseCase.execute(preTarea, preTarea.key);
+
         await _deletePesadoDetalleUseCase.execute(
             'pesado_detalles_${preTarea.key}', item.key);
         update(['seleccionados', 'personal_seleccionado']);
@@ -293,10 +310,15 @@ class ListadoPersonasPesadoController extends GetxController
             ? toastError('Error', 'Ya se encuentra registrado')
             : await _showNotification(false, 'Ya se encuentra registrado');
         buscando = false;
+        update(['personal_seleccionado']);
         return;
       }
 
       List<String> valores = barcode.toString().split('_');
+      if (valores.length < 3) {
+        buscando = false;
+        return;
+      }
       bool esCaja = (valores.length == 3) ? true : false;
       int index = 0;
       if (!esCaja) {
@@ -309,6 +331,7 @@ class ListadoPersonasPesadoController extends GetxController
             ? toastError('Error', 'No se encontro al cliente.')
             : await _showNotification(false, 'No se encontro al cliente.');
         buscando = false;
+        update(['personal_seleccionado']);
         return;
       }
       if (index != -1) {
@@ -320,7 +343,7 @@ class ListadoPersonasPesadoController extends GetxController
                 codigoempresa: esCaja ? null : personal[index].codigoempresa,
                 fecha: DateTime.now(),
                 hora: DateTime.now(),
-                imei: '1256',
+                imei: PreferenciasUsuario().imei ?? '',
                 idestado: 1,
                 linea: esCaja ? 0 : 3,
                 esCaja: esCaja,
@@ -336,10 +359,20 @@ class ListadoPersonasPesadoController extends GetxController
                 itempretareaesparragovarios:
                     preTarea.itempretareaesparragosvarios);
         update(['personal_seleccionado']);
+
+        esCaja
+            ? sizeDetailsCaja = sizeDetailsCaja + 1
+            : sizeDetailsPersona = sizeDetailsPersona + 1;
+
         int key = await _createPesadoDetalleUseCase.execute(
             'pesado_detalles_${preTarea.key}', d);
         d.key = key;
         personalSeleccionado.add(d);
+        preTarea.sizeTipoCaja = sizeDetailsCaja;
+        preTarea.sizeDetails = personalSeleccionado.length;
+        preTarea.sizeTipoPersona = sizeDetailsPersona;
+        await _updatePesadoUseCase.execute(preTarea, preTarea.key);
+
         byLector
             ? toastExito('Éxito', 'Registrado con exito')
             : await _showNotification(true, 'Registrado con exito');
@@ -349,7 +382,7 @@ class ListadoPersonasPesadoController extends GetxController
         byLector
             ? toastError('Error', 'No se encuentra en la lista')
             : _showNotification(false, 'No se encuentra en la lista');
-        buscando=false;
+        buscando = false;
         return;
       }
     }

@@ -206,7 +206,28 @@ class PesadosPage extends StatelessWidget {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
                                     child: Text((_
-                                        .pesados[index].sizeDetails ?? 0)
+                                        .pesados[index].sizeTipoCaja ?? 0)
+                                        .toString())),
+                                Icon(
+                                  Icons.widgets,
+                                  color: Colors.black45,
+                                )
+                              ],
+                            ),
+                          ),
+                          flex: 5,
+                        ),
+                        Flexible(child: Container(), flex: 1),
+                        Flexible(
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: [
+                                Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 5),
+                                    child: Text((_
+                                        .pesados[index].sizeTipoPersona ?? 0)
                                         .toString())),
                                 Icon(
                                   Icons.people,
@@ -215,7 +236,7 @@ class PesadosPage extends StatelessWidget {
                               ],
                             ),
                           ),
-                          flex: 10,
+                          flex: 5,
                         ),
                         Flexible(child: Container(), flex: 1),
                         Flexible(
@@ -280,7 +301,7 @@ class PesadosPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: dangerColor,
                                     child: IconButton(
-                                      onPressed: () => _.goEliminar(index),
+                                      onPressed: () => _.goEliminar(_.pesados[index].key),
                                       icon: Icon(Icons.delete),
                                       color: Colors.white,
                                     ),

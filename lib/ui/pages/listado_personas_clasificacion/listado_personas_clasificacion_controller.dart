@@ -17,8 +17,7 @@ import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
 import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
 
-class ListadoPersonasClasificacionController extends GetxController
-    {
+class ListadoPersonasClasificacionController extends GetxController {
   List<int> seleccionados = [];
   List<PersonalEmpresaEntity> personal = [];
   List<PreTareaEsparragoDetalleEntity> personalSeleccionado = [];
@@ -54,8 +53,6 @@ class ListadoPersonasClasificacionController extends GetxController
     super.onInit();
     actividades = await _getActividadsUseCase.execute();
     labores = await _getLaborsUseCase.execute();
-    
-    
 
     if (Get.arguments != null) {
       if (Get.arguments['index'] != null) {
@@ -104,9 +101,8 @@ class ListadoPersonasClasificacionController extends GetxController
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
       print('es valido');
-      sunmiBarcodePlugin.onBarcodeScanned().listen((event) {
-        print(event);
-        setCodeBar(event, true);
+      sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
+        await setCodeBar(event, true);
       });
     } else {
       print('no es valido SUNMI');
@@ -146,8 +142,6 @@ class ListadoPersonasClasificacionController extends GetxController
     super.onClose();
     /* honeywellScannerClasificacion.stopScanner(); */
   }
-
-
 
   /* @override
   void onDecoded(String result) {
@@ -299,8 +293,11 @@ class ListadoPersonasClasificacionController extends GetxController
     });
   }
 
+  bool buscando = false;
+
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
-    if (barcode != null && barcode != -1) {
+    if (barcode != null && barcode != '-1' && buscando == false) {
+      buscando = true;
       /* for (var element in otrasCajas) {
         if(element.detalles==null) continue;
         int indexOtra = element.detalles.indexWhere(
@@ -314,25 +311,25 @@ class ListadoPersonasClasificacionController extends GetxController
       } */
 
       int indexEncontrado = personalSeleccionado
-          .indexWhere((e) => e.codigotk == barcode.toString().trim());  
+          .indexWhere((e) => e.codigotk == barcode.toString().trim());
       if (indexEncontrado != -1) {
         byLector
             ? toastError('Error', 'Ya se encuentra registrado')
-            : _showNotification(false, 'Ya se encuentra registrado');
+            : await _showNotification(false, 'Ya se encuentra registrado');
+        buscando = false;
+        update(['personal_seleccionado']);
         return;
       }
 
       List<String> valores = barcode.toString().split('_');
+
+      if (valores.length < 4) {
+        buscando = false;
+        return;
+      }
+
       int index = personal.indexWhere((e) => e.codigoempresa == valores[0]);
       if (index != -1) {
-        byLector
-            ? toastExito('Éxito', 'Registrado con exito')
-            : _showNotification(true, 'Registrado con exito');
-        /* int lasItem = (personalSeleccionado.isEmpty)
-            ? 0
-            : personalSeleccionado.last.numcaja; */
-        //TODO: VERIFICAR ESTRUCTURA QR:
-        //TODO:codigosap_idcliente_idlabor_linea_correlativo
         int indexLabor =
             labores.indexWhere((e) => e.idlabor == int.parse(valores[2]));
 
@@ -341,7 +338,7 @@ class ListadoPersonasClasificacionController extends GetxController
           codigoempresa: personal[index].codigoempresa,
           fecha: DateTime.now(),
           hora: DateTime.now(),
-          imei: '1256',
+          imei: PreferenciasUsuario().imei ?? '',
           idestado: 1,
           idlabor: labores[indexLabor].idlabor,
           idactividad: labores[indexLabor].idactividad,
@@ -351,7 +348,6 @@ class ListadoPersonasClasificacionController extends GetxController
           codigotk: barcode.toString(),
           idusuario: PreferenciasUsuario().idUsuario,
         ));
-        update(['personal_seleccionado']);
         if (preTarea.detalles == null) {
           preTarea.detalles = [];
         }
@@ -360,10 +356,19 @@ class ListadoPersonasClasificacionController extends GetxController
         }
         preTarea.detalles[indexFormato].detalles = personalSeleccionado;
         await _updateClasificacionUseCase.execute(preTarea, preTarea.key);
+        byLector
+            ? toastExito('Éxito', 'Registrado con exito')
+            : await _showNotification(true, 'Registrado con exito');
+        buscando = false;
+        update(['personal_seleccionado']);
+        return;
       } else {
         byLector
             ? toastError('Error', 'No se encuentra en la lista')
-            : _showNotification(false, 'No se encuentra en la lista');
+            : await _showNotification(false, 'No se encuentra en la lista');
+        buscando = false;
+        update(['personal_seleccionado']);
+        return;
       }
     }
   }

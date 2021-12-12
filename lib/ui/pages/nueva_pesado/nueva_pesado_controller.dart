@@ -182,24 +182,6 @@ class NuevaPesadoController extends GetxController {
   }
 
   void changeFinPausa() {
-    /* if (nuevaPreTarea.pausafin != null && nuevaPreTarea.turnotareo == 'D') {
-      if (nuevaPreTarea.turnotareo == 'N') {
-        update(['inicio_pausa']);
-        return;
-      }
-      if (nuevaPreTarea.pausafin.isBefore(nuevaPreTarea.horainicio) ||
-          nuevaPreTarea.pausafin.isAfter(nuevaPreTarea.horafin)) {
-        mostrarDialog(
-            'La hora seleccionada no se encuentra en el rango de inicio y fin');
-        nuevaPreTarea.pausafin = null;
-      }
-      if (nuevaPreTarea.pausainicio != null &&
-          nuevaPreTarea.pausainicio.isAfter(nuevaPreTarea?.pausafin)) {
-        mostrarDialog('La hora debe ser mayor a la hora de pausa');
-        nuevaPreTarea.pausafin = null;
-      }
-      update(['fin_pausa']);
-    } */
     update(['fin_pausa']);
   }
 
@@ -294,6 +276,7 @@ class NuevaPesadoController extends GetxController {
     if (mensaje == null) {
 
       nuevaPreTarea.idusuario=PreferenciasUsuario().idUsuario;
+      nuevaPreTarea.imei=PreferenciasUsuario().imei;
       nuevaPreTarea.estadoLocal='PC';
       Get.back(result: nuevaPreTarea);
     } else {

@@ -93,7 +93,6 @@ class ListadoPersonasSeleccionController extends GetxController
       initPlatformState();
       print('es valido');
       sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
-        print(event);
         await setCodeBar(event, true);
       });
     } else {
@@ -245,24 +244,24 @@ class ListadoPersonasSeleccionController extends GetxController
     });
   }
 
-  Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
-    if (barcode != null && barcode != '-1') {
+  bool buscando=false;
 
+  Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
+    if (barcode != null && barcode != '-1' && buscando == false) {
+      buscando=true;
       int indexEncontrado = personalSeleccionado
           .indexWhere((e) => e.codigotk.toString().trim() == barcode.toString().trim());
       if (indexEncontrado != -1) {
         byLector
             ? toastError('Error', 'Ya se encuentra registrado')
             : await _showNotification(false, 'Ya se encuentra registrado');
+        buscando=false;        
         return;
       }
 
       int index = personal.indexWhere(
           (e) => e.nrodocumento.trim() == barcode.toString().trim());
       if (index != -1) {
-        byLector
-            ? toastExito('Éxito', 'Registrado con exito')
-            : await _showNotification(true, 'Registrado con exito');
 
         PreTareaEsparragoDetalleGrupoEntity d =
             PreTareaEsparragoDetalleGrupoEntity(
@@ -270,7 +269,7 @@ class ListadoPersonasSeleccionController extends GetxController
                 codigoempresa: personal[index].codigoempresa,
                 fecha: DateTime.now(),
                 hora: DateTime.now(),
-                imei: '1256',
+                imei: PreferenciasUsuario().imei ?? '',
                 idestado: 1,
                 codigotk: barcode.toString().trim(),
                 idusuario: PreferenciasUsuario().idUsuario,
@@ -280,10 +279,17 @@ class ListadoPersonasSeleccionController extends GetxController
         d.key=key;
         personalSeleccionado.add(d);
         update(['personal_seleccionado']);
+        byLector
+            ? toastExito('Éxito', 'Registrado con exito')
+            : await _showNotification(true, 'Registrado con exito');
+        buscando=false;        
+        return;
       } else {
         byLector
             ? toastError('Error', 'No se encuentra en la lista')
-            : _showNotification(false, 'No se encuentra en la lista');
+            : await _showNotification(false, 'No se encuentra en la lista');
+        buscando=false;        
+        return;
       }
     }
   }

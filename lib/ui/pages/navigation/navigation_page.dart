@@ -17,7 +17,7 @@ class NavigationPage extends GetWidget<NavigationController> {
     
     
     return GetBuilder<NavigationController>(
-      init: NavigationController(),
+      init: navigationController,
       id: 'bottom_navigation',
       builder: (_)=> SafeArea(
         child: WillPopScope(

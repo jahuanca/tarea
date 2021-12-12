@@ -349,8 +349,11 @@ class ListadoPersonasPreTareoUvaController extends GetxController
     });
   }
 
+  bool buscando=false;
+
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
-    if (barcode != null && barcode != '-1') {
+    if (barcode != null && barcode != '-1' && buscando ==false) {
+      buscando=true;
       for (var element in otrasPreTareas) {
         int indexOtra = element.detalles.indexWhere(
             (e) => e.codigotk.toString().trim() == barcode.toString().trim());
@@ -358,6 +361,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
           byLector
               ? toastError('Error', 'Se encuentra en otra tarea')
               : _showNotification(false, 'Se encuentra en otra tarea');
+          buscando=false;        
           return;
         }
       }
@@ -368,6 +372,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
         byLector
             ? toastError('Error', 'Ya se encuentra registrado')
             : await _showNotification(false, 'Ya se encuentra registrado');
+        buscando=false;        
         return;
       }
       List<String> valores = barcode.toString().split('_');
@@ -375,9 +380,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
       if (index != -1) {
         LaborEntity labor =
             labores?.firstWhere((e) => e.idlabor == int.parse(valores[1]));
-        byLector
-            ? toastExito('Éxito', 'Registrado con exito')
-            : await _showNotification(true, 'Registrado con exito');
+            
         int lasItem = (personalSeleccionado.isEmpty)
             ? 0
             : personalSeleccionado.last.numcaja;
@@ -391,7 +394,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
             codigoempresa: personal[index].codigoempresa,
             fecha: DateTime.now(),
             hora: DateTime.now(),
-            imei: '1256',
+            imei: PreferenciasUsuario().imei ?? '',
             idestado: 1,
             codigotk: barcode.toString().trim(),
             idusuario: PreferenciasUsuario().idUsuario,
@@ -400,11 +403,17 @@ class ListadoPersonasPreTareoUvaController extends GetxController
         d.key=key;
         personalSeleccionado.add(d);
         update(['personal_seleccionado']);
-        
+        byLector
+            ? toastExito('Éxito', 'Registrado con exito')
+            : await _showNotification(true, 'Registrado con exito');
+        buscando=false;        
+        return;
       } else {
         byLector
             ? toastError('Error', 'No se encuentra en la lista')
-            : _showNotification(false, 'No se encuentra en la lista');
+            : await _showNotification(false, 'No se encuentra en la lista');
+        buscando=false;        
+        return;
       }
     }
   }

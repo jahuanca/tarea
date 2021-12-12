@@ -39,6 +39,7 @@ class AppHttpManager implements HttpManager {
     Map body,
     Map<String, dynamic> query,
     Map<String, String> headers,
+    bool mostrarError=true,
   }) async {
     try {
       print('Api Post request url $url, with $body');
@@ -46,7 +47,7 @@ class AppHttpManager implements HttpManager {
           body: body != null ? json.encode(body) : null,
           headers: await _headerBuilder(headers));
       /* .timeout(timeout, onTimeout: () => throw TimeoutException()); */
-      return _returnResponse(response);
+      return _returnResponse(response, mostrarError);
     } on SocketException catch (_) {
       throw NetworkException();
     }
@@ -121,7 +122,7 @@ class AppHttpManager implements HttpManager {
     return buffer.toString();
   }
 
-  dynamic _returnResponse(http.Response response) {
+  dynamic _returnResponse(http.Response response, [bool mostrarError=true]) {
     /* final responseJson = json.decode(response.body); */
     final responseJson = response.body;
     if (response.statusCode >= 200 && response.statusCode <= 299) {
@@ -133,7 +134,7 @@ class AppHttpManager implements HttpManager {
     }
 
     MessageEntity mensaje = MessageEntity.fromJson(jsonDecode(responseJson));
-    toastError('Error', mensaje.message);
+    if(mostrarError)  toastError('Error', mensaje.message);
 
     switch (response.statusCode) {
       case 400:

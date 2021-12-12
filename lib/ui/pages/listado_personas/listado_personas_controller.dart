@@ -1,4 +1,3 @@
-
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -37,7 +36,6 @@ class ListadoPersonasController extends GetxController
 
   @override
   void onInit() async {
-    
     super.onInit();
     if (Get.arguments != null) {
       if (Get.arguments['tarea'] != null) {
@@ -74,9 +72,8 @@ class ListadoPersonasController extends GetxController
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
       print('es valido');
-      sunmiBarcodePlugin.onBarcodeScanned().listen((event) {
-        print(event);
-        setCodeBar(event, true);
+      sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
+        await setCodeBar(event, true);
       });
     } else {
       print('no es valido SUNMI');
@@ -112,15 +109,15 @@ class ListadoPersonasController extends GetxController
   }
 
   @override
-  void onClose() async{
-    if(await honeywellScanner?.isSupported() ?? false){
+  void onClose() async {
+    if (await honeywellScanner?.isSupported() ?? false) {
       honeywellScanner.stopScanner();
     }
     super.onClose();
   }
 
   @override
-  void onDecoded(String result) async{
+  void onDecoded(String result) async {
     await setCodeBar(result);
   }
 
@@ -268,38 +265,46 @@ class ListadoPersonasController extends GetxController
         .listen((barcode) async {
       print(barcode);
       await setCodeBar(barcode);
-      
     });
   }
 
-  Future<void> setCodeBar(dynamic barcode, [bool byLector = false])async{
-    if (barcode != null) {
-        int indexEncontrado = personalSeleccionado
-            .indexWhere((e) => e.personal.nrodocumento == barcode.toString());
-        if (indexEncontrado != -1) {
-          byLector
+  bool buscando = false;
+
+  Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
+    if (barcode != null && barcode != '-1' && buscando == false) {
+      buscando = true;
+      int indexEncontrado = personalSeleccionado
+          .indexWhere((e) => e.personal.nrodocumento == barcode.toString());
+      if (indexEncontrado != -1) {
+        byLector
             ? toastError('Error', 'Ya se encuentra registrado')
-            : _showNotification(false, 'Ya se encuentra registrado');
-          update(['personal_seleccionado']);
-          return;
-        }
-        int index =
-            personal.indexWhere((e) => e.nrodocumento == barcode.toString());
-        if (index != -1) {
-          byLector
-            ? toastExito('Éxito', 'Registrado con exito')
-            : _showNotification(true, 'Registrado con exito');
-          personalSeleccionado.add(PersonalTareaProcesoEntity(
-            personal: personal[index],
-            codigoempresa: personal[index].codigoempresa,
-          ));
-          update(['personal_seleccionado']);
-        } else {
-          byLector
-            ? toastError('Error', 'No se encuentra en la lista')
-            : _showNotification(false, 'No se encuentra en la lista');
-        }
-        await Future.delayed(Duration(seconds: 2));
+            : await _showNotification(false, 'Ya se encuentra registrado');
+        update(['personal_seleccionado']);
+        buscando = false;
+        return;
       }
+      int index =
+          personal.indexWhere((e) => e.nrodocumento == barcode.toString());
+      if (index != -1) {
+        personalSeleccionado.add(PersonalTareaProcesoEntity(
+          personal: personal[index],
+          codigoempresa: personal[index].codigoempresa,
+        ));
+        update(['personal_seleccionado']);
+        byLector
+            ? toastExito('Éxito', 'Registrado con exito')
+            : await _showNotification(true, 'Registrado con exito');
+        buscando = false;
+        update(['personal_seleccionado']);
+        return;
+      } else {
+        byLector
+            ? toastError('Error', 'No se encuentra en la lista')
+            : await _showNotification(false, 'No se encuentra en la lista');
+        buscando = false;
+        update(['personal_seleccionado']);
+        return;
+      }
+    }
   }
 }

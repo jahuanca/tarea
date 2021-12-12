@@ -25,6 +25,14 @@ class PreferenciasUsuario {
     _prefs.setString('token', value);
   }
 
+  get imei {
+    return _prefs.getString('imei') ?? '';
+  }
+
+  set imei(String value) {
+    _prefs.setString('imei', value);
+  }
+
   get permanentSession {
     return _prefs.getBool('permanentSession') ?? false;
   }

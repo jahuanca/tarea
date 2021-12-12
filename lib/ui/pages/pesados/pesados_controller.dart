@@ -5,7 +5,6 @@ import 'package:flutter_tareo/di/listado_personas_pesado_binding.dart';
 import 'package:flutter_tareo/di/nueva_pesado_binding.dart';
 import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
-import 'package:flutter_tareo/domain/use_cases/others/export_data_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_pesado_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/create_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/delete_pesado_use_case.dart';
@@ -191,15 +190,17 @@ class PesadosController extends GetxController {
     otras.removeAt(index);
     ListadoPersonasPesadoBinding().dependencies();
     final resultado =
-        await Get.to<int>(() => ListadoPersonasPesadoPage(), arguments: {
+        await Get.to<List<int>>(() => ListadoPersonasPesadoPage(), arguments: {
       'otras': otras,
       'tarea': pesados[index],
       'index': index,
     });
 
-    if (resultado != null) {
-      pesados[index].sizeDetails = resultado;
-      await _updatePesadoUseCase.execute(pesados[index], pesados[index].key);
+    if (resultado != null && resultado.length==3) {
+      pesados[index].sizeDetails = resultado[0];
+      pesados[index].sizeTipoCaja = resultado[1];
+      pesados[index].sizeTipoPersona = resultado[2];
+      /* await _updatePesadoUseCase.execute(pesados[index], pesados[index].key); */
       update(['tareas']);
     }
   }
@@ -207,6 +208,7 @@ class PesadosController extends GetxController {
   Future<void> delete(int index) async {
     await _deletePesadoUseCase.execute(pesados[index].key);
     pesados.removeAt(index);
+    update(['tareas']);
   }
 
   List<int> seleccionados = [];
@@ -234,13 +236,12 @@ class PesadosController extends GetxController {
   }
 
   Future<void> editarPesado(int key) async {
-    NuevaPreTareaBinding().dependencies();
+    NuevaPesadoBinding().dependencies();
     int index = pesados.indexWhere((element) => element.key == key);
     final result = await Get.to<PreTareaEsparragoVariosEntity>(
-        () => NuevaPreTareaPage(),
+        () => NuevaPesadoPage(),
         arguments: {'tarea': pesados[index]});
     if (result != null) {
-      print(result.horafin);
       result.idusuario = PreferenciasUsuario().idUsuario;
       pesados[index] = result;
       await _updatePesadoUseCase.execute(pesados[index], pesados[index].key);

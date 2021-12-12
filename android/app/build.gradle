@@ -52,8 +52,8 @@ android {
         applicationId "com.example.flutter_tareo"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 16
-        versionName '1.0.15'
+        versionCode 20
+        versionName '1.0.19'
     }
 
     signingConfigs {

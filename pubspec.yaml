@@ -59,6 +59,8 @@ dependencies:
   permission_handler:
   ext_storage: ^1.0.3
   sunmi_barcode_plugin: ^0.0.3
+  socket_io_client: ^0.9.12
+  imei_plugin: ^1.2.0
   #cupertino_icons: ^1.0.2
 
 dev_dependencies:
