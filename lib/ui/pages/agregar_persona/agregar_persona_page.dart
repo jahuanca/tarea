@@ -22,7 +22,7 @@ class AgregarPersonaPage extends StatelessWidget {
     return GetBuilder<AgregarPersonaController>(
       init: controller,
       builder: (_) => Scaffold(
-        appBar: getAppBar('Agregar persona', [], true),
+        appBar: getAppBar(_.editando ? 'Editando persona': 'Agregar persona' , [], true),
         backgroundColor: secondColor,
         body: Stack(
           children: [
@@ -40,9 +40,10 @@ class AgregarPersonaPage extends StatelessWidget {
                             error: _.errorPersonal,
                             labelValue: 'codigoempresa',
                             onChanged: _.changePersonal,
-                            selectedItem: _.personalTareaProcesoEntity?.personal==null ? null : {
-                              'name': _.personalTareaProcesoEntity.personal.nombreCompleto,
-                              'codigoempresa': _.personalTareaProcesoEntity.personal.codigoempresa,
+                            enabled: !_.editando,
+                            selectedItem: _.nuevoPersonal?.personal==null ? null : {
+                              'name': _.nuevoPersonal.personal.nombreCompleto,
+                              'codigoempresa': _.nuevoPersonal.personal.codigoempresa,
                             },
                             items: _.personalEmpresa.length == 0
                                 ? []
@@ -67,18 +68,18 @@ class AgregarPersonaPage extends StatelessWidget {
                       builder: (_) => InputLabelWidget(
                           enabled: false,
                           onTap: () async {
-                            _.personalTareaProcesoEntity.horainicio =
+                            _.nuevoPersonal.horainicio =
                                 await DatePickerWidget(
                               onlyDate: true,
                               dateSelected: DateTime.now(),
                             ).selectTime(context,
-                                    _.personalTareaProcesoEntity.horainicio);
+                                    _.nuevoPersonal.horainicio);
                             _.changeHoraInicio();
                           },
                           label: 'Hora inicio',
                           textEditingController: TextEditingController(
                               text: formatoHora(
-                                  _.personalTareaProcesoEntity.horainicio)),
+                                  _.nuevoPersonal.horainicio)),
                           hintText: 'Hora inicio'),
                     ),
                     SizedBox(
@@ -89,30 +90,30 @@ class AgregarPersonaPage extends StatelessWidget {
                       builder: (_) => InputLabelWidget(
                           enabled: false,
                           onTap: () async {
-                            _.personalTareaProcesoEntity
+                            _.nuevoPersonal
                                 .horafin = await DatePickerWidget(
                               onlyDate: true,
                               //minDate: _.personalTareaProcesoEntity.horainicio,
                               dateSelected:
-                                  _.personalTareaProcesoEntity.horafin ??
+                                  _.nuevoPersonal.horafin ??
                                       DateTime.now(),
                               onChanged: () {},
                             ).selectTime(
-                                context, _.personalTareaProcesoEntity.horafin);
+                                context, _.nuevoPersonal.horafin);
                             _.changeHoraFin();
                           },
                           label: 'Hora fin',
                           textEditingController: TextEditingController(
                               text: formatoHora(
-                                  _.personalTareaProcesoEntity.horafin)),
+                                  _.nuevoPersonal.horafin)),
                           hintText: 'Hora fin'),
                     ),
                     GetBuilder<AgregarPersonaController>(
                         id: 'inicio_pausa',
-                        builder: (_) => (_.personalTareaProcesoEntity
+                        builder: (_) => (_.nuevoPersonal
                                         .horainicio !=
                                     null &&
-                                _.personalTareaProcesoEntity.horafin != null)
+                                _.nuevoPersonal.horafin != null)
                             ? Column(
                                 children: [
                                   InputLabelWidget(
@@ -121,7 +122,7 @@ class AgregarPersonaPage extends StatelessWidget {
                                       iconOverlay: Icons.delete,
                                       onPressedIconOverlay: _.deleteInicioPausa,
                                       onTap: () async {
-                                        _.personalTareaProcesoEntity
+                                        _.nuevoPersonal
                                                 .pausainicio =
                                             await DatePickerWidget(
                                           onlyDate: true,
@@ -129,13 +130,13 @@ class AgregarPersonaPage extends StatelessWidget {
                                           dateSelected: DateTime.now(),
                                           onChanged: () {},
                                         ).selectTime(
-                                                context, _.personalTareaProcesoEntity.horainicio ?? DateTime.now());
+                                                context, _.nuevoPersonal.horainicio ?? DateTime.now());
                                         _.changeInicioPausa();
                                       },
                                       textEditingController:
                                           TextEditingController(
                                               text: formatoHora(
-                                        _.personalTareaProcesoEntity
+                                        _.nuevoPersonal
                                             .pausainicio,
                                       )),
                                       label: 'Inicio de pausa',
@@ -148,25 +149,25 @@ class AgregarPersonaPage extends StatelessWidget {
                             : Container()),
                     GetBuilder<AgregarPersonaController>(
                       id: 'fin_pausa',
-                      builder: (_) => (_.personalTareaProcesoEntity.horainicio != null &&
-                                _.personalTareaProcesoEntity.horafin != null)
+                      builder: (_) => (_.nuevoPersonal.horainicio != null &&
+                                _.nuevoPersonal.horafin != null)
                       ? InputLabelWidget(
                           enabled: false,
                           iconOverlay: Icons.delete,
                           onPressedIconOverlay: _.deleteFinPausa,
                           error: _.errorPausaFin,
                           onTap: () async {
-                            _.personalTareaProcesoEntity.pausafin =
+                            _.nuevoPersonal.pausafin =
                                 await DatePickerWidget(
                               onlyDate: true,
                               //minDate: _.personalTareaProcesoEntity.pausainicio ,
                               dateSelected: DateTime.now(),
-                            ).selectTime(context, _.personalTareaProcesoEntity?.pausainicio ?? new DateTime.now());
+                            ).selectTime(context, _.nuevoPersonal?.pausainicio ?? new DateTime.now());
                             _.changeFinPausa();
                           },
                           textEditingController: TextEditingController(
                               text: formatoHora(
-                                  _.personalTareaProcesoEntity.pausafin)),
+                                  _.nuevoPersonal.pausafin)),
                           label: 'Fin de pausa',
                           hintText: 'Fin de pausa')
                         : Container()
@@ -179,7 +180,7 @@ class AgregarPersonaPage extends StatelessWidget {
                         label: 'Rendimiento/Jornal',
                         tituloTrue: 'Es jornal',
                         tituloFalse: 'Es rendimiento',
-                        value: _.personalTareaProcesoEntity.esjornal ?? false,
+                        value: _.nuevoPersonal.esjornal ?? false,
                       ),
                     ),
                     GetBuilder<AgregarPersonaController>(
@@ -191,7 +192,7 @@ class AgregarPersonaPage extends StatelessWidget {
                         tituloTrue: 'Es dia siguiente',
                         tituloFalse: 'No es dia siguiente',
                         value:
-                            _.personalTareaProcesoEntity.diasiguiente ?? false,
+                            _.nuevoPersonal.diasiguiente ?? false,
                       ),
                     ),
                     GetBuilder<AgregarPersonaController>(
@@ -200,19 +201,22 @@ class AgregarPersonaPage extends StatelessWidget {
                           label: 'Turno',
                           labelText: 'name',
                           labelValue: '_id',
-                          selectedItem: {
+                          selectedItem: _.nuevoPersonal.turno == 'D'? {
                             'name': 'Dia',
-                            '_id': '1',
+                            '_id': 'D',
+                          } : {
+                            'name': 'Noche',
+                            '_id': 'N',
                           },
                           onChanged: _.changeTurno,
                           items: [
                             {
                               'name': 'Dia',
-                              '_id': '1',
+                              '_id': 'D',
                             },
                             {
                               'name': 'Noche',
-                              '_id': '2',
+                              '_id': 'N',
                             },
                           ]),
                     ),

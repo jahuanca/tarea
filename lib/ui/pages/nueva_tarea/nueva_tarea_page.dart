@@ -369,7 +369,8 @@ class NuevaTareaPage extends StatelessWidget {
                     child: Container(
                       alignment: Alignment.center,
                       child: IconButton(
-                        onPressed: controller.goListadoPersonas,
+                        //onPressed: controller.goListadoPersonas,
+                        onPressed: null,
                         icon: Icon(Icons.search, size: 40),
                       ),
                     ),
@@ -382,7 +383,8 @@ class NuevaTareaPage extends StatelessWidget {
                     child: Container(
                       alignment: Alignment.center,
                       child: IconButton(
-                        onPressed: controller.goAgregarPersona,
+                        //onPressed: controller.goAgregarPersona,
+                        onPressed: null,
                         icon: Icon(Icons.person_add, size: 40),
                       ),
                     ),

@@ -37,12 +37,8 @@ class TareaProcesoEntity {
     this.pathUrl,
     this.estadoLocal,
     this.key,
-  }) {
-    if (personal == null) {
-      personal = [];
-      estadoLocal='P';
-    }
-  }
+    this.sizeDetails,
+  }) ;
 
   @HiveField(0)
   int itemtareoproceso;
@@ -84,7 +80,7 @@ class TareaProcesoEntity {
   PersonalEmpresaEntity supervisor;
   @HiveField(19)
   SubdivisionEntity sede;
-  @HiveField(20)
+  /* @HiveField(20) */
   List<PersonalTareaProcesoEntity> personal;
   @HiveField(21)
   bool diasiguiente;
@@ -102,6 +98,8 @@ class TareaProcesoEntity {
   String firmaSupervisor;
   @HiveField(28)
   int key;
+  @HiveField(29)
+  int sizeDetails;
 
   String get fechaHora{
     if(fecha==null || horainicio==null){
@@ -138,6 +136,7 @@ class TareaProcesoEntity {
       TareaProcesoEntity(
         itemtareoproceso: json['itemtareoproceso'],
         codigoempresa: json['codigoempresa'],
+        sizeDetails: json['sizeDetails'],
         fecha: DateTime.parse(json['fecha']),
         idactividad: json['idactividad'],
         idlabor: json['idlabor'],
@@ -170,6 +169,7 @@ class TareaProcesoEntity {
         'idlabor': idlabor,
         'idcentrocosto': idcentrocosto,
         'turnotareo': turnotareo,
+        'sizeDetails': sizeDetails,
         'fechamod': fechamod?.toIso8601String(),
         'idusuario': idusuario,
         'idestado': idestado,

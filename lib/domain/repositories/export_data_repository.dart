@@ -5,4 +5,5 @@ abstract class ExportDataRepository{
   Future<void> exportToExcelPacking(int key);
   Future<void> exportToExcelSeleccion(int key);
   Future<void> exportToExcelPesado(int key);
+  Future<void> exportToExcelTarea(int key);
 }

@@ -82,7 +82,7 @@ class MigrarController extends GetxController {
     validando = true;
     update(['validando']);
     TareaProcesoEntity tareaMigrada =
-        await _migrarAllTareaUseCase.execute(tareas[index]);
+        await _migrarAllTareaUseCase.execute(tareas[index].key);
     if (tareaMigrada != null) {
       toastExito('Exito', 'Tarea migrada con exito');
       tareas[index].estadoLocal = 'M';

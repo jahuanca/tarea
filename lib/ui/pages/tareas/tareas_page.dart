@@ -68,7 +68,7 @@ class TareasPage extends StatelessWidget {
   Widget itemActividad(Size size, BuildContext context, int index) {
     final items = [
       /* {'key': 1, 'value': 'Seleccionar'}, */
-      {'key': 1, 'value': 'Sincronizar'},
+      {'key': 1, 'value': 'Exportar Excel'},
       {'key': 2, 'value': 'Copiar tarea'},
       //aparece un formulario de nueva tarea con los datos cargados
       {'key': 3, 'value': 'Eliminar'},
@@ -167,8 +167,8 @@ class TareasPage extends StatelessWidget {
                                               value: e['key'],
                                               child: Text(e['value'])))
                                           .toList(),
-                                  onChanged: (value) =>
-                                      _.onChangedMenu(value, index)),
+                                  onChanged: (value) => _.onChangedMenu(
+                                      value, _.tareas[index].key)),
                             ),
                             flex: 5),
                         Flexible(child: Container(), flex: 1),
@@ -219,8 +219,9 @@ class TareasPage extends StatelessWidget {
                                 Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text(_.tareas[index].personal.length
-                                        .toString())),
+                                    child: Text(
+                                        (_.tareas[index].sizeDetails ?? 0)
+                                            .toString())),
                                 Icon(
                                   Icons.people,
                                   color: Colors.black45,
@@ -249,77 +250,71 @@ class TareasPage extends StatelessWidget {
                 Flexible(
                   child: Container(
                     child: Row(
-                      children: (_.tareas[index].estadoLocal != 'P')
-                          ? [
-                              Flexible(child: Container(), flex: 1),
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: successColor,
-                                    child: IconButton(
-                                        onPressed: () {},
-                                        icon: Icon(
-                                          Icons.remove_red_eye,
-                                          color: Colors.white,
-                                        )),
-                                  ),
-                                ),
-                                flex: 7,
-                              ),
-                              Flexible(child: Container(), flex: 1),
-                            ]
-                          : [
-                              Flexible(child: Container(), flex: 1),
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: infoColor,
-                                    child: IconButton(
-                                        onPressed: () =>
-                                            _.goListadoPersonas(index),
-                                        icon: Icon(
-                                          Icons.search,
-                                          color: Colors.white,
-                                        )),
-                                  ),
-                                ),
-                                flex: 7,
-                              ),
-                              Flexible(child: Container(), flex: 1),
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: successColor,
-                                    child: IconButton(
-                                      onPressed: () =>
+                      children: [
+                        Flexible(child: Container(), flex: 1),
+                        if(_.tareas[index].estadoLocal!='M')
+                        Flexible(
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: CircleAvatar(
+                              backgroundColor: infoColor,
+                              child: IconButton(
+                                  onPressed: () => _
+                                              .tareas[index].estadoLocal ==
+                                          'P'
+                                      ? _.goListadoPersonas(_.tareas[index].key)
+                                      : _.goMigrar(_.tareas[index].key),
+                                  icon: Icon(
+                                    _.tareas[index].estadoLocal == 'P'
+                                        ? Icons.search
+                                        : Icons.sync,
+                                    color: Colors.white,
+                                  )),
+                            ),
+                          ),
+                          flex: 7,
+                        ),
+                        Flexible(child: Container(), flex: 1),
+                        Flexible(
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: CircleAvatar(
+                              backgroundColor: successColor,
+                              child: IconButton(
+                                /* onPressed: () =>
                                           _.goAgregarPersona(index),
-                                      icon: Icon(Icons.person_add),
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                flex: 7,
+                                      icon: Icon(Icons.person_add), */
+                                onPressed: () =>
+                                    _.tareas[index].estadoLocal == 'P'
+                                        ? _.goAprobar(_.tareas[index].key)
+                                        : null,
+                                icon: _.tareas[index].estadoLocal == 'P'
+                                    ? Icon(Icons.check)
+                                    : Icon(Icons.remove_red_eye),
+                                color: Colors.white,
                               ),
-                              Flexible(child: Container(), flex: 1),
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: alertColor,
-                                    child: IconButton(
-                                      onPressed: () => _.goEditar(index),
-                                      icon: Icon(Icons.edit),
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                flex: 7,
+                            ),
+                          ),
+                          flex: 7,
+                        ),
+                        Flexible(child: Container(), flex: 1),
+                        Flexible(
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: CircleAvatar(
+                              backgroundColor: _.tareas[index].estadoLocal=='P' ? alertColor : dangerColor,
+                              child: IconButton(
+                                onPressed: () =>
+                                     _.tareas[index].estadoLocal=='P' ? _.goEditar(_.tareas[index].key) : _.goEliminar(_.tareas[index].key),
+                                icon:  Icon( _.tareas[index].estadoLocal=='P' ? Icons.edit  : Icons.delete ),
+                                color: Colors.white,
                               ),
-                              Flexible(child: Container(), flex: 1),
-                            ],
+                            ),
+                          ),
+                          flex: 7,
+                        ),
+                        Flexible(child: Container(), flex: 1),
+                      ],
                     ),
                   ),
                   flex: 4,

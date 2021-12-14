@@ -7,7 +7,7 @@ abstract class TareaProcesoRepository{
 
   Future<List<TareaProcesoEntity>> getAll();
   Future<int> create(TareaProcesoEntity tareaProcesoEntity);
-  Future<TareaProcesoEntity> migrar(TareaProcesoEntity tareaProcesoEntity);
+  Future<TareaProcesoEntity> migrar(int key);
   Future<TareaProcesoEntity> uploadFile(TareaProcesoEntity tareaProcesoEntity, File fileLocal);
   Future<void> update(TareaProcesoEntity tareaProcesoEntity , int key);
   Future<void> delete(int key);

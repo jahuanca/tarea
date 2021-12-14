@@ -33,13 +33,13 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       horafin: fields[13] as DateTime,
       pausainicio: fields[14] as DateTime,
       pausafin: fields[15] as DateTime,
-      personal: (fields[20] as List)?.cast<PersonalTareaProcesoEntity>(),
       diasiguiente: fields[21] as bool,
       esjornal: fields[23] as bool,
       esrendimiento: fields[24] as bool,
       pathUrl: fields[25] as String,
       estadoLocal: fields[26] as String,
       key: fields[28] as int,
+      sizeDetails: fields[29] as int,
     )
       ..actividad = fields[16] as ActividadEntity
       ..labor = fields[17] as LaborEntity
@@ -93,8 +93,6 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       ..write(obj.supervisor)
       ..writeByte(19)
       ..write(obj.sede)
-      ..writeByte(20)
-      ..write(obj.personal)
       ..writeByte(21)
       ..write(obj.diasiguiente)
       ..writeByte(22)
@@ -110,7 +108,9 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       ..writeByte(27)
       ..write(obj.firmaSupervisor)
       ..writeByte(28)
-      ..write(obj.key);
+      ..write(obj.key)
+      ..writeByte(29)
+      ..write(obj.sizeDetails);
   }
 
   @override

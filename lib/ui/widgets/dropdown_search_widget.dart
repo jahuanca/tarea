@@ -49,6 +49,7 @@ class DropdownSearchWidget extends StatelessWidget {
           height: size.height * inputDimension,
           width: size.width,
           child: DropdownSearch<Map<String, dynamic>>(
+            enabled: enabled,
               emptyBuilder: (context, searchEntry) => Material(
                     child: Container(
                       alignment: Alignment.center,

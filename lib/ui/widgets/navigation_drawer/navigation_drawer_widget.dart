@@ -85,10 +85,10 @@ Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey) {
                 size, Icons.home, 'Inicio', () => _.goHome(scaffoldKey)),
             _itemDrawer(
                 size, Icons.file_copy, 'Tareas', () => _.goTareas(scaffoldKey)),
-            _itemDrawer(size, Icons.check, 'Aprobación',
+            /* _itemDrawer(size, Icons.check, 'Aprobación',
                 () => _.goAprobar(scaffoldKey)),
             _itemDrawer(size, Icons.sync_rounded, 'Migrar',
-                () => _.goMigrar(scaffoldKey)),
+                () => _.goMigrar(scaffoldKey)), */
             /* if (PreferenciasUsuario().idSede == 7)
               _itemDrawer(size, 'assets/images/arandano_icon.png', 'Arándano',
                   () => _.goPreTareo(scaffoldKey)), */

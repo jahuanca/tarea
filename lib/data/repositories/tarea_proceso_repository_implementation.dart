@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_tareo/core/strings.dart';
 import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/repositories/tarea_proceso_repository.dart';
 import 'package:hive/hive.dart';
@@ -50,11 +51,20 @@ class TareaProcesoRepositoryImplementation extends TareaProcesoRepository {
 
   @override
   Future<TareaProcesoEntity> migrar(
-      TareaProcesoEntity tareaProcesoEntity) async {
+      int key) async {
+
+    Box<TareaProcesoEntity> tareas = await Hive.openBox<TareaProcesoEntity>('tarea_proceso');
+    TareaProcesoEntity t=tareas.get(key);
+
+    if(t.personal == null) t.personal = [];
+
+    Box<PersonalTareaProcesoEntity> detalles = await Hive.openBox<PersonalTareaProcesoEntity>('personal_tarea_proceso_${t.key}');
+    t.personal=detalles.values.toList();
+
     final AppHttpManager http = AppHttpManager();
     final res = await http.post(
       url: '$urlModule/createAll',
-      body: tareaProcesoEntity.toJson(),
+      body: t.toJson(),
     );
 
     return res == null ? null : TareaProcesoEntity.fromJson(jsonDecode(res));

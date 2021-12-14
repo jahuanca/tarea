@@ -40,13 +40,14 @@ class PersonalTareaProcesoEntityAdapter
       esjornal: fields[20] as bool,
       idactividad: fields[21] as bool,
       personal: fields[18] as PersonalEmpresaEntity,
+      key: fields[22] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, PersonalTareaProcesoEntity obj) {
     writer
-      ..writeByte(22)
+      ..writeByte(23)
       ..writeByte(0)
       ..write(obj.item)
       ..writeByte(1)
@@ -90,7 +91,9 @@ class PersonalTareaProcesoEntityAdapter
       ..writeByte(20)
       ..write(obj.esjornal)
       ..writeByte(21)
-      ..write(obj.idactividad);
+      ..write(obj.idactividad)
+      ..writeByte(22)
+      ..write(obj.key);
   }
 
   @override

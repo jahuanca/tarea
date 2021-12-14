@@ -28,6 +28,7 @@ class PersonalTareaProcesoEntity {
     this.esjornal,
     this.idactividad,
     this.personal,
+    this.key,
   });
 
   @HiveField(0)
@@ -74,6 +75,8 @@ class PersonalTareaProcesoEntity {
   bool esjornal;
   @HiveField(21)
   bool idactividad;
+  @HiveField(22)
+  int key;
 
   bool get validadoParaAprobar{
     if(codigoempresa==null || horainicio==null || horafin==null){
@@ -86,6 +89,7 @@ class PersonalTareaProcesoEntity {
   factory PersonalTareaProcesoEntity.fromJson(Map<String, dynamic> json) =>
       PersonalTareaProcesoEntity(
         item: json['item'],
+        key: json['key'],
         itemtareoproceso: json['itemtareoproceso'],
         codigoempresa: json['codigoempresa'],
         transferidosap: json['transferidosap'],
@@ -110,6 +114,7 @@ class PersonalTareaProcesoEntity {
 
   Map<String, dynamic> toJson() => {
         'item': item,
+        'key': key,
         'itemtareoproceso': itemtareoproceso,
         'codigoempresa': codigoempresa,
         'transferidosap': transferidosap,

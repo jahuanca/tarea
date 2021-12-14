@@ -34,7 +34,7 @@ class ListadoPersonasPage extends StatelessWidget {
                   true),
               backgroundColor: secondColor,
               body: RefreshIndicator(
-                onRefresh: () async => _.update(['listado']),
+                onRefresh: () async => _.getPersonal,
                 child: GetBuilder<ListadoPersonasController>(
                   id: 'seleccionado',
                   builder: (_) => Column(
@@ -53,7 +53,7 @@ class ListadoPersonasPage extends StatelessWidget {
                           builder: (_) => _.personalSeleccionado.isEmpty
                               ? EmptyDataWidget(
                                   titulo: 'No existe equipo asociado.',
-                                  onPressed: () => _.update(['listado']),
+                                  onPressed: () async=> _.getPersonal,
                                   size: size)
                               : ListView.builder(
                                   itemCount: _.personalSeleccionado.length,
@@ -173,7 +173,7 @@ class ListadoPersonasPage extends StatelessWidget {
                                                   value: e['key'],
                                                   child: Text(e['value'])))
                                               .toList(),
-                                      onChanged: (value) => _.changeOptions(value, index),
+                                      onChanged: (value) => _.changeOptions(value, _.personalSeleccionado[index].key),
                                     ),
                                   ),
                                   flex: 5),
