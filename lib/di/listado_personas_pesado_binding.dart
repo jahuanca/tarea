@@ -1,16 +1,19 @@
 
 import 'package:flutter_tareo/data/repositories/actividad_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/cliente_repository_implementation.dart';
+import 'package:flutter_tareo/data/repositories/esparrago_agrupa_personal_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/labor_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/personal_empresa_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/pesado_detalles_repository_implementation.dart';
 import 'package:flutter_tareo/domain/repositories/actividad_repository.dart';
 import 'package:flutter_tareo/domain/repositories/cliente_repository.dart';
+import 'package:flutter_tareo/domain/repositories/esparrago_agrupa_personal_repository.dart';
 import 'package:flutter_tareo/domain/repositories/labor_repository.dart';
 import 'package:flutter_tareo/domain/repositories/personal_empresa_repository.dart';
 import 'package:flutter_tareo/domain/repositories/pesado_detalles_repository.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_clientes_use_case.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_esparrago_agrupa_personal_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/update_pesado_use_case.dart';
@@ -32,6 +35,7 @@ class ListadoPersonasPesadoBinding extends Bindings{
     Get.lazyPut<LaborRepository>(() => LaborRepositoryImplementation());
     Get.lazyPut<ClienteRepository>(() => ClienteRepositoryImplementation());
     Get.lazyPut<PesadoDetallesRepository>(() => PesadoDetallesRepositoryImplementation());
+    Get.lazyPut<EsparragoAgrupaPersonalRepository>(() => EsparragoAgrupaPersonalRepositoryImplementation());
 
     Get.lazyPut<GetPersonalsEmpresaBySubdivisionUseCase>(() => GetPersonalsEmpresaBySubdivisionUseCase(Get.find()));
     Get.lazyPut<UpdatePesadoUseCase>(() => UpdatePesadoUseCase(Get.find()));
@@ -43,6 +47,7 @@ class ListadoPersonasPesadoBinding extends Bindings{
     Get.lazyPut<CreatePesadoDetalleUseCase>(() => CreatePesadoDetalleUseCase(Get.find()));
     Get.lazyPut<UpdatePesadoDetalleUseCase>(() => UpdatePesadoDetalleUseCase(Get.find()));
     Get.lazyPut<DeletePesadoDetalleUseCase>(() => DeletePesadoDetalleUseCase(Get.find()));
+    Get.lazyPut<GetEsparragoAgrupaPersonalsUseCase>(() => GetEsparragoAgrupaPersonalsUseCase(Get.find()));
 
     Get.lazyPut<ListadoPersonasPesadoController>(() => ListadoPersonasPesadoController(Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find()));
     

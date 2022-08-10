@@ -130,7 +130,7 @@ class ListadoPersonasPesadoPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(_.personalSeleccionado[index].codigotk
+                                  child: Text(_.personalSeleccionado[index].esCaja ? 'CAJA' : 'GRUPO'
                                           /* .personal?.codigoempresa ?? _.personalSeleccionado[index].cliente.abreviatura */),
                                 ),
                                 flex: 10,
@@ -140,7 +140,7 @@ class ListadoPersonasPesadoPage extends StatelessWidget {
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   child: Text(_.personalSeleccionado[index]
-                                          .personal?.nombreCompleto ??
+                                          .codigoempresa ??
                                       _.personalSeleccionado[index].cliente.descripcion),
                                 ),
                                 flex: 25,

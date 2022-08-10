@@ -76,7 +76,7 @@ class NuevaPesadoController extends GetxController {
     }
     if (nuevaPreTarea == null) nuevaPreTarea = new PreTareaEsparragoVariosEntity();
     if(nuevaPreTarea.detalles==null) nuevaPreTarea.detalles=[];
-    /* nuevaPreTarea.fechamod = fecha; */
+    if(nuevaPreTarea?.fechamod == null) nuevaPreTarea?.fechamod= new DateTime.now();
   }
 
   void setEditValues() {

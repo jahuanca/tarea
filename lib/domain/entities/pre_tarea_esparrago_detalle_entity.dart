@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
@@ -25,6 +27,7 @@ class PreTareaEsparragoDetalleEntity {
     this.actividad,
     this.imei,
     this.idcliente,
+    this.key,
   });
 
   @HiveField(0)
@@ -61,6 +64,8 @@ class PreTareaEsparragoDetalleEntity {
   int linea;
   @HiveField(17)
   int idcliente;
+  @HiveField(18)
+  int key;
 
   bool get validadoParaAprobar{
     if(codigoempresa==null || hora==null){
@@ -79,6 +84,7 @@ class PreTareaEsparragoDetalleEntity {
         hora: DateTime?.parse(json['hora']),
         imei: json['imei'],
         idusuario: json['idusuario'],
+        key: json['key'],
         linea: json['linea'],
         idcliente: json['idcliente'],
         correlativo: json['correlativo'],
@@ -98,6 +104,7 @@ class PreTareaEsparragoDetalleEntity {
         'imei': imei,
         'idcliente': idcliente,
         'idusuario': idusuario,
+        'key': key,
         'correlativo': correlativo,
         'linea': linea,
         'fecha': fecha?.toIso8601String(),
@@ -107,3 +114,10 @@ class PreTareaEsparragoDetalleEntity {
         'codigotk': codigotk,
       };
 }
+
+List<PreTareaEsparragoDetalleEntity> PreTareaEsparragoDetalleEntityFromJson(String str) =>
+    List<PreTareaEsparragoDetalleEntity>.from(
+        json.decode(str).map((x) => PreTareaEsparragoDetalleEntity.fromJson(x)));
+
+String preTareaEsparragoDetalleEntityToJson(List<PreTareaEsparragoDetalleEntity> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));

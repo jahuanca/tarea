@@ -10,8 +10,7 @@ class ResumenVariosRepositoryImplementation extends ResumenVariosRepository {
 
   @override
   Future<void> migrar() async {
-
-    if(!(await hasInternet())){
+    if (!(await hasInternet())) {
       return;
     }
     var tareas = await Hive.openBox<PreTareaEsparragoVariosEntity>(
@@ -19,23 +18,48 @@ class ResumenVariosRepositoryImplementation extends ResumenVariosRepository {
     final AppHttpManager http = AppHttpManager();
 
     for (var i = 0; i < tareas.length; i++) {
-      var element = tareas.values.toList()[i];
-      if (element.estadoLocal != 'M') {
+      var element = tareas.values?.toList()[i];
+      var detalles = await Hive.openBox<PreTareaEsparragoDetalleVariosEntity>(
+          'pesado_detalles_${element.key}');
+      print(detalles.length);
+      Map<int, List<int>> laboresCantidad={}; 
+      for (var j = 0; j < detalles.length; j++) {
+        var d = detalles.values.toList()[j];
+        print('labor ${d.idlabor}');
+        if(laboresCantidad.containsKey(d.idlabor) ){
+            List<int> cantidad= laboresCantidad[d.idlabor];
+            (d.esCaja)
+            ? cantidad[0] = (cantidad[0]) + 1
+            : cantidad[1] = (cantidad[1]) + 1;
+            laboresCantidad[d.idlabor]=cantidad;
+        }else{
+          List<int> cantidad=[];
+          (d.esCaja)
+            ? cantidad =  [1,0]
+            : cantidad = [0,1];
+          laboresCantidad.addAll({d.idlabor: cantidad});
+        }
+      }
+      print(laboresCantidad);
+      if (element?.estadoLocal != 'M') {
         try {
-          await http.post(
+          laboresCantidad.forEach((key, value) async{
+            await http.post(
             mostrarError: false,
             url: '$urlModule/create',
             body: {
               'imei': element.imei,
               'turno': element.turnotareo,
-              /* 'idlabor': element.idestado, */
+              'idlabor': key,
               'fecha': element.fecha?.toIso8601String(),
-              'cantidad_cajas': element.sizeTipoCaja,
-              'cantidad_personas': element.sizeTipoPersona,
+              'cantidad_cajas': value[0],
+              'cantidad_personas': value[1],
             },
           );
+          });
         } catch (e) {}
       }
+      await detalles.close();
     }
 
     /* return res == null ? null : tareaProcesoEntity; */

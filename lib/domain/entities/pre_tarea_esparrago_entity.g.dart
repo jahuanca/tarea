@@ -31,13 +31,13 @@ class PreTareaEsparragoEntityAdapter
       codigodigitador: fields[9] as String,
       linea: fields[6] as int,
       idusuario: fields[10] as int,
-      detalles: (fields[12] as List)?.cast<PreTareaEsparragoFormatoEntity>(),
       centroCosto: fields[17] as CentroCostoEntity,
       turnotareo: fields[18] as String,
       firmaSupervisor: fields[16] as String,
       key: fields[22] as int,
       idtipotarea: fields[23] as int,
       tipoTarea: fields[24] as TipoTareaEntity,
+      sizeDetails: fields[25] as int,
     )
       ..sede = fields[13] as SubdivisionEntity
       ..pathUrl = fields[14] as String
@@ -74,8 +74,6 @@ class PreTareaEsparragoEntityAdapter
       ..write(obj.idusuario)
       ..writeByte(11)
       ..write(obj.idestado)
-      ..writeByte(12)
-      ..write(obj.detalles)
       ..writeByte(13)
       ..write(obj.sede)
       ..writeByte(14)
@@ -99,7 +97,9 @@ class PreTareaEsparragoEntityAdapter
       ..writeByte(23)
       ..write(obj.idtipotarea)
       ..writeByte(24)
-      ..write(obj.tipoTarea);
+      ..write(obj.tipoTarea)
+      ..writeByte(25)
+      ..write(obj.sizeDetails);
   }
 
   @override

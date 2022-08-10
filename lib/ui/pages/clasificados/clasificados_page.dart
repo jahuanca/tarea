@@ -229,8 +229,8 @@ class ClasificadosPage extends StatelessWidget {
                                 Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text(_
-                                        .clasificados[index].detalles.length
+                                    child: Text((_
+                                        .clasificados[index].sizeDetails ?? 0)
                                         .toString())),
                                 Icon(
                                   Icons.widgets,

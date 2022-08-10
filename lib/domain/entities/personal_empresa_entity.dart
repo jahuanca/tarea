@@ -60,7 +60,8 @@ class PersonalEmpresaEntity {
         nrodocumento: json["nrodocumento"],
         fechamod: DateTime?.parse(json["fechamod"]),
         idtipodocumento: json["idtipodocumento"],
-        fechaingreso: DateTime?.parse(json["fechaingreso"]),
+        fechaingreso: json['fechaingreso'] == null
+            ? null : DateTime?.parse(json["fechaingreso"]),
         bloqueado: json["bloqueado"],
         fechacese: json['fechacese'] == null
             ? null

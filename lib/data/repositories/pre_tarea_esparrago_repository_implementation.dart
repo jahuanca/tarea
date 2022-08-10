@@ -5,6 +5,7 @@ import 'package:flutter_tareo/core/strings.dart';
 import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_formato_entity.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tarea_esparrago_repository.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:hive/hive.dart';
@@ -13,7 +14,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 class PreTareaEsparragoRepositoryImplementation
-    extends PreTareaEsparragoRepository{
+    extends PreTareaEsparragoRepository {
   final urlModule = '/pre_tarea_esparrago';
 
   @override
@@ -80,40 +81,60 @@ class PreTareaEsparragoRepositoryImplementation
     var tareas = await Hive.openBox<PreTareaEsparragoEntity>(
         'clasificacion_sincronizar');
     await tareas.delete(key);
-    await Hive.openBox<PreTareaEsparragoDetalleEntity>(
-        'seleccion_detalles_${key}')..deleteFromDisk();
+    var cajas = await Hive.openBox<PreTareaEsparragoFormatoEntity>(
+        'clasificado_caja_${key}');
+    for (var i = 0; i < cajas.values.length; i++) {
+      var c = cajas.values.toList()[i];
+      var detalles = await Hive.openBox<PreTareaEsparragoDetalleEntity>(
+          'caja_detalle_${key}');
+      detalles.deleteFromDisk();
+    }
     await tareas.close();
     return;
   }
 
   @override
-  Future<void> update(
-      PreTareaEsparragoEntity pesado, int key) async {
+  Future<void> update(PreTareaEsparragoEntity pesado, int key) async {
     var tareas = await Hive.openBox<PreTareaEsparragoEntity>(
         'clasificacion_sincronizar');
     await tareas.put(key, pesado);
-    
+
     await tareas.close();
     return;
   }
 
   @override
-  Future<PreTareaEsparragoEntity> migrar(
-      int key) async {
+  Future<PreTareaEsparragoEntity> migrar(int key) async {
     final AppHttpManager http = AppHttpManager();
 
-    Box<PreTareaEsparragoDetalleEntity> detalles = await Hive.openBox<PreTareaEsparragoDetalleEntity>(
-        'seleccion_detalles_${key}');
-
-    Box<PreTareaEsparragoEntity> tareas=await Hive.openBox<PreTareaEsparragoEntity>(
-        'seleccion_detalles_${key}');
+    Box<PreTareaEsparragoEntity> tareas =
+        await Hive.openBox<PreTareaEsparragoEntity>(
+            'clasificacion_sincronizar');
+    var t = tareas.get(key);
+    var cajas = await Hive.openBox<PreTareaEsparragoFormatoEntity>(
+        'clasificado_caja_${key}');
+    if (t.detalles == null) t.detalles = [];
+    print(cajas.length);
+    for (var i = 0; i < cajas.values.length; i++) {
+      var c = cajas.values.toList()[i];
+      var detalles = await Hive.openBox<PreTareaEsparragoDetalleEntity>(
+          'caja_detalle_${key}');
+      if (c.detalles == null) c.detalles = [];
+      c.detalles = detalles.values.toList();
+      t.detalles.add(c);
+      await detalles.close();
+    }
+    await cajas.close();
+    await tareas.close();
 
     final res = await http.post(
       url: '$urlModule/createAll',
-      body: tareas.get(key)?.toJson(),
+      body: t?.toJson(),
     );
 
-    return res == null ? null : PreTareaEsparragoEntity.fromJson(jsonDecode(res));
+    return res == null
+        ? null
+        : PreTareaEsparragoEntity.fromJson(jsonDecode(res));
   }
 
   @override
@@ -132,9 +153,7 @@ class PreTareaEsparragoRepositoryImplementation
       request.headers[HttpHeaders.contentTypeHeader] = 'multipart/form-data';
       //request.headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
 
-      for (var i = 0;
-          i < pesado.toJson().entries.length;
-          i++) {
+      for (var i = 0; i < pesado.toJson().entries.length; i++) {
         MapEntry map = pesado.toJson().entries.elementAt(i);
         request.fields.addAll({map.key: map.value.toString()});
       }
@@ -156,7 +175,7 @@ class PreTareaEsparragoRepositoryImplementation
       pesado.firmaSupervisor = respuesta.firmaSupervisor;
       return pesado;
     } catch (e) {
-      if(mostrarLog){
+      if (mostrarLog) {
         print('Error');
         log(e.toString());
       }

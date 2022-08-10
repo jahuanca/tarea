@@ -23,8 +23,51 @@ class ListadoPersonasSeleccionPage extends StatelessWidget {
       builder: (_) => WillPopScope(
         onWillPop: _.onWillPop,
         child: Stack(
+          
           children: [
             Scaffold(
+              floatingActionButton: FloatingActionButton(
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text('Ingrese el DNI de la persona'),
+                    actions: [
+                      Container(
+                        alignment: Alignment.center,
+                        height: size.height * 0.1,
+                        child: GetBuilder<ListadoPersonasSeleccionController>(
+                          id: 'placa',
+                          builder: (_) => CircleAvatar(
+                            backgroundColor:
+                                _.dni == null ? Colors.grey : infoColor,
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.check,
+                                color: Colors.white,
+                              ),
+                              onPressed: [null, ''].contains(_.dni)
+                                  ? null
+                                  : () async => await _.addVehiculo(),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                    content: GetBuilder<ListadoPersonasSeleccionController>(
+                        builder: (_) {
+                      _.changePlaca(null);
+                      return TextField(
+                        onChanged: _.changePlaca,
+                        maxLength: 8,
+                        keyboardType: TextInputType.number,
+                        decoration:
+                            InputDecoration(hintText: "Digite el DNI"),
+                      );
+                    }),
+                  ),
+                ),
+                child: Icon(Icons.add),
+              ),
               appBar: getAppBar(
                   '${_.personalSeleccionado.length}',
                   [

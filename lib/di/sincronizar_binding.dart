@@ -4,6 +4,7 @@ import 'package:flutter_tareo/data/repositories/centro_costo_repository_implemen
 import 'package:flutter_tareo/data/repositories/cliente_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/cultivo_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/current_time_repository_implementation.dart';
+import 'package:flutter_tareo/data/repositories/esparrago_agrupa_personal_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/labor_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/labores_cultivo_packing_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/personal_empresa_repository_implementation.dart';
@@ -16,6 +17,7 @@ import 'package:flutter_tareo/domain/repositories/centro_costo_repository.dart';
 import 'package:flutter_tareo/domain/repositories/cliente_repository.dart';
 import 'package:flutter_tareo/domain/repositories/cultivo_repository.dart';
 import 'package:flutter_tareo/domain/repositories/current_time_repository.dart';
+import 'package:flutter_tareo/domain/repositories/esparrago_agrupa_personal_repository.dart';
 import 'package:flutter_tareo/domain/repositories/labores_cultivo_packing_repository.dart';
 import 'package:flutter_tareo/domain/repositories/personal_empresa_repository.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tareo_proceso_repository.dart';
@@ -25,6 +27,7 @@ import 'package:flutter_tareo/domain/repositories/tipo_tarea_repository.dart';
 import 'package:flutter_tareo/domain/repositories/usuario_repository.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_clientes_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_current_time_world_use_case.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_esparrago_agrupa_personal_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labores_cultivo_packing_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_pre_tareo_procesos_use_case.dart';
@@ -56,6 +59,7 @@ class SincronizarBinding extends Bindings{
     Get.lazyPut<CultivoRepository>(() => CultivoRepositoryImplementation());
     Get.lazyPut<ClienteRepository>(() => ClienteRepositoryImplementation());
     Get.lazyPut<TipoTareaRepository>(() => TipoTareaRepositoryImplementation());
+    Get.lazyPut<EsparragoAgrupaPersonalRepository>(() => EsparragoAgrupaPersonalRepositoryImplementation());
 
     Get.lazyPut<GetActividadsUseCase>(() => GetActividadsUseCase(Get.find()));
     Get.lazyPut<GetSubdivisonsUseCase>(() => GetSubdivisonsUseCase(Get.find()));
@@ -69,8 +73,9 @@ class SincronizarBinding extends Bindings{
     Get.lazyReplace<GetCultivosUseCase>(() => GetCultivosUseCase(Get.find()));
     Get.lazyReplace<GetClientesUseCase>(() => GetClientesUseCase(Get.find()));
     Get.lazyReplace<GetTipoTareasUseCase>(() => GetTipoTareasUseCase(Get.find()));
+    Get.lazyReplace<GetEsparragoAgrupaPersonalsUseCase>(() => GetEsparragoAgrupaPersonalsUseCase(Get.find()));
 
-    Get.lazyPut<SincronizarController>(() => SincronizarController(Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find()));
+    Get.lazyPut<SincronizarController>(() => SincronizarController(Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find()));
     
   }
 

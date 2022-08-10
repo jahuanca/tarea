@@ -20,11 +20,11 @@ class EsparragosPage extends StatelessWidget {
               backgroundColor: secondColor,
               body: Column(
                 children: [
-                  Expanded(
+                  /* Expanded(
                     child: Container(),
                     flex: 1,
                   ),
-                  contenedor('CLASIFICADO', controller.goClasificados),
+                  contenedor('CLASIFICADO', controller.goClasificados), */
                   Expanded(
                     child: Container(),
                     flex: 1,

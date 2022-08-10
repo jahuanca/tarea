@@ -35,13 +35,14 @@ class PreTareaEsparragoDetalleEntityAdapter
       actividad: fields[14] as ActividadEntity,
       imei: fields[5] as String,
       idcliente: fields[17] as int,
+      key: fields[18] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, PreTareaEsparragoDetalleEntity obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.itempretareaesparragodetalle)
       ..writeByte(1)
@@ -75,7 +76,9 @@ class PreTareaEsparragoDetalleEntityAdapter
       ..writeByte(16)
       ..write(obj.linea)
       ..writeByte(17)
-      ..write(obj.idcliente);
+      ..write(obj.idcliente)
+      ..writeByte(18)
+      ..write(obj.key);
   }
 
   @override

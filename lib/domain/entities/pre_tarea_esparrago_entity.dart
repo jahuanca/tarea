@@ -38,6 +38,7 @@ class PreTareaEsparragoEntity {
     this.key,
     this.idtipotarea,
     this.tipoTarea,
+    this.sizeDetails,
   }){
     estadoLocal='P';
   }
@@ -66,7 +67,7 @@ class PreTareaEsparragoEntity {
   int idusuario;
   @HiveField(11)
   int idestado;
-  @HiveField(12)
+  /* @HiveField(12) */
   List<PreTareaEsparragoFormatoEntity> detalles;
   @HiveField(13)
   SubdivisionEntity sede;
@@ -92,6 +93,8 @@ class PreTareaEsparragoEntity {
   int idtipotarea;
   @HiveField(24)
   TipoTareaEntity tipoTarea;
+  @HiveField(25)
+  int sizeDetails;
 
   String get fechaHora {
     if (fecha == null || horainicio == null) {
@@ -155,6 +158,7 @@ class PreTareaEsparragoEntity {
         diasiguiente: json["diasiguiente"] == null ? null : json["diasiguiente"],
         turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
         key: json["key"] == null ? null : json["key"],
+        sizeDetails: json["sizeDetails"] == null ? null : json["sizeDetails"],
         centroCosto: json['Centro_Costo'] == null ? null : CentroCostoEntity.fromJson(json['Centro_Costo']),
         tipoTarea: json['Tipo_Tarea'] == null ? null : TipoTareaEntity.fromJson(json['Tipo_Tarea']),
         detalles: json['Pre_Tarea_Esparrago_Formato'] == null

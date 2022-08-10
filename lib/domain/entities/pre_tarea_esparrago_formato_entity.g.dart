@@ -33,9 +33,9 @@ class PreTareaEsparragoFormatoEntityAdapter
       cliente: fields[9] as ClienteEntity,
       actividad: fields[14] as ActividadEntity,
       imei: fields[5] as String,
-      detalles: (fields[16] as List)?.cast<PreTareaEsparragoDetalleEntity>(),
-      key: fields[18] as String,
+      key: fields[18] as int,
       linea: fields[19] as int,
+      sizeDetails: fields[20] as int,
     );
   }
 
@@ -71,14 +71,14 @@ class PreTareaEsparragoFormatoEntityAdapter
       ..write(obj.actividad)
       ..writeByte(15)
       ..write(obj.labor)
-      ..writeByte(16)
-      ..write(obj.detalles)
       ..writeByte(17)
       ..write(obj.correlativo)
       ..writeByte(18)
       ..write(obj.key)
       ..writeByte(19)
-      ..write(obj.linea);
+      ..write(obj.linea)
+      ..writeByte(20)
+      ..write(obj.sizeDetails);
   }
 
   @override

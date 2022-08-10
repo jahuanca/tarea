@@ -127,7 +127,7 @@ class ListadoCajasPage extends StatelessWidget {
                               child: Padding(
                                 padding: EdgeInsets.symmetric(vertical: 5),
                                 child: Container(
-                                  child: Text(_.preTarea.detalles[index].correlativo.toString()),
+                                  child: Text(_.personalSeleccionado[index].correlativo.toString()),
                                   //color: primaryColor,
                                 ),
                               ),
@@ -137,7 +137,7 @@ class ListadoCajasPage extends StatelessWidget {
                             child: Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                formatoFecha(_.preTarea.detalles[index].fecha),
+                                formatoFecha(_.personalSeleccionado[index].fecha),
                                 style: TextStyle(
                                     fontWeight: FontWeight.normal, fontSize: 14),
                               ),
@@ -191,7 +191,7 @@ class ListadoCajasPage extends StatelessWidget {
                           Flexible(
                             child: Container(
                               alignment: Alignment.centerLeft,
-                              child: Text(_.preTarea.detalles[index].cliente?.descripcion ??
+                              child: Text(_.personalSeleccionado[index].cliente?.descripcion ??
                                   ''),
                             ),
                             flex: 10,
@@ -200,7 +200,7 @@ class ListadoCajasPage extends StatelessWidget {
                           Flexible(
                             child: Container(
                               alignment: Alignment.centerLeft,
-                              child: Text(_.preTarea.detalles[index].labor.descripcion ?? ''),
+                              child: Text(_.personalSeleccionado[index].labor.descripcion ?? ''),
                             ),
                             flex: 10,
                           ),
@@ -224,7 +224,7 @@ class ListadoCajasPage extends StatelessWidget {
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 5),
                                       child: Text((_
-                                          .preTarea.detalles[index]?.detalles?.length ?? 0).toString()
+                                          .personalSeleccionado[index]?.sizeDetails ?? 0).toString()
                                           .toString())),
                                   Icon(
                                     Icons.people,

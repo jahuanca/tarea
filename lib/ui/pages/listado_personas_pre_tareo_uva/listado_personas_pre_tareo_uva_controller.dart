@@ -391,7 +391,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
             actividad: labor.actividad,
             idactividad: labor.idactividad,
             numcaja: lasItem + 1,
-            codigoempresa: personal[index].codigoempresa,
+            codigoempresa: valores[0],
             fecha: DateTime.now(),
             hora: DateTime.now(),
             imei: PreferenciasUsuario().imei ?? '',

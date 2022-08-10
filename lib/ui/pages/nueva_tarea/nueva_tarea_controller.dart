@@ -290,6 +290,7 @@ class NuevaTareaController extends GetxController {
     String mensaje = validar();
     if (mensaje == null) {
       nuevaTarea.idusuario=PreferenciasUsuario().idUsuario;
+      nuevaTarea.estadoLocal='P';
       Get.back(result: nuevaTarea);
     } else {
       toastError('Error', mensaje);

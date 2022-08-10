@@ -24,11 +24,8 @@ class NavigationBinding extends Bindings {
     EsparragosBinding().dependencies();
     HerramientasBinding().dependencies();
 
-    Get.lazyPut<ResumenVariosRepository>(() => ResumenVariosRepositoryImplementation());
 
-    Get.lazyReplace<SendResumenVariosUseCase>(
-        () => SendResumenVariosUseCase(Get.find()));
 
-    Get.lazyPut<NavigationController>(() => NavigationController(Get.find()));
+    Get.lazyPut<NavigationController>(() => NavigationController());
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
-import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_entity.dart';
@@ -28,6 +27,7 @@ class PreTareaEsparragoFormatoEntity {
     this.detalles,
     this.key,
     this.linea,
+    this.sizeDetails,
   });
 
   @HiveField(0)
@@ -58,14 +58,16 @@ class PreTareaEsparragoFormatoEntity {
   ActividadEntity actividad;
   @HiveField(15)
   LaborEntity labor;
-  @HiveField(16)
+  /* @HiveField(16) */
   List<PreTareaEsparragoDetalleEntity> detalles;
   @HiveField(17)
   int correlativo;
   @HiveField(18)
-  String key;
+  int key;
   @HiveField(19)
   int linea;
+  @HiveField(20)
+  int sizeDetails;
 
   bool get validadoParaAprobar{
     if(idcliente==null || hora==null){
@@ -84,6 +86,7 @@ class PreTareaEsparragoFormatoEntity {
         hora: DateTime?.parse(json['hora']),
         imei: json['imei'],
         linea: json['linea'],
+        sizeDetails: json['sizeDetails'],
         idusuario: json['idusuario'],
         fecha: DateTime?.parse(json['fecha']),
         idlabor: json['idlabor'],
@@ -108,6 +111,7 @@ class PreTareaEsparragoFormatoEntity {
         'hora': hora?.toIso8601String(),
         'imei': imei,
         'linea': linea,
+        'sizeDetails': sizeDetails,
         'idusuario': idusuario,
         'key': key,
         'fecha': fecha?.toIso8601String(),

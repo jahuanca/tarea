@@ -1,6 +1,3 @@
-// To parse this JSON data, do
-//
-//     final preTareoProcesoEntity = preTareoProcesoEntityFromJson(jsonString);
 
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
@@ -42,6 +39,7 @@ class PreTareaEsparragoVariosEntity {
     this.sizeTipoCaja,
     this.sizeTipoPersona,
     this.imei,
+    this.fechamod,
   }){
     estadoLocal='P';
   }
@@ -104,6 +102,8 @@ class PreTareaEsparragoVariosEntity {
   int sizeTipoCaja;
   @HiveField(28)
   String imei;
+  @HiveField(29)
+  DateTime fechamod;
 
   String get fechaHora {
     if (fecha == null || horainicio == null) {
@@ -142,6 +142,7 @@ class PreTareaEsparragoVariosEntity {
             ? null
             : json["itempretareaesparragosvarios"],
         fecha: json["fecha"] == null ? null : DateTime.parse(json["fecha"]),
+        fechamod: json["fechamod"] == null ? null : DateTime.parse(json["fechamod"]),
         horainicio: json["horainicio"] == null
             ? null
             : DateTime.parse(json["horainicio"]),
@@ -188,6 +189,7 @@ class PreTareaEsparragoVariosEntity {
             : "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
         "horainicio": horainicio == null ? null : horainicio.toIso8601String(),
         "horafin": horafin == null ? null : horafin.toIso8601String(),
+        "fechamod": fechamod == null ? null : fechamod.toIso8601String(),
         "pausainicio":
             pausainicio == null ? null : pausainicio.toIso8601String(),
         "pausafin": pausafin == null ? null : pausafin.toIso8601String(),

@@ -111,55 +111,6 @@ class NuevaClasificacionPage extends StatelessWidget {
                                 .toList(),
                       ),
                     ),
-                    /* GetBuilder<NuevaClasificacionController>(
-                      id: 'actividades',
-                      builder: (_) => DropdownSearchWidget(
-                        label: 'Actividad',
-                        labelText: 'name',
-                        error: _.errorActividad,
-                        labelValue: '_id',
-                        selectedItem: _.nuevaClasificacion?.laboresCultivoPacking?.actividad == null
-                            ? null
-                            : {
-                                'name':
-                                    _.nuevaClasificacion.laboresCultivoPacking.actividad.descripcion.trim(),
-                                '_id': _.nuevaClasificacion.laboresCultivoPacking.actividad.idactividad,
-                              },
-                        onChanged: _.changeActividad,
-                        items: controller.actividades.length == 0
-                            ? []
-                            : controller.actividades
-                                .map((e) => {
-                                      'name': e.descripcion.trim(),
-                                      '_id': e.idactividad,
-                                    })
-                                .toList(),
-                      ),
-                    ), */
-                    /* GetBuilder<NuevaClasificacionController>(
-                      id: 'labores',
-                      builder: (_) => DropdownSearchWidget(
-                        label: 'Labor',
-                        labelText: 'name',
-                        labelValue: '_id',
-                        error: _.errorLabor,
-                        onChanged: _.changeLabor,
-                        selectedItem: _.nuevaClasificacion?.laboresCultivoPacking?.labor == null
-                            ? null
-                            : {
-                                'name': '${_.nuevaClasificacion.laboresCultivoPacking.labor.descripcion}',
-                                '_id': _.nuevaClasificacion.laboresCultivoPacking.labor.idlabor,
-                              },
-                        items: controller.labores.length == 0
-                            ? []
-                            : controller.labores
-                                .map((e) => {
-                                      'name': '${e.descripcion}',
-                                      '_id': e.idlabor,
-                                    })
-                                .toList(),
-                      ),
-                    ), */
                     GetBuilder<NuevaClasificacionController>(
                       id: 'supervisors',
                       builder: (_) => DropdownSearchWidget(
@@ -387,7 +338,7 @@ class NuevaClasificacionPage extends StatelessWidget {
                 builder: (_) => Container(
                   alignment: Alignment.center,
                   child: Text(
-                    '${_.nuevaClasificacion.detalles.length} personas',
+                    '${_.nuevaClasificacion.sizeDetails ?? 0} personas',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w300,

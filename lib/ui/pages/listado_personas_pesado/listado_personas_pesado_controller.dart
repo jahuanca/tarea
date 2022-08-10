@@ -3,12 +3,14 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
+import 'package:flutter_tareo/domain/entities/esparrago_agrupa_personal_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_clientes_use_case.dart';
+import 'package:flutter_tareo/domain/sincronizar/get_esparrago_agrupa_personal_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/update_pesado_use_case.dart';
@@ -26,7 +28,7 @@ import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
 class ListadoPersonasPesadoController extends GetxController
     implements ScannerCallBack {
   List<int> seleccionados = [];
-  List<PersonalEmpresaEntity> personal = [];
+  List<EsparragoAgrupaPersonalEntity> grupos = [];
   List<ClienteEntity> clientes = [];
   List<PreTareaEsparragoDetalleVariosEntity> personalSeleccionado = [];
   int indexTarea;
@@ -36,8 +38,7 @@ class ListadoPersonasPesadoController extends GetxController
   List<ActividadEntity> actividades = [];
   List<LaborEntity> labores = [];
 
-  final GetPersonalsEmpresaBySubdivisionUseCase
-      _getPersonalsEmpresaBySubdivisionUseCase;
+  final GetEsparragoAgrupaPersonalsUseCase _getEsparragoAgrupaPersonalsUseCase;
   final UpdatePesadoUseCase _updatePesadoUseCase;
   final GetActividadsUseCase _getActividadsUseCase;
   final GetLaborsUseCase _getLaborsUseCase;
@@ -57,7 +58,7 @@ class ListadoPersonasPesadoController extends GetxController
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   ListadoPersonasPesadoController(
-    this._getPersonalsEmpresaBySubdivisionUseCase,
+    this._getEsparragoAgrupaPersonalsUseCase,
     this._getActividadsUseCase,
     this._getLaborsUseCase,
     this._getClientesUseCase,
@@ -82,8 +83,8 @@ class ListadoPersonasPesadoController extends GetxController
       }
       if (Get.arguments['tarea'] != null) {
         preTarea = Get.arguments['tarea'] as PreTareaEsparragoVariosEntity;
-        sizeDetailsCaja = preTarea.sizeTipoCaja ?? 0;
-        sizeDetailsPersona = preTarea.sizeTipoPersona ?? 0;
+        /* sizeDetailsCaja = preTarea.sizeTipoCaja ?? 0;
+        sizeDetailsPersona = preTarea.sizeTipoPersona ?? 0; */
         personalSeleccionado = await _getAllPesadoDetallesUseCase
             .execute('pesado_detalles_${preTarea.key}');
 
@@ -95,21 +96,23 @@ class ListadoPersonasPesadoController extends GetxController
         indexTarea = Get.arguments['index'] as int;
       }
 
-      if (Get.arguments['personal'] != null) {
-        personal = Get.arguments['personal'] as List<PersonalEmpresaEntity>;
+      /* if (Get.arguments['personal'] != null) {
+        grupos = Get.arguments['personal'] as List<PersonalEmpresaEntity>;
         update(['personal']);
       } else {
         validando = true;
         update(['validando']);
         /* personal = await _getPersonalsEmpresaBySubdivisionUseCase.execute(
             (Get.arguments['sede'] as SubdivisionEntity).idsubdivision); */
-        personal = await _getPersonalsEmpresaBySubdivisionUseCase
+        grupos = await _getPersonalsEmpresaBySubdivisionUseCase
             .execute(PreferenciasUsuario().idSede);
 
         validando = false;
         update(['validando']);
-      }
+      } */
     }
+    grupos = await _getEsparragoAgrupaPersonalsUseCase.execute();
+    print(grupos.length);
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     final android = AndroidInitializationSettings('@mipmap/ic_launcher');
     final iOS = IOSInitializationSettings();
@@ -208,8 +211,8 @@ class ListadoPersonasPesadoController extends GetxController
   Future<bool> onWillPop() async {
     Get.back(result: [
       personalSeleccionado.length,
-      preTarea.sizeTipoCaja,
-      preTarea.sizeTipoPersona
+      /* preTarea.sizeTipoCaja,
+      preTarea.sizeTipoPersona */
     ]);
     return true;
   }
@@ -256,13 +259,13 @@ class ListadoPersonasPesadoController extends GetxController
         Get.back();
         PreTareaEsparragoDetalleVariosEntity item =
             personalSeleccionado.removeAt(index);
-        item.esCaja
+        /* item.esCaja
             ? sizeDetailsCaja = sizeDetailsCaja - 1
-            : sizeDetailsPersona = sizeDetailsPersona - 1;
+            : sizeDetailsPersona = sizeDetailsPersona - 1; */
 
-        preTarea.sizeTipoCaja = sizeDetailsCaja;
+        /* preTarea.sizeTipoCaja = sizeDetailsCaja; */
         preTarea.sizeDetails = personalSeleccionado.length;
-        preTarea.sizeTipoPersona = sizeDetailsPersona;
+        /* preTarea.sizeTipoPersona = sizeDetailsPersona; */
         await _updatePesadoUseCase.execute(preTarea, preTarea.key);
 
         await _deletePesadoDetalleUseCase.execute(
@@ -315,15 +318,14 @@ class ListadoPersonasPesadoController extends GetxController
       }
 
       List<String> valores = barcode.toString().split('_');
-      if (valores.length < 3) {
+      if (valores.length < 4) {
         buscando = false;
         return;
       }
-      bool esCaja = (valores.length == 3) ? true : false;
-      int index = 0;
-      if (!esCaja) {
-        index = personal.indexWhere((e) => e.codigoempresa == valores[0]);
-      }
+      bool esCaja = (valores.length == 4) ? true : false;
+      
+      int index = grupos.indexWhere((e) => e.itemagruparpersonal == int.parse(valores[ esCaja ? 2 : 0]));
+      
       int indexCliente = clientes
           .indexWhere((e) => e.idcliente == int.parse(valores[esCaja ? 0 : 1]));
       if (indexCliente == -1) {
@@ -339,20 +341,20 @@ class ListadoPersonasPesadoController extends GetxController
             .indexWhere((e) => e.idlabor == int.parse(valores[esCaja ? 1 : 2]));
         PreTareaEsparragoDetalleVariosEntity d =
             PreTareaEsparragoDetalleVariosEntity(
-                personal: esCaja ? null : personal[index],
-                codigoempresa: esCaja ? null : personal[index].codigoempresa,
+                //personal: esCaja ? null : grupos[index],
+                codigoempresa: grupos[index].itemagruparpersonal.toString(),
                 fecha: DateTime.now(),
                 hora: DateTime.now(),
                 imei: PreferenciasUsuario().imei ?? '',
                 idestado: 1,
-                linea: esCaja ? 0 : 3,
+                linea: esCaja ? null : int.parse(valores[3]),
                 esCaja: esCaja,
                 cliente: clientes[indexCliente],
                 idcliente: clientes[indexCliente].idcliente,
                 idactividad: labores[indexLabor].idactividad,
                 idlabor: labores[indexLabor].idlabor,
                 labor: labores[indexLabor],
-                correlativo: int.parse(valores[esCaja ? 2 : 4]),
+                correlativo: int.parse(valores[esCaja ? 3 : 4]),
                 codigotk: barcode.toString().trim(),
                 idusuario: PreferenciasUsuario().idUsuario,
                 itemtipotk: esCaja ? 1 : 2,
@@ -360,17 +362,17 @@ class ListadoPersonasPesadoController extends GetxController
                     preTarea.itempretareaesparragosvarios);
         update(['personal_seleccionado']);
 
-        esCaja
+        /* esCaja
             ? sizeDetailsCaja = sizeDetailsCaja + 1
-            : sizeDetailsPersona = sizeDetailsPersona + 1;
+            : sizeDetailsPersona = sizeDetailsPersona + 1; */
 
         int key = await _createPesadoDetalleUseCase.execute(
             'pesado_detalles_${preTarea.key}', d);
         d.key = key;
         personalSeleccionado.add(d);
-        preTarea.sizeTipoCaja = sizeDetailsCaja;
+        /* preTarea.sizeTipoCaja = sizeDetailsCaja; */
         preTarea.sizeDetails = personalSeleccionado.length;
-        preTarea.sizeTipoPersona = sizeDetailsPersona;
+        /* preTarea.sizeTipoPersona = sizeDetailsPersona; */
         await _updatePesadoUseCase.execute(preTarea, preTarea.key);
 
         byLector
@@ -380,8 +382,8 @@ class ListadoPersonasPesadoController extends GetxController
         return;
       } else {
         byLector
-            ? toastError('Error', 'No se encuentra en la lista')
-            : _showNotification(false, 'No se encuentra en la lista');
+            ? toastError('Error', 'Grupo no se encuentra en la lista')
+            : _showNotification(false, 'Grupo no se encuentra en la lista');
         buscando = false;
         return;
       }

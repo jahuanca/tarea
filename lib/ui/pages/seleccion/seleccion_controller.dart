@@ -6,7 +6,6 @@ import 'package:flutter_tareo/di/listado_personas_seleccion_binding.dart';
 import 'package:flutter_tareo/di/nueva_seleccion_binding.dart';
 import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_grupo_entity.dart';
-import 'package:flutter_tareo/domain/use_cases/others/export_data_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_seleccion_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/seleccion/create_seleccion_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/seleccion/delete_seleccion_use_case.dart';

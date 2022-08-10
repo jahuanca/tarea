@@ -103,7 +103,6 @@ class NuevaClasificacionController extends GetxController {
     validando = true;
     update(['validando']);
 
-    /* await getCultivos(); */
     await getTipoTarea();
     await getCentrosCosto();
     await getSupervisors(PreferenciasUsuario().idSede);
@@ -154,17 +153,6 @@ class NuevaClasificacionController extends GetxController {
     update(['centro_costo']);
   }
 
-  /* Future<void> getCultivos() async {
-    cultivos = await _getCultivosUseCase.execute();
-    if (!editando) {
-      if (cultivos.isNotEmpty) {
-        nuevaClasificacion.cultivo = cultivos.first;
-      }
-    }
-    changeCultivo(nuevaClasificacion.cultivo.idcultivo.toString());
-    update(['cultivos']);
-  } */
-
   void changeTurno(String id) {
     nuevaClasificacion.turnotareo = id;
     if (id == 'D') {
@@ -190,41 +178,10 @@ class NuevaClasificacionController extends GetxController {
   }
 
   void changeInicioPausa() {
-    /* if (nuevaClasificacion.pausainicio != null) {
-      if (nuevaClasificacion.turnotareo == 'N') {
-        update(['inicio_pausa']);
-        return;
-      }
-      if (nuevaClasificacion.pausainicio.isBefore(nuevaClasificacion.horainicio) ||
-          nuevaClasificacion.pausainicio.isAfter(nuevaClasificacion.horafin)) {
-        mostrarDialog(
-            'La hora seleccionada no se encuentra en el rango de inicio y fin');
-        nuevaClasificacion.pausainicio = null;
-      }
-      update(['inicio_pausa']);
-    } */
     update(['inicio_pausa']);
   }
 
   void changeFinPausa() {
-    /* if (nuevaClasificacion.pausafin != null && nuevaClasificacion.turnotareo == 'D') {
-      if (nuevaClasificacion.turnotareo == 'N') {
-        update(['inicio_pausa']);
-        return;
-      }
-      if (nuevaClasificacion.pausafin.isBefore(nuevaClasificacion.horainicio) ||
-          nuevaClasificacion.pausafin.isAfter(nuevaClasificacion.horafin)) {
-        mostrarDialog(
-            'La hora seleccionada no se encuentra en el rango de inicio y fin');
-        nuevaClasificacion.pausafin = null;
-      }
-      if (nuevaClasificacion.pausainicio != null &&
-          nuevaClasificacion.pausainicio.isAfter(nuevaClasificacion?.pausafin)) {
-        mostrarDialog('La hora debe ser mayor a la hora de pausa');
-        nuevaClasificacion.pausafin = null;
-      }
-      update(['fin_pausa']);
-    } */
     update(['fin_pausa']);
   }
 
@@ -310,22 +267,6 @@ class NuevaClasificacionController extends GetxController {
     update(['tipo_tarea']);
   }
 
-  /* void changeCultivo(String id) {
-    errorCultivo = validatorUtilText(id, 'Cultivo', {
-      'required': '',
-    });
-    int index =
-        cultivos.indexWhere((e) => e.idcultivo== int.parse(id));
-    if (errorCultivo == null && index != -1) {
-      nuevaClasificacion.cultivo = cultivos[index];
-      nuevaClasificacion.idcultivo = int.parse(id);
-    } else {
-      nuevaClasificacion.cultivo = null;
-      nuevaClasificacion.idcultivo = null;
-    }
-    update(['cultivo']);
-  } */
-
   void goBack() {
     String mensaje = validar();
     if (mensaje == null) {
@@ -334,18 +275,6 @@ class NuevaClasificacionController extends GetxController {
       Get.back(result: nuevaClasificacion);
     } else {
       toastError('Error', mensaje);
-    }
-  }
-
-  Future<void> goListadoPersonas() async {
-    ListadoPersonasBinding().dependencies();
-    final resultados = await Get.to<List<PreTareaEsparragoFormatoEntity>>(
-        () => ListadoPersonasPreTareoUvaPage(),
-        arguments: {'tarea': nuevaClasificacion, 'personal': supervisors});
-
-    if (resultados != null) {
-      nuevaClasificacion.detalles = resultados;
-      update(['personal']);
     }
   }
 

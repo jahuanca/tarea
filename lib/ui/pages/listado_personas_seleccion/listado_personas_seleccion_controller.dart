@@ -44,6 +44,24 @@ class ListadoPersonasSeleccionController extends GetxController
     /* this._updateSeleccionUseCase */
   );
 
+  String dni;
+
+  void changePlaca(String value) {
+    dni = value;
+    update(['placa']);
+  }
+
+  Future<void> addVehiculo() async {
+    if(dni?.length != 8){
+      toastError('Error', 'Dimension minima 8 digitos.');
+      return;
+    }
+
+    await setCodeBar(dni.toString());
+    dni = null;
+    Get.back();
+  }
+
   Future<void> getDetalles() async {
     personalSeleccionado = await _getAllSeleccionDetallesUseCase
         .execute('seleccion_detalles_${preTarea.key}');

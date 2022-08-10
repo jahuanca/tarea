@@ -28,6 +28,16 @@ class PreTareoProcesoUvaDetallesRepositoryImplementation
   }
 
   @override
+  Future<void> createAll(
+      String box, List<PreTareoProcesoUvaDetalleEntity> detalles) async {
+    Box<PreTareoProcesoUvaDetalleEntity> tareas = await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(
+        box);
+    await tareas.addAll(detalles);
+    await tareas.close();
+    return;
+  }
+
+  @override
   Future<void> delete(String box, int key) async {
     var tareas = await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(
         box);

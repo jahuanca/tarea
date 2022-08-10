@@ -133,14 +133,14 @@ class ClasificadosController extends GetxController {
 
   Future<String> validarParaAprobar(int index) async {
     PreTareaEsparragoEntity tarea = clasificados[index];
-    if (tarea.detalles == null || tarea.detalles.isEmpty) {
+    if (tarea.sizeDetails == null || tarea.sizeDetails == 0) {
       return 'No se puede aprobar una actividad que no tiene personal';
     } else {
-      for (var item in tarea.detalles) {
+      /* for (var item in tarea.detalles) {
         if (!item.validadoParaAprobar) {
           return 'Verifique que todos los datos del personal esten llenos';
         }
-      }
+      } */
     }
     return null;
   }
@@ -200,7 +200,7 @@ class ClasificadosController extends GetxController {
     otras.addAll(clasificados);
     otras.removeAt(index);
     ListadoCajasBinding().dependencies();
-    final resultados = await Get.to<List<PreTareaEsparragoFormatoEntity>>(
+    final resultado = await Get.to<int>(
         () => ListadoCajasPage(),
         arguments: {
           'otras': otras,
@@ -208,8 +208,8 @@ class ClasificadosController extends GetxController {
           'index': index,
         });
 
-    if (resultados != null && resultados.isNotEmpty) {
-      clasificados[index].detalles = resultados;
+    if (resultado != null) {
+      clasificados[index].sizeDetails = resultado;
       await _updateClasificacionUseCase.execute(clasificados[index], clasificados[index].key);
       update(['tareas']);
     }
@@ -220,7 +220,7 @@ class ClasificadosController extends GetxController {
     otras.addAll(clasificados);
     otras.removeAt(index);
     ListadoPersonasClasificacionBinding().dependencies();
-    final resultados = await Get.to<List<PreTareaEsparragoFormatoEntity>>(
+    final resultado = await Get.to<int>(
         () => ListadoPersonasClasificacionPage(),
         arguments: {
           'otras': otras,
@@ -228,8 +228,8 @@ class ClasificadosController extends GetxController {
           'index': index,
         });
 
-    if (resultados != null && resultados.isNotEmpty) {
-      clasificados[index].detalles = resultados;
+    if (resultado != null) {
+      clasificados[index].sizeDetails = resultado;
       await _updateClasificacionUseCase.execute(clasificados[index], clasificados[index].key);
       update(['tareas']);
     }

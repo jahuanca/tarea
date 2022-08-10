@@ -1,8 +1,6 @@
 
 import 'dart:async';
 
-import 'package:flutter_tareo/core/strings.dart';
-import 'package:flutter_tareo/domain/use_cases/others/send_resumen_varios_use_case.dart';
 import 'package:flutter_tareo/ui/pages/aprobar/aprobar_page.dart';
 import 'package:flutter_tareo/ui/pages/esparragos/esparragos_page.dart';
 import 'package:flutter_tareo/ui/pages/herramientas/herramientas_page.dart';
@@ -20,11 +18,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class NavigationController extends GetxController {
 
-  SendResumenVariosUseCase _sendResumenVariosUseCase;
-  Timer timer;
-
-
-  NavigationController(this._sendResumenVariosUseCase);
+  NavigationController();
 
   final List<Widget> lista = [
     HomePage(),
@@ -40,19 +34,6 @@ class NavigationController extends GetxController {
   @override
   void onReady()async{
     super.onReady();
-    timer= new Timer.periodic(Duration(seconds: 30), (Timer t) => sendResumenVarios());
-  }
-
-  @override
-  void onClose(){
-    timer.cancel();
-    super.onClose();
-    
-  }
-
-  Future<void> sendResumenVarios()async{
-    print('enviando');
-    await _sendResumenVariosUseCase.execute();
   }
 
   int indexWidget = 0;

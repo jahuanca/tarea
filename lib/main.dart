@@ -4,6 +4,7 @@ import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
 import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/entities/division_entity.dart';
+import 'package:flutter_tareo/domain/entities/esparrago_agrupa_personal_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/log_entity.dart';
@@ -72,6 +73,7 @@ void main() async{
   Hive.registerAdapter(PreTareaEsparragoDetalleEntityAdapter());
   Hive.registerAdapter(ClienteEntityAdapter());
   Hive.registerAdapter(TipoTareaEntityAdapter());
+  Hive.registerAdapter(EsparragoAgrupaPersonalEntityAdapter());
   
   runApp(MyApp());
 }

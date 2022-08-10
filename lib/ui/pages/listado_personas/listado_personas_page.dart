@@ -20,7 +20,11 @@ class ListadoPersonasPage extends StatelessWidget {
       init: controller,
       id: 'personal_seleccionado',
       builder: (_) => WillPopScope(
-        onWillPop: _.onWillPop,
+        onWillPop:  () async{
+            /* _.onWillPop(); */
+            Navigator.pop(Get.overlayContext, _.personalSeleccionado.length);
+            return new Future(() => false);
+        } ,
         child: Stack(
           children: [
             Scaffold(
@@ -29,7 +33,7 @@ class ListadoPersonasPage extends StatelessWidget {
                   [
                     IconButton(
                         onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
-                    IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+                    //IconButton(onPressed: () {}, icon: Icon(Icons.search)),
                   ],
                   true),
               backgroundColor: secondColor,
@@ -191,7 +195,7 @@ class ListadoPersonasPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(toHorasMinutos(_.personalSeleccionado[index].cantidadHoras)),
+                                  child: Text(toHorasMinutos(_.personalSeleccionado[index].cantidadHoras ?? 0)),
                                 ),
                                 flex: 10,
                               ),

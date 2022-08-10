@@ -347,7 +347,7 @@ class NuevaTareaPage extends StatelessWidget {
                 builder: (_) => Container(
                   alignment: Alignment.center,
                   child: Text(
-                    '${_.nuevaTarea.personal.length} personas',
+                    '${_.nuevaTarea.personal?.length ?? 0} personas',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w300,

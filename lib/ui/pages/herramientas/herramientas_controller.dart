@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:flutter_tareo/core/detalles.dart';
 import 'package:flutter_tareo/core/tarea.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
+import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
+import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/create_uva_all_detalle_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/create_uva_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/create_pre_tareo_proceso_uva_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:get/get.dart';
@@ -18,9 +20,10 @@ class HerramientasController extends GetxController {
   String texto = '';
 
   final CreatePreTareoProcesoUvaUseCase _createPreTareoProcesoUvaUseCase;
+  final CreateUvaAllDetalleUseCase _createUvaAllDetalleUseCase;
 
 
-  HerramientasController(this._createPreTareoProcesoUvaUseCase);
+  HerramientasController(this._createPreTareoProcesoUvaUseCase, this._createUvaAllDetalleUseCase);
 
 
   Future<void> importarData() async{
@@ -31,7 +34,13 @@ class HerramientasController extends GetxController {
     data.estadoLocal='PC';
     texto = 'Creando detalles';
     update(['validando']);
-    await _createPreTareoProcesoUvaUseCase.execute(data);
+    int key=await _createPreTareoProcesoUvaUseCase.execute(data);
+    /* for (var i = 0; i < DETALLESJSON.length; i++) {
+      texto = 'Creando detalles $i de ${DETALLESJSON.length}';
+      update(['validando']);
+      var d=DETALLESJSON[i]; */
+      await _createUvaAllDetalleUseCase.execute('uva_detalle_${data.key}', preTareoProcesoUvaDetalleEntityFromJson(jsonEncode(DETALLESJSON)));
+    /* } */
     validando=false;
     update(['validando']);
   }
