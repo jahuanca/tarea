@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/get_all_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/update_tarea_proceso_use_case.dart';
@@ -73,9 +74,9 @@ class AprobarController extends GetxController {
     if (tarea.personal == null || tarea.personal.isEmpty) {
       return 'No se puede aprobar una tarea que no tiene personal';
     }else{
-      for (var item in tarea.personal) {
-        if(!item.validadoParaAprobar){
-          return 'Verifique que todos los datos del personal esten llenos';
+      for (PersonalTareaProcesoEntity item in tarea.personal) {
+        if(item.validadoParaAprobar!=null){
+          return item.validadoParaAprobar;
         }
       }
     }
@@ -101,6 +102,7 @@ class AprobarController extends GetxController {
         'Si',
         'No',
         () async {
+          
           Get.back();
           await getimageditor(index);
         },

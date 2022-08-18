@@ -119,3 +119,7 @@ String toHorasMinutos(double value){
   return '$horas h $minutos min';
 
 }
+
+String stringOfNumber(num value){
+  return value == null ? null : (value % 1 > 0 ) ? value.toStringAsFixed(2) : value.toInt().toString();
+}

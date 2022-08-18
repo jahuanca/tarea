@@ -1,10 +1,13 @@
 
 import 'package:flutter_tareo/data/repositories/export_data_repository_implementation.dart';
+import 'package:flutter_tareo/data/repositories/personal_tarea_proceso_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/tarea_proceso_repository_implementation.dart';
 import 'package:flutter_tareo/domain/repositories/export_data_repository.dart';
+import 'package:flutter_tareo/domain/repositories/personal_tarea_proceso_repository.dart';
 import 'package:flutter_tareo/domain/repositories/tarea_proceso_repository.dart';
 import 'package:flutter_tareo/domain/use_cases/migrar/migrar_all_tarea_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_tarea_to_excel_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/get_all_personal_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/create_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/delete_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/get_all_tarea_proceso_use_case.dart';
@@ -20,16 +23,26 @@ class TareasBinding extends Bindings{
 
     Get.lazyPut<TareaProcesoRepository>(() => TareaProcesoRepositoryImplementation());
     Get.lazyPut<ExportDataRepository>(() => ExportDataRepositoryImplementation());
+    Get.lazyPut<PersonalTareaProcesoRepository>(() => PersonalTareaProcesoRepositoryImplementation());
 
     Get.lazyPut<CreateTareaProcesoUseCase>(() => CreateTareaProcesoUseCase(Get.find()));
     Get.lazyPut<GetAllTareaProcesoUseCase>(() => GetAllTareaProcesoUseCase(Get.find()));
     Get.lazyPut<UpdateTareaProcesoUseCase>(() => UpdateTareaProcesoUseCase(Get.find()));
     Get.lazyPut<DeleteTareaProcesoUseCase>(() => DeleteTareaProcesoUseCase(Get.find()));
+    Get.lazyPut<GetAllPersonalTareaProcesoUseCase>(() => GetAllPersonalTareaProcesoUseCase(Get.find()));
     Get.lazyPut<MigrarAllTareaUseCase>(() => MigrarAllTareaUseCase(Get.find()));
     Get.lazyPut<DeleteTareaProcesoUseCase>(() => DeleteTareaProcesoUseCase(Get.find()));
     Get.lazyPut<ExportTareaToExcelUseCase>(() => ExportTareaToExcelUseCase(Get.find()));
 
-    Get.lazyPut<TareasController>(() => TareasController(Get.find(), Get.find() , Get.find(), Get.find(), Get.find(), Get.find(), Get.find()));
+    Get.lazyPut<TareasController>(() => TareasController(
+      Get.find(),
+      Get.find(),
+      Get.find(),
+      Get.find(),
+      Get.find(),
+      Get.find(),
+      Get.find(), 
+      Get.find()));
     
   }
 

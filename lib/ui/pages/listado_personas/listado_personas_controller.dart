@@ -277,8 +277,8 @@ class ListadoPersonasController extends GetxController
       'No',
       () async {
         Get.back();
-        personalSeleccionado.removeAt(index);
         await _deletePersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${tarea.key}', personalSeleccionado[index].key);
+        personalSeleccionado.removeAt(index);
         update(['personal_seleccionado']);
       },
       () => Get.back(),
@@ -314,7 +314,15 @@ class ListadoPersonasController extends GetxController
       if (index != -1) {
         PersonalTareaProcesoEntity p=PersonalTareaProcesoEntity(
           personal: personal[index],
+          horainicio: tarea.horainicio,
+          horafin: tarea.horafin,
+          pausainicio: tarea.pausainicio,
+          turno: tarea.turnotareo,
+          pausafin: tarea.pausafin,
           codigoempresa: personal[index].codigoempresa,
+          esjornal: tarea.esjornal,
+          esrendimiento: tarea.esrendimiento,
+          diasiguiente: tarea.diasiguiente,
         );
         int key= await _createPersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${tarea.key}', p);
         p.key=key;

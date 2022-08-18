@@ -133,7 +133,7 @@ class ListadoPersonasPage extends StatelessWidget {
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   child: Text(_.personalSeleccionado[index]
-                                          .personal?.codigoempresa ??
+                                          .personal?.nrodocumento ??
                                       ''),
                                 ),
                                 flex: 10,

@@ -45,24 +45,34 @@ class AgregarPersonaController extends GetxController {
     this._updatePersonalTareaProcesoUseCase,
   );
 
-  @override
-  void onInit() async {
-    super.onInit();
-    if (Get.arguments != null) {
-      if (Get.arguments['tarea'] != null) {
-        tareaSeleccionada = Get.arguments['tarea'] as TareaProcesoEntity;
-        nuevoPersonal.turno = tareaSeleccionada.turnotareo;
-        nuevoPersonal.esjornal = tareaSeleccionada.esjornal;
-        nuevoPersonal.esrendimiento =
-            tareaSeleccionada.esrendimiento;
-        nuevoPersonal.diasiguiente =
-            tareaSeleccionada.diasiguiente;
-        nuevoPersonal.horainicio = tareaSeleccionada.horainicio;
-        nuevoPersonal.horafin = tareaSeleccionada.horafin;
-        nuevoPersonal.pausainicio = tareaSeleccionada.pausainicio;
-        nuevoPersonal.pausafin = tareaSeleccionada.pausafin;
-        calcularCantidadHoras();
-        update([
+
+  void extraerDetalles(){
+    /*nuevoPersonal.cantidadavance = 0;
+    nuevoPersonal.cantidadrendimiento = 0;
+    nuevoPersonal.turno = tareaSeleccionada.turnotareo;
+    nuevoPersonal.esjornal = tareaSeleccionada.esjornal;
+    nuevoPersonal.esrendimiento = tareaSeleccionada.esrendimiento;
+    nuevoPersonal.diasiguiente = tareaSeleccionada.diasiguiente;*/
+
+    nuevoPersonal.horainicio = tareaSeleccionada.horainicio;
+    nuevoPersonal.horafin = tareaSeleccionada.horafin;
+    nuevoPersonal.pausainicio = tareaSeleccionada.pausainicio;
+    nuevoPersonal.pausafin = tareaSeleccionada.pausafin;
+    nuevoPersonal.cantidadavance = 0;
+    nuevoPersonal.cantidadrendimiento = 0;
+    nuevoPersonal.turno = tareaSeleccionada.turnotareo;
+    nuevoPersonal.esjornal = tareaSeleccionada.esjornal;
+    nuevoPersonal.esrendimiento = tareaSeleccionada.esrendimiento;
+    nuevoPersonal.diasiguiente = tareaSeleccionada.diasiguiente;
+
+    changeCantidadAvance(nuevoPersonal.cantidadavance!=null ? nuevoPersonal.cantidadavance.toString() :  '0');
+    changeRendimiento(nuevoPersonal.esjornal ?? false);
+    changeCantidadRendimiento(nuevoPersonal.cantidadrendimiento!=null ? nuevoPersonal.cantidadrendimiento.toString() :  '0');
+    changeTurno(nuevoPersonal.turno!=null ? nuevoPersonal.turno.toString() :  'D');
+    changeDiaSiguiente(nuevoPersonal.diasiguiente ?? false);
+    
+    calcularCantidadHoras();
+    update([
           'hora_inicio',
           'hora_fin',
           'pausa_inicio',
@@ -71,6 +81,17 @@ class AgregarPersonaController extends GetxController {
           'dia_siguiente',
           'rendimiento'
         ]);
+  }
+
+  @override
+  void onInit() async {
+    super.onInit();
+    if (Get.arguments != null) {
+      if (Get.arguments['tarea'] != null) {
+        tareaSeleccionada = Get.arguments['tarea'] as TareaProcesoEntity;
+
+        extraerDetalles();
+        
       }
       if (Get.arguments['cantidad'] != null) {
         cantidadEnviada = Get.arguments['cantidad'] as int;

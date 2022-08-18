@@ -235,6 +235,7 @@ class AgregarPersonaPage extends StatelessWidget {
                       builder: (_) => InputLabelWidget(
                         hintText: 'Cantidad rendimiento',
                         error: _.errorCantidadRendimiento,
+                        initialValue: stringOfNumber(_.nuevoPersonal.cantidadrendimiento),
                         onChanged: _.changeCantidadRendimiento,
                         textInputType: TextInputType.number,
                         label: 'Cantidad rendimiento',
@@ -245,6 +246,7 @@ class AgregarPersonaPage extends StatelessWidget {
                       builder: (_) => InputLabelWidget(
                         hintText: 'Cantidad avance',
                         error: _.errorCantidadAvance,
+                        initialValue: stringOfNumber(_.nuevoPersonal.cantidadavance),
                         onChanged: _.changeCantidadAvance,
                         textInputType: TextInputType.number,
                         label: 'Cantidad avance',

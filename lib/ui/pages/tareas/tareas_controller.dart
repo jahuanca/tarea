@@ -9,6 +9,7 @@ import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/migrar/migrar_all_tarea_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/migrar/upload_file_of_tarea_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_tarea_to_excel_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/get_all_personal_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/create_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/delete_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/get_all_tarea_proceso_use_case.dart';
@@ -33,6 +34,9 @@ class TareasController extends GetxController {
   final UploadFileOfTareaUseCase _uploadFileOfTareaUseCase;
   final ExportTareaToExcelUseCase _exportTareaToExcelUseCase;
 
+
+  final GetAllPersonalTareaProcesoUseCase _getAllPersonalTareaProcesoUseCase;
+
   TareasController(
       this._createTareaProcesoUseCase,
       this._getAllTareaProcesoUseCase,
@@ -41,6 +45,7 @@ class TareasController extends GetxController {
       this._migrarAllTareaUseCase,
       this._uploadFileOfTareaUseCase,
       this._exportTareaToExcelUseCase,
+      this._getAllPersonalTareaProcesoUseCase,
       );
 
   @override
@@ -76,11 +81,12 @@ class TareasController extends GetxController {
     if (tarea.sizeDetails == null || tarea.sizeDetails == 0) {
       return 'No se puede aprobar una tarea que no tiene personal';
     } else {
-      /* for (var item in tarea.personal) {
-        if(!item.validadoParaAprobar){
-          return 'Verifique que todos los datos del personal esten llenos';
+      tarea.personal=await _getAllPersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${tarea.key}');
+      for (PersonalTareaProcesoEntity item in tarea?.personal) {
+        if(item.validadoParaAprobar!=null){
+          return item.validadoParaAprobar;
         }
-      } */
+      }
     }
     return null;
   }

@@ -78,12 +78,16 @@ class PersonalTareaProcesoEntity {
   @HiveField(22)
   int key;
 
-  bool get validadoParaAprobar{
+  String get validadoParaAprobar{
     if(codigoempresa==null || horainicio==null || horafin==null){
-      return false;
+      return 'Complete todo los datos';
+    }
+
+    if(esrendimiento && cantidadavance==0){
+      return 'Tiene registros de tipo rendimiento y cantidad de avance 0';
     }
     
-    return true;
+    return null;
   }
 
   factory PersonalTareaProcesoEntity.fromJson(Map<String, dynamic> json) =>
