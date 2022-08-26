@@ -54,7 +54,7 @@ class NuevaTareaController extends GetxController {
     if (Get.arguments != null) {
       if (Get.arguments['tarea'] != null) {
         editando = true;
-        nuevaTarea = Get.arguments['tarea'] as TareaProcesoEntity;
+        nuevaTarea = TareaProcesoEntity.fromJson( (Get.arguments['tarea'] as TareaProcesoEntity).toJson());
       }
     }
     if (nuevaTarea == null) nuevaTarea = new TareaProcesoEntity();
@@ -78,7 +78,7 @@ class NuevaTareaController extends GetxController {
     update(['validando']);
     await getActividades(
         nuevaTarea.esrendimiento ?? false ? 'esjornal' : 'esrendimiento', true);
-    await getLabores();
+    
     await getCentrosCosto();
     await getSupervisors(PreferenciasUsuario().idSede);
     changeTurno(editando ? nuevaTarea.turnotareo : 'D');
@@ -91,12 +91,15 @@ class NuevaTareaController extends GetxController {
   Future<void> getActividades(String key, dynamic value) async {
     actividades = await _getActividadsByKeyUseCase
         .execute({key: value, 'idsociedad': PreferenciasUsuario().idSociedad});
-    print(actividades.length);
-    if (actividades.length > 0) {
-      nuevaTarea.actividad = actividades?.first;
-      await changeActividad(nuevaTarea.actividad?.idactividad.toString());
-      await getLabores();
+    if (!editando) {
+      if (actividades.isNotEmpty) {
+        nuevaTarea.actividad = actividades.first;
+        nuevaTarea.idactividad=nuevaTarea.actividad.idactividad;
+      }
     }
+    await changeActividad(nuevaTarea?.idactividad.toString());
+    await getLabores();
+    
     update(['actividades']);
   }
 
@@ -121,12 +124,13 @@ class NuevaTareaController extends GetxController {
     }
     labores = await _getLaborsByKeyUseCase
         .execute({'idactividad': nuevaTarea.idactividad});
-    if (labores.isNotEmpty) {
-      nuevaTarea.labor = labores.first;
-      nuevaTarea.idlabor = nuevaTarea.labor.idlabor;
+    if (!editando) {
+      if (labores.isNotEmpty) {
+        nuevaTarea.labor = labores.first;
+        nuevaTarea.idlabor = nuevaTarea.labor.idlabor;
+      }
     }
-
-    changeLabor(nuevaTarea.labor?.idlabor.toString());
+    changeLabor(nuevaTarea?.idlabor.toString());
     update(['labores']);
   }
 
@@ -135,9 +139,10 @@ class NuevaTareaController extends GetxController {
     if (!editando) {
       if (centrosCosto.isNotEmpty) {
         nuevaTarea.centroCosto = centrosCosto.first;
+        nuevaTarea.idcentrocosto = nuevaTarea.centroCosto.idcentrocosto;
       }
     }
-    changeCentroCosto(nuevaTarea.centroCosto.idcentrocosto.toString());
+    changeCentroCosto(nuevaTarea?.idcentrocosto.toString());
     update(['centro_costo']);
   }
 
@@ -224,7 +229,6 @@ class NuevaTareaController extends GetxController {
     if (errorActividad == null && index != -1) {
       nuevaTarea.actividad = actividades[index];
       nuevaTarea.idactividad = int.parse(id);
-      await getLabores();
     } else {
       nuevaTarea.actividad = null;
       nuevaTarea.idactividad = null;

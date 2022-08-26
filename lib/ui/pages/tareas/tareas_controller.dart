@@ -225,10 +225,10 @@ class TareasController extends GetxController {
         arguments: {'tarea': tareas[index]});
     if (result != null) {
       result.idusuario = PreferenciasUsuario().idUsuario;
-      int id = await _createTareaProcesoUseCase.execute(tareas[index]);
+      int id = await _createTareaProcesoUseCase.execute(result);
       result.key = id;
       tareas.add(result);
-      update(['tareas']);
+      update(['tareas', 'seleccionado']);
     }
   }
 

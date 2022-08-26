@@ -6,10 +6,11 @@ import 'package:flutter_tareo/ui/widgets/navigation_drawer/navigation_drawer_con
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey) {
+Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey){
   return Drawer(
     child: GetBuilder<NavigationDrawerController>(
       init: NavigationDrawerController(),
+      id: 'navigation',
       builder: (_) => Container(
         color: (PreferenciasUsuario().modoDark) ? secondColorDark : secondColor,
         child: ListView(
@@ -82,28 +83,21 @@ Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey) {
               ),
             ),
             _itemDrawer(
-                size, Icons.home, 'Inicio', () => _.goHome(scaffoldKey)),
+                size, Icons.home, 'Inicio', () => _.goHome(scaffoldKey),  _.index == 0),
             _itemDrawer(
-                size, Icons.file_copy, 'Tareas', () => _.goTareas(scaffoldKey)),
-            /* _itemDrawer(size, Icons.check, 'Aprobación',
-                () => _.goAprobar(scaffoldKey)),
-            _itemDrawer(size, Icons.sync_rounded, 'Migrar',
-                () => _.goMigrar(scaffoldKey)), */
-            /* if (PreferenciasUsuario().idSede == 7)
-              _itemDrawer(size, 'assets/images/arandano_icon.png', 'Arándano',
-                  () => _.goPreTareo(scaffoldKey)), */
+                size, Icons.file_copy, 'Tareas', () => _.goTareas(scaffoldKey),  _.index == 1),
             if (PreferenciasUsuario().idSede == 7)
               _itemDrawer(size, 'assets/images/uva_icon.png', 'Packing',
-                  () => _.goPreTareoUva(scaffoldKey)),
+                  () => _.goPreTareoUva(scaffoldKey),  _.index == 0),
             if (PreferenciasUsuario().idSede == 7)
               _itemDrawer(size, 'assets/images/arandano_icon.png', 'Esparrago',
-                  () => _.goEsparragos(scaffoldKey)),
+                  () => _.goEsparragos(scaffoldKey),  _.index == 0),
 
             _itemDrawer(
-                size, Icons.construction, 'Herramientas', () => _.goHerramientas(scaffoldKey)),
-            _itemDrawer(size, Icons.settings, 'Configuración', _.goMisEventos),
+                size, Icons.construction, 'Herramientas', () => _.goHerramientas(scaffoldKey),  _.index == 7),
+            _itemDrawer(size, Icons.settings, 'Configuración', _.goMisEventos,  _.index == -1),
             _itemDrawer(
-                size, Icons.exit_to_app, 'Cerrar sesión', _.cerrarSesion),
+                size, Icons.exit_to_app, 'Cerrar sesión', _.cerrarSesion,  _.index == -1),
           ],
         ),
       ),
@@ -112,11 +106,12 @@ Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey) {
 }
 
 Widget _itemDrawer(
-    Size size, dynamic icon, String texto, void Function() onTap) {
+    Size size, dynamic icon, String texto, void Function() onTap, bool isSelected) {
   return GestureDetector(
     onTap: onTap,
     child: Container(
       height: size.height * inputDimension * 0.9,
+      color: isSelected ? Colors.white : Colors.transparent,
       child: Row(
         children: [
           Flexible(

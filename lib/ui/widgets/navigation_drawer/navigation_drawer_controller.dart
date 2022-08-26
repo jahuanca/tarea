@@ -25,11 +25,14 @@ class NavigationDrawerController extends GetxController{
 
   NavigationDrawerController();
 
+  int index=0;
+
   @override
   void onInit() async{
     super.onInit();
     usuarioEntity=await StorageRepositoryImplementation().getUser();
-    update(['usuario']);
+    index=Get.find<NavigationController>().indexWidget ?? 0;
+    update(['usuario', 'navigation']);
   }
 
 
@@ -44,36 +47,50 @@ class NavigationDrawerController extends GetxController{
 
   void goTareas(GlobalKey<ScaffoldState> scaffoldKey){
     TareasBinding().dependencies();
+    index=1;
+    update(['navigation']);
     Get.find<NavigationController>().eventos(1, scaffoldKey);
   }
 
   void goMigrar(GlobalKey<ScaffoldState> scaffoldKey){
     MigrarBinding().dependencies();
+    index=3;
+    update(['navigation']);
     Get.find<NavigationController>().eventos(3, scaffoldKey);
   }
 
   void goPreTareo(GlobalKey<ScaffoldState> scaffoldKey){
     PreTareosBinding().dependencies();
+    index=4;
+    update(['navigation']);
     Get.find<NavigationController>().eventos(4, scaffoldKey);
   }
 
   void goEsparragos(GlobalKey<ScaffoldState> scaffoldKey){
     EsparragosBinding().dependencies();
+    index=6;
+    update(['navigation']);
     Get.find<NavigationController>().eventos(6, scaffoldKey);
   }
 
   void goPreTareoUva(GlobalKey<ScaffoldState> scaffoldKey){
     PreTareosUvaBinding().dependencies();
+    index=5;
+    update(['navigation']);
     Get.find<NavigationController>().eventos(5, scaffoldKey);
   }
 
   void goAprobar(GlobalKey<ScaffoldState> scaffoldKey){
     AprobarBinding().dependencies();
+    index=2;
+    update(['navigation']);
     Get.find<NavigationController>().eventos(2, scaffoldKey);
   }
 
   void goHome(GlobalKey<ScaffoldState> scaffoldKey){
     HomeBinding().dependencies();
+    index=0;
+    update(['navigation']);
     Get.find<NavigationController>().eventos(0, scaffoldKey);
   }
 
@@ -84,6 +101,8 @@ class NavigationDrawerController extends GetxController{
 
   void goHerramientas(GlobalKey<ScaffoldState> scaffoldKey){
     HerramientasBinding().dependencies();
+    index=7;
+    update(['navigation']);
     Get.find<NavigationController>().eventos(7, scaffoldKey);
   }
 

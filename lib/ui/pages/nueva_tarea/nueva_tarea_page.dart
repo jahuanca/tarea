@@ -302,10 +302,10 @@ class NuevaTareaPage extends StatelessWidget {
                     SizedBox(
                       height: size.height * 0.05,
                     ),
-                    _agregarMultimedia(size, context),
+                    /* _agregarMultimedia(size, context),
                     SizedBox(
                       height: size.height * 0.05,
-                    ),
+                    ), */
                     SizedBox(
                       height: size.height * 0.05,
                     ),

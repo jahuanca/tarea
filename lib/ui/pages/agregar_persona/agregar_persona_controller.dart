@@ -292,7 +292,8 @@ class AgregarPersonaController extends GetxController {
     DateTime hFin = nuevoPersonal.horafin;
 
     if (hFin.isBefore(hInicio)) {
-      hFin.add(Duration(days: 1));
+      hFin=DateTime(hInicio.year, hInicio.month, hInicio.day+1, hFin.hour, hFin.minute);
+      //hFin.add(Duration(days: 1));
     }
 
     cantidadMinutos = hFin.difference(hInicio).inMinutes;
@@ -312,7 +313,7 @@ class AgregarPersonaController extends GetxController {
     cantidadHoras = (cantidadMinutos / 60).truncate();
     cantidadMinutos = cantidadMinutos % 60;
 
-    textoCantidadHoras = '$cantidadHoras h $cantidadMinutos min';
+    textoCantidadHoras = '${cantidadHoras}h ${cantidadMinutos}min';
     update(['cantidad_horas']);
   }
 
