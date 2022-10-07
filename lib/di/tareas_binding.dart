@@ -7,6 +7,7 @@ import 'package:flutter_tareo/domain/repositories/personal_tarea_proceso_reposit
 import 'package:flutter_tareo/domain/repositories/tarea_proceso_repository.dart';
 import 'package:flutter_tareo/domain/use_cases/migrar/migrar_all_tarea_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_tarea_to_excel_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/create_personal_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/get_all_personal_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/create_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/delete_tarea_proceso_use_case.dart';
@@ -33,8 +34,10 @@ class TareasBinding extends Bindings{
     Get.lazyPut<MigrarAllTareaUseCase>(() => MigrarAllTareaUseCase(Get.find()));
     Get.lazyPut<DeleteTareaProcesoUseCase>(() => DeleteTareaProcesoUseCase(Get.find()));
     Get.lazyPut<ExportTareaToExcelUseCase>(() => ExportTareaToExcelUseCase(Get.find()));
+    Get.lazyPut<CreatePersonalTareaProcesoUseCase>(() => CreatePersonalTareaProcesoUseCase(Get.find()));
 
     Get.lazyPut<TareasController>(() => TareasController(
+      Get.find(),
       Get.find(),
       Get.find(),
       Get.find(),

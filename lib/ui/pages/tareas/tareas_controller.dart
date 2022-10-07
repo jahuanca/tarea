@@ -9,6 +9,7 @@ import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/migrar/migrar_all_tarea_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/migrar/upload_file_of_tarea_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_tarea_to_excel_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/create_personal_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/get_all_personal_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/create_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/delete_tarea_proceso_use_case.dart';
@@ -34,8 +35,11 @@ class TareasController extends GetxController {
   final UploadFileOfTareaUseCase _uploadFileOfTareaUseCase;
   final ExportTareaToExcelUseCase _exportTareaToExcelUseCase;
 
+  
+
 
   final GetAllPersonalTareaProcesoUseCase _getAllPersonalTareaProcesoUseCase;
+  final CreatePersonalTareaProcesoUseCase _createPersonalTareaProcesoUseCase;
 
   TareasController(
       this._createTareaProcesoUseCase,
@@ -46,6 +50,7 @@ class TareasController extends GetxController {
       this._uploadFileOfTareaUseCase,
       this._exportTareaToExcelUseCase,
       this._getAllPersonalTareaProcesoUseCase,
+      this._createPersonalTareaProcesoUseCase,
       );
 
   @override
@@ -222,12 +227,23 @@ class TareasController extends GetxController {
   Future<void> copiarTarea(int index) async {
     NuevaTareaBinding().dependencies();
     final result = await Get.to<TareaProcesoEntity>(() => NuevaTareaPage(),
-        arguments: {'tarea': tareas[index]});
+        arguments: {'tarea': tareas[index], 'copiando': true});
     if (result != null) {
+      List<PersonalTareaProcesoEntity> personalCopiar=[];
+      personalCopiar.addAll(
+      await _getAllPersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${tareas[index].key}')
+      ?? []);
       result.idusuario = PreferenciasUsuario().idUsuario;
+      result.sizeDetails=personalCopiar.length;
       int id = await _createTareaProcesoUseCase.execute(result);
       result.key = id;
       tareas.add(result);
+
+      for (var p in personalCopiar) {
+        await _createPersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${id}', p);
+      }
+
+      
       //TODO: descricpion de actividad no se muestra
       update(['tareas', 'seleccionado']);
     }
