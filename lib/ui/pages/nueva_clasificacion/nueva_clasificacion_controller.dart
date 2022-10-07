@@ -5,7 +5,6 @@ import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_formato_entity.dart';
 import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
@@ -15,7 +14,6 @@ import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
-import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo_uva/listado_personas_pre_tareo_uva_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/validators_utils.dart';

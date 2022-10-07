@@ -84,7 +84,7 @@ class PreTareaEsparragoRepositoryImplementation
     var cajas = await Hive.openBox<PreTareaEsparragoFormatoEntity>(
         'clasificado_caja_${key}');
     for (var i = 0; i < cajas.values.length; i++) {
-      var c = cajas.values.toList()[i];
+      cajas.values.toList()[i];
       var detalles = await Hive.openBox<PreTareaEsparragoDetalleEntity>(
           'caja_detalle_${key}');
       detalles.deleteFromDisk();

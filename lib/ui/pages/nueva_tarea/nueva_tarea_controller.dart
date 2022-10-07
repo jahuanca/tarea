@@ -1,3 +1,4 @@
+
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
@@ -7,8 +8,9 @@ import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
+import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_actividads_by_key_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_by_key_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_labors_by_key_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
@@ -25,15 +27,18 @@ class NuevaTareaController extends GetxController {
   GetSubdivisonsUseCase _getSubdivisonsUseCase;
   GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
-  GetCentroCostosUseCase _getCentroCostosUseCase;
+
+  GetPersonalsEmpresaUseCase _getPersonalsEmpresaUseCase;
+  
+  GetCentroCostosByKeyUseCase _getCentroCostosByKeyUseCase;
 
   DateTime fecha = new DateTime.now();
-  String errorActividad, errorLabor, errorCentroCosto, errorSupervisor, errorHoraInicio, errorHoraFin, errorFecha, errorPausaInicio, errorPausaFin;
+  String errorActividad, errorLabor, errorCentroCosto, errorSupervisor, errorDigitador, errorHoraInicio, errorHoraFin, errorFecha, errorPausaInicio, errorPausaFin;
 
   TareaProcesoEntity nuevaTarea;
 
-  bool validando = false;
-  bool editando = false;
+  bool validando = false, editando = false, firstTime=true;
+
 
   List<ActividadEntity> actividades = [];
   List<LaborEntity> labores = [];
@@ -46,14 +51,16 @@ class NuevaTareaController extends GetxController {
       this._getLaborsByKeyUseCase,
       this._getSubdivisonsUseCase,
       this._getPersonalsEmpresaBySubdivisionUseCase,
-      this._getCentroCostosUseCase);
+      this._getPersonalsEmpresaUseCase,
+      this._getCentroCostosByKeyUseCase);
 
   @override
   void onInit() {
     super.onInit();
     if (Get.arguments != null) {
       if (Get.arguments['tarea'] != null) {
-        editando = true;
+        editando=true;
+        firstTime=true;
         nuevaTarea = TareaProcesoEntity.fromJson( (Get.arguments['tarea'] as TareaProcesoEntity).toJson());
       }
     }
@@ -76,30 +83,24 @@ class NuevaTareaController extends GetxController {
     super.onReady();
     validando = true;
     update(['validando']);
-    await getActividades(
-        nuevaTarea.esrendimiento ?? false ? 'esjornal' : 'esrendimiento', true);
-    
+    await getActividades((nuevaTarea?.esrendimiento ?? false) ? 'esjornal' : 'esrendimiento', true);
     await getCentrosCosto();
     await getSupervisors(PreferenciasUsuario().idSede);
-    changeTurno(editando ? nuevaTarea.turnotareo : 'D');
+    await changeTurno(editando && firstTime ? nuevaTarea.turnotareo ?? 'D' : 'D');
     validando = false;
     update(['validando']);
 
     setEditValues();
+    firstTime=false;
   }
 
   Future<void> getActividades(String key, dynamic value) async {
-    actividades = await _getActividadsByKeyUseCase
-        .execute({key: value, 'idsociedad': PreferenciasUsuario().idSociedad});
-    if (!editando) {
-      if (actividades.isNotEmpty) {
-        nuevaTarea.actividad = actividades.first;
-        nuevaTarea.idactividad=nuevaTarea.actividad.idactividad;
-      }
+    actividades.clear();
+    actividades.addAll( await _getActividadsByKeyUseCase
+        .execute({key: value, 'idsociedad': PreferenciasUsuario().idSociedad}) ?? []);
+    if(actividades.isNotEmpty){
+      await changeActividad(editando && firstTime ? nuevaTarea.idactividad.toString() ?? '${actividades.first.idactividad}' : '${actividades.first.idactividad}');
     }
-    await changeActividad(nuevaTarea?.idactividad.toString());
-    await getLabores();
-    
     update(['actividades']);
   }
 
@@ -108,14 +109,14 @@ class NuevaTareaController extends GetxController {
         .firstWhere((e) => e.idsubdivision == idSubdivision);
     validando = true;
     update(['validando']);
-    supervisors = await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
-    if (supervisors.length > 0) {
-      nuevaTarea.supervisor = supervisors[1];
-      changeSupervisor(nuevaTarea.supervisor.codigoempresa);
+    //supervisors = await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
+    supervisors = await _getPersonalsEmpresaUseCase.execute();
+    if(supervisors.isNotEmpty){
+      await changeSupervisor(editando && firstTime ? nuevaTarea.codigoempresasupervisor ?? '${supervisors.first.codigoempresa}' : '${supervisors.first.codigoempresa}');
+      await changeDigitador(editando && firstTime ? nuevaTarea.codigoempresadigitador ?? '${supervisors.first.codigoempresa}' : '${supervisors.first.codigoempresa}');
     }
-    update(['supervisors']);
     validando = false;
-    update(['validando']);
+    update(['supervisors', 'digitadors', 'validando']);
   }
 
   Future<void> getLabores() async {
@@ -123,26 +124,20 @@ class NuevaTareaController extends GetxController {
       return;
     }
     labores = await _getLaborsByKeyUseCase
-        .execute({'idactividad': nuevaTarea.idactividad});
-    if (!editando) {
-      if (labores.isNotEmpty) {
-        nuevaTarea.labor = labores.first;
-        nuevaTarea.idlabor = nuevaTarea.labor.idlabor;
-      }
+        .execute({'idactividad': nuevaTarea?.idactividad});
+    if(labores.isNotEmpty){
+      await changeLabor(editando && firstTime ? nuevaTarea.idlabor.toString() ?? '${labores.first.idlabor}' : '${labores.first.idlabor}');
     }
-    changeLabor(nuevaTarea?.idlabor.toString());
     update(['labores']);
   }
 
   Future<void> getCentrosCosto() async {
-    centrosCosto = await _getCentroCostosUseCase.execute();
-    if (!editando) {
-      if (centrosCosto.isNotEmpty) {
-        nuevaTarea.centroCosto = centrosCosto.first;
-        nuevaTarea.idcentrocosto = nuevaTarea.centroCosto.idcentrocosto;
-      }
+    centrosCosto = await _getCentroCostosByKeyUseCase.execute(
+      {'idsociedad': PreferenciasUsuario().idSociedad}
+    );
+    if(centrosCosto.isNotEmpty){
+      await changeCentroCosto(editando && firstTime ? nuevaTarea.idcentrocosto.toString() ?? '${centrosCosto.first.idcentrocosto}' : '${centrosCosto.first.idcentrocosto}');
     }
-    changeCentroCosto(nuevaTarea?.idcentrocosto.toString());
     update(['centro_costo']);
   }
 
@@ -211,30 +206,46 @@ class NuevaTareaController extends GetxController {
     int index = supervisors.indexWhere((e) => e.codigoempresa.toString()== id);
     if (errorSupervisor == null && index != -1) {
       nuevaTarea.supervisor = supervisors[index];
-      nuevaTarea.codigoempresa = nuevaTarea.supervisor.codigoempresa;
+      nuevaTarea.codigoempresasupervisor = nuevaTarea.supervisor.codigoempresa;
       
     } else {
       nuevaTarea.supervisor = null;
-      nuevaTarea.codigoempresa = null;
+      nuevaTarea.codigoempresasupervisor = null;
     }
 
     update(['supervisors']);
+  }
+
+  void changeDigitador(String id) {
+    errorDigitador = validatorUtilText(id, 'Digitador', {
+      'required': '',
+    });
+    int index = supervisors.indexWhere((e) => e.codigoempresa.toString()== id);
+    if (errorDigitador == null && index != -1) {
+      nuevaTarea.digitador = supervisors[index];
+      nuevaTarea.codigoempresadigitador = nuevaTarea.digitador.codigoempresa;
+    } else {
+      nuevaTarea.digitador = null;
+      nuevaTarea.codigoempresadigitador = null;
+    }
+
+    update(['digitadors']);
   }
 
   Future<void> changeActividad(String id) async {
     errorActividad = validatorUtilText(id, 'Actividad', {
       'required': '',
     });
-    int index = actividades.indexWhere((e) => e.idactividad == int.parse(id));
+    int index = actividades.indexWhere((e) => e.idactividad == int.tryParse(id));
     if (errorActividad == null && index != -1) {
       nuevaTarea.actividad = actividades[index];
-      nuevaTarea.idactividad = int.parse(id);
+      nuevaTarea.idactividad = nuevaTarea.actividad.idactividad;
     } else {
       nuevaTarea.actividad = null;
       nuevaTarea.idactividad = null;
     }
-
     update(['actividades']);
+    await getLabores();
   }
 
   void changeCentroCosto(String id) {
@@ -253,11 +264,11 @@ class NuevaTareaController extends GetxController {
     update(['centro_costo']);
   }
 
-  void changeLabor(String id) {
+  Future<void> changeLabor(String id) async{
     errorLabor = validatorUtilText(id, 'Labor', {
       'required': '',
     });
-    int index = labores?.indexWhere((e) => e.idlabor.toString() == id);
+    int index = labores?.indexWhere((e) => e.idlabor.toString().trim() == id);
     
     if (errorLabor == null && index != -1) {
       nuevaTarea.labor = labores[index];
@@ -290,8 +301,8 @@ class NuevaTareaController extends GetxController {
     }
   }
 
-  void goBack() {
-    String mensaje = validar();
+  Future<void> goBack() async{
+    String mensaje = await validar();
     if (mensaje == null) {
       nuevaTarea.idusuario=PreferenciasUsuario().idUsuario;
       nuevaTarea.estadoLocal='P';
@@ -343,19 +354,21 @@ class NuevaTareaController extends GetxController {
     update(['fin_pausa']);
   }
 
-  String validar() {
+  Future<String> validar() async{
     changeFecha();
-    changeActividad(nuevaTarea.idactividad.toString());
-    changeLabor(nuevaTarea.idlabor.toString());
-    changeCentroCosto(nuevaTarea.idcentrocosto.toString());
-    changeSupervisor(nuevaTarea.codigoempresa.toString());
+    //await changeActividad(nuevaTarea.idactividad.toString());
+    await changeLabor(nuevaTarea.labor.idlabor.toString());
+    await changeCentroCosto(nuevaTarea.idcentrocosto.toString());
+    await changeSupervisor(nuevaTarea.codigoempresasupervisor.toString());
+    await changeDigitador(nuevaTarea.codigoempresadigitador.toString());
     changeHoraInicio();
     changeDiaSiguiente(nuevaTarea.diasiguiente ?? false);
-    changeRendimiento(nuevaTarea.esjornal ?? false);
+    /* changeRendimiento(nuevaTarea.esjornal ?? false); */
     changeHoraFin();
     if (errorActividad != null) return errorActividad;
     if (errorLabor != null) return errorLabor;
     if (errorSupervisor != null) return errorSupervisor;
+    if (errorDigitador != null) return errorDigitador;
     if(errorHoraInicio != null) return errorHoraInicio;
     if(errorHoraFin != null) return errorHoraFin;
     if(errorFecha != null) return errorFecha;

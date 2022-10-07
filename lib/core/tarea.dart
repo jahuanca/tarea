@@ -1,4 +1,4 @@
-import 'package:flutter_tareo/core/detalles.dart';
+
 
 const TAREAJSON = {
   "itempretareaprocesouva": null,

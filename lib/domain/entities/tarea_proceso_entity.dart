@@ -15,7 +15,7 @@ part 'tarea_proceso_entity.g.dart';
 class TareaProcesoEntity {
   TareaProcesoEntity({
     this.itemtareoproceso,
-    this.codigoempresa,
+    this.codigoempresasupervisor,
     this.fecha,
     this.idactividad,
     this.idlabor,
@@ -38,12 +38,13 @@ class TareaProcesoEntity {
     this.estadoLocal,
     this.key,
     this.sizeDetails,
+    this.codigoempresadigitador,
   }) ;
 
   @HiveField(0)
   int itemtareoproceso;
   @HiveField(1)
-  String codigoempresa;
+  String codigoempresasupervisor;
   @HiveField(2)
   DateTime fecha;
   @HiveField(3)
@@ -100,11 +101,16 @@ class TareaProcesoEntity {
   int key;
   @HiveField(29)
   int sizeDetails;
+  @HiveField(30)
+  String codigoempresadigitador;
+  @HiveField(31)
+  PersonalEmpresaEntity digitador;
 
   String get fechaHora{
-    if(fecha==null || horainicio==null){
+    if(fecha==null || horainicio==null || horafin == null){
       fecha=DateTime.now();
       horainicio=DateTime.now();
+      horafin=DateTime.now();
     }
     return DateFormat('dd').format(fecha) +
       "/" +
@@ -112,7 +118,9 @@ class TareaProcesoEntity {
       "/" +
       DateFormat('yyyy').format(fecha) +
       "  " +
-      DateFormat('hh:mm a').format(horainicio);
+      DateFormat('HH:mm').format(horainicio)+
+      " - " +
+      DateFormat('HH:mm').format(horafin);
   }
 
   Color get colorEstado{
@@ -134,35 +142,37 @@ class TareaProcesoEntity {
 
   factory TareaProcesoEntity.fromJson(Map<String, dynamic> json) =>
       TareaProcesoEntity(
-        itemtareoproceso: json['itemtareoproceso'],
-        codigoempresa: json['codigoempresa'],
-        sizeDetails: json['sizeDetails'],
-        fecha: DateTime.parse(json['fecha']),
-        idactividad: json['idactividad'],
-        idlabor: json['idlabor'],
-        idcentrocosto: json['idcentrocosto'],
-        turnotareo: json['turnotareo'],
-        fechamod: DateTime.parse(json['fechamod']),
-        idusuario: json['idusuario'],
-        idestado: json['idestado'],
-        escampo: json['escampo'],
-        espacking: json['espacking'],
-        diasiguiente: json['diasiguiente'],
-        esjornal: json['esjornal'],
-        key: json['key'],
-        esrendimiento: json['esrendimiento'],
-        pathUrl: json['fileUrl'],
-        horainicio: DateTime.parse(json['horainicio']),
-        horafin: DateTime.parse(json['horafin']),
-        pausainicio: DateTime.parse(json['pausainicio']),
-        pausafin: DateTime.parse(json['pausafin']),
-        estadoLocal: json['estadoLocal'],
+        itemtareoproceso: json["itemtareoproceso"] == null ? null : json['itemtareoproceso'],
+        codigoempresasupervisor: json["codigoempresasupervisor"] == null ? null : json['codigoempresasupervisor'],
+        codigoempresadigitador: json["codigoempresadigitador"] == null ? null : json['codigoempresadigitador'],
+        sizeDetails: json["sizeDetails"] == null ? null : json['sizeDetails'],
+        fecha: json["fecha"] == null ? null : DateTime.tryParse(json['fecha']),
+        idactividad: json["idactividad"] == null ? null : json['idactividad'],
+        idlabor: json["idlabor"] == null ? null : json['idlabor'],
+        idcentrocosto: json["idcentrocosto"] == null ? null : json['idcentrocosto'],
+        turnotareo: json["turnotareo"] == null ? null : json['turnotareo'],
+        fechamod: json["fechamod"] == null ? null : DateTime.tryParse(json['fechamod']),
+        idusuario: json["idusuario"] == null ? null : json['idusuario'],
+        idestado: json["idestado"] == null ? null : json['idestado'],
+        escampo: json["escampo"] == null ? null : json['escampo'],
+        espacking: json["espacking"] == null ? null : json['espacking'],
+        diasiguiente: json["diasiguiente"] == null ? null : json['diasiguiente'],
+        esjornal: json["esjornal"] == null ? null : json['esjornal'],
+        key: json["key"] == null ? null : json['key'],
+        esrendimiento: json["esrendimiento"] == null ? null : json['esrendimiento'],
+        pathUrl: json["pathUrl"] == null ? null : json['fileUrl'],
+        horainicio: json["horainicio"] == null ? null : DateTime.tryParse(json['horainicio']),
+        horafin: json["horafin"] == null ? null : DateTime.tryParse(json['horafin']),
+        pausainicio: json["pausainicio"] == null ? null : DateTime.tryParse(json['pausainicio']),
+        pausafin: json["pausafin"] == null ? null : DateTime.parse(json['pausafin']),
+        estadoLocal: json["estadoLocal"] == null ? null : json['estadoLocal'],
         personal: json['personal']==null ? null : List<PersonalTareaProcesoEntity>.from(json["personal"].map((x) => PersonalTareaProcesoEntity.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
         'itemtareoproceso': itemtareoproceso,
-        'codigoempresa': codigoempresa,
+        'codigoempresasupervisor': codigoempresasupervisor,
+        'codigoempresadigitador': codigoempresadigitador,
         'estadoLocal': estadoLocal,
         'fecha': fecha?.toIso8601String(),
         'idactividad': idactividad,

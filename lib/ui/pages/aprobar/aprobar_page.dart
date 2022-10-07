@@ -55,10 +55,6 @@ class AprobarPage extends StatelessWidget {
   }
 
   Widget itemActividad(Size size, BuildContext context, int index) {
-    final items = [
-      {'key': 1, 'value': 'Seleccionar'},
-      {'key': 6, 'value': 'Eliminar'},
-    ];
 
     return GetBuilder<AprobarController>(
       id: 'seleccionado',

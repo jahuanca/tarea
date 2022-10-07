@@ -1,6 +1,5 @@
 import 'package:flutter_offline/flutter_offline.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 
 Future<bool> hasInternet() async {
     ConnectivityResult conectividad = await Connectivity().checkConnectivity();

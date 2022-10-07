@@ -26,4 +26,28 @@ class CentroCostoRepositoryImplementation extends CentroCostoRepository {
 
     return centroCostoEntityFromJson((res));
   }
+
+  @override
+  Future<List<CentroCostoEntity>> getAllByValue(Map<String, dynamic> valores) async{
+    if (PreferenciasUsuario().offLine) {
+      Box<CentroCostoEntity> dataHive =
+          await Hive.openBox<CentroCostoEntity>('centros_costo_sincronizar');
+      List<CentroCostoEntity> local = [];
+
+      dataHive.values.forEach((e) {
+        bool guardar = true;
+        valores.forEach((key, value) {
+          if (e.toJson()[key] != value) {
+            guardar = false;
+          }
+        });
+        if (guardar) local.add(e);
+      });
+      await dataHive.compact();
+      await dataHive.close();
+      return local;
+    }
+
+    return [];
+  }
 }

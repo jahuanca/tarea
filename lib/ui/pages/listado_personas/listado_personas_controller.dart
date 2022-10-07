@@ -1,11 +1,10 @@
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
-import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
+import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/create_personal_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/delete_personal_tarea_proceso_use_case.dart';
@@ -27,6 +26,7 @@ class ListadoPersonasController extends GetxController
   TareaProcesoEntity tarea;
   GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
+  GetPersonalsEmpresaUseCase _getPersonalEmpresaUseCase;
   UpdateTareaProcesoUseCase _updateTareaProcesoUseCase;
   bool validando = false;
   bool editando = false;
@@ -45,7 +45,9 @@ class ListadoPersonasController extends GetxController
     this._updatePersonalTareaProcesoUseCase,
     this._deletePersonalTareaProcesoUseCase,
     this._getPersonalsEmpresaBySubdivisionUseCase,
-      this._updateTareaProcesoUseCase);
+    this._getPersonalEmpresaUseCase,
+    this._updateTareaProcesoUseCase,
+  );
 
   Future<void> getPersonal()async{
     personalSeleccionado=await _getAllPersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${tarea.key}');
@@ -72,8 +74,9 @@ class ListadoPersonasController extends GetxController
       } else {
         validando = true;
         update(['validando']);
-        personal = await _getPersonalsEmpresaBySubdivisionUseCase.execute(
-            (Get.arguments['sede'] as SubdivisionEntity).idsubdivision);
+        personal = await _getPersonalEmpresaUseCase.execute();
+        /* personal = await _getPersonalsEmpresaBySubdivisionUseCase.execute(
+            (Get.arguments['sede'] as SubdivisionEntity).idsubdivision); */
         validando = false;
         update(['validando']);
       }
@@ -285,13 +288,13 @@ class ListadoPersonasController extends GetxController
     );
   }
 
-  void goLectorCode() {
-    FlutterBarcodeScanner.getBarcodeStreamReceiver(
+  Future<void> goLectorCode() async{
+    /* FlutterBarcodeScanner.getBarcodeStreamReceiver(
             "#ff6666", "Cancelar", false, ScanMode.DEFAULT)
         .listen((barcode) async {
-      print(barcode);
-      await setCodeBar(barcode);
-    });
+      print(barcode); */
+      await setCodeBar("03332477");
+    /* }); */
   }
 
   bool buscando = false;

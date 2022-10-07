@@ -2,7 +2,6 @@
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
-import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
@@ -13,7 +12,6 @@ import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/tipo_tarea_entity.dart';
 import 'package:flutter_tareo/domain/sincronizar/get_tipo_tareas_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo_uva/listado_personas_pre_tareo_uva_page.dart';
@@ -319,7 +317,7 @@ class NuevaPesadoController extends GetxController {
     changeHoraInicio();
     changeDiaSiguiente(nuevaPreTarea.diasiguiente ?? false);
     changeHoraFin();
-    //TODO: VALIDAR: fechas por TURNO NOCHE
+    
     if (errorActividad != null) return errorActividad;
     if (errorTipoTarea != null) return errorTipoTarea;
     if (errorLabor != null) return errorLabor;
@@ -340,8 +338,6 @@ class NuevaPesadoController extends GetxController {
     errorPausaInicio = null;
 
     //PUEDEN SER NULOS: inicioPausa y finPausa (00:00:00)
-
-    //TODO: en caso de haber inicio de pausa validar que esten dentro de horafin y horainicio
     return null;
   }
 }

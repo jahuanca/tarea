@@ -3,7 +3,6 @@ import 'package:flutter_tareo/data/repositories/export_data_repository_implement
 import 'package:flutter_tareo/data/repositories/pre_tarea_esparrago_grupo_repository_implementation.dart';
 import 'package:flutter_tareo/domain/repositories/export_data_repository.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tarea_esparrago_grupo_repository.dart';
-import 'package:flutter_tareo/domain/use_cases/others/export_data_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_seleccion_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/seleccion/create_seleccion_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/seleccion/delete_seleccion_use_case.dart';

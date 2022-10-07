@@ -1,11 +1,9 @@
 
 import 'package:flutter_tareo/data/repositories/centro_costo_repository_implementation.dart';
-import 'package:flutter_tareo/data/repositories/cultivo_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/personal_empresa_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/subdivision_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/tipo_tarea_repository_implementation.dart';
 import 'package:flutter_tareo/domain/repositories/centro_costo_repository.dart';
-import 'package:flutter_tareo/domain/repositories/cultivo_repository.dart';
 import 'package:flutter_tareo/domain/repositories/personal_empresa_repository.dart';
 import 'package:flutter_tareo/domain/repositories/subdivision_repository.dart';
 import 'package:flutter_tareo/domain/repositories/tipo_tarea_repository.dart';

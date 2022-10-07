@@ -70,7 +70,7 @@ class NuevaTareaPage extends StatelessWidget {
                             ? null
                             : {
                                 'name':
-                                    '${_.nuevaTarea.centroCosto.detallecentrocosto.trim()} ${_.nuevaTarea.centroCosto.codigoempresa}',
+                                    '${_.nuevaTarea.centroCosto?.detallecentrocosto?.trim()} ${_.nuevaTarea.centroCosto?.codigoempresa}',
                                 '_id': _.nuevaTarea.centroCosto.idcentrocosto,
                               },
                         onChanged: _.changeCentroCosto,
@@ -79,7 +79,7 @@ class NuevaTareaPage extends StatelessWidget {
                             : controller.centrosCosto
                                 .map((e) => {
                                       'name':
-                                          '${e.detallecentrocosto.trim()} ${e.codigoempresa}',
+                                          '${e.detallecentrocosto?.trim()} ${e.codigoempresa}',
                                       '_id': e.idcentrocosto,
                                     })
                                 .toList(),
@@ -159,6 +159,31 @@ class NuevaTareaPage extends StatelessWidget {
                                   'name':
                                       '${_.nuevaTarea.supervisor.apellidopaterno} ${_.nuevaTarea.supervisor.apellidomaterno}, ${_.nuevaTarea.supervisor.nombres}',
                                   '_id': _.nuevaTarea.supervisor.codigoempresa,
+                                },
+                          items: _.supervisors.length == 0
+                              ? []
+                              : _.supervisors
+                                  .map((e) => {
+                                        'name':
+                                            '${e.apellidopaterno} ${e.apellidomaterno}, ${e.nombres}',
+                                        'codigoempresa': e.codigoempresa,
+                                      })
+                                  .toList()),
+                    ),
+                    GetBuilder<NuevaTareaController>(
+                      id: 'digitadors',
+                      builder: (_) => DropdownSearchWidget(
+                          label: 'Digitador',
+                          labelText: 'name',
+                          labelValue: 'codigoempresa',
+                          error: _.errorDigitador,
+                          onChanged: _.changeDigitador,
+                          selectedItem: _.nuevaTarea?.supervisor == null
+                              ? null
+                              : {
+                                  'name':
+                                      '${_.nuevaTarea.digitador?.apellidopaterno} ${_.nuevaTarea.digitador?.apellidomaterno}, ${_.nuevaTarea.digitador?.nombres}',
+                                  '_id': _.nuevaTarea.digitador.codigoempresa,
                                 },
                           items: _.supervisors.length == 0
                               ? []

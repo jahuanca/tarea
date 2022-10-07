@@ -1,6 +1,5 @@
 
 import 'package:flutter_tareo/domain/repositories/pesado_detalles_repository.dart';
-import 'package:flutter_tareo/domain/repositories/pre_tarea_esparrago_detalles_grupo_repository.dart';
 
 class DeletePesadoDetalleUseCase{
   final PesadoDetallesRepository _pesadoDetallesRepository;

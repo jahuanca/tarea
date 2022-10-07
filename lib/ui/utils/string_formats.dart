@@ -99,13 +99,13 @@ String formatoFechaHora(DateTime value) {
       "/" +
       DateFormat('yyyy').format(value) +
       "  " +
-      DateFormat('hh:mm a').format(value);
+      DateFormat('HH:mm').format(value);
 }
 
 String formatoFechaOnlyHoras(DateTime value, DateTime value2) {
   if (value == null || value2 == null) return null;
   return 
-      DateFormat('hh:mm a').format(value) + ' - ' + DateFormat('hh:mm a').format(value2);
+      DateFormat('HH:mm').format(value) + ' - ' + DateFormat('HH:mm').format(value2);
 }
 
 String formatoHora(DateTime value) {

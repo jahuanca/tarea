@@ -70,7 +70,7 @@ class NuevaSeleccionPage extends StatelessWidget {
                             ? null
                             : {
                                 'name':
-                                    '${_.nuevaSeleccion.centroCosto.detallecentrocosto.trim()} ${_.nuevaSeleccion.centroCosto.codigoempresa}',
+                                    '${_.nuevaSeleccion.centroCosto?.detallecentrocosto?.trim()} ${_.nuevaSeleccion.centroCosto?.codigoempresa}',
                                 '_id': _.nuevaSeleccion.centroCosto.idcentrocosto,
                               },
                         onChanged: _.changeCentroCosto,
@@ -79,7 +79,7 @@ class NuevaSeleccionPage extends StatelessWidget {
                             : controller.centrosCosto
                                 .map((e) => {
                                       'name':
-                                          '${e.detallecentrocosto.trim()} ${e.codigoempresa}',
+                                          '${e.detallecentrocosto?.trim()} ${e.codigoempresa}',
                                       '_id': e.idcentrocosto,
                                     })
                                 .toList(),

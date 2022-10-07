@@ -18,7 +18,7 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
     };
     return TareaProcesoEntity(
       itemtareoproceso: fields[0] as int,
-      codigoempresa: fields[1] as String,
+      codigoempresasupervisor: fields[1] as String,
       fecha: fields[2] as DateTime,
       idactividad: fields[3] as int,
       idlabor: fields[4] as int,
@@ -40,23 +40,25 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       estadoLocal: fields[26] as String,
       key: fields[28] as int,
       sizeDetails: fields[29] as int,
+      codigoempresadigitador: fields[30] as String,
     )
       ..actividad = fields[16] as ActividadEntity
       ..labor = fields[17] as LaborEntity
       ..supervisor = fields[18] as PersonalEmpresaEntity
       ..sede = fields[19] as SubdivisionEntity
       ..centroCosto = fields[22] as CentroCostoEntity
-      ..firmaSupervisor = fields[27] as String;
+      ..firmaSupervisor = fields[27] as String
+      ..digitador = fields[31] as PersonalEmpresaEntity;
   }
 
   @override
   void write(BinaryWriter writer, TareaProcesoEntity obj) {
     writer
-      ..writeByte(29)
+      ..writeByte(31)
       ..writeByte(0)
       ..write(obj.itemtareoproceso)
       ..writeByte(1)
-      ..write(obj.codigoempresa)
+      ..write(obj.codigoempresasupervisor)
       ..writeByte(2)
       ..write(obj.fecha)
       ..writeByte(3)
@@ -110,7 +112,11 @@ class TareaProcesoEntityAdapter extends TypeAdapter<TareaProcesoEntity> {
       ..writeByte(28)
       ..write(obj.key)
       ..writeByte(29)
-      ..write(obj.sizeDetails);
+      ..write(obj.sizeDetails)
+      ..writeByte(30)
+      ..write(obj.codigoempresadigitador)
+      ..writeByte(31)
+      ..write(obj.digitador);
   }
 
   @override

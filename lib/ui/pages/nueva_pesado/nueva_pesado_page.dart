@@ -95,9 +95,9 @@ class NuevaPesadoPage extends StatelessWidget {
                             ? null
                             : {
                                 'name':
-                                    '${_.nuevaPreTarea.centroCosto.detallecentrocosto.trim()} ${_.nuevaPreTarea.centroCosto.codigoempresa}',
+                                    '${_.nuevaPreTarea?.centroCosto?.detallecentrocosto?.trim()} ${_.nuevaPreTarea.centroCosto?.codigoempresa}',
                                 '_id':
-                                    _.nuevaPreTarea.centroCosto.idcentrocosto,
+                                    _.nuevaPreTarea.centroCosto?.idcentrocosto,
                               },
                         onChanged: _.changeCentroCosto,
                         items: controller.centrosCosto.length == 0
@@ -105,7 +105,7 @@ class NuevaPesadoPage extends StatelessWidget {
                             : controller.centrosCosto
                                 .map((e) => {
                                       'name':
-                                          '${e.detallecentrocosto.trim()} ${e.codigoempresa}',
+                                          '${e.detallecentrocosto?.trim()} ${e.codigoempresa}',
                                       '_id': e.idcentrocosto,
                                     })
                                 .toList(),

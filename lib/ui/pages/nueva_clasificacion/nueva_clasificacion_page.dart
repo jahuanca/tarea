@@ -96,7 +96,7 @@ class NuevaClasificacionPage extends StatelessWidget {
                             ? null
                             : {
                                 'name':
-                                    '${_.nuevaClasificacion.centroCosto.detallecentrocosto.trim()} ${_.nuevaClasificacion.centroCosto.codigoempresa}',
+                                    '${_.nuevaClasificacion.centroCosto?.detallecentrocosto?.trim()} ${_.nuevaClasificacion?.centroCosto?.codigoempresa}',
                                 '_id': _.nuevaClasificacion.centroCosto.idcentrocosto,
                               },
                         onChanged: _.changeCentroCosto,
@@ -105,7 +105,7 @@ class NuevaClasificacionPage extends StatelessWidget {
                             : controller.centrosCosto
                                 .map((e) => {
                                       'name':
-                                          '${e.detallecentrocosto.trim()} ${e.codigoempresa}',
+                                          '${e.detallecentrocosto?.trim()} ${e.codigoempresa}',
                                       '_id': e.idcentrocosto,
                                     })
                                 .toList(),

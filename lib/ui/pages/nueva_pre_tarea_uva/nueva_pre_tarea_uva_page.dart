@@ -122,7 +122,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                             ? null
                             : {
                                 'name':
-                                    '${_.nuevaPreTarea.centroCosto.detallecentrocosto.trim()} ${_.nuevaPreTarea.centroCosto.codigoempresa}',
+                                    '${_.nuevaPreTarea.centroCosto?.detallecentrocosto?.trim()} ${_.nuevaPreTarea.centroCosto?.codigoempresa}',
                                 '_id': _.nuevaPreTarea.centroCosto.idcentrocosto,
                               },
                         onChanged: _.changeCentroCosto,
@@ -131,7 +131,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                             : controller.centrosCosto
                                 .map((e) => {
                                       'name':
-                                          '${e.detallecentrocosto.trim()} ${e.codigoempresa}',
+                                          '${e.detallecentrocosto?.trim()} ${e.codigoempresa}',
                                       '_id': e.idcentrocosto,
                                     })
                                 .toList(),

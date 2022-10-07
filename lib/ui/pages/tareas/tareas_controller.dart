@@ -228,6 +228,7 @@ class TareasController extends GetxController {
       int id = await _createTareaProcesoUseCase.execute(result);
       result.key = id;
       tareas.add(result);
+      //TODO: descricpion de actividad no se muestra
       update(['tareas', 'seleccionado']);
     }
   }
