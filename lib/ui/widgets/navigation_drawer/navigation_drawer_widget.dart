@@ -88,10 +88,10 @@ Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey){
                 size, Icons.file_copy, 'Tareas', () => _.goTareas(scaffoldKey),  _.index == 1),
             if (PreferenciasUsuario().idSede == 7)
               _itemDrawer(size, 'assets/images/uva_icon.png', 'Packing',
-                  () => _.goPreTareoUva(scaffoldKey),  _.index == 0),
+                  () => _.goPreTareoUva(scaffoldKey),  _.index == 5),
             if (PreferenciasUsuario().idSede == 7)
               _itemDrawer(size, 'assets/images/arandano_icon.png', 'Esparrago',
-                  () => _.goEsparragos(scaffoldKey),  _.index == 0),
+                  () => _.goEsparragos(scaffoldKey),  _.index == 6),
 
             _itemDrawer(
                 size, Icons.construction, 'Herramientas', () => _.goHerramientas(scaffoldKey),  _.index == 7),

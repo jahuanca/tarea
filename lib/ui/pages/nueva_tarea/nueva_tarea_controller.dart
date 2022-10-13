@@ -86,11 +86,15 @@ class NuevaTareaController extends GetxController {
         }
       }
     }
-    if (nuevaTarea == null) nuevaTarea = new TareaProcesoEntity();
-    nuevaTarea.fechamod = fecha;
-    nuevaTarea.escampo = true;
-    nuevaTarea.espacking = true;
-    nuevaTarea.idestado = 1;
+    if (nuevaTarea == null){
+      nuevaTarea = new TareaProcesoEntity();
+      nuevaTarea.fechamod = fecha;
+      nuevaTarea.escampo = true;
+      nuevaTarea.espacking = true;
+      nuevaTarea.idestado = 1;
+      nuevaTarea.esjornal = false;
+      nuevaTarea.esrendimiento = true;
+    }
   }
 
   void setEditValues() {

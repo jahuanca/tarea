@@ -242,14 +242,14 @@ class TareasController extends GetxController {
       for (var p in personalCopiar) {
         await _createPersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${id}', p);
       }
-
       
       //TODO: descricpion de actividad no se muestra
       update(['tareas', 'seleccionado']);
     }
   }
 
-  void goEliminar(int index) {
+  void goEliminar(int key) {
+    int index=tareas.indexWhere((element) => element.key==key);
     basicDialog(
       Get.overlayContext,
       'Alerta',

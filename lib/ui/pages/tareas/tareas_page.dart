@@ -60,6 +60,13 @@ class TareasPage extends StatelessWidget {
               child: Icon(Icons.add),
             ),
           ),
+          GetBuilder<TareasController>(
+                id: 'validando',
+                builder: (_)=> _.validando ? Container(
+                  color: Colors.black45,
+                  child: Center(child: CircularProgressIndicator()),
+                ) : Container(),
+              ),
         ],
       ),
     );
@@ -305,7 +312,7 @@ class TareasPage extends StatelessWidget {
                               backgroundColor: _.tareas[index].estadoLocal=='P' ? alertColor : dangerColor,
                               child: IconButton(
                                 onPressed: () =>
-                                     _.tareas[index].estadoLocal=='P' ? _.goEditar(_.tareas[index].key) : _.goEliminar(_.tareas[index].key),
+                                     _.tareas[index].estadoLocal=='P' ? _.goEditar(_.tareas[index].key,) : _.goEliminar(_.tareas[index].key,),
                                 icon:  Icon( _.tareas[index].estadoLocal=='P' ? Icons.edit  : Icons.delete ),
                                 color: Colors.white,
                               ),
