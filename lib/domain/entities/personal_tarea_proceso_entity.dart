@@ -83,9 +83,9 @@ class PersonalTareaProcesoEntity {
       return 'Complete todo los datos';
     }
 
-    if(esrendimiento && cantidadavance==0){
+    /* if(esrendimiento && cantidadavance==0){
       return 'Tiene registros de tipo rendimiento y cantidad de avance 0';
-    }
+    } */
     
     return null;
   }

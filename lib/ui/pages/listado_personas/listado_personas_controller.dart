@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
@@ -289,12 +290,12 @@ class ListadoPersonasController extends GetxController
   }
 
   Future<void> goLectorCode() async{
-    /* FlutterBarcodeScanner.getBarcodeStreamReceiver(
+    FlutterBarcodeScanner.getBarcodeStreamReceiver(
             "#ff6666", "Cancelar", false, ScanMode.DEFAULT)
         .listen((barcode) async {
-      print(barcode); */
-      await setCodeBar("03332477");
-    /* }); */
+      print(barcode); 
+      await setCodeBar(barcode);
+    });
   }
 
   bool buscando = false;
