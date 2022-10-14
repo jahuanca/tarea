@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -14,6 +16,7 @@ import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/update_per
 import 'package:flutter_tareo/domain/use_cases/tareas/update_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
+import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
 import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
@@ -317,6 +320,7 @@ class ListadoPersonasController extends GetxController
           personal.indexWhere((e) => e.nrodocumento == barcode.toString());
       if (index != -1) {
         PersonalTareaProcesoEntity p=PersonalTareaProcesoEntity(
+          idusuario: PreferenciasUsuario().idUsuario,
           personal: personal[index],
           horainicio: tarea.horainicio,
           horafin: tarea.horafin,

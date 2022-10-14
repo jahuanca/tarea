@@ -204,7 +204,7 @@ class AgregarPersonaController extends GetxController {
       return;
     }
     nuevoPersonal.codigoempresa =
-        nuevoPersonal.personal.codigoempresa;
+    nuevoPersonal.personal.codigoempresa;
     nuevoPersonal.idusuario = PreferenciasUsuario().idUsuario;
     Get.back(result: nuevoPersonal);
   }

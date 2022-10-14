@@ -74,7 +74,7 @@ class TareasController extends GetxController {
         goCopiar(index);
         break;
       case 3:
-        goEliminar(index);
+        goEliminar(key);
         break;
       default:
         break;
@@ -164,7 +164,7 @@ class TareasController extends GetxController {
   }
 
   Future<void> goListadoPersonas(int key) async {
-    int index=tareas.indexWhere((element) => element.key == key);
+    int index=tareas.indexWhere((e) => e.key == key);
     ListadoPersonasBinding().dependencies();
     final resultado = await Get.to<int>(() => ListadoPersonasPage(),
         arguments: {
@@ -248,9 +248,10 @@ class TareasController extends GetxController {
     }
   }
 
-  void goEliminar(int key) {
-    int index=tareas.indexWhere((element) => element.key==key);
-    basicDialog(
+  Future<void> goEliminar(int key) async{
+    int index=tareas.indexWhere((e) => e.key==key);
+    if(index==-1) toastError('Error', 'No se pudo eliminar la tarea.');
+    await basicDialog(
       Get.overlayContext,
       'Alerta',
       '¿Esta seguro de eliminar esta tarea?',

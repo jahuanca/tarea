@@ -60,7 +60,7 @@ class TareaProcesoRepositoryImplementation extends TareaProcesoRepository {
 
     Box<PersonalTareaProcesoEntity> detalles = await Hive.openBox<PersonalTareaProcesoEntity>('personal_tarea_proceso_${t.key}');
     t.personal=detalles.values.toList();
-
+    log(t.toJson().toString());
     final AppHttpManager http = AppHttpManager();
     final res = await http.post(
       url: '$urlModule/createAll',

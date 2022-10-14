@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
@@ -272,7 +274,6 @@ class NuevaTareaController extends GetxController {
       nuevaTarea.digitador = null;
       nuevaTarea.codigoempresadigitador = null;
     }
-
     update(['digitadors']);
   }
 
@@ -351,6 +352,7 @@ class NuevaTareaController extends GetxController {
     if (mensaje == null) {
       nuevaTarea.idusuario = PreferenciasUsuario().idUsuario;
       nuevaTarea.estadoLocal = 'P';
+      log(nuevaTarea.toJson().toString());
       Get.back(result: nuevaTarea);
     } else {
       toastError('Error', mensaje);
