@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_tareo/core/colors.dart';
+import 'package:flutter_tareo/domain/entities/personal_pre_tarea_esparrago_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
@@ -69,7 +70,7 @@ class PreTareaEsparragoVariosEntity {
   @HiveField(11)
   int idestado;
   /* @HiveField(12) */
-  List<PreTareaEsparragoDetalleVariosEntity> detalles;
+  /* List<PreTareaEsparragoDetalleVariosEntity> detalles; */
   @HiveField(13)
   SubdivisionEntity sede;
   @HiveField(14)
@@ -104,6 +105,7 @@ class PreTareaEsparragoVariosEntity {
   String imei;
   @HiveField(29)
   DateTime fechamod;
+  List<PersonalPreTareaEsparragoEntity> detalles;
 
   String get fechaHora {
     if (fecha == null || horainicio == null) {
@@ -174,11 +176,11 @@ class PreTareaEsparragoVariosEntity {
         imei: json["imei"] == null ? null : json["imei"],
         sizeDetails: json["sizeDetails"] == null ? null : json["sizeDetails"],
         centroCosto: json['Centro_Costo'] == null ? null : CentroCostoEntity.fromJson(json['Centro_Costo']),
-        detalles: json['Pre_Tarea_Esparrago_Detalle_Varios'] == null
+        detalles: json['Personal_Pre_Tarea_Esparrago'] == null
             ? null
-            : List<PreTareaEsparragoDetalleVariosEntity>.from(
-                json["Pre_Tarea_Esparrago_Detalle_Varios"]
-                    .map((x) => PreTareaEsparragoDetalleVariosEntity.fromJson(x))),
+            : List<PersonalPreTareaEsparragoEntity>.from(
+                json["Personal_Pre_Tarea_Esparrago"]
+                    .map((x) => PersonalPreTareaEsparragoEntity.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -211,7 +213,7 @@ class PreTareaEsparragoVariosEntity {
         "diasiguiente": diasiguiente == null ? null : diasiguiente,
         "idusuario": idusuario == null ? null : idusuario,
         
-        "Pre_Tarea_Esparrago_Detalle_Varios": detalles == null
+        "Personal_Pre_Tarea_Esparrago": detalles == null
             ? null
             : List<dynamic>.from(detalles.map((x) => x.toJson())),
       };

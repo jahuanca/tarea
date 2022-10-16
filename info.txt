@@ -1,1 +1,2 @@
-lastAdapter: 32;
+siguiente:
+adapter: 36;

@@ -5,7 +5,7 @@ import 'package:flutter_tareo/data/repositories/pre_tareo_proceso_uva_detalles_r
 import 'package:flutter_tareo/domain/repositories/labor_repository.dart';
 import 'package:flutter_tareo/domain/repositories/personal_empresa_repository.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tareo_proceso_uva_detalles_repository.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/create_uva_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/delete_uva_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/get_all_uva_detalles_use_case.dart';

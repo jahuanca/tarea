@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_tareo/core/strings.dart';
 import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/domain/entities/personal_pre_tarea_esparrago_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tarea_esparrago_varios_repository.dart';
@@ -108,8 +109,12 @@ class PreTareaEsparragoVariosRepositoryImplementation
         'pesados_sincronizar');
     PreTareaEsparragoVariosEntity t=tareas.get(key);
 
-    Box<PreTareaEsparragoDetalleVariosEntity> detalles = await Hive.openBox<PreTareaEsparragoDetalleVariosEntity>(
-        'pesado_detalles_${key}');
+    /* Box<PreTareaEsparragoDetalleVariosEntity> detalles = await Hive.openBox<PreTareaEsparragoDetalleVariosEntity>(
+        'pesado_detalles_${key}'); */
+
+    Box<PersonalPreTareaEsparragoEntity> detalles = await Hive.openBox<PersonalPreTareaEsparragoEntity>(
+        'personal_pre_tarea_esparrago_${key}');
+
     if(t.detalles==null) t.detalles=[];
     t.detalles=detalles.values.toList();
     await tareas.close();

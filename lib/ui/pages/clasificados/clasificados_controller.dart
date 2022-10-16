@@ -6,7 +6,6 @@ import 'package:flutter_tareo/di/listado_cajas_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_clasificacion_binding.dart';
 import 'package:flutter_tareo/di/nueva_clasificacion_binding.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_formato_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/clasificacion/create_clasificacion_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/clasificacion/delete_clasificacion_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/clasificacion/get_all_clasificacion_use_case.dart';

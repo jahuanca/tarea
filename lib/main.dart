@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
+import 'package:flutter_tareo/domain/entities/calibre_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
 import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/entities/division_entity.dart';
 import 'package:flutter_tareo/domain/entities/esparrago_agrupa_personal_entity.dart';
+import 'package:flutter_tareo/domain/entities/estado_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/log_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_subdivision_entity.dart';
+import 'package:flutter_tareo/domain/entities/personal_pre_tarea_esparrago_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_grupo_entity.dart';
@@ -30,6 +33,7 @@ import 'package:flutter_tareo/domain/entities/tipo_tarea_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_perfil_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
+import 'package:flutter_tareo/domain/entities/via_envio_entity.dart';
 import 'package:flutter_tareo/ui/app.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -74,6 +78,10 @@ void main() async{
   Hive.registerAdapter(ClienteEntityAdapter());
   Hive.registerAdapter(TipoTareaEntityAdapter());
   Hive.registerAdapter(EsparragoAgrupaPersonalEntityAdapter());
+  Hive.registerAdapter(ViaEnvioEntityAdapter());
+  Hive.registerAdapter(CalibreEntityAdapter());
+  Hive.registerAdapter(EstadoEntityAdapter());
+  Hive.registerAdapter(PersonalPreTareaEsparragoEntityAdapter());
   
   runApp(MyApp());
 }

@@ -25,7 +25,7 @@ class RadioGroupWidget extends StatelessWidget {
         if (label != null)
           Container(
             alignment: Alignment.centerLeft,
-            height: size.height * inputDimension * 0.9,
+            /* height: size.height * inputDimension * 0.9, */
             child: Text(
               label,
               style: primaryTextStyle(),

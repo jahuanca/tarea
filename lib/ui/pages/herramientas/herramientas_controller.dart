@@ -32,7 +32,7 @@ class HerramientasController extends GetxController {
     data.estadoLocal='PC';
     texto = 'Creando detalles';
     update(['validando']);
-    int key=await _createPreTareoProcesoUvaUseCase.execute(data);
+    await _createPreTareoProcesoUvaUseCase.execute(data);
     /* for (var i = 0; i < DETALLESJSON.length; i++) {
       texto = 'Creando detalles $i de ${DETALLESJSON.length}';
       update(['validando']);

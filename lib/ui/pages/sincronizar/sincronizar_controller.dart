@@ -1,9 +1,11 @@
 
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
+import 'package:flutter_tareo/domain/entities/calibre_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
 import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/entities/esparrago_agrupa_personal_entity.dart';
+import 'package:flutter_tareo/domain/entities/estado_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/log_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
@@ -12,19 +14,23 @@ import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/tipo_tarea_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_clientes_use_case.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_current_time_world_use_case.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_esparrago_agrupa_personal_use_case.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_labores_cultivo_packing_use_case.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_pre_tareo_procesos_use_case.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_tipo_tareas_use_case.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_usuarios_use_case.dart';
+import 'package:flutter_tareo/domain/entities/via_envio_entity.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_calibre_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_clientes_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_current_time_world_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_esparrago_agrupa_personal_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_estados_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_labores_cultivo_packing_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_pre_tareo_procesos_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_tipo_tareas_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_usuarios_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_via_envio_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:get/get.dart';
@@ -45,6 +51,10 @@ class SincronizarController extends GetxController{
   List<CentroCostoEntity> centrosCosto=[];
   List<LaboresCultivoPackingEntity> laboresCultivoPacking=[];
   List<CultivoEntity> cultivos=[];
+  List<EstadoEntity> estados=[];
+  List<CalibreEntity> calibres=[];
+  List<ViaEnvioEntity> viaEnvios=[];
+  
 
   final GetActividadsUseCase _getActividadsUseCase;
   final GetSubdivisonsUseCase _getSubdivisonsUseCase;
@@ -56,12 +66,25 @@ class SincronizarController extends GetxController{
   final GetPreTareoProcesosUseCase _getPreTareoProcesosUseCase;
   final GetLaboresCultivoPackingUseCase _getLaboresCultivoPackingUseCase;
   final GetCultivosUseCase _getCultivosUseCase;
+  final GetEstadosUseCase _getEstadosUseCase;
   final GetClientesUseCase _getClientesUseCase;
   final GetTipoTareasUseCase _getTipoTareasUseCase;
+  final GetViaEnviosUseCase _getViaEnviosUseCase;
   final GetEsparragoAgrupaPersonalsUseCase _getEsparragoAgrupaPersonalsUseCase;
+  final GetCalibresUseCase _getCalibresUseCase;
   
 
-  SincronizarController(this._getActividadsUseCase, this._getSubdivisonsUseCase, this._getLaborsUseCase, this._getUsuariosUseCase, this._getPersonalsEmpresaUseCase, this._getCentroCostosUseCase, this._getCurrentTimeWorldUseCase, this._getPreTareoProcesosUseCase, this._getLaboresCultivoPackingUseCase, this._getCultivosUseCase, this._getClientesUseCase, this._getTipoTareasUseCase, this._getEsparragoAgrupaPersonalsUseCase);
+  SincronizarController(
+    this._getActividadsUseCase, 
+    this._getEstadosUseCase,
+    this._getViaEnviosUseCase,
+    this._getCalibresUseCase,
+    this._getSubdivisonsUseCase, 
+    this._getLaborsUseCase, 
+    this._getUsuariosUseCase, 
+    this._getPersonalsEmpresaUseCase, 
+    this._getCentroCostosUseCase, 
+    this._getCurrentTimeWorldUseCase, this._getPreTareoProcesosUseCase, this._getLaboresCultivoPackingUseCase, this._getCultivosUseCase, this._getClientesUseCase, this._getTipoTareasUseCase, this._getEsparragoAgrupaPersonalsUseCase);
 
   bool validando=false;
 
@@ -86,6 +109,9 @@ class SincronizarController extends GetxController{
     await getPersonal();
     await getCultivos();
     await getClientes();
+    await getEstados();
+    await getCalibres();
+    await getViaEnvios();
     await getTipoTareas();
     await getEsparragoAgrupaPersonal();
     validando=false;
@@ -103,6 +129,42 @@ class SincronizarController extends GetxController{
     await clientesSincronizados.compact();
     await clientesSincronizados.close();
     update(['clientes']);
+    return true;
+  }
+
+  Future<bool> getCalibres()async{
+    calibres=await _getCalibresUseCase.execute();
+    Box<CalibreEntity> calibresSincronizados = await Hive.openBox<CalibreEntity>('calibres_sincronizar');
+    
+    await calibresSincronizados?.clear();
+    await calibresSincronizados.addAll(calibres);
+    await calibresSincronizados.compact();
+    await calibresSincronizados.close();
+    update(['calibres']);
+    return true;
+  }
+
+  Future<bool> getViaEnvios()async{
+    viaEnvios=await _getViaEnviosUseCase.execute();
+    Box<ViaEnvioEntity> viaEnviosSincronizados = await Hive.openBox<ViaEnvioEntity>('via_envios_sincronizar');
+    
+    await viaEnviosSincronizados?.clear();
+    await viaEnviosSincronizados.addAll(viaEnvios);
+    await viaEnviosSincronizados.compact();
+    await viaEnviosSincronizados.close();
+    update(['via_envios']);
+    return true;
+  }
+
+  Future<bool> getEstados()async{
+    estados=await _getEstadosUseCase.execute();
+    Box<EstadoEntity> estadosSincronizados = await Hive.openBox<EstadoEntity>('estados_sincronizar');
+    
+    await estadosSincronizados?.clear();
+    await estadosSincronizados.addAll(estados);
+    await estadosSincronizados.compact();
+    await estadosSincronizados.close();
+    update(['estados']);
     return true;
   }
 

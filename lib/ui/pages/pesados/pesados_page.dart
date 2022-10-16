@@ -197,6 +197,7 @@ class PesadosPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Flexible(child: Container(), flex: 1),
+                        if(false)
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
@@ -227,7 +228,7 @@ class PesadosPage extends StatelessWidget {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
                                     child: Text((_
-                                        .pesados[index].sizeTipoPersona ?? 0)
+                                        .pesados[index].sizeDetails ?? 0)
                                         .toString())),
                                 Icon(
                                   Icons.people,
@@ -320,7 +321,7 @@ class PesadosPage extends StatelessWidget {
                                     backgroundColor: infoColor,
                                     child: IconButton(
                                         onPressed: () =>
-                                            _.goListadoPersonas(index),
+                                            _.goListadoPersonasPreTareaEsparrago(index),
                                         icon: Icon(
                                           Icons.search,
                                           color: Colors.white,

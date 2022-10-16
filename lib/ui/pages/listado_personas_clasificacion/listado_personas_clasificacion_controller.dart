@@ -6,13 +6,11 @@ import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_formato_entity.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_actividads_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/caja_detalles/create_caja_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/caja_detalles/delete_caja_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/caja_detalles/get_all_caja_detalle_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/caja_detalles/update_caja_detalle_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/clasificacion/update_clasificacion_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -36,13 +34,11 @@ class ListadoPersonasClasificacionController extends GetxController {
 
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
-  final UpdateClasificacionUseCase _updateClasificacionUseCase;
   final GetActividadsUseCase _getActividadsUseCase;
   final GetLaborsUseCase _getLaborsUseCase;
 
   final GetAllCajaDetalleUseCase _getAllCajaDetalleUseCase;
   final CreateCajaDetalleUseCase _createCajaDetalleUseCase;
-  final UpdateCajaDetalleUseCase _updateCajaDetalleUseCase;
   final DeleteCajaDetalleUseCase _deleteCajaDetalleUseCase;
   
 
@@ -56,9 +52,7 @@ class ListadoPersonasClasificacionController extends GetxController {
       this._getPersonalsEmpresaBySubdivisionUseCase,
       this._getActividadsUseCase,
       this._getLaborsUseCase,
-      this._updateClasificacionUseCase,
       this._createCajaDetalleUseCase,
-      this._updateCajaDetalleUseCase,
       this._deleteCajaDetalleUseCase,
       this._getAllCajaDetalleUseCase,
   );

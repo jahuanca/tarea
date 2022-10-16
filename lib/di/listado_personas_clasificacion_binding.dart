@@ -7,8 +7,8 @@ import 'package:flutter_tareo/domain/repositories/actividad_repository.dart';
 import 'package:flutter_tareo/domain/repositories/caja_detalle_repository.dart';
 import 'package:flutter_tareo/domain/repositories/labor_repository.dart';
 import 'package:flutter_tareo/domain/repositories/personal_empresa_repository.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_actividads_use_case.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_labors_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_actividads_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_labors_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/caja_detalles/create_caja_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/caja_detalles/delete_caja_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/caja_detalles/get_all_caja_detalle_use_case.dart';
@@ -38,7 +38,13 @@ class ListadoPersonasClasificacionBinding extends Bindings{
     Get.lazyPut<DeleteCajaDetalleUseCase>(() => DeleteCajaDetalleUseCase(Get.find()));
     Get.lazyPut<GetAllCajaDetalleUseCase>(() => GetAllCajaDetalleUseCase(Get.find()));
 
-    Get.lazyPut<ListadoPersonasClasificacionController>(() => ListadoPersonasClasificacionController(Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find()));
+    Get.lazyPut<ListadoPersonasClasificacionController>(() => ListadoPersonasClasificacionController(
+      Get.find(),
+      Get.find(),
+      Get.find(),
+      Get.find(),
+      Get.find(),
+      Get.find()));
     
   }
 

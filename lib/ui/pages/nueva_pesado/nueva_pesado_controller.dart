@@ -10,7 +10,7 @@ import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/tipo_tarea_entity.dart';
-import 'package:flutter_tareo/domain/sincronizar/get_tipo_tareas_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/sincronizar/get_tipo_tareas_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
@@ -289,7 +289,7 @@ class NuevaPesadoController extends GetxController {
         arguments: {'tarea': nuevaPreTarea, 'personal': supervisors});
 
     if (resultados != null) {
-      nuevaPreTarea.detalles = resultados;
+      /* nuevaPreTarea.detalles = resultados; */
       update(['personal']);
     }
   }

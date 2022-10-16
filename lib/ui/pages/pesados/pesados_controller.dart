@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/di/listado_personas_pesado_binding.dart';
+import 'package:flutter_tareo/di/listado_personas_pre_tarea_esparrago_binding.dart';
 import 'package:flutter_tareo/di/nueva_pesado_binding.dart';
 import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_tareo/domain/use_cases/pesados/migrar_all_pesado_use_cas
 import 'package:flutter_tareo/domain/use_cases/pesados/update_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/upload_file_of_tarea_use_case.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pesado/listado_personas_pesado_page.dart';
+import 'package:flutter_tareo/ui/pages/listado_personas_pre_tarea_esparrago/listado_personas_pre_tarea_esparrago_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_pesado/nueva_pesado_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
@@ -53,10 +55,14 @@ class PesadosController extends GetxController {
   @override
   void onReady() async {
     super.onReady();
+    validando=true;
+    update(['validando']);
     await sendResumenVarios();
     timer= new Timer.periodic(Duration(minutes: 5), (Timer t) => sendResumenVarios());
     print('enviando tareas');
     await getTareas();
+    validando=false;
+    update(['validando']);
   }
 
   @override
@@ -223,6 +229,30 @@ class PesadosController extends GetxController {
       update(['tareas']);
     }
   }
+
+
+  Future<void> goListadoPersonasPreTareaEsparrago(int index) async {
+    List<PreTareaEsparragoVariosEntity> otras = [];
+    otras.addAll(pesados);
+    otras.removeAt(index);
+    ListadoPersonasPreTareaEsparragoBinding().dependencies();
+    final resultado =
+        await Get.to<int>(() => ListadoPersonasPreTareaEsparragoPage(), arguments: {
+      'otras': otras,
+      'tarea': pesados[index],
+      'index': index,
+    });
+
+    if (resultado != null) {
+      pesados[index].sizeDetails = resultado;
+      /* pesados[index].sizeTipoCaja = resultado[1];
+      pesados[index].sizeTipoPersona = resultado[2]; */
+      /* await _updatePesadoUseCase.execute(pesados[index], pesados[index].key); */
+      update(['tareas']);
+    }
+  }
+
+
 
   Future<void> delete(int index) async {
     await _deletePesadoUseCase.execute(pesados[index].key);
