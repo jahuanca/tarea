@@ -7,6 +7,7 @@ import 'package:flutter_tareo/domain/entities/calibre_entity.dart';
 import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/via_envio_entity.dart';
+import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:hive/hive.dart';
 part 'personal_pre_tarea_esparrago_entity.g.dart';
 
@@ -85,6 +86,10 @@ class PersonalPreTareaEsparragoEntity {
     ViaEnvioEntity viaEnvio;
     @HiveField(22)
     int idcalibre;
+
+    String keyString() {
+      return '${formatoFechaExplore(fecha, 0, 0)}!${idcliente}!${idlabor}!${mesa}!${linea}';
+    }
 
     factory PersonalPreTareaEsparragoEntity.fromJson(Map<String, dynamic> json) => PersonalPreTareaEsparragoEntity(
         itempersonalpretareaesparrago: json["itempersonalpretareaesparrago"] == null ? null : json["itempersonalpretareaesparrago"],

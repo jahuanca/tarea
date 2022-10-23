@@ -20,7 +20,9 @@ class PesadosPage extends StatelessWidget {
       builder: (_) => Stack(
         children: [
           Scaffold(
-            appBar: getAppBar('Varios', []),
+            appBar: getAppBar('Varios', [
+              IconButton(onPressed: () async=> _.goDatosEnLinea(), icon: Icon(Icons.phonelink_ring_sharp))
+            ]),
             backgroundColor: secondColor,
             body: GetBuilder<PesadosController>(
               id: 'seleccionado',
@@ -287,8 +289,7 @@ class PesadosPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: successColor,
                                     child: IconButton(
-                                      onPressed: null,
-                                          // ()=> _.goAprobar(index),
+                                      onPressed: ()=> _.goListadoPersonasPreTareaEsparrago(index),
                                       icon: Icon(Icons.remove_red_eye),
                                       color: Colors.white,
                                     ),

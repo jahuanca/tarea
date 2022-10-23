@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
 import 'package:flutter_tareo/ui/pages/nueva_pre_tarea_uva/nueva_pre_tarea_uva_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
@@ -368,7 +367,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                     SizedBox(
                       height: size.height * 0.05,
                     ),
-                    _agregarMultimedia(size, context),
+                    //_agregarMultimedia(size, context),
                     SizedBox(
                       height: size.height * 0.05,
                     ),
@@ -394,75 +393,4 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
     );
   }
 
-  Widget _agregarMultimedia(Size size, BuildContext context) {
-    return Container(
-      height: size.height * 0.17,
-      decoration: BoxDecoration(
-          border: Border.all(
-            color: primaryColor,
-          ),
-          borderRadius: BorderRadius.circular(borderRadius),
-          color: primaryColor.withAlpha(50)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Flexible(child: Container(), flex: 1),
-          Flexible(
-              child: GetBuilder<NuevaPreTareaUvaController>(
-                id: 'personal',
-                builder: (_) => Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    '${_.nuevaPreTarea.detalles.length} personas',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                ),
-              ),
-              flex: 2),
-          Flexible(child: Container(), flex: 1),
-          Flexible(
-            flex: 3,
-            child: Row(
-              children: [
-                Flexible(
-                  child: Container(),
-                  flex: 1,
-                ),
-                Flexible(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: IconButton(
-                        onPressed: null, // controller.goListadoPersonas,
-                        icon: Icon(Icons.search, size: 40),
-                      ),
-                    ),
-                    flex: 1),
-                Flexible(
-                  child: Container(),
-                  flex: 1,
-                ),
-                /* Flexible(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: IconButton(
-                        onPressed: controller.goAgregarPersona,
-                        icon: Icon(Icons.person_add, size: 40),
-                      ),
-                    ),
-                    flex: 1),
-                Flexible(
-                  child: Container(),
-                  flex: 1,
-                ), */
-              ],
-            ),
-          ),
-          Flexible(child: Container(), flex: 1),
-        ],
-      ),
-    );
-  }
 }

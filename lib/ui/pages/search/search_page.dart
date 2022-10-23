@@ -8,13 +8,6 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    final items = [
-      {'_id': 1, 'name': 'Fecha'},
-      {'_id': 2, 'name': 'Actividad'},
-      {'_id': 3, 'name': 'Labor'},
-      {'_id': 4, 'name': 'Persona'},
-      {'_id': 5, 'name': 'Supervisor'},
-    ];
 
     return Container(
       height: size.height * 0.9,

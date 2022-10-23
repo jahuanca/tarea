@@ -5,6 +5,7 @@ import 'package:flutter_tareo/domain/repositories/export_data_repository.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tarea_esparrago_varios_repository.dart';
 import 'package:flutter_tareo/domain/repositories/resumen_varios_repository.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_pesado_to_excel_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/others/send_resumen_varios_esparrago_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/send_resumen_varios_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/create_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/delete_pesado_use_case.dart';
@@ -27,6 +28,10 @@ class PesadosBinding extends Bindings {
 
     Get.lazyReplace<SendResumenVariosUseCase>(
         () => SendResumenVariosUseCase(Get.find()));
+
+    Get.lazyReplace<SendResumenVariosEsparragoUseCase>(
+        () => SendResumenVariosEsparragoUseCase(Get.find()));
+
 
     Get.lazyReplace<CreatePesadoUseCase>(() => CreatePesadoUseCase(Get.find()));
     Get.lazyReplace<GetAllPesadoUseCase>(() => GetAllPesadoUseCase(Get.find()));

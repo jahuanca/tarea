@@ -8,13 +8,14 @@ import 'package:flutter_tareo/di/nueva_pesado_binding.dart';
 import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_pesado_to_excel_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/others/send_resumen_varios_use_case.dart';
+import 'package:flutter_tareo/domain/use_cases/others/send_resumen_varios_esparrago_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/create_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/delete_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/get_all_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/migrar_all_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/update_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/upload_file_of_tarea_use_case.dart';
+import 'package:flutter_tareo/ui/pages/informacion_linea/informacion_linea_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pesado/listado_personas_pesado_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pre_tarea_esparrago/listado_personas_pre_tarea_esparrago_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_pesado/nueva_pesado_page.dart';
@@ -32,7 +33,7 @@ class PesadosController extends GetxController {
   final MigrarAllPesadoUseCase _migrarAllPesadoUseCase;
   final UploadFileOfPesadoUseCase _uploadFileOfPesadoUseCase;
   final ExportPesadoToExcelUseCase _exportDataToExcelUseCase;
-  final SendResumenVariosUseCase _sendResumenVariosUseCase;
+  final SendResumenVariosEsparragoUseCase _sendResumenVariosEsparragoUseCase;
 
   bool validando = false;
   Timer timer;
@@ -44,7 +45,7 @@ class PesadosController extends GetxController {
       this._deletePesadoUseCase,
       this._migrarAllPesadoUseCase,
       this._uploadFileOfPesadoUseCase,
-      this._sendResumenVariosUseCase,
+      this._sendResumenVariosEsparragoUseCase,
       this._exportDataToExcelUseCase);
 
   @override
@@ -59,7 +60,6 @@ class PesadosController extends GetxController {
     update(['validando']);
     await sendResumenVarios();
     timer= new Timer.periodic(Duration(minutes: 5), (Timer t) => sendResumenVarios());
-    print('enviando tareas');
     await getTareas();
     validando=false;
     update(['validando']);
@@ -73,8 +73,7 @@ class PesadosController extends GetxController {
   }
 
   Future<void> sendResumenVarios()async{
-    print('enviando');
-    await _sendResumenVariosUseCase.execute();
+    await _sendResumenVariosEsparragoUseCase.execute();
   }
 
   Future<void> getTareas() async {
@@ -131,6 +130,22 @@ class PesadosController extends GetxController {
         },
         () => Get.back(),
       );
+    }
+  }
+
+  Future<void> goDatosEnLinea() async{
+    bool resultado= await basicDialog(
+        Get.overlayContext,
+        'Alerta',
+        '¿Desea ver los datos en linea?',
+        'Si',
+        'No',
+        () async => Get.back(result: true),
+        () async => Get.back(result: false),
+      );
+
+    if(resultado){
+      Get.to(()=> InformacionLinea());
     }
   }
 

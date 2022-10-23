@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter_tareo/core/strings.dart';
 import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/personal_pre_tarea_esparrago_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tarea_esparrago_varios_repository.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';

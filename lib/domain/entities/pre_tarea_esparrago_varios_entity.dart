@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_tareo/core/colors.dart';
 import 'package:flutter_tareo/domain/entities/personal_pre_tarea_esparrago_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';

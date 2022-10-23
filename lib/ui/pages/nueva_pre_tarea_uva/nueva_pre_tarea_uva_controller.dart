@@ -334,7 +334,6 @@ class NuevaPreTareaUvaController extends GetxController {
     changeHoraInicio();
     changeDiaSiguiente(nuevaPreTarea.diasiguiente ?? false);
     changeHoraFin();
-    //TODO: VALIDAR: fechas por TURNO NOCHE
     if (errorActividad != null) return errorActividad;
     if (errorCultivo != null) return errorCultivo;
     if (errorLabor != null) return errorLabor;

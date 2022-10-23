@@ -243,7 +243,6 @@ class TareasController extends GetxController {
         await _createPersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${id}', p);
       }
       
-      //TODO: descricpion de actividad no se muestra
       update(['tareas', 'seleccionado']);
     }
   }

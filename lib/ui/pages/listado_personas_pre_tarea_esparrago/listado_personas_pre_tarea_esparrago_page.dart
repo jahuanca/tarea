@@ -28,9 +28,9 @@ class ListadoPersonasPreTareaEsparragoPage extends StatelessWidget {
               appBar: getAppBar(
                   '${_.personalSeleccionado.length}',
                   [
+                    if(_.preTarea?.estadoLocal != 'M')
                     IconButton(
                         onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
-                    IconButton(onPressed: () {}, icon: Icon(Icons.search)),
                   ],
                   true),
               backgroundColor: secondColor,
@@ -168,6 +168,7 @@ class ListadoPersonasPreTareaEsparragoPage extends StatelessWidget {
                                 flex: 25,
                               ),
                               Flexible(child: Container(), flex: 1),
+                              if(_.preTarea?.estadoLocal != 'M')
                               Flexible(
                                   child: Container(
                                     child: _.seleccionados.length>0 ? Container() : DropdownBelow(
@@ -295,6 +296,7 @@ class ListadoPersonasPreTareaEsparragoPage extends StatelessWidget {
               flex: 12,
             ),
             Flexible(child: Container(), flex: 6),
+            if(_.preTarea?.estadoLocal != 'M')
             Flexible(
               child: Container(
                 alignment: Alignment.center,
