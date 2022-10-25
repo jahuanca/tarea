@@ -20,9 +20,7 @@ class PesadosPage extends StatelessWidget {
       builder: (_) => Stack(
         children: [
           Scaffold(
-            appBar: getAppBar('Varios', [
-              IconButton(onPressed: () async=> _.goDatosEnLinea(), icon: Icon(Icons.phonelink_ring_sharp))
-            ]),
+            appBar: getAppBar('Varios', []),
             backgroundColor: secondColor,
             body: GetBuilder<PesadosController>(
               id: 'seleccionado',

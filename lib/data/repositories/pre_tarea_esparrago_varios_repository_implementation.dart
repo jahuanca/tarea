@@ -11,6 +11,8 @@ import 'package:hive/hive.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 class PreTareaEsparragoVariosRepositoryImplementation
     extends PreTareaEsparragoVariosRepository{
@@ -70,8 +72,19 @@ class PreTareaEsparragoVariosRepositoryImplementation
         'pesados_sincronizar');
     int id = await tareas.add(pesado);
     pesado.key = id;
+
+    Database database = await openDatabase(join(await getDatabasesPath(), 'tareo_esparrago.db'));
+    int idDB= await database.insert(TABLE_NAME_PRE_TAREA_ESPARRAGO,
+      pesado.toDB(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+
+    print('Id: $idDB');
+
+    pesado.idSQLite= idDB;
+
     await tareas.put(id, pesado);
-    
+    await database.close();
     await tareas.close();
     return id;
   }
@@ -80,11 +93,20 @@ class PreTareaEsparragoVariosRepositoryImplementation
   Future<void> delete(int key) async {
     var tareas = await Hive.openBox<PreTareaEsparragoVariosEntity>(
         'pesados_sincronizar');
+    int idSQLite=(await tareas.get(key)).idSQLite;
     await tareas.delete(key);
     
     Box detalles=await Hive.openBox<PreTareaEsparragoVariosEntity>(
         'pesado_detalles_$key');
     await detalles.deleteFromDisk();
+
+    Database database = await openDatabase(join(await getDatabasesPath(), 'tareo_esparrago.db'));
+    await database.delete(TABLE_NAME_PRE_TAREA_ESPARRAGO,
+      where: "id = ?",
+      whereArgs: [idSQLite],
+    );
+    await database.close();
+
     await tareas.close();
     return;
   }
@@ -96,6 +118,14 @@ class PreTareaEsparragoVariosRepositoryImplementation
         'pesados_sincronizar');
     await tareas.put(key, pesado);
     
+    Database database = await openDatabase(join(await getDatabasesPath(), 'tareo_esparrago.db'));
+    await database.update(TABLE_NAME_PRE_TAREA_ESPARRAGO,
+      pesado.toDB(),
+      where: "id = ?",
+      whereArgs: [pesado.idSQLite],
+    );
+
+    await database.close();
     await tareas.close();
     return;
   }

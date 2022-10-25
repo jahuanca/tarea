@@ -319,6 +319,7 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
             idcalibre: calibres[indexCalibre].idcalibre,
             calibre: calibres[indexCalibre],
             esperandoCierre: esperandoCierre,
+            idSQLitePreTareaEsparrago: preTarea.idSQLite,
           )
         );
 

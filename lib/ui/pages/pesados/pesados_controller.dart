@@ -103,7 +103,6 @@ class PesadosController extends GetxController {
 
   void goExcel(int key) async {
     await _exportDataToExcelUseCase.execute(key);
-    print('exportando');
   }
 
   void goAprobar(int key) async {
@@ -319,10 +318,13 @@ class PesadosController extends GetxController {
         () => NuevaTareaPage(),
         arguments: {'tarea': pesados[index]});
     if (result != null) {
+      validando=true;
+      update(['validando']);
       result.idusuario = PreferenciasUsuario().idUsuario;
       pesados.add(result);
       await _createPesadoUseCase.execute(pesados.last);
-      update(['tareas']);
+      validando=false;
+      update(['tareas','validando']);
     }
   }
 

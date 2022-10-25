@@ -95,6 +95,8 @@ class PreTareaEsparragoEntity {
   TipoTareaEntity tipoTarea;
   @HiveField(25)
   int sizeDetails;
+  @HiveField(26)
+  int idSQLite;
 
   String get fechaHora {
     if (fecha == null || horainicio == null) {

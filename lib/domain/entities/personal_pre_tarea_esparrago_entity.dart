@@ -37,6 +37,8 @@ class PersonalPreTareaEsparragoEntity {
         this.calibre,
         this.viaEnvio,
         this.idcalibre,
+        this.idSQLite,
+        this.idSQLitePreTareaEsparrago,
     });
 
 
@@ -86,6 +88,10 @@ class PersonalPreTareaEsparragoEntity {
     ViaEnvioEntity viaEnvio;
     @HiveField(22)
     int idcalibre;
+    @HiveField(23)
+    int idSQLite;
+    @HiveField(24)
+    int idSQLitePreTareaEsparrago;
 
     String keyString() {
       return '${formatoFechaExplore(fecha, 0, 0)}!${idcliente}!${idlabor}!${mesa}!${linea}';
@@ -95,6 +101,7 @@ class PersonalPreTareaEsparragoEntity {
         itempersonalpretareaesparrago: json["itempersonalpretareaesparrago"] == null ? null : json["itempersonalpretareaesparrago"],
         fecha: json["fecha"] == null ? null : DateTime.parse(json["fecha"]),
         hora: json["hora"] == null ? null : DateTime.parse(json["hora"]),
+        idSQLitePreTareaEsparrago: json["idSQLitePreTareaEsparrago"] == null ? null : json["idSQLitePreTareaEsparrago"],
         idestado: json["idestado"] == null ? null : json["idestado"],
         esperandoCierre: json["esperandoCierre"] == null ? null : json["esperandoCierre"],
         itempretareaesparragovarios: json["itempretareaesparragovarios"] == null ? null : json["itempretareaesparragovarios"],
@@ -123,6 +130,7 @@ class PersonalPreTareaEsparragoEntity {
         "hora": hora == null ? null : hora.toIso8601String(),
         "idestado": idestado == null ? null : idestado,
         "key": key == null ? null : key,
+        "idSQLitePreTareaEsparrago": idSQLitePreTareaEsparrago== null ? null : idSQLitePreTareaEsparrago,
         "esperandoCierre": esperandoCierre == null ? null : esperandoCierre,
         "itempretareaesparragovarios": itempretareaesparragovarios == null ? null : itempretareaesparragovarios,
         "codigotkcaja": codigotkcaja == null ? null : codigotkcaja,
@@ -138,6 +146,29 @@ class PersonalPreTareaEsparragoEntity {
         'Labor': labor?.toJson(),
         'Calibre': calibre?.toJson(),
         'ViaEnvio': viaEnvio?.toJson(),
+        "correlativomesa": correlativomesa == null ? null : correlativomesa,
+        "idusuario": idusuario == null ? null : idusuario,
+        "fechamod": fechamod == null ? null : fechamod.toIso8601String(),
+    };
+
+    Map<String, dynamic> toDB() => {
+        "itempersonalpretareaesparrago": itempersonalpretareaesparrago == null ? null : itempersonalpretareaesparrago,
+        "fecha": fecha == null ? null : "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
+        "hora": hora == null ? null : hora.toIso8601String(),
+        "idestado": idestado == null ? null : idestado,
+        "id_pre_tarea_esparrago": idSQLitePreTareaEsparrago== null ? null : idSQLitePreTareaEsparrago,
+        "key": key == null ? null : key,
+        "esperandoCierre": esperandoCierre == null ? null : esperandoCierre,
+        "itempretareaesparragovarios": itempretareaesparragovarios == null ? null : itempretareaesparragovarios,
+        "codigotkcaja": codigotkcaja == null ? null : codigotkcaja,
+        "idlabor": idlabor == null ? null : idlabor,
+        "idcliente": idcliente == null ? null : idcliente,
+        "idcalibre": idcalibre == null ? null : idcalibre,
+        "idvia": idvia == null ? null : idvia,
+        "correlativocaja": correlativocaja == null ? null : correlativocaja,
+        "codigotkmesa": codigotkmesa == null ? null : codigotkmesa,
+        "mesa": mesa == null ? null : mesa,
+        "linea": linea == null ? null : linea,
         "correlativomesa": correlativomesa == null ? null : correlativomesa,
         "idusuario": idusuario == null ? null : idusuario,
         "fechamod": fechamod == null ? null : fechamod.toIso8601String(),

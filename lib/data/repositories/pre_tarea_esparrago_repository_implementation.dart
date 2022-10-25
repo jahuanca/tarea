@@ -20,8 +20,7 @@ class PreTareaEsparragoRepositoryImplementation
   @override
   Future<List<PreTareaEsparragoEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
-      Box dataHive = await Hive.openBox<PreTareaEsparragoEntity>(
-          'clasificacion_sincronizar');
+      Box dataHive = await Hive.openBox<PreTareaEsparragoEntity>('clasificacion_sincronizar');
       List<PreTareaEsparragoEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       local.sort((a, b) => b.fecha.compareTo(a.fecha));
@@ -71,8 +70,10 @@ class PreTareaEsparragoRepositoryImplementation
         'clasificacion_sincronizar');
     int id = await tareas.add(pesado);
     pesado.key = id;
+
     await tareas.put(id, pesado);
     await tareas.close();
+
     return id;
   }
 
@@ -89,6 +90,7 @@ class PreTareaEsparragoRepositoryImplementation
           'caja_detalle_${key}');
       detalles.deleteFromDisk();
     }
+
     await tareas.close();
     return;
   }
@@ -97,8 +99,8 @@ class PreTareaEsparragoRepositoryImplementation
   Future<void> update(PreTareaEsparragoEntity pesado, int key) async {
     var tareas = await Hive.openBox<PreTareaEsparragoEntity>(
         'clasificacion_sincronizar');
+    
     await tareas.put(key, pesado);
-
     await tareas.close();
     return;
   }

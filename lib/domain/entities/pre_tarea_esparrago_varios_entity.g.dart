@@ -47,13 +47,14 @@ class PreTareaEsparragoVariosEntityAdapter
       ..pathUrl = fields[14] as String
       ..estadoLocal = fields[15] as String
       ..supervisor = fields[19] as PersonalEmpresaEntity
-      ..digitador = fields[20] as PersonalEmpresaEntity;
+      ..digitador = fields[20] as PersonalEmpresaEntity
+      ..idSQLite = fields[30] as int;
   }
 
   @override
   void write(BinaryWriter writer, PreTareaEsparragoVariosEntity obj) {
     writer
-      ..writeByte(29)
+      ..writeByte(30)
       ..writeByte(0)
       ..write(obj.itempretareaesparragosvarios)
       ..writeByte(1)
@@ -111,7 +112,9 @@ class PreTareaEsparragoVariosEntityAdapter
       ..writeByte(28)
       ..write(obj.imei)
       ..writeByte(29)
-      ..write(obj.fechamod);
+      ..write(obj.fechamod)
+      ..writeByte(30)
+      ..write(obj.idSQLite);
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/core/strings.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/calibre_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
@@ -35,17 +36,18 @@ import 'package:flutter_tareo/domain/entities/usuario_perfil_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/via_envio_entity.dart';
 import 'package:flutter_tareo/ui/app.dart';
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:hive/hive.dart';
+import 'package:sqflite/sqflite.dart';
 
-void main() async{
-
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = PreferenciasUsuario();
   await prefs.initPrefs();
 
-  var path=await getApplicationDocumentsDirectory();
+  var path = await getApplicationDocumentsDirectory();
   Hive.init(path.path);
   Hive.registerAdapter(LogEntityAdapter());
   Hive.registerAdapter(TareaProcesoEntityAdapter());
@@ -82,6 +84,19 @@ void main() async{
   Hive.registerAdapter(CalibreEntityAdapter());
   Hive.registerAdapter(EstadoEntityAdapter());
   Hive.registerAdapter(PersonalPreTareaEsparragoEntityAdapter());
+
+  Database  db=await openDatabase(
+    join(await getDatabasesPath(), 'tareo_esparrago.db'),
+    onCreate: (db, version) async{
+      await db.execute(TABLE_PRETAREAESPARRAGO);
+      return await db.execute(TABLE_PERSONALPRETAREAESPARRAGO);
+      
+    },
+    version: 1,
+  );
+
+  await db.close();
   
+
   runApp(MyApp());
 }

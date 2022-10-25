@@ -105,6 +105,8 @@ class PreTareaEsparragoVariosEntity {
   @HiveField(29)
   DateTime fechamod;
   List<PersonalPreTareaEsparragoEntity> detalles;
+  @HiveField(30)
+  int idSQLite;
 
   String get fechaHora {
     if (fecha == null || horainicio == null) {
@@ -168,7 +170,7 @@ class PreTareaEsparragoVariosEntity {
         sizeTipoCaja: json["sizeTipoCaja"] == null ? null : json["sizeTipoCaja"],
         idusuario: json["idusuario"] == null ? null : json["idusuario"],
         idtipotarea: json["idtipotarea"] == null ? null : json["idtipotarea"],
-        tipoTarea: json["tipoTarea"] == null ? null : json["tipoTarea"],
+        tipoTarea: json["tipoTarea"] == null ? null : TipoTareaEntity.fromJson(json["tipoTarea"]),
         diasiguiente: json["diasiguiente"] == null ? null : json["diasiguiente"],
         turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
         key: json["key"] == null ? null : json["key"],
@@ -206,7 +208,7 @@ class PreTareaEsparragoVariosEntity {
         "turnotareo": turnotareo == null ? null : turnotareo,
         "key": key == null ? null : key,
         "idtipotarea": idtipotarea == null ? null : idtipotarea,
-        "tipoTarea": tipoTarea == null ? null : tipoTarea,
+        "tipoTarea": tipoTarea == null ? null : tipoTarea.toJson(),
         "sizeDetails": sizeDetails == null ? null : sizeDetails,
         "firmasupervisor": firmaSupervisor == null ? null : firmaSupervisor,
         "diasiguiente": diasiguiente == null ? null : diasiguiente,
@@ -215,6 +217,31 @@ class PreTareaEsparragoVariosEntity {
         "Personal_Pre_Tarea_Esparrago": detalles == null
             ? null
             : List<dynamic>.from(detalles.map((x) => x.toJson())),
+      };
+
+
+Map<String, dynamic> toDB() => {
+        "itempretareaesparragosvarios":
+            itempretareaesparragosvarios == null ? null : itempretareaesparragosvarios,
+        "fecha": fecha == null
+            ? null
+            : "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
+        "horainicio": horainicio == null ? null : horainicio.toIso8601String(),
+        "horafin": horafin == null ? null : horafin.toIso8601String(),
+        "fechamod": fechamod == null ? null : fechamod.toIso8601String(),
+        "pausainicio":
+            pausainicio == null ? null : pausainicio.toIso8601String(),
+        "pausafin": pausafin == null ? null : pausafin.toIso8601String(),
+        "linea": linea == null ? null : linea,
+        "idcentrocosto": idcentrocosto == null ? null : idcentrocosto,
+        "codigosupervisor": codigosupervisor == null ? null : codigosupervisor,
+        "codigodigitador":  codigodigitador == null ? null : codigodigitador,
+        "idusuario": idusuario == null ? null : idusuario,
+        "imei": imei == null ? null : imei,
+        "turnotareo": turnotareo == null ? null : turnotareo,
+        "key": key == null ? null : key,
+        "idtipotarea": idtipotarea == null ? null : idtipotarea,
+        "diasiguiente": diasiguiente == null ? null : diasiguiente,
       };
 }
 
