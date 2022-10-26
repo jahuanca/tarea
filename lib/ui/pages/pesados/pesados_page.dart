@@ -162,8 +162,8 @@ class PesadosPage extends StatelessWidget {
                                               value: e['key'],
                                               child: Text(e['value'])))
                                           .toList(),
-                                  onChanged: (value) =>
-                                      _.onChangedMenu(value, _.pesados[index].key)),
+                                  onChanged: (value) async=>
+                                      _.onChangedMenu(value, _.pesados[index].key, _.pesados[index].idSQLite )),
                             ),
                             flex: 5),
                         Flexible(child: Container(), flex: 1),

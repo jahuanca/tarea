@@ -7,6 +7,7 @@ import 'package:flutter_tareo/di/listado_personas_pre_tarea_esparrago_binding.da
 import 'package:flutter_tareo/di/nueva_pesado_binding.dart';
 import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
+import 'package:flutter_tareo/domain/use_cases/others/export_esparrago_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_pesado_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/send_resumen_varios_esparrago_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/create_pesado_use_case.dart';
@@ -32,7 +33,7 @@ class PesadosController extends GetxController {
   final DeletePesadoUseCase _deletePesadoUseCase;
   final MigrarAllPesadoUseCase _migrarAllPesadoUseCase;
   final UploadFileOfPesadoUseCase _uploadFileOfPesadoUseCase;
-  final ExportPesadoToExcelUseCase _exportDataToExcelUseCase;
+  final ExportEsparragoToExcelUseCase _exportEsparragoToExcelUseCase;
   final SendResumenVariosEsparragoUseCase _sendResumenVariosEsparragoUseCase;
 
   bool validando = false;
@@ -46,7 +47,7 @@ class PesadosController extends GetxController {
       this._migrarAllPesadoUseCase,
       this._uploadFileOfPesadoUseCase,
       this._sendResumenVariosEsparragoUseCase,
-      this._exportDataToExcelUseCase);
+      this._exportEsparragoToExcelUseCase);
 
   @override
   void onInit() async {
@@ -83,7 +84,7 @@ class PesadosController extends GetxController {
     return;
   }
 
-  void onChangedMenu(dynamic value, int key) async {
+  Future<void> onChangedMenu(dynamic value, int key, int idDB) async {
     switch (value.toInt()) {
       case 1:
         break;
@@ -94,15 +95,19 @@ class PesadosController extends GetxController {
         goEliminar(key);
         break;
       case 4:
-        goExcel(key);
+        await goExcel(idDB);
         break;
       default:
         break;
     }
   }
 
-  void goExcel(int key) async {
-    await _exportDataToExcelUseCase.execute(key);
+  Future<void> goExcel(int idDB) async {
+    validando=true;
+    update(['validando']);
+    await _exportEsparragoToExcelUseCase.execute(idDB);
+    validando=false;
+    update(['validando']);
   }
 
   void goAprobar(int key) async {

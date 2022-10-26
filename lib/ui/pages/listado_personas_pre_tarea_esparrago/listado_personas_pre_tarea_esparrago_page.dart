@@ -30,7 +30,7 @@ class ListadoPersonasPreTareaEsparragoPage extends StatelessWidget {
                   [
                     if(_.preTarea?.estadoLocal != 'M')
                     IconButton(
-                        onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
+                        onPressed:() async=> _.goLectorCode, icon: Icon(Icons.qr_code)),
                   ],
                   true),
               backgroundColor: secondColor,

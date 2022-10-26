@@ -14,6 +14,7 @@ part 'personal_pre_tarea_esparrago_entity.g.dart';
 @HiveType(typeId: 35)
 class PersonalPreTareaEsparragoEntity {
     PersonalPreTareaEsparragoEntity({
+        this.idSQLite,
         this.itempersonalpretareaesparrago,
         this.fecha,
         this.hora,
@@ -37,7 +38,6 @@ class PersonalPreTareaEsparragoEntity {
         this.calibre,
         this.viaEnvio,
         this.idcalibre,
-        this.idSQLite,
         this.idSQLitePreTareaEsparrago,
     });
 

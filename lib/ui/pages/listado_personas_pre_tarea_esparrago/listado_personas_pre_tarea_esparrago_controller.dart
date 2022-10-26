@@ -256,11 +256,8 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
   }
 
   Future<void> goLectorCode() async {
-    await FlutterBarcodeScanner.getBarcodeStreamReceiver(
-            "#ff6666", "Cancelar", false, ScanMode.DEFAULT)
-        .listen((barcode) async {
-      await setCodeBar(barcode);
-    });
+    String barcode=await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancelar", false, ScanMode.BARCODE);
+    await setCodeBar(barcode);
   }
 
   bool buscando = false;

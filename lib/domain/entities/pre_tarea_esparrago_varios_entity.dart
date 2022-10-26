@@ -40,6 +40,7 @@ class PreTareaEsparragoVariosEntity {
     this.sizeTipoPersona,
     this.imei,
     this.fechamod,
+    this.idSQLite,
   }){
     estadoLocal='P';
   }
@@ -144,18 +145,18 @@ class PreTareaEsparragoVariosEntity {
         itempretareaesparragosvarios: json["itempretareaesparragosvarios"] == null
             ? null
             : json["itempretareaesparragosvarios"],
-        fecha: json["fecha"] == null ? null : DateTime.parse(json["fecha"]),
-        fechamod: json["fechamod"] == null ? null : DateTime.parse(json["fechamod"]),
+        fecha: json["fecha"] == null ? null : DateTime.tryParse(json["fecha"]),
+        fechamod: json["fechamod"] == null ? null : DateTime.tryParse(json["fechamod"]),
         horainicio: json["horainicio"] == null
             ? null
-            : DateTime.parse(json["horainicio"]),
+            : DateTime.tryParse(json["horainicio"]),
         horafin:
-            json["horafin"] == null ? null : DateTime.parse(json["horafin"]),
+            json["horafin"] == null ? null : DateTime.tryParse(json["horafin"]),
         pausainicio: json["pausainicio"] == null
             ? null
-            : DateTime.parse(json["pausainicio"]),
+            : DateTime.tryParse(json["pausainicio"]),
         pausafin:
-            json["pausafin"] == null ? null : DateTime.parse(json["pausafin"]),
+            json["pausafin"] == null ? null : DateTime.tryParse(json["pausafin"]),
         linea: json["linea"] == null ? null : json["linea"],
         idcentrocosto:
             json["idcentrocosto"] == null ? null : json["idcentrocosto"],
@@ -190,12 +191,12 @@ class PreTareaEsparragoVariosEntity {
         "fecha": fecha == null
             ? null
             : "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
-        "horainicio": horainicio == null ? null : horainicio.toIso8601String(),
-        "horafin": horafin == null ? null : horafin.toIso8601String(),
-        "fechamod": fechamod == null ? null : fechamod.toIso8601String(),
+        "horainicio": horainicio == null ? null : horainicio?.toIso8601String(),
+        "horafin": horafin == null ? null : horafin?.toIso8601String(),
+        "fechamod": fechamod == null ? null : fechamod?.toIso8601String(),
         "pausainicio":
-            pausainicio == null ? null : pausainicio.toIso8601String(),
-        "pausafin": pausafin == null ? null : pausafin.toIso8601String(),
+            pausainicio == null ? null : pausainicio?.toIso8601String(),
+        "pausafin": pausafin == null ? null : pausafin?.toIso8601String(),
         "linea": linea == null ? null : linea,
         "imei": imei == null ? null : imei,
         "idcentrocosto": idcentrocosto == null ? null : idcentrocosto,
@@ -226,12 +227,12 @@ Map<String, dynamic> toDB() => {
         "fecha": fecha == null
             ? null
             : "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
-        "horainicio": horainicio == null ? null : horainicio.toIso8601String(),
-        "horafin": horafin == null ? null : horafin.toIso8601String(),
-        "fechamod": fechamod == null ? null : fechamod.toIso8601String(),
+        "horainicio": horainicio == null ? null : horainicio?.toIso8601String(),
+        "horafin": horafin == null ? null : horafin?.toIso8601String(),
+        "fechamod": fechamod == null ? null : fechamod?.toIso8601String(),
         "pausainicio":
-            pausainicio == null ? null : pausainicio.toIso8601String(),
-        "pausafin": pausafin == null ? null : pausafin.toIso8601String(),
+            pausainicio == null ? null : pausainicio?.toIso8601String(),
+        "pausafin": pausafin == null ? null : pausafin?.toIso8601String(),
         "linea": linea == null ? null : linea,
         "idcentrocosto": idcentrocosto == null ? null : idcentrocosto,
         "codigosupervisor": codigosupervisor == null ? null : codigosupervisor,
