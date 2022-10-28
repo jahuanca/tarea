@@ -236,7 +236,27 @@ class TareasPage extends StatelessWidget {
                               ],
                             ),
                           ),
-                          flex: 10,
+                          flex: 7,
+                        ),
+                        Flexible(
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: [
+                                Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 5),
+                                    child: Text(
+                                        (_.tareas[index].cantidadAvance ?? 0)
+                                            .toString())),
+                                Icon(
+                                  Icons.arrow_upward_rounded ,
+                                  color: Colors.black45,
+                                )
+                              ],
+                            ),
+                          ),
+                          flex: 7,
                         ),
                         Flexible(child: Container(), flex: 1),
                         Flexible(
@@ -245,7 +265,7 @@ class TareasPage extends StatelessWidget {
                             child: Text(
                                 _.tareas[index].sede?.detallesubdivision ?? ''),
                           ),
-                          flex: 10,
+                          flex: 15,
                         ),
                         Flexible(child: Container(), flex: 1),
                       ],

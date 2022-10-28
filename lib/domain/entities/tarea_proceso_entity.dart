@@ -38,6 +38,7 @@ class TareaProcesoEntity {
     this.estadoLocal,
     this.key,
     this.sizeDetails,
+    this.cantidadAvance,
     this.codigoempresadigitador,
   }) ;
 
@@ -105,6 +106,8 @@ class TareaProcesoEntity {
   String codigoempresadigitador;
   @HiveField(31)
   PersonalEmpresaEntity digitador;
+  @HiveField(32)
+  double cantidadAvance;
 
   String get fechaHora{
     if(fecha==null || horainicio==null || horafin == null){

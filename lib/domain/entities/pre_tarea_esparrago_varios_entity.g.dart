@@ -42,13 +42,13 @@ class PreTareaEsparragoVariosEntityAdapter
       sizeTipoPersona: fields[26] as int,
       imei: fields[28] as String,
       fechamod: fields[29] as DateTime,
+      idSQLite: fields[30] as int,
     )
       ..sede = fields[13] as SubdivisionEntity
       ..pathUrl = fields[14] as String
       ..estadoLocal = fields[15] as String
       ..supervisor = fields[19] as PersonalEmpresaEntity
-      ..digitador = fields[20] as PersonalEmpresaEntity
-      ..idSQLite = fields[30] as int;
+      ..digitador = fields[20] as PersonalEmpresaEntity;
   }
 
   @override

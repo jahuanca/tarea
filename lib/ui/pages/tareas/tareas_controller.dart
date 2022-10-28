@@ -166,7 +166,7 @@ class TareasController extends GetxController {
   Future<void> goListadoPersonas(int key) async {
     int index=tareas.indexWhere((e) => e.key == key);
     ListadoPersonasBinding().dependencies();
-    final resultado = await Get.to<int>(() => ListadoPersonasPage(),
+    final resultado = await Get.to<List<num>>(() => ListadoPersonasPage(),
         arguments: {
           'tarea': tareas[index],
           'index': index,
@@ -174,10 +174,14 @@ class TareasController extends GetxController {
         });
 
     if (resultado != null) {
-      tareas[index].sizeDetails = resultado;
+      validando=true;
+      update(['validando']);
+      tareas[index].sizeDetails = resultado.first;
+      tareas[index].cantidadAvance = resultado.last;
       await _updateTareaProcesoUseCase.execute(
           tareas[index], tareas[index].key);
-      update(['tareas']);
+      validando=false;
+      update(['validando', 'tareas']);
     }
   }
 
@@ -240,6 +244,10 @@ class TareasController extends GetxController {
       tareas.add(result);
 
       for (var p in personalCopiar) {
+        p.horainicio=result.horainicio;
+        p.horafin=result.horafin;
+        p.pausainicio=result.pausainicio;
+        p.pausafin=result.pausafin;
         await _createPersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${id}', p);
       }
       

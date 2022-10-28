@@ -18,6 +18,7 @@ class PersonalPreTareaEsparragoEntityAdapter
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return PersonalPreTareaEsparragoEntity(
+      idSQLite: fields[23] as int,
       itempersonalpretareaesparrago: fields[0] as int,
       fecha: fields[1] as DateTime,
       hora: fields[2] as DateTime,
@@ -41,7 +42,6 @@ class PersonalPreTareaEsparragoEntityAdapter
       calibre: fields[20] as CalibreEntity,
       viaEnvio: fields[21] as ViaEnvioEntity,
       idcalibre: fields[22] as int,
-      idSQLite: fields[23] as int,
       idSQLitePreTareaEsparrago: fields[24] as int,
     );
   }

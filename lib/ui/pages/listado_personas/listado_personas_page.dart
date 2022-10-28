@@ -21,8 +21,8 @@ class ListadoPersonasPage extends StatelessWidget {
       id: 'personal_seleccionado',
       builder: (_) => WillPopScope(
         onWillPop:  () async{
-            /* _.onWillPop(); */
-            Navigator.pop(Get.overlayContext, _.personalSeleccionado.length);
+             _.onWillPop();
+            //Navigator.pop(Get.overlayContext, [_.personalSeleccionado.length, ]);
             return new Future(() => false);
         } ,
         child: Stack(
@@ -148,7 +148,7 @@ class ListadoPersonasPage extends StatelessWidget {
                                 ),
                                 flex: 25,
                               ),
-                              Flexible(child: Container(), flex: 1),
+                              
                               Flexible(
                                   child: Container(
                                     child: _.seleccionados.length>0 ? Container() : DropdownBelow(
@@ -195,33 +195,29 @@ class ListadoPersonasPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(toHorasMinutos(_.personalSeleccionado[index].cantidadHoras ?? 0)),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.watch_outlined,),
+                                      Text(toHorasMinutos(_.personalSeleccionado[index].cantidadHoras ?? 0)),
+                                    ],
+                                  ),
                                 ),
-                                flex: 10,
+                                flex: 8,
                               ),
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(
-                                      formatoFechaOnlyHoras(
-                                            _.personalSeleccionado[index]
-                                                .horainicio,
-                                            _.personalSeleccionado[index]
-                                                .horafin,
-                                          ) ??
-                                          '-Sin horas-',
-                                      style: TextStyle(
-                                          color: (_.personalSeleccionado[index]
-                                                          .horainicio ==
-                                                      null ||
-                                                  _.personalSeleccionado[index]
-                                                          .horafin ==
-                                                      null)
-                                              ? dangerColor
-                                              : Colors.black87)),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.arrow_upward_sharp, color: infoColor,),
+                                      Text((_.personalSeleccionado[index].cantidadavance ?? 0).toString(),
+                                          style: TextStyle(
+                                              color: Colors.black87)),
+                                    ],
+                                  ),
                                 ),
-                                flex: 10,
+                                flex: 8,
                               ),
                               Flexible(child: Container(), flex: 1),
                             ],
@@ -234,33 +230,60 @@ class ListadoPersonasPage extends StatelessWidget {
                           child: Row(
                             children: [
                               Expanded(child: Container(), flex: 1),
-                              Expanded(
+                              Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text('PAUSA:'),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.watch_later_outlined),
+                                      Text(
+                                          formatoFechaOnlyHoras(
+                                                _.personalSeleccionado[index]
+                                                    .horainicio,
+                                                _.personalSeleccionado[index]
+                                                    .horafin,
+                                              ) ??
+                                              '-Sin horas-',
+                                          style: TextStyle(
+                                              color: (_.personalSeleccionado[index]
+                                                              .horainicio ==
+                                                          null ||
+                                                      _.personalSeleccionado[index]
+                                                              .horafin ==
+                                                          null)
+                                                  ? dangerColor
+                                                  : Colors.black87)),
+                                    ],
+                                  ),
                                 ),
-                                flex: 4,
+                                flex: 8,
                               ),
+                              Expanded(child: Container(), flex: 1),
                               Expanded(
                                 child: Container(
                                   alignment: Alignment.center,
-                                  child: Text(
-                                    (formatoFechaOnlyHoras(
-                                          _.personalSeleccionado[index]
-                                              .pausainicio,
-                                          _.personalSeleccionado[index]
-                                              .pausafin,
-                                        ) ??
-                                        '-Sin pausas-'),
-                                    style: TextStyle(
-                                        color: (_.personalSeleccionado[index]
-                                                        .pausainicio ==
-                                                    null ||
-                                                _.personalSeleccionado[index]
-                                                        .pausainicio ==
-                                                    null)
-                                            ? Colors.grey
-                                            : Colors.black87),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.pause_circle_outline),
+                                      Text(
+                                        (formatoFechaOnlyHoras(
+                                              _.personalSeleccionado[index]
+                                                  .pausainicio,
+                                              _.personalSeleccionado[index]
+                                                  .pausafin,
+                                            ) ??
+                                            '-Sin pausas-'),
+                                        style: TextStyle(
+                                            color: (_.personalSeleccionado[index]
+                                                            .pausainicio ==
+                                                        null ||
+                                                    _.personalSeleccionado[index]
+                                                            .pausainicio ==
+                                                        null)
+                                                ? Colors.grey
+                                                : Colors.black87),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 flex: 8,

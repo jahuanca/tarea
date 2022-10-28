@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
@@ -182,15 +181,18 @@ class ListadoPersonasController extends GetxController
   }
 
   Future<bool> onWillPop() async {
+    double cantidadAvance=0;
     personalSeleccionado.forEach((e) {
       if (e.horainicio == null || e.horafin == null) {
         toastError('Error',
             'Existe un personal con datos vacios. Por favor, ingreselos.');
         return false;
       }
+      cantidadAvance=cantidadAvance+(e.cantidadavance ?? 0);
     });
 
-    Get.back(result: personalSeleccionado.length);
+    Get.back(result: [personalSeleccionado.length, cantidadAvance]);
+    print('retornado');
     return true;
   }
 
