@@ -60,7 +60,7 @@ class PesadosController extends GetxController {
     validando=true;
     update(['validando']);
     await sendResumenVarios();
-    timer= new Timer.periodic(Duration(minutes: 5), (Timer t) => sendResumenVarios());
+    timer= new Timer.periodic(Duration(minutes: 3), (Timer t) => sendResumenVarios());
     await getTareas();
     validando=false;
     update(['validando']);

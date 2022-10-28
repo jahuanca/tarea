@@ -113,8 +113,6 @@ class ResumenVariosRepositoryImplementation extends ResumenVariosRepository {
       /* } */
       await detalles.close();
     }
-
-    /* return res == null ? null : tareaProcesoEntity; */
     await tareas.close();
     return;
   }

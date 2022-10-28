@@ -250,13 +250,17 @@ class ListadoPersonasPreTareaEsparragoPage extends StatelessWidget {
                               Expanded(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text('C${_.personalSeleccionado[index].correlativocaja}M${_.personalSeleccionado[index].correlativomesa}'),
+                                  child: Text('M-${_.personalSeleccionado[index].mesa}'),
                                 ),
                                 flex: 4,
                               ),
+                              Expanded(child: Container(), flex: 1),
                               Expanded(
-                                child: Container(),
-                                flex: 8,
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text('L-${_.personalSeleccionado[index].linea}'),
+                                ),
+                                flex: 4,
                               ),
                               Expanded(child: Container(), flex: 1),
                             ],

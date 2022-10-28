@@ -274,6 +274,26 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
           return;
         }
 
+        int index=personalSeleccionado.indexWhere((e) => e.codigotkcaja == barcode.toString().trim());
+
+        if(index != -1){
+          toastError('Error', 'Esta etiqueta ya ha sido registrada.');
+          return;
+        }
+
+        for (PreTareaEsparragoVariosEntity otra in otrasPreTareas) {
+
+          List<PersonalPreTareaEsparragoEntity> otroPersonal=await _getAllPersonalPreTareaEsparragoUseCase.execute('personal_pre_tarea_esparrago_${otra.key}');
+
+          int indexROtra=otroPersonal.indexWhere(
+            (e) => '${e.codigotkcaja}'== '${barcode.toString().trim()}');
+
+          if(indexROtra!=-1){
+            toastError('Error', 'Esta etiqueta ya esta en otra pretarea.');
+            return;
+          } 
+        }
+
         int indexLabor=labores.indexWhere((e) => e.idlabor == int.tryParse(codigos[1]));
 
         if(indexLabor == -1){
@@ -333,13 +353,19 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
         }
 
         print('Es cierre');
-        
+
         int index=personalSeleccionado.indexWhere((e) => e.esperandoCierre==true);
 
-        int indexR=personalSeleccionado.indexWhere((e) => '${e.codigotkcaja}${e.codigotkmesa}'== '${personalSeleccionado[index].codigotkcaja}${barcode.toString().trim()}');
+        if(index==-1){
+          toastError('Error', 'No existe etiqueta que espera ser cerrada.');
+          return;
+        }
+
+        int indexR=personalSeleccionado.indexWhere(
+          (e) => '${e.codigotkmesa}'=='${barcode.toString().trim()}');
 
         if(indexR!=-1){
-          toastError('Error', 'Este conjunto de etiquetas ya ha sido leída.');
+          toastError('Error', 'Esta etiqueta de cierre ya ha sido registrada.');
           return;
         }
 
@@ -347,10 +373,11 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
 
           List<PersonalPreTareaEsparragoEntity> otroPersonal=await _getAllPersonalPreTareaEsparragoUseCase.execute('personal_pre_tarea_esparrago_${otra.key}');
 
-          int indexROtra=otroPersonal.indexWhere((e) => '${e.codigotkcaja}${e.codigotkmesa}'== '${otroPersonal[index].codigotkcaja}${barcode.toString().trim()}');
+          int indexROtra=otroPersonal.indexWhere(
+            (e) => '${e.codigotkmesa}'== '${barcode.toString().trim()}');
 
           if(indexROtra!=-1){
-            toastError('Error', 'Este conjunto de etiquetas esta en otra pretarea.');
+            toastError('Error', 'Esta etiqueta ya esta en otra pretarea.');
             return;
           } 
         }
