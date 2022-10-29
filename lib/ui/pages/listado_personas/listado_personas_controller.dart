@@ -1,4 +1,3 @@
-
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -52,8 +51,9 @@ class ListadoPersonasController extends GetxController
     this._updateTareaProcesoUseCase,
   );
 
-  Future<void> getPersonal()async{
-    personalSeleccionado=await _getAllPersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${tarea.key}');
+  Future<void> getPersonal() async {
+    personalSeleccionado = await _getAllPersonalTareaProcesoUseCase
+        .execute('personal_tarea_proceso_${tarea.key}');
     update(['personal_seleccionado']);
   }
 
@@ -181,14 +181,21 @@ class ListadoPersonasController extends GetxController
   }
 
   Future<bool> onWillPop() async {
-    double cantidadAvance=0;
+    double cantidadAvance = 0;
     personalSeleccionado.forEach((e) {
       if (e.horainicio == null || e.horafin == null) {
         toastError('Error',
             'Existe un personal con datos vacios. Por favor, ingreselos.');
         return false;
       }
-      cantidadAvance=cantidadAvance+(e.cantidadavance ?? 0);
+
+      if (tarea.esrendimiento) {
+        cantidadAvance = cantidadAvance + (e.cantidadrendimiento ?? 0);
+      }
+
+      if (tarea.esjornal) {
+        cantidadAvance = cantidadAvance + (e.cantidadavance ?? 0);
+      }
     });
 
     Get.back(result: [personalSeleccionado.length, cantidadAvance]);
@@ -202,8 +209,9 @@ class ListadoPersonasController extends GetxController
         () => AgregarPersonaPage(),
         arguments: {'personal': personal, 'tarea': tarea});
     if (result != null) {
-      int key=await _createPersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${tarea.key}', result);
-      result.key=key;
+      int key = await _createPersonalTareaProcesoUseCase.execute(
+          'personal_tarea_proceso_${tarea.key}', result);
+      result.key = key;
       personalSeleccionado.add(result);
       update(['personal_seleccionado']);
       seleccionados.clear();
@@ -234,10 +242,11 @@ class ListadoPersonasController extends GetxController
             });
         if (result != null) {
           for (int i = 0; i < seleccionados.length; i++) {
-            int key=personalSeleccionado[seleccionados[i]].key;
+            int key = personalSeleccionado[seleccionados[i]].key;
             personalSeleccionado[seleccionados[i]] = result[i];
-            result[i].key=key;
-            await _updatePersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${tarea.key}', key, result[i]);
+            result[i].key = key;
+            await _updatePersonalTareaProcesoUseCase.execute(
+                'personal_tarea_proceso_${tarea.key}', key, result[i]);
           }
           update(['personal_seleccionado']);
           seleccionados.clear();
@@ -249,7 +258,8 @@ class ListadoPersonasController extends GetxController
   }
 
   Future<void> changeOptions(dynamic index, int key) async {
-    int position=personalSeleccionado.indexWhere((element) => element.key == key);
+    int position =
+        personalSeleccionado.indexWhere((element) => element.key == key);
     switch (index) {
       case 1:
         AgregarPersonaBinding().dependencies();
@@ -261,10 +271,11 @@ class ListadoPersonasController extends GetxController
               'personal': personal
             });
         if (result != null) {
-          int key=personalSeleccionado[position].key;
+          int key = personalSeleccionado[position].key;
           personalSeleccionado[position] = result;
-          result.key=key;
-          await _updatePersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${tarea.key}', key, result);
+          result.key = key;
+          await _updatePersonalTareaProcesoUseCase.execute(
+              'personal_tarea_proceso_${tarea.key}', key, result);
           update(['personal_seleccionado']);
         }
         break;
@@ -286,7 +297,9 @@ class ListadoPersonasController extends GetxController
       'No',
       () async {
         Get.back();
-        await _deletePersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${tarea.key}', personalSeleccionado[index].key);
+        await _deletePersonalTareaProcesoUseCase.execute(
+            'personal_tarea_proceso_${tarea.key}',
+            personalSeleccionado[index].key);
         personalSeleccionado.removeAt(index);
         update(['personal_seleccionado']);
       },
@@ -294,13 +307,15 @@ class ListadoPersonasController extends GetxController
     );
   }
 
-  Future<void> goLectorCode() async{
-    FlutterBarcodeScanner.getBarcodeStreamReceiver(
-            "#ff6666", "Cancelar", false, ScanMode.DEFAULT)
-        .listen((barcode) async {
-      print(barcode); 
-      await setCodeBar(barcode);
-    });
+  Future<void> goLectorCode() async {
+    if (tarea?.estadoLocal == 'P') {
+      FlutterBarcodeScanner.getBarcodeStreamReceiver(
+              "#ff6666", "Cancelar", false, ScanMode.DEFAULT)
+          .listen((barcode) async {
+        
+        await setCodeBar(barcode);
+      });
+    }
   }
 
   bool buscando = false;
@@ -321,7 +336,7 @@ class ListadoPersonasController extends GetxController
       int index =
           personal.indexWhere((e) => e.nrodocumento == barcode.toString());
       if (index != -1) {
-        PersonalTareaProcesoEntity p=PersonalTareaProcesoEntity(
+        PersonalTareaProcesoEntity p = PersonalTareaProcesoEntity(
           idusuario: PreferenciasUsuario().idUsuario,
           personal: personal[index],
           horainicio: tarea.horainicio,
@@ -334,8 +349,9 @@ class ListadoPersonasController extends GetxController
           esrendimiento: tarea.esrendimiento,
           diasiguiente: tarea.diasiguiente,
         );
-        int key= await _createPersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${tarea.key}', p);
-        p.key=key;
+        int key = await _createPersonalTareaProcesoUseCase.execute(
+            'personal_tarea_proceso_${tarea.key}', p);
+        p.key = key;
         personalSeleccionado.add(p);
         byLector
             ? toastExito('Éxito', 'Registrado con exito')

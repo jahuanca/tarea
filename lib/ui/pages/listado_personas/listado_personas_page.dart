@@ -31,9 +31,8 @@ class ListadoPersonasPage extends StatelessWidget {
               appBar: getAppBar(
                   '${_.personalSeleccionado.length}',
                   [
-                    IconButton(
-                        onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
-                    //IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+                    if(_.tarea.estadoLocal == 'P')
+                    IconButton(onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
                   ],
                   true),
               backgroundColor: secondColor,
@@ -71,10 +70,10 @@ class ListadoPersonasPage extends StatelessWidget {
                   ),
                 ),
               ),
-              floatingActionButton: FloatingActionButton(
+              floatingActionButton: (_.tarea?.estadoLocal == 'P') ? FloatingActionButton(
                 onPressed: _.goNuevoPersonaTareaProceso,
                 child: Icon(Icons.add),
-              ),
+              ) : Container(),
             ),
             GetBuilder<ListadoPersonasController>(
               id: 'validando',

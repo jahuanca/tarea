@@ -264,9 +264,9 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
   bool esperandoCierre=false;
 
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
-    if (barcode != null && barcode != '-1' && buscando == false) {
+    if (barcode != null && barcode != '-1') {
       List<String> codigos=barcode.toString().trim().split('_');
-      if(barcode.toString()[0]=='A'){
+      if(barcode.toString().trim().toUpperCase()[0]=='A'){
         print('Es apertura');
         
         if(codigos.length < 6 ){
@@ -341,7 +341,7 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
         );
 
       }
-      if(barcode.toString()[0]=='C'){
+      if(barcode.toString().trim().toUpperCase()[0]=='C'){
         if(!esperandoCierre){
           toastError('Error', 'Se esta esperando una etiqueta de apertura.');
           return;

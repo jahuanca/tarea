@@ -308,13 +308,10 @@ class TareasPage extends StatelessWidget {
                             child: CircleAvatar(
                               backgroundColor: successColor,
                               child: IconButton(
-                                /* onPressed: () =>
-                                          _.goAgregarPersona(index),
-                                      icon: Icon(Icons.person_add), */
                                 onPressed: () =>
                                     _.tareas[index].estadoLocal == 'P'
                                         ? _.goAprobar(_.tareas[index].key)
-                                        : null,
+                                        : _.goListadoPersonas(_.tareas[index].key),
                                 icon: _.tareas[index].estadoLocal == 'P'
                                     ? Icon(Icons.check)
                                     : Icon(Icons.remove_red_eye),
