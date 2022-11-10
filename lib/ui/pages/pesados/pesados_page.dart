@@ -301,7 +301,7 @@ class PesadosPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: dangerColor,
                                     child: IconButton(
-                                      onPressed: () => _.goEliminar(_.pesados[index].key),
+                                      onPressed: () async => _.goEliminar(_.pesados[index].key),
                                       icon: Icon(Icons.delete),
                                       color: Colors.white,
                                     ),
@@ -354,7 +354,7 @@ class PesadosPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: alertColor,
                                     child: IconButton(
-                                      onPressed: () => _.goEditar(_.pesados[index].key),
+                                      onPressed: () async => _.goEditar(_.pesados[index].key),
                                       icon: Icon(Icons.edit),
                                       color: Colors.white,
                                     ),

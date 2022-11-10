@@ -209,8 +209,15 @@ class ListadoPersonasPage extends StatelessWidget {
                                   alignment: Alignment.centerLeft,
                                   child: Row(
                                     children: [
-                                      Icon(Icons.arrow_upward_sharp, color: infoColor,),
-                                      Text((_.personalSeleccionado[index].cantidadavance ?? 0).toString(),
+                                      Icon(_.personalSeleccionado[index].esrendimiento ? Icons.arrow_upward_sharp : Icons.timeline_outlined, color: infoColor,),
+                                      Text(_.personalSeleccionado[index].esrendimiento ?? false ? 'R: ' : 'J: '),
+                                      Text((
+                                        
+                                        ((_.personalSeleccionado[index].esrendimiento ?? false) ? 
+                                          _.personalSeleccionado[index].cantidadrendimiento
+                                        : _.personalSeleccionado[index].cantidadavance ) 
+                                        
+                                        ?? 0).toString(),
                                           style: TextStyle(
                                               color: Colors.black87)),
                                     ],

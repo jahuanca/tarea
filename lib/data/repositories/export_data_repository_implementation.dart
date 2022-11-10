@@ -399,7 +399,7 @@ class ExportDataRepositoryImplementation extends ExportDataRepository {
         : (await getApplicationDocumentsDirectory()).path +
             Platform.pathSeparator +
             'Download';
-    String ruta = '$directory/${getTitulo(data)}';
+    String ruta = '$directory/${getTitulo(data)}_${idDBPreTarea}_${DateTime.now().toString()}';
     File(ruta)
       ..createSync(recursive: true)
       ..writeAsBytesSync(fileBytes);

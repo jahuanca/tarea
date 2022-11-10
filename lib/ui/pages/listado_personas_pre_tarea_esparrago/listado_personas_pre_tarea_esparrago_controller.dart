@@ -111,7 +111,9 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
       initPlatformState();
       print('es valido');
       sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
-        await setCodeBar(event, true);
+        if(preTarea?.estadoLocal != 'A'){
+          await setCodeBar(event, true);
+        }
       });
     } else {
       initHoneyScanner();
@@ -157,7 +159,9 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
 
   @override
   void onDecoded(String result) async {
-    await setCodeBar(result, true);
+    if(preTarea?.estadoLocal != 'A'){
+      await setCodeBar(result, true);
+    }
   }
 
   @override
@@ -187,6 +191,10 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
   }
 
   void seleccionar(int index) {
+    if(esperandoCierre){
+      toastError('Error', 'Termine o cierre la etiqueta.');
+       return;
+    }
     int i = seleccionados.indexWhere((element) => element == index);
     if (i == -1) {
       seleccionados.add(index);
@@ -197,13 +205,14 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
   }
 
   Future<bool> onWillPop() async {
-    Get.back(result: esperandoCierre ? personalSeleccionado.length - 1 : personalSeleccionado.length,);
+    Get.back(result: esperandoCierre ? personalSeleccionado.length-1 : personalSeleccionado.length,);
     return true;
   }
 
   Future<void> changeOptionsGlobal(dynamic index) async {
     switch (index) {
       case 1:
+        
         seleccionados.clear();
         for (var i = 0; i < personalSeleccionado.length; i++) {
           seleccionados.add(i);
@@ -241,10 +250,9 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
       'No',
       () async {
         Get.back();
-        PersonalPreTareaEsparragoEntity item =
-            personalSeleccionado.removeAt(index);
+        PersonalPreTareaEsparragoEntity item = personalSeleccionado.removeAt(index);
         
-        preTarea.sizeDetails = personalSeleccionado.length;
+        preTarea.sizeDetails = esperandoCierre ? personalSeleccionado.length - 1 : personalSeleccionado.length;
         await _updatePesadoUseCase.execute(preTarea, preTarea.key);
 
         await _deletePersonalPreTareaEsparragoUseCase.execute(
@@ -256,8 +264,10 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
   }
 
   Future<void> goLectorCode() async {
-    String barcode=await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancelar", false, ScanMode.BARCODE);
-    await setCodeBar(barcode);
+    if(preTarea?.estadoLocal != 'A'){
+      String barcode=await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancelar", false, ScanMode.BARCODE);
+      await setCodeBar(barcode);
+    }
   }
 
   bool buscando = false;
@@ -274,7 +284,7 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
           return;
         }
 
-        int index=personalSeleccionado.indexWhere((e) => e.codigotkcaja == barcode.toString().trim());
+        /*int index=personalSeleccionado.indexWhere((e) => e.codigotkcaja == barcode.toString().trim());
 
         if(index != -1){
           toastError('Error', 'Esta etiqueta ya ha sido registrada.');
@@ -292,7 +302,7 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
             toastError('Error', 'Esta etiqueta ya esta en otra pretarea.');
             return;
           } 
-        }
+        }*/
 
         int indexLabor=labores.indexWhere((e) => e.idlabor == int.tryParse(codigos[1]));
 
@@ -398,8 +408,8 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
           await _updatePersonalPreTareaEsparragoUseCase.execute('personal_pre_tarea_esparrago_${preTarea.key}', key, personalSeleccionado[index]);
           preTarea.sizeDetails=personalSeleccionado.length;
           await _updatePesadoUseCase.execute(preTarea, preTarea.key);
+          esperandoCierre=false;
         }
-        esperandoCierre=false;
       }
       update(['seleccionados', 'personal_seleccionado']);
     }

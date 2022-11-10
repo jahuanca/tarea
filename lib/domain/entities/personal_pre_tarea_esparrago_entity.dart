@@ -94,7 +94,8 @@ class PersonalPreTareaEsparragoEntity {
     int idSQLitePreTareaEsparrago;
 
     String keyString() {
-      return '${formatoFechaExplore(fecha, 0, 0)}!${idcliente}!${idlabor}!${mesa}!${linea}';
+      String f='${fecha.day}/${fecha.month}/${fecha.year}';
+      return '${f}!${idcliente}!${idlabor}!${mesa}!${linea}';
     }
 
     factory PersonalPreTareaEsparragoEntity.fromJson(Map<String, dynamic> json) => PersonalPreTareaEsparragoEntity(

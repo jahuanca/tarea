@@ -273,7 +273,7 @@ class TareasController extends GetxController {
     );
   }
 
-  void goCopiar(int index) {
+  Future<void> goCopiar(int index) async{
     basicDialog(
       Get.overlayContext,
       'Alerta',

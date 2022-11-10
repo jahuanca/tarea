@@ -189,16 +189,22 @@ class ListadoPersonasController extends GetxController
         return false;
       }
 
-      if (tarea.esrendimiento) {
+      /* if (tarea.esrendimiento) {
         cantidadAvance = cantidadAvance + (e.cantidadrendimiento ?? 0);
       }
 
       if (tarea.esjornal) {
         cantidadAvance = cantidadAvance + (e.cantidadavance ?? 0);
+      } */
+
+      if (e.esrendimiento ?? false) {
+        cantidadAvance = cantidadAvance + (e.cantidadrendimiento ?? 0);
       }
+
     });
 
     Get.back(result: [personalSeleccionado.length, cantidadAvance]);
+    //Get.back(result: [personalSeleccionado.length, 0]);
     print('retornado');
     return true;
   }

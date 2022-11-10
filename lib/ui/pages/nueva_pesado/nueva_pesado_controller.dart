@@ -69,6 +69,7 @@ class NuevaPesadoController extends GetxController {
       if (Get.arguments['tarea'] != null) {
         editando = true;
         nuevaPreTarea = Get.arguments['tarea'] as PreTareaEsparragoVariosEntity;
+        fecha=nuevaPreTarea.fecha;
         if(nuevaPreTarea.detalles==null) nuevaPreTarea.detalles=[];
       }
     }
@@ -276,6 +277,8 @@ class NuevaPesadoController extends GetxController {
       nuevaPreTarea.idusuario=PreferenciasUsuario().idUsuario;
       nuevaPreTarea.imei=PreferenciasUsuario().imei;
       nuevaPreTarea.estadoLocal='PC';
+      
+
       Get.back(result: nuevaPreTarea);
     } else {
       toastError('Error', mensaje);

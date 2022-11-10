@@ -8,7 +8,6 @@ import 'package:flutter_tareo/di/nueva_pesado_binding.dart';
 import 'package:flutter_tareo/di/nueva_pre_tarea_binding.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_esparrago_to_excel_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/others/export_pesado_to_excel_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/send_resumen_varios_esparrago_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/create_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados/delete_pesado_use_case.dart';
@@ -89,7 +88,7 @@ class PesadosController extends GetxController {
       case 1:
         break;
       case 2:
-        goCopiar(key);
+        //goCopiar(key);
         break;
       case 3:
         goEliminar(key);
@@ -333,9 +332,9 @@ class PesadosController extends GetxController {
     }
   }
 
-  void goEliminar(int key) {
+  Future<void> goEliminar(int key) async{
     int index = pesados.indexWhere((element) => element.key == key);
-    basicDialog(
+    await basicDialog(
       Get.overlayContext,
       'Alerta',
       '¿Esta seguro de eliminar este pesado?',
@@ -366,8 +365,8 @@ class PesadosController extends GetxController {
     );
   }
 
-  void goEditar(int index) {
-    basicDialog(
+  Future<void> goEditar(int key) async{
+    await basicDialog(
       Get.overlayContext,
       'Alerta',
       '¿Esta seguro de editar la actividad?',
@@ -375,7 +374,7 @@ class PesadosController extends GetxController {
       'No',
       () async {
         Get.back();
-        await editarPesado(index);
+        await editarPesado(key);
       },
       () => Get.back(),
     );

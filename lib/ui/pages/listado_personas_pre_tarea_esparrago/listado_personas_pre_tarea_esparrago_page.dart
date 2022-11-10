@@ -28,7 +28,7 @@ class ListadoPersonasPreTareaEsparragoPage extends StatelessWidget {
               appBar: getAppBar(
                   '${_.personalSeleccionado.length}',
                   [
-                    if(_.preTarea?.estadoLocal != 'M')
+                    if(_.preTarea?.estadoLocal != 'A')
                     IconButton(
                         onPressed:() async=> _.goLectorCode, icon: Icon(Icons.qr_code)),
                   ],
@@ -168,7 +168,7 @@ class ListadoPersonasPreTareaEsparragoPage extends StatelessWidget {
                                 flex: 25,
                               ),
                               Flexible(child: Container(), flex: 1),
-                              if(_.preTarea?.estadoLocal != 'M')
+                              if(_.preTarea?.estadoLocal != 'A')
                               Flexible(
                                   child: Container(
                                     child: _.seleccionados.length>0 ? Container() : DropdownBelow(
@@ -300,7 +300,7 @@ class ListadoPersonasPreTareaEsparragoPage extends StatelessWidget {
               flex: 12,
             ),
             Flexible(child: Container(), flex: 6),
-            if(_.preTarea?.estadoLocal != 'M')
+            if(_.preTarea?.estadoLocal != 'A')
             Flexible(
               child: Container(
                 alignment: Alignment.center,
