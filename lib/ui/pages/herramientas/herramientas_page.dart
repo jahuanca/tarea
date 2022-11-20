@@ -24,6 +24,9 @@ class HerramientasPage extends StatelessWidget {
                   _itemExportar(size, 'Uva', _.createBackupFile),
                   _itemExportar(size, 'Tareos', _.createBackupFile),
                   _itemExportar(size, 'Poblar', _.importarData),
+                  GetBuilder<HerramientasController>(
+                    id: 'cantidad',
+                    builder: (_) => _itemExportar(size, 'SQLITE '+_.cantidad.toString() , _.sqlite)),
                 ],
               ),
             ),

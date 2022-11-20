@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_tareo/core/detalles.dart';
+import 'package:flutter_tareo/core/strings.dart';
 import 'package:flutter_tareo/core/tarea.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
@@ -10,8 +11,10 @@ import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/create_pre_tareo_p
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ext_storage/ext_storage.dart';
+import 'package:sqflite/sqflite.dart';
 
 class HerramientasController extends GetxController {
   bool validando = false;
@@ -20,9 +23,30 @@ class HerramientasController extends GetxController {
   final CreatePreTareoProcesoUvaUseCase _createPreTareoProcesoUvaUseCase;
   final CreateUvaAllDetalleUseCase _createUvaAllDetalleUseCase;
 
-
   HerramientasController(this._createPreTareoProcesoUvaUseCase, this._createUvaAllDetalleUseCase);
 
+  int cantidad=0;
+
+  Future<void> cantidadSQLITE() async{
+    Database database = await openDatabase(
+        join(await getDatabasesPath(), 'tareo_esparrago.db'));
+
+    final List<Map<String, dynamic>> maps = await database.query(
+        TABLE_NAME_PERSONAL_PRE_TAREA_ESPARRAGO);
+    await database.close();
+    cantidad=maps.length ?? 0;
+    update(['cantidad']);
+  }
+
+  Future<void> sqlite() async{
+    validando=true;
+    update(['validando']);
+
+        
+
+    validando=false;
+    update(['validando']);
+  }
 
   Future<void> importarData() async{
     validando = true;

@@ -59,7 +59,11 @@ class PesadosController extends GetxController {
     validando=true;
     update(['validando']);
     await sendResumenVarios();
-    timer= new Timer.periodic(Duration(minutes: 3), (Timer t) => sendResumenVarios());
+    try {
+      timer= new Timer.periodic(Duration(minutes: 3), (Timer t) => sendResumenVarios());
+    } catch (e) {
+      toastError('UI: timer', e.toString());
+    }
     await getTareas();
     validando=false;
     update(['validando']);
@@ -69,16 +73,23 @@ class PesadosController extends GetxController {
   void onClose(){
     timer.cancel();
     super.onClose();
-    
   }
 
   Future<void> sendResumenVarios()async{
-    await _sendResumenVariosEsparragoUseCase.execute();
+    try {
+      await _sendResumenVariosEsparragoUseCase.execute();
+    } catch (e) {
+      toastError('UI: sendresumenvarios', e.toString());
+    }
   }
 
   Future<void> getTareas() async {
     pesados = [];
-    pesados = await _getAllPesadoUseCase.execute();
+    try {
+      pesados = await _getAllPesadoUseCase.execute();
+    } catch (e) {
+      toastError('UI: getTareas', e.toString());
+    }
     update(['tareas']);
     return;
   }

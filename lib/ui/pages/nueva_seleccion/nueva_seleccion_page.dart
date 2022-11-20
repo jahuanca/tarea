@@ -324,6 +324,17 @@ class NuevaSeleccionPage extends StatelessWidget {
                         label: 'Kilos avance',
                       ),
                     ),
+                    GetBuilder<NuevaSeleccionController>(
+                      id: 'linea',
+                      builder: (_) => InputLabelWidget(
+                        hintText: 'linea',
+                        initialValue: _.nuevaSeleccion.linea == null ? '' : _.nuevaSeleccion.linea.toString(),
+                        error: _.errorLinea,
+                        onChanged: _.changeCantidadAvance,
+                        textInputType: TextInputType.number,
+                        label: 'Linea',
+                      ),
+                    ),
                     SizedBox(
                       height: size.height * 0.05,
                     ),

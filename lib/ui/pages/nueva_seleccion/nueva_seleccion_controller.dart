@@ -38,6 +38,7 @@ class NuevaSeleccionController extends GetxController {
       errorHoraFin,
       errorFecha,
       errorPausaInicio,
+      errorLinea,
       errorPausaFin;
 
   PreTareaEsparragoGrupoEntity nuevaSeleccion;
@@ -341,6 +342,7 @@ class NuevaSeleccionController extends GetxController {
     changeCentroCosto(nuevaSeleccion.idcentrocosto.toString());
     changeSupervisor(nuevaSeleccion.codigosupervisor.toString());
     changeCantidadAvance(nuevaSeleccion.kilosavance.toString());
+    changeLinea(nuevaSeleccion.linea.toString());
     changeHoraInicio();
     changeDiaSiguiente(nuevaSeleccion.diasiguiente ?? false);
     changeHoraFin();
@@ -385,4 +387,23 @@ class NuevaSeleccionController extends GetxController {
 
     update(['kilos_avance']);
   }
+
+  void changeLinea(String value) {
+    if ([null, ''].contains(value)) {
+      errorLinea = null;
+      nuevaSeleccion.linea = null;
+      update(['linea']);
+      return;
+    }
+    int valor = int.tryParse(value);
+    if (valor != null) {
+      nuevaSeleccion.linea = valor;
+      errorLinea = null;
+    } else {
+      errorLinea = 'El valor ingresado no es un número';
+    }
+
+    update(['linea']);
+  }
+
 }
