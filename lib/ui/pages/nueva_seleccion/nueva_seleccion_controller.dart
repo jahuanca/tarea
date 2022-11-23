@@ -68,6 +68,7 @@ class NuevaSeleccionController extends GetxController {
       if (Get.arguments['tarea'] != null) {
         editando = true;
         nuevaSeleccion = Get.arguments['tarea'] as PreTareaEsparragoGrupoEntity;
+        //fecha=nuevaSeleccion.fecha;
         if (nuevaSeleccion.sizeDetails == null) nuevaSeleccion.sizeDetails = 0;
       }
     }
@@ -359,6 +360,7 @@ class NuevaSeleccionController extends GetxController {
       errorPausaFin = 'Debe ingresar la hora de fin de pausa';
       return errorPausaFin;
     }
+    if (errorLinea != null) return errorLinea;
     errorPausaFin = null;
     if (nuevaSeleccion.pausafin != null && nuevaSeleccion.pausainicio == null) {
       errorPausaInicio = 'Debe ingresar la hora de inicio de pausa';

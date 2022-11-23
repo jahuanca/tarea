@@ -30,8 +30,8 @@ class DatePickerWidget {
     this.error,
     this.onlyDate = true,
     this.dateSelected,
-    this.maxYear = 2022,
-    this.minYear = 2019,
+    this.maxYear = 2023,
+    this.minYear = 2020,
     this.minDate,
   });
 

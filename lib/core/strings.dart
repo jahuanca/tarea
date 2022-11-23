@@ -9,6 +9,14 @@ const String TABLE_NAME_PRE_TAREA_ESPARRAGO = 'pre_tarea_esparrago';
 const String TABLE_NAME_PERSONAL_PRE_TAREA_ESPARRAGO =
     'personal_pre_tarea_esparrago';
 
+const Map<String, String> mandantes={
+  'dev': '100',
+  'qas': '200',
+  'prd': '300'
+};
+
+const String mandanteNow='qas';
+
 const String TABLE_PRETAREAESPARRAGO = "CREATE TABLE pre_tarea_esparrago(" +
     "id INTEGER PRIMARY KEY AUTOINCREMENT," +
     "itempretareaesparragosvarios INTEGER," +

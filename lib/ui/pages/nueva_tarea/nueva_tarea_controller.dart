@@ -72,6 +72,7 @@ class NuevaTareaController extends GetxController {
         firstTime = true;
         nuevaTarea = TareaProcesoEntity.fromJson(
             (Get.arguments['tarea'] as TareaProcesoEntity).toJson());
+        fecha=nuevaTarea.fecha;
         if (Get.arguments['copiando'] != null) {
           copiando = true;
           nuevaTarea.horainicio = null;
@@ -90,7 +91,7 @@ class NuevaTareaController extends GetxController {
     }
     if (nuevaTarea == null){
       nuevaTarea = new TareaProcesoEntity();
-      nuevaTarea.fechamod = fecha;
+      //nuevaTarea.fechamod = fecha;
       nuevaTarea.escampo = true;
       nuevaTarea.espacking = true;
       nuevaTarea.idestado = 1;

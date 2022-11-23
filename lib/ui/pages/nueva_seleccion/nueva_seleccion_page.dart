@@ -330,7 +330,7 @@ class NuevaSeleccionPage extends StatelessWidget {
                         hintText: 'linea',
                         initialValue: _.nuevaSeleccion.linea == null ? '' : _.nuevaSeleccion.linea.toString(),
                         error: _.errorLinea,
-                        onChanged: _.changeCantidadAvance,
+                        onChanged: _.changeLinea,
                         textInputType: TextInputType.number,
                         label: 'Linea',
                       ),
