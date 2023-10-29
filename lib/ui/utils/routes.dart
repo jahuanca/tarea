@@ -5,7 +5,7 @@ import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_page.da
 import 'package:flutter_tareo/ui/login/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
-import 'package:flutter_tareo/ui/pages/splash/splash_page.dart';
+import 'package:flutter_tareo/ui/login/pages/splash_page.dart';
 
 Map<String, Widget Function(BuildContext)> getAplicattionRoutes() {
   return {

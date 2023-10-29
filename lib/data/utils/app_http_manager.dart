@@ -2,14 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter_tareo/core/strings.dart';
 import 'package:flutter_tareo/domain/entities/message_entity.dart';
+import 'package:flutter_tareo/domain/utils/http_manager.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:http/http.dart' as http;
-
-import 'package:flutter_tareo/data/http_manager/http_manager.dart';
-import 'package:flutter_tareo/domain/exceptions/app_exceptions.dart';
+import 'package:flutter_tareo/domain/utils/app_exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const timeout = Duration(seconds: 90);
@@ -24,9 +22,10 @@ class AppHttpManager implements HttpManager {
     try {
       print('Api Get request url $url');
       log(query.toString());
-      final response = await http.get(Uri.parse(_queryBuilder(url, query)),
-          headers: await _headerBuilder(headers))
-      .timeout(timeout, onTimeout: () => throw TimeoutException());
+      final response = await http
+          .get(Uri.parse(_queryBuilder(url, query)),
+              headers: await _headerBuilder(headers))
+          .timeout(timeout, onTimeout: () => throw TimeoutException());
       return _returnResponse(response);
     } on SocketException catch (_) {
       throw NetworkException();
@@ -39,7 +38,7 @@ class AppHttpManager implements HttpManager {
     Map body,
     Map<String, dynamic> query,
     Map<String, String> headers,
-    bool mostrarError=true,
+    bool mostrarError = true,
   }) async {
     try {
       print('Api Post request url $url, with $body');
@@ -122,19 +121,19 @@ class AppHttpManager implements HttpManager {
     return buffer.toString();
   }
 
-  dynamic _returnResponse(http.Response response, [bool mostrarError=true]) {
+  dynamic _returnResponse(http.Response response, [bool mostrarError = true]) {
     /* final responseJson = json.decode(response.body); */
     final responseJson = response.body;
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       print('Api response success with ');
-      if(mostrarLog){
+      if (mostrarLog) {
         log(responseJson);
       }
       return responseJson;
     }
 
     MessageEntity mensaje = MessageEntity.fromJson(jsonDecode(responseJson));
-    if(mostrarError)  toastError('Error', mensaje.message);
+    if (mostrarError) toastError('Error', mensaje.message);
 
     switch (response.statusCode) {
       case 400:
