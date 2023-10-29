@@ -4,16 +4,16 @@ import 'package:flutter_tareo/data/repositories/storage_repository_implementatio
 import 'package:flutter_tareo/di/aprobar_binding.dart';
 import 'package:flutter_tareo/di/esparragos_binding.dart';
 import 'package:flutter_tareo/di/herramientas_binding.dart';
-import 'package:flutter_tareo/di/home_binding.dart';
-import 'package:flutter_tareo/di/login_binding.dart';
+import 'package:flutter_tareo/di/home/home_binding.dart';
+import 'package:flutter_tareo/di/login/login_binding.dart';
 import 'package:flutter_tareo/di/migrar_binding.dart';
 import 'package:flutter_tareo/di/pre_tareos_binding.dart';
 import 'package:flutter_tareo/di/pre_tareos_uva_binding.dart';
 import 'package:flutter_tareo/di/tareas_binding.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
 import 'package:flutter_tareo/ui/pages/control_asistencia/home_asistencia/home_asistencia_page.dart';
-import 'package:flutter_tareo/ui/pages/login/login_page.dart';
-import 'package:flutter_tareo/ui/pages/home/navigation/navigation_controller.dart';
+import 'package:flutter_tareo/ui/login/pages/login_page.dart';
+import 'package:flutter_tareo/ui/pages/main/navigation/navigation_controller.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:get/get.dart';
 

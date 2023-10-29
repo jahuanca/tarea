@@ -1,13 +1,12 @@
-
 import 'package:flutter_tareo/di/aprobar_binding.dart';
 import 'package:flutter_tareo/di/esparragos_binding.dart';
 import 'package:flutter_tareo/di/herramientas_binding.dart';
-import 'package:flutter_tareo/di/home_binding.dart';
+import 'package:flutter_tareo/di/home/home_binding.dart';
 import 'package:flutter_tareo/di/migrar_binding.dart';
 import 'package:flutter_tareo/di/pre_tareos_binding.dart';
 import 'package:flutter_tareo/di/pre_tareos_uva_binding.dart';
 import 'package:flutter_tareo/di/tareas_binding.dart';
-import 'package:flutter_tareo/ui/pages/navigation/navigation_controller.dart';
+import 'package:flutter_tareo/ui/pages/main/navigation/navigation_controller.dart';
 import 'package:get/get.dart';
 
 class NavigationBinding extends Bindings {
@@ -21,8 +20,6 @@ class NavigationBinding extends Bindings {
     PreTareosUvaBinding().dependencies();
     EsparragosBinding().dependencies();
     HerramientasBinding().dependencies();
-
-
 
     Get.lazyPut<NavigationController>(() => NavigationController());
   }
