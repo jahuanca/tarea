@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
 import 'package:flutter_tareo/domain/repositories/auth_repository.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';

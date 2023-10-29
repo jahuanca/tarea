@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_tareo/core/strings.dart';
-import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tareo_proceso_uva_repository.dart';
@@ -19,8 +19,9 @@ class PreTareoProcesoUvaRepositoryImplementation
   @override
   Future<List<PreTareoProcesoUvaEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
-      Box<PreTareoProcesoUvaEntity> dataHive = await Hive.openBox<PreTareoProcesoUvaEntity>(
-          'pre_tareos_uva_sincronizar');
+      Box<PreTareoProcesoUvaEntity> dataHive =
+          await Hive.openBox<PreTareoProcesoUvaEntity>(
+              'pre_tareos_uva_sincronizar');
       List<PreTareoProcesoUvaEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       local.sort((a, b) => b.fechamod.compareTo(a.fechamod));
@@ -70,20 +71,22 @@ class PreTareoProcesoUvaRepositoryImplementation
     int id = await tareas.add(preTareaProcesoUvaEntity);
     preTareaProcesoUvaEntity.key = id;
     await tareas.put(id, preTareaProcesoUvaEntity);
-    
+
     await tareas.close();
     return id;
   }
 
   @override
   Future<void> delete(int key) async {
-    Box<PreTareoProcesoUvaEntity> tareas = await Hive.openBox<PreTareoProcesoUvaEntity>(
-        'pre_tareos_uva_sincronizar');
+    Box<PreTareoProcesoUvaEntity> tareas =
+        await Hive.openBox<PreTareoProcesoUvaEntity>(
+            'pre_tareos_uva_sincronizar');
     await tareas.delete(key);
     await tareas.close();
 
-    Box<PreTareoProcesoUvaDetalleEntity> detalles = await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(
-        'uva_detalle_${key}');
+    Box<PreTareoProcesoUvaDetalleEntity> detalles =
+        await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(
+            'uva_detalle_${key}');
     await detalles.deleteFromDisk();
     return;
   }
@@ -91,36 +94,39 @@ class PreTareoProcesoUvaRepositoryImplementation
   @override
   Future<void> update(
       PreTareoProcesoUvaEntity preTareaProcesoUvaEntity, int id) async {
-    Box<PreTareoProcesoUvaEntity> tareas = await Hive.openBox<PreTareoProcesoUvaEntity>(
-        'pre_tareos_uva_sincronizar');
+    Box<PreTareoProcesoUvaEntity> tareas =
+        await Hive.openBox<PreTareoProcesoUvaEntity>(
+            'pre_tareos_uva_sincronizar');
     await tareas.put(id, preTareaProcesoUvaEntity);
-    
+
     await tareas.close();
     return;
   }
 
   @override
-  Future<PreTareoProcesoUvaEntity> migrar(
-      int key) async {
-
-    Box<PreTareoProcesoUvaEntity> tareas = await Hive.openBox<PreTareoProcesoUvaEntity>(
-        'pre_tareos_uva_sincronizar');
-    PreTareoProcesoUvaEntity data=await tareas.get(key);
-    if(data.detalles==null) data.detalles=[];
+  Future<PreTareoProcesoUvaEntity> migrar(int key) async {
+    Box<PreTareoProcesoUvaEntity> tareas =
+        await Hive.openBox<PreTareoProcesoUvaEntity>(
+            'pre_tareos_uva_sincronizar');
+    PreTareoProcesoUvaEntity data = await tareas.get(key);
+    if (data.detalles == null) data.detalles = [];
     await tareas.close();
 
-    Box<PreTareoProcesoUvaDetalleEntity> detalles = await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(
-        'uva_detalle_${key}');
-    data.detalles=detalles.values.toList();
+    Box<PreTareoProcesoUvaDetalleEntity> detalles =
+        await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(
+            'uva_detalle_${key}');
+    data.detalles = detalles.values.toList();
     await detalles.close();
-    
+
     final AppHttpManager http = AppHttpManager();
     final res = await http.post(
       url: '$urlModule/createAll',
       body: data.toJson(),
     );
 
-    return res == null ? null : PreTareoProcesoUvaEntity.fromJson(jsonDecode(res));
+    return res == null
+        ? null
+        : PreTareoProcesoUvaEntity.fromJson(jsonDecode(res));
   }
 
   @override
@@ -163,7 +169,7 @@ class PreTareoProcesoUvaRepositoryImplementation
       preTareaProcesoUvaEntity.firmaSupervisor = respuesta.firmaSupervisor;
       return preTareaProcesoUvaEntity;
     } catch (e) {
-      if(mostrarLog){
+      if (mostrarLog) {
         print('Error');
         log(e.toString());
       }

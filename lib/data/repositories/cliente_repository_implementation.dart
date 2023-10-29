@@ -1,4 +1,4 @@
-import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
 import 'package:flutter_tareo/domain/repositories/cliente_repository.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -10,8 +10,7 @@ class ClienteRepositoryImplementation extends ClienteRepository {
   @override
   Future<List<ClienteEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
-      Box dataHive =
-          await Hive.openBox<ClienteEntity>('clientes_sincronizar');
+      Box dataHive = await Hive.openBox<ClienteEntity>('clientes_sincronizar');
       List<ClienteEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       await dataHive.compact();

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_tareo/core/strings.dart';
-import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/repositories/tarea_proceso_repository.dart';
@@ -17,10 +17,10 @@ class TareaProcesoRepositoryImplementation extends TareaProcesoRepository {
   @override
   Future<int> create(TareaProcesoEntity tareaProcesoEntity) async {
     var tareas = await Hive.openBox<TareaProcesoEntity>('tarea_proceso');
-    int id=await tareas.add(tareaProcesoEntity);
-    tareaProcesoEntity.key=id;
+    int id = await tareas.add(tareaProcesoEntity);
+    tareaProcesoEntity.key = id;
     await tareas.put(id, tareaProcesoEntity);
-    
+
     await tareas.close();
     return id;
   }
@@ -35,7 +35,7 @@ class TareaProcesoRepositoryImplementation extends TareaProcesoRepository {
   Future<void> delete(int key) async {
     var tareas = await Hive.openBox<TareaProcesoEntity>('tarea_proceso');
     await tareas.delete(key);
-    
+
     await tareas.close();
     return;
   }
@@ -44,22 +44,23 @@ class TareaProcesoRepositoryImplementation extends TareaProcesoRepository {
   Future<void> update(TareaProcesoEntity tareaProcesoEntity, int key) async {
     var tareas = await Hive.openBox<TareaProcesoEntity>('tarea_proceso');
     await tareas.put(key, tareaProcesoEntity);
-    
+
     await tareas.close();
     return;
   }
 
   @override
-  Future<TareaProcesoEntity> migrar(
-      int key) async {
+  Future<TareaProcesoEntity> migrar(int key) async {
+    Box<TareaProcesoEntity> tareas =
+        await Hive.openBox<TareaProcesoEntity>('tarea_proceso');
+    TareaProcesoEntity t = tareas.get(key);
 
-    Box<TareaProcesoEntity> tareas = await Hive.openBox<TareaProcesoEntity>('tarea_proceso');
-    TareaProcesoEntity t=tareas.get(key);
+    if (t.personal == null) t.personal = [];
 
-    if(t.personal == null) t.personal = [];
-
-    Box<PersonalTareaProcesoEntity> detalles = await Hive.openBox<PersonalTareaProcesoEntity>('personal_tarea_proceso_${t.key}');
-    t.personal=detalles.values.toList();
+    Box<PersonalTareaProcesoEntity> detalles =
+        await Hive.openBox<PersonalTareaProcesoEntity>(
+            'personal_tarea_proceso_${t.key}');
+    t.personal = detalles.values.toList();
     log(t.toJson().toString());
     final AppHttpManager http = AppHttpManager();
     final res = await http.post(

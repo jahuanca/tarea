@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_tareo/core/strings.dart';
-import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/personal_pre_tarea_esparrago_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tarea_esparrago_varios_repository.dart';
@@ -15,7 +15,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class PreTareaEsparragoVariosRepositoryImplementation
-    extends PreTareaEsparragoVariosRepository{
+    extends PreTareaEsparragoVariosRepository {
   final urlModule = '/pre_tarea_esparrago_varios';
 
   @override
@@ -73,15 +73,17 @@ class PreTareaEsparragoVariosRepositoryImplementation
     int id = await tareas.add(pesado);
     pesado.key = id;
 
-    Database database = await openDatabase(join(await getDatabasesPath(), 'tareo_esparrago.db'));
-    int idDB= await database.insert(TABLE_NAME_PRE_TAREA_ESPARRAGO,
+    Database database = await openDatabase(
+        join(await getDatabasesPath(), 'tareo_esparrago.db'));
+    int idDB = await database.insert(
+      TABLE_NAME_PRE_TAREA_ESPARRAGO,
       pesado.toDB(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
     print('Id: $idDB');
 
-    pesado.idSQLite= idDB;
+    pesado.idSQLite = idDB;
 
     await tareas.put(id, pesado);
     await database.close();
@@ -93,15 +95,17 @@ class PreTareaEsparragoVariosRepositoryImplementation
   Future<void> delete(int key) async {
     var tareas = await Hive.openBox<PreTareaEsparragoVariosEntity>(
         'pesados_sincronizar');
-    int idSQLite=(await tareas.get(key)).idSQLite;
+    int idSQLite = (await tareas.get(key)).idSQLite;
     await tareas.delete(key);
-    
-    Box detalles=await Hive.openBox<PreTareaEsparragoVariosEntity>(
+
+    Box detalles = await Hive.openBox<PreTareaEsparragoVariosEntity>(
         'pesado_detalles_$key');
     await detalles.deleteFromDisk();
 
-    Database database = await openDatabase(join(await getDatabasesPath(), 'tareo_esparrago.db'));
-    await database.delete(TABLE_NAME_PRE_TAREA_ESPARRAGO,
+    Database database = await openDatabase(
+        join(await getDatabasesPath(), 'tareo_esparrago.db'));
+    await database.delete(
+      TABLE_NAME_PRE_TAREA_ESPARRAGO,
       where: "id = ?",
       whereArgs: [idSQLite],
     );
@@ -112,14 +116,15 @@ class PreTareaEsparragoVariosRepositoryImplementation
   }
 
   @override
-  Future<void> update(
-      PreTareaEsparragoVariosEntity pesado, int key) async {
+  Future<void> update(PreTareaEsparragoVariosEntity pesado, int key) async {
     var tareas = await Hive.openBox<PreTareaEsparragoVariosEntity>(
         'pesados_sincronizar');
     await tareas.put(key, pesado);
-    
-    Database database = await openDatabase(join(await getDatabasesPath(), 'tareo_esparrago.db'));
-    await database.update(TABLE_NAME_PRE_TAREA_ESPARRAGO,
+
+    Database database = await openDatabase(
+        join(await getDatabasesPath(), 'tareo_esparrago.db'));
+    await database.update(
+      TABLE_NAME_PRE_TAREA_ESPARRAGO,
       pesado.toDB(),
       where: "id = ?",
       whereArgs: [pesado.idSQLite],
@@ -131,31 +136,33 @@ class PreTareaEsparragoVariosRepositoryImplementation
   }
 
   @override
-  Future<PreTareaEsparragoVariosEntity> migrar(
-      int key) async {
-    
-    Box<PreTareaEsparragoVariosEntity> tareas = await Hive.openBox<PreTareaEsparragoVariosEntity>(
-        'pesados_sincronizar');
-    PreTareaEsparragoVariosEntity t=tareas.get(key);
+  Future<PreTareaEsparragoVariosEntity> migrar(int key) async {
+    Box<PreTareaEsparragoVariosEntity> tareas =
+        await Hive.openBox<PreTareaEsparragoVariosEntity>(
+            'pesados_sincronizar');
+    PreTareaEsparragoVariosEntity t = tareas.get(key);
 
     /* Box<PreTareaEsparragoDetalleVariosEntity> detalles = await Hive.openBox<PreTareaEsparragoDetalleVariosEntity>(
         'pesado_detalles_${key}'); */
 
-    Box<PersonalPreTareaEsparragoEntity> detalles = await Hive.openBox<PersonalPreTareaEsparragoEntity>(
-        'personal_pre_tarea_esparrago_${key}');
+    Box<PersonalPreTareaEsparragoEntity> detalles =
+        await Hive.openBox<PersonalPreTareaEsparragoEntity>(
+            'personal_pre_tarea_esparrago_${key}');
 
-    if(t.detalles==null) t.detalles=[];
-    t.detalles=detalles.values.toList();
+    if (t.detalles == null) t.detalles = [];
+    t.detalles = detalles.values.toList();
     await tareas.close();
     await detalles.close();
-    
+
     final AppHttpManager http = AppHttpManager();
     final res = await http.post(
       url: '$urlModule/createAll',
       body: t.toJson(),
     );
 
-    return res == null ? null : PreTareaEsparragoVariosEntity.fromJson(jsonDecode(res));
+    return res == null
+        ? null
+        : PreTareaEsparragoVariosEntity.fromJson(jsonDecode(res));
   }
 
   @override
@@ -174,9 +181,7 @@ class PreTareaEsparragoVariosRepositoryImplementation
       request.headers[HttpHeaders.contentTypeHeader] = 'multipart/form-data';
       //request.headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
 
-      for (var i = 0;
-          i < pesado.toJson().entries.length;
-          i++) {
+      for (var i = 0; i < pesado.toJson().entries.length; i++) {
         MapEntry map = pesado.toJson().entries.elementAt(i);
         request.fields.addAll({map.key: map.value.toString()});
       }
@@ -198,7 +203,7 @@ class PreTareaEsparragoVariosRepositoryImplementation
       pesado.firmaSupervisor = respuesta.firmaSupervisor;
       return pesado;
     } catch (e) {
-      if(mostrarLog){
+      if (mostrarLog) {
         print('Error');
         log(e.toString());
       }

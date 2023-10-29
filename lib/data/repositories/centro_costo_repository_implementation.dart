@@ -1,4 +1,4 @@
-import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/repositories/centro_costo_repository.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -28,7 +28,8 @@ class CentroCostoRepositoryImplementation extends CentroCostoRepository {
   }
 
   @override
-  Future<List<CentroCostoEntity>> getAllByValue(Map<String, dynamic> valores) async{
+  Future<List<CentroCostoEntity>> getAllByValue(
+      Map<String, dynamic> valores) async {
     if (PreferenciasUsuario().offLine) {
       Box<CentroCostoEntity> dataHive =
           await Hive.openBox<CentroCostoEntity>('centros_costo_sincronizar');

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_tareo/core/strings.dart';
-import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_formato_entity.dart';
@@ -20,7 +20,8 @@ class PreTareaEsparragoRepositoryImplementation
   @override
   Future<List<PreTareaEsparragoEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
-      Box dataHive = await Hive.openBox<PreTareaEsparragoEntity>('clasificacion_sincronizar');
+      Box dataHive = await Hive.openBox<PreTareaEsparragoEntity>(
+          'clasificacion_sincronizar');
       List<PreTareaEsparragoEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       local.sort((a, b) => b.fecha.compareTo(a.fecha));
@@ -99,7 +100,7 @@ class PreTareaEsparragoRepositoryImplementation
   Future<void> update(PreTareaEsparragoEntity pesado, int key) async {
     var tareas = await Hive.openBox<PreTareaEsparragoEntity>(
         'clasificacion_sincronizar');
-    
+
     await tareas.put(key, pesado);
     await tareas.close();
     return;

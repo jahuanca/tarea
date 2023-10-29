@@ -1,4 +1,4 @@
-import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/temp_actividad_entity.dart';
 import 'package:flutter_tareo/domain/repositories/temp_actividad_repository.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';

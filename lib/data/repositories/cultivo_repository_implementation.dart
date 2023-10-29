@@ -1,4 +1,4 @@
-import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/repositories/cultivo_repository.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -27,7 +27,8 @@ class CultivoRepositoryImplementation extends CultivoRepository {
   }
 
   @override
-  Future<List<CultivoEntity>> getAllByValue(Map<String, dynamic> valores) async {
+  Future<List<CultivoEntity>> getAllByValue(
+      Map<String, dynamic> valores) async {
     if (PreferenciasUsuario().offLine) {
       Box<CultivoEntity> dataHive =
           await Hive.openBox<CultivoEntity>('cultivos_sincronizar');

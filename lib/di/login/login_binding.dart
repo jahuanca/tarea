@@ -1,4 +1,4 @@
-import 'package:flutter_tareo/data/repositories/auth_repository_implementation.dart';
+import 'package:flutter_tareo/data/login/repositories/auth_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/storage_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/subdivision_repository_implementation.dart';
 import 'package:flutter_tareo/domain/repositories/auth_repository.dart';

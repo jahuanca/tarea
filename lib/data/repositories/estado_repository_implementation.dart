@@ -1,4 +1,4 @@
-import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/estado_entity.dart';
 import 'package:flutter_tareo/domain/repositories/estado_repository.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -10,8 +10,7 @@ class EstadoRepositoryImplementation extends EstadoRepository {
   @override
   Future<List<EstadoEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
-      Box dataHive =
-          await Hive.openBox<EstadoEntity>('estados_sincronizar');
+      Box dataHive = await Hive.openBox<EstadoEntity>('estados_sincronizar');
       List<EstadoEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       await dataHive.compact();
@@ -29,8 +28,7 @@ class EstadoRepositoryImplementation extends EstadoRepository {
   }
 
   @override
-  Future<List<EstadoEntity>> getAllByValue(
-      Map<String, dynamic> valores) async {
+  Future<List<EstadoEntity>> getAllByValue(Map<String, dynamic> valores) async {
     if (PreferenciasUsuario().offLine) {
       Box<EstadoEntity> dataHive =
           await Hive.openBox<EstadoEntity>('estados_sincronizar');

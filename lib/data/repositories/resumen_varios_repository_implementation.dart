@@ -1,4 +1,4 @@
-import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/personal_pre_tarea_esparrago_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
@@ -89,27 +89,27 @@ class ResumenVariosRepositoryImplementation extends ResumenVariosRepository {
       }
 
       /* if (element?.estadoLocal != 'M') { */
-        try {
-          resumen.forEach((key, value) async {
-            List<String> keys = key.split('!');
-            print('enviando resumen varios esparrago');
-            await http.post(
-              mostrarError: false,
-              url: '${urlModule}_esparrago/create',
-              body: {
-                'imei': element.imei,
-                'fecha': element.fecha?.toIso8601String(),
-                'idcliente': keys[1],
-                'idlabor': keys[2],
-                'mesa': keys[3],
-                'linea': keys[4],
-                'cantidad': value,
-              },
-            );
-          });
-        } catch (e) {
-          print(e.toString());
-        }
+      try {
+        resumen.forEach((key, value) async {
+          List<String> keys = key.split('!');
+          print('enviando resumen varios esparrago');
+          await http.post(
+            mostrarError: false,
+            url: '${urlModule}_esparrago/create',
+            body: {
+              'imei': element.imei,
+              'fecha': element.fecha?.toIso8601String(),
+              'idcliente': keys[1],
+              'idlabor': keys[2],
+              'mesa': keys[3],
+              'linea': keys[4],
+              'cantidad': value,
+            },
+          );
+        });
+      } catch (e) {
+        print(e.toString());
+      }
       /* } */
       await detalles.close();
     }

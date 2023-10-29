@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_tareo/core/strings.dart';
-import 'package:flutter_tareo/data/http_manager/app_http_manager.dart';
+import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tareo_proceso_repository.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -66,7 +66,7 @@ class PreTareoProcesoRepositoryImplementation
     var tareas =
         await Hive.openBox<PreTareoProcesoEntity>('pre_tareos_sincronizar');
     await tareas.add(tareaProcesoEntity);
-    
+
     await tareas.close();
     return;
   }
@@ -76,7 +76,7 @@ class PreTareoProcesoRepositoryImplementation
     var tareas =
         await Hive.openBox<PreTareoProcesoEntity>('pre_tareos_sincronizar');
     await tareas.deleteAt(index);
-    
+
     await tareas.close();
     return;
   }
@@ -87,7 +87,7 @@ class PreTareoProcesoRepositoryImplementation
     var tareas =
         await Hive.openBox<PreTareoProcesoEntity>('pre_tareos_sincronizar');
     await tareas.putAt(index, tareaProcesoEntity);
-    
+
     await tareas.close();
     return;
   }
