@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter_tareo/ui/main/pages/home/home_page.dart';
 import 'package:flutter_tareo/ui/pages/aprobar/aprobar_page.dart';
 import 'package:flutter_tareo/ui/pages/esparragos/esparragos_page.dart';
 import 'package:flutter_tareo/ui/pages/herramientas/herramientas_page.dart';
-import 'package:flutter_tareo/ui/pages/home/home/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/ui/pages/migrar/migrar_page.dart';

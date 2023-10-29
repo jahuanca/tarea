@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/ui/pages/home/home_controller.dart';
+import 'package:flutter_tareo/ui/home/controllers/home_controller.dart';
 import 'package:flutter_tareo/ui/widgets/input_label_widget.dart';
 import 'package:flutter_tareo/ui/widgets/radio_group_widget.dart';
 import 'package:get/get.dart';
@@ -74,11 +74,14 @@ class HomePage extends StatelessWidget {
                   child: GetBuilder<HomeController>(
                     id: 'refresh',
                     builder: (_) => CircleAvatar(
-                      backgroundColor: _.modo == 0 ? Colors.grey : infoColor,
+                        backgroundColor: _.modo == 0 ? Colors.grey : infoColor,
                         child: IconButton(
-                      onPressed: _.modo == 0 ? null : _.goSincronizar,
-                      icon: Icon(Icons.refresh, color: Colors.white,),
-                    )),
+                          onPressed: _.modo == 0 ? null : _.goSincronizar,
+                          icon: Icon(
+                            Icons.refresh,
+                            color: Colors.white,
+                          ),
+                        )),
                   ),
                 ),
                 flex: 1)

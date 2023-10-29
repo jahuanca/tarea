@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/ui/pages/home/navigation/navigation_controller.dart';
+import 'package:flutter_tareo/ui/pages/main/navigation/navigation_controller.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
 import 'package:flutter_tareo/ui/widgets/home/navigation_drawer/navigation_drawer_widget.dart';
 import 'package:get/get.dart';
