@@ -1,10 +1,9 @@
-
 import 'dart:async';
 
 import 'package:flutter_tareo/ui/pages/aprobar/aprobar_page.dart';
 import 'package:flutter_tareo/ui/pages/esparragos/esparragos_page.dart';
 import 'package:flutter_tareo/ui/pages/herramientas/herramientas_page.dart';
-import 'package:flutter_tareo/ui/pages/home/home_page.dart';
+import 'package:flutter_tareo/ui/pages/home/home/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/ui/pages/migrar/migrar_page.dart';
@@ -17,7 +16,6 @@ import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class NavigationController extends GetxController {
-
   NavigationController();
 
   final List<Widget> lista = [
@@ -32,7 +30,7 @@ class NavigationController extends GetxController {
   ];
 
   @override
-  void onReady()async{
+  void onReady() async {
     super.onReady();
   }
 
@@ -97,7 +95,7 @@ class NavigationController extends GetxController {
         indexWidget = index;
         update(['bottom_navigation']);
         break;
-      
+
       case 6:
         titulo = 'Esparrago';
         scaffoldKey.currentState.openEndDrawer();
@@ -107,6 +105,14 @@ class NavigationController extends GetxController {
 
       case 7:
         titulo = 'Herramientas';
+        scaffoldKey.currentState.openEndDrawer();
+        indexWidget = index;
+        update(['bottom_navigation']);
+        break;
+
+      case 8:
+        //scaffoldKey.currentState.openDrawer();
+        titulo = 'Control de asistencia';
         scaffoldKey.currentState.openEndDrawer();
         indexWidget = index;
         update(['bottom_navigation']);

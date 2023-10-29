@@ -103,7 +103,7 @@ class ExportDataRepositoryImplementation extends ExportDataRepository {
         break;
     }
     String fecha = formatoFechaHora(data.fecha).replaceAll(RegExp('/'), '_');
-    titulo += fecha + '.xlsx';
+    titulo = titulo + fecha + '.xlsx';
     return titulo;
   }
 
@@ -329,23 +329,27 @@ class ExportDataRepositoryImplementation extends ExportDataRepository {
       return PersonalPreTareaEsparragoEntity(
         idSQLite: maps[i]['id'],
         idSQLitePreTareaEsparrago: maps[i]['id_pre_tarea_esparrago'],
-        fecha: (maps[i]['fecha'])==null ? null : DateTime.tryParse(maps[i]['fecha']),
-        hora: (maps[i]['hora'])==null ? null : DateTime.tryParse(maps[i]['hora']),
+        fecha: (maps[i]['fecha']) == null
+            ? null
+            : DateTime.tryParse(maps[i]['fecha']),
+        hora: (maps[i]['hora']) == null
+            ? null
+            : DateTime.tryParse(maps[i]['hora']),
         codigotkcaja: maps[i]['codigotkcaja'],
         idlabor: maps[i]['idlabor'],
         idcliente: maps[i]['idcliente'],
         idvia: maps[i]['idvia'],
         correlativocaja: maps[i]['correlativocaja'],
         codigotkmesa: maps[i]['codigotkmesa'],
-        mesa: (maps[i]['mesa'])==null ? null : (maps[i]['mesa']).toString(),
-        linea: (maps[i]['mesa'])==null ? null : (maps[i]['linea']).toString(),
+        mesa: (maps[i]['mesa']) == null ? null : (maps[i]['mesa']).toString(),
+        linea: (maps[i]['mesa']) == null ? null : (maps[i]['linea']).toString(),
         correlativomesa: maps[i]['correlativomesa'],
         idusuario: maps[i]['idusuario'],
         idcalibre: maps[i]['idcalibre'],
       );
     });
 
-    final List<Map<String, dynamic>> mapsTarea =await database.query(
+    final List<Map<String, dynamic>> mapsTarea = await database.query(
         TABLE_NAME_PRE_TAREA_ESPARRAGO,
         where: "id = ?",
         whereArgs: [idDBPreTarea]);
@@ -354,23 +358,47 @@ class ExportDataRepositoryImplementation extends ExportDataRepository {
         List<PreTareaEsparragoVariosEntity>.generate(mapsTarea.length, (i) {
       return PreTareaEsparragoVariosEntity(
         idSQLite: mapsTarea[i]['id'],
-        fecha: (mapsTarea[i]['fecha']) == null ? null : DateTime?.tryParse(mapsTarea[i]['fecha']),
-        horainicio: (mapsTarea[i]['horainicio']) == null ? null : DateTime?.tryParse(mapsTarea[i]['horainicio']),
-        horafin: (mapsTarea[i]['horafin']) == null ? null : DateTime?.tryParse(mapsTarea[i]['horafin']),
-        pausainicio: (mapsTarea[i]['pausainicio']) == null ? null : DateTime?.tryParse(mapsTarea[i]['pausainicio']),
-        pausafin: (mapsTarea[i]['pausafin']) == null ? null : DateTime?.tryParse(mapsTarea[i]['pausafin']),
+        fecha: (mapsTarea[i]['fecha']) == null
+            ? null
+            : DateTime?.tryParse(mapsTarea[i]['fecha']),
+        horainicio: (mapsTarea[i]['horainicio']) == null
+            ? null
+            : DateTime?.tryParse(mapsTarea[i]['horainicio']),
+        horafin: (mapsTarea[i]['horafin']) == null
+            ? null
+            : DateTime?.tryParse(mapsTarea[i]['horafin']),
+        pausainicio: (mapsTarea[i]['pausainicio']) == null
+            ? null
+            : DateTime?.tryParse(mapsTarea[i]['pausainicio']),
+        pausafin: (mapsTarea[i]['pausafin']) == null
+            ? null
+            : DateTime?.tryParse(mapsTarea[i]['pausafin']),
         idcentrocosto: mapsTarea[i]['idcentrocosto'],
-        codigodigitador: (mapsTarea[i]['codigodigitador'])==null ? null : (mapsTarea[i]['codigodigitador']).toString(),
-        codigosupervisor: (mapsTarea[i]['codigosupervisor'])==null ? null : (mapsTarea[i]['codigosupervisor']).toString(),
-        idusuario: (mapsTarea[i]['idusuario'])==null ? null : mapsTarea[i]['idusuario'],
-        diasiguiente: (mapsTarea[i]['diasiguiente'])==null ? null : (mapsTarea[i]['diasiguiente'])==1 ? true :false,
-        turnotareo: (mapsTarea[i]['turnotareo'])==null ? null : mapsTarea[i]['turnotareo'],
-        imei: (mapsTarea[i]['imei'])==null ? null : mapsTarea[i]['imei'],
-        idtipotarea: (mapsTarea[i]['idtipotarea'])==null ? null : mapsTarea[i]['idtipotarea'],
-        linea: (mapsTarea[i]['linea'])==null ? null : mapsTarea[i]['linea'],
+        codigodigitador: (mapsTarea[i]['codigodigitador']) == null
+            ? null
+            : (mapsTarea[i]['codigodigitador']).toString(),
+        codigosupervisor: (mapsTarea[i]['codigosupervisor']) == null
+            ? null
+            : (mapsTarea[i]['codigosupervisor']).toString(),
+        idusuario: (mapsTarea[i]['idusuario']) == null
+            ? null
+            : mapsTarea[i]['idusuario'],
+        diasiguiente: (mapsTarea[i]['diasiguiente']) == null
+            ? null
+            : (mapsTarea[i]['diasiguiente']) == 1
+                ? true
+                : false,
+        turnotareo: (mapsTarea[i]['turnotareo']) == null
+            ? null
+            : mapsTarea[i]['turnotareo'],
+        imei: (mapsTarea[i]['imei']) == null ? null : mapsTarea[i]['imei'],
+        idtipotarea: (mapsTarea[i]['idtipotarea']) == null
+            ? null
+            : mapsTarea[i]['idtipotarea'],
+        linea: (mapsTarea[i]['linea']) == null ? null : mapsTarea[i]['linea'],
       );
     }).first;
-    
+
     await database.close();
 
     List<String> encabezados = listaEncabezados(data.toDB());
@@ -378,11 +406,13 @@ class ExportDataRepositoryImplementation extends ExportDataRepository {
     sheetObject.insertRowIterables(encabezados, 1);
     sheetObject.insertRowIterables(listaItem(data.toDB()), 2);
 
-    sheetObject.insertRowIterables(
-        listaEncabezados(detalles.first.toDB()), 4);
-    for (var i = 0; i < detalles.length; i++) {
-      var d = detalles[i];
-      sheetObject.insertRowIterables(listaItem(d.toDB()), i + initialRow);
+    if (!detalles.isEmpty) {
+      sheetObject.insertRowIterables(
+          listaEncabezados(detalles.first.toDB()), 4);
+      for (var i = 0; i < detalles.length; i++) {
+        var d = detalles[i];
+        sheetObject.insertRowIterables(listaItem(d.toDB()), i + initialRow);
+      }
     }
 
     var fileBytes = excel.save();
@@ -399,7 +429,8 @@ class ExportDataRepositoryImplementation extends ExportDataRepository {
         : (await getApplicationDocumentsDirectory()).path +
             Platform.pathSeparator +
             'Download';
-    String ruta = '$directory/${getTitulo(data)}_${idDBPreTarea}_${DateTime.now().toString()}';
+    String ruta =
+        '$directory/${idDBPreTarea}_${DateTime.now().toString()}_${getTitulo(data)}';
     File(ruta)
       ..createSync(recursive: true)
       ..writeAsBytesSync(fileBytes);

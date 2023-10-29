@@ -1,20 +1,21 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/ui/pages/navigation/navigation_controller.dart';
+import 'package:flutter_tareo/ui/pages/home/navigation/navigation_controller.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
 
-Widget getNavigationBar(GlobalKey key){
-
-  final NavigationController navigationController=Get.find<NavigationController>();
+Widget getNavigationBar(GlobalKey key) {
+  final NavigationController navigationController =
+      Get.find<NavigationController>();
 
   return GetBuilder<NavigationController>(
     init: navigationController,
-    builder: (_)=> BottomNavigationBar(
+    builder: (_) => BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      selectedItemColor: (PreferenciasUsuario().modoDark) ? primaryColorDark : primaryColor,
-      backgroundColor: (PreferenciasUsuario().modoDark) ? secondColorDark : Colors.white,
+      selectedItemColor:
+          (PreferenciasUsuario().modoDark) ? primaryColorDark : primaryColor,
+      backgroundColor:
+          (PreferenciasUsuario().modoDark) ? secondColorDark : Colors.white,
       unselectedItemColor: Colors.grey,
       showSelectedLabels: false,
       showUnselectedLabels: false,
@@ -45,7 +46,7 @@ Widget getNavigationBar(GlobalKey key){
         ),
       ],
       currentIndex: navigationController.indexWidget,
-      onTap: (index)=> _.eventos(index, key),
+      onTap: (index) => _.eventos(index, key),
     ),
   );
 }
