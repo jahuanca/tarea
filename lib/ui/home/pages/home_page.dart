@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/ui/home/controllers/home_controller.dart';
+import 'package:flutter_tareo/ui/home/utils/constants.dart';
+import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/widgets/input_label_widget.dart';
 import 'package:flutter_tareo/ui/widgets/radio_group_widget.dart';
 import 'package:get/get.dart';
@@ -21,42 +24,44 @@ class HomePage extends StatelessWidget {
             Flexible(
                 child: Container(
                   padding: EdgeInsets.all(15),
-                  child: Image.asset('assets/images/ic_logo.png'),
+                  child: Image.asset(HOME_URL_LOGO),
                 ),
-                flex: 1),
+                flex: ONE_INT_VALUE),
             Flexible(
                 child: GetBuilder<HomeController>(
-                  id: 'version',
+                  id: HOME_PAGE_ID_VERSION,
                   builder: (_) => Container(
-                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: size.width * HOME_PADDING_VALUE),
                     child: InputLabelWidget(
-                        enabled: false,
-                        label: 'Versión',
+                        enabled: BOOLEAN_FALSE_VALUE,
+                        label: HOME_PAGE_LABEL_VERSION,
                         hintText: _.lastVersion),
                   ),
                 ),
-                flex: 1),
-            //TODO: AUTODETECTAR INTERNET, VERIFICAR CON EL SERVIDOR
+                flex: ONE_INT_VALUE),
             Flexible(
                 child: GetBuilder<HomeController>(
-                  id: 'version',
+                  id: HOME_PAGE_ID_VERSION,
                   builder: (_) => Container(
-                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: size.width * HOME_PADDING_VALUE),
                     child: InputLabelWidget(
-                        enabled: false,
-                        label: 'Ultima Sincronización',
+                        enabled: BOOLEAN_FALSE_VALUE,
+                        label: HOME_PAGE_LABEL_LAST_CONNECTION,
                         hintText: _.lastVersionDate),
                   ),
                 ),
-                flex: 1),
+                flex: ONE_INT_VALUE),
             Flexible(
                 child: GetBuilder<HomeController>(
-                  id: 'modo',
+                  id: HOME_PAGE_ID_MODE,
                   builder: (_) => Container(
-                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: size.width * HOME_PADDING_VALUE),
                     alignment: Alignment.center,
                     child: RadioGroupWidget(
-                      label: 'Modo',
+                      label: HOME_PAGE_LABEL_MODE,
                       value: _.modo,
                       items: [
                         {'index': 0, 'name': "Off-line"},
@@ -67,16 +72,19 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                flex: 2),
+                flex: TWO_INT_VALUE),
             Flexible(
                 child: Container(
                   alignment: Alignment.center,
                   child: GetBuilder<HomeController>(
-                    id: 'refresh',
+                    id: HOME_PAGE_ID_REFRESH,
                     builder: (_) => CircleAvatar(
-                        backgroundColor: _.modo == 0 ? Colors.grey : infoColor,
+                        backgroundColor:
+                            _.modo == ZERO_INT_VALUE ? Colors.grey : infoColor,
                         child: IconButton(
-                          onPressed: _.modo == 0 ? null : _.goSincronizar,
+                          onPressed: _.modo == ZERO_INT_VALUE
+                              ? NULL_VALUE
+                              : _.goSincronizar,
                           icon: Icon(
                             Icons.refresh,
                             color: Colors.white,
@@ -84,7 +92,7 @@ class HomePage extends StatelessWidget {
                         )),
                   ),
                 ),
-                flex: 1)
+                flex: ONE_INT_VALUE)
           ],
         ),
       ),

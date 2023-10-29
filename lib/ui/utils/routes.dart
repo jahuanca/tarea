@@ -1,5 +1,6 @@
+import 'package:flutter_tareo/ui/home/pages/home_page.dart';
 import 'package:flutter_tareo/ui/home/pages/navigation_page.dart';
-import 'package:flutter_tareo/ui/main/pages/home/home_page.dart';
+
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_page.dart';
 import 'package:flutter_tareo/ui/login/pages/login_page.dart';

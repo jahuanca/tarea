@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:flutter_tareo/core/utils/config.dart';
 import 'package:flutter_tareo/core/utils/strings.dart';
 import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
@@ -139,7 +140,7 @@ class PreTareoProcesoUvaRepositoryImplementation
     print(file.contentType.toString());
     try {
       var request = http.MultipartRequest(
-          'PUT', Uri.http(serverUrlCorta, '$urlModule/updateFile'));
+          'PUT', Uri.http(URL_SERVER_SHORT, '$urlModule/updateFile'));
       request.files.add(file);
       request.headers[HttpHeaders.acceptHeader] = 'application/json';
       request.headers[HttpHeaders.contentTypeHeader] = 'multipart/form-data';
@@ -155,12 +156,12 @@ class PreTareoProcesoUvaRepositoryImplementation
       print("Fields: ${request.fields.toString()}");
 
       print("Api ${request.method} request ${request.url}, with");
-      if (mostrarLog) {
+      if (SHOW_LOG) {
         log(request.toString());
       }
       http.Response response =
           await http.Response.fromStream(await request.send());
-      if (mostrarLog) {
+      if (SHOW_LOG) {
         print("Result: ${response.statusCode}");
         log(response.body);
       }
@@ -169,7 +170,7 @@ class PreTareoProcesoUvaRepositoryImplementation
       preTareaProcesoUvaEntity.firmaSupervisor = respuesta.firmaSupervisor;
       return preTareaProcesoUvaEntity;
     } catch (e) {
-      if (mostrarLog) {
+      if (SHOW_LOG) {
         print('Error');
         log(e.toString());
       }

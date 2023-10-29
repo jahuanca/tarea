@@ -1,3 +1,4 @@
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/di/sincronizar_binding.dart';
 import 'package:flutter_tareo/ui/pages/sincronizar/sincronizar_page.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -6,26 +7,25 @@ import 'package:get/get.dart';
 class HomeController extends GetxController {
   String lastVersion = 'X.X.X';
   String lastVersionDate = '----';
-  int modo = 0;
+  int modo = ZERO_INT_VALUE;
   HomeController();
 
   @override
   void onInit() {
     super.onInit();
-    PreferenciasUsuario().offLine = true;
+    PreferenciasUsuario().offLine = BOOLEAN_TRUE_VALUE;
     setLog();
   }
 
   @override
   void onReady() {
     super.onReady();
-    
   }
 
-  void setLog(){
+  void setLog() {
     lastVersion = PreferenciasUsuario().lastVersion;
     lastVersionDate = PreferenciasUsuario().lastVersionDate;
-    modo = (PreferenciasUsuario().offLine) ? 0 : 1;
+    modo = (PreferenciasUsuario().offLine) ? ZERO_INT_VALUE : ONE_INT_VALUE;
     update(['version', 'modo']);
   }
 
@@ -35,12 +35,13 @@ class HomeController extends GetxController {
   }
 
   void setModo() {
-    PreferenciasUsuario().offLine = (modo == 0) ? true : false;
+    PreferenciasUsuario().offLine =
+        (modo == ZERO_INT_VALUE) ? BOOLEAN_TRUE_VALUE : BOOLEAN_FALSE_VALUE;
   }
 
-  Future<void> goSincronizar() async{
+  Future<void> goSincronizar() async {
     SincronizarBinding().dependencies();
-    await Get.to(()=> SincronizarPage());
+    await Get.to(() => SincronizarPage());
     setLog();
   }
 }

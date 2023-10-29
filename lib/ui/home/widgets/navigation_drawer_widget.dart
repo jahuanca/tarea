@@ -1,16 +1,18 @@
 import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/core/utils/dimens.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/core/utils/styles.dart';
+import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/home/controllers/navigation_drawer_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey) {
+Drawer getDrawer({Size size, GlobalKey<ScaffoldState> scaffoldKey}) {
   return Drawer(
     child: GetBuilder<NavigationDrawerController>(
       init: NavigationDrawerController(),
-      id: 'navigation',
+      id: NAVIGATION_DRAWER_WIDGET_ID_NAVIGATION,
       builder: (_) => Container(
         color: (PreferenciasUsuario().modoDark) ? secondColorDark : secondColor,
         child: ListView(
@@ -33,24 +35,24 @@ Drawer getDrawer(Size size, GlobalKey<ScaffoldState> scaffoldKey) {
                             builder: (_) => GestureDetector(
                               onTap: _.goProfile,
                               child: Hero(
-                                tag: 'profile',
+                                tag: NAVIGATION_DRAWER_WIDGET_TAG_PROFILE,
                                 child: Container(
                                     decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         image: new DecorationImage(
                                             fit: BoxFit.contain,
-                                            image: AssetImage(
-                                                'assets/images/ic_avatar.png')))),
+                                            image:
+                                                AssetImage(HOME_URL_AVATAR)))),
                               ),
                             ),
                           ),
                         ),
-                        flex: 2,
+                        flex: TWO_INT_VALUE,
                       ),
                       Flexible(
                         child: Container(
                           child: GetBuilder<NavigationDrawerController>(
-                            id: 'usuario',
+                            id: NAVIGATION_DRAWER_WIDGET_ID_USER,
                             builder: (_) => Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [

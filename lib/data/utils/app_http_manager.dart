@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:flutter_tareo/core/utils/config.dart';
 import 'package:flutter_tareo/core/utils/strings.dart';
 import 'package:flutter_tareo/domain/entities/message_entity.dart';
 import 'package:flutter_tareo/domain/utils/http_manager.dart';
@@ -108,7 +109,7 @@ class AppHttpManager implements HttpManager {
   }
 
   String _queryBuilder(String path, Map<String, dynamic> query) {
-    final buffer = StringBuffer()..write(serverUrl + (path ?? ''));
+    final buffer = StringBuffer()..write(URL_SERVER + (path ?? ''));
     if (query != null) {
       if (query.isNotEmpty) {
         buffer.write('?');
@@ -126,7 +127,7 @@ class AppHttpManager implements HttpManager {
     final responseJson = response.body;
     if (response.statusCode >= 200 && response.statusCode <= 299) {
       print('Api response success with ');
-      if (mostrarLog) {
+      if (SHOW_LOG) {
         log(responseJson);
       }
       return responseJson;

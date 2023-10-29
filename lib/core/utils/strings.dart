@@ -1,21 +1,6 @@
-//const String serverUrlCorta = '10.0.2.2:3002';
-//const String serverUrlCorta = '192.168.1.13:3000';
-const String serverUrlCorta = '35.174.190.65:3002';
-//const String serverUrlCorta = '00d0-190-236-246-82.ngrok.io';
-const String serverUrl = 'http://$serverUrlCorta';
-const String rImages = 'assets/images/';
-const bool mostrarLog = true;
 const String TABLE_NAME_PRE_TAREA_ESPARRAGO = 'pre_tarea_esparrago';
 const String TABLE_NAME_PERSONAL_PRE_TAREA_ESPARRAGO =
     'personal_pre_tarea_esparrago';
-
-const Map<String, String> mandantes = {
-  'dev': '100',
-  'qas': '200',
-  'prd': '300'
-};
-
-const String mandanteNow = 'qas';
 
 const String TABLE_PRETAREAESPARRAGO = "CREATE TABLE pre_tarea_esparrago(" +
     "id INTEGER PRIMARY KEY AUTOINCREMENT," +

@@ -114,7 +114,7 @@ class PreTareoProcesoRepositoryImplementation
     print(file.contentType.toString());
     try {
       var request = http.MultipartRequest(
-          'PUT', Uri.http(serverUrlCorta, '$urlModule/updateFile'));
+          'PUT', Uri.http(URL_SERVER_SHORT, '$urlModule/updateFile'));
       request.files.add(file);
       request.headers[HttpHeaders.acceptHeader] = 'application/json';
       request.headers[HttpHeaders.contentTypeHeader] = 'multipart/form-data';

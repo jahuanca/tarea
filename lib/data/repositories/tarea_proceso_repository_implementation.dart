@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:flutter_tareo/core/utils/strings.dart';
+import 'package:flutter_tareo/core/utils/config.dart';
 import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
@@ -81,7 +81,7 @@ class TareaProcesoRepositoryImplementation extends TareaProcesoRepository {
     print(file.contentType.toString());
     try {
       var request = http.MultipartRequest(
-          'PUT', Uri.http(serverUrlCorta, '$urlModule/updateFile'));
+          'PUT', Uri.http(URL_SERVER_SHORT, '$urlModule/updateFile'));
       request.files.add(file);
       request.headers[HttpHeaders.acceptHeader] = 'application/json';
       request.headers[HttpHeaders.contentTypeHeader] = 'multipart/form-data';

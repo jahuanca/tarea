@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/ui/home/controllers/navigation_controller.dart';
+import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
+import 'package:flutter_tareo/ui/home/widgets/navigation_drawer_widget.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
-import 'package:flutter_tareo/ui/widgets/main/navigation_drawer/navigation_drawer_widget.dart';
+
 import 'package:get/get.dart';
 
 class NavigationPage extends GetWidget<NavigationController> {
@@ -15,7 +18,7 @@ class NavigationPage extends GetWidget<NavigationController> {
 
     return GetBuilder<NavigationController>(
       init: navigationController,
-      id: 'bottom_navigation',
+      id: HOME_PAGE_ID_BOTTOM_NAVIGATION,
       builder: (_) => SafeArea(
         child: WillPopScope(
           onWillPop: _.goBack,
@@ -24,15 +27,10 @@ class NavigationPage extends GetWidget<NavigationController> {
             appBar: getAppBar(
               navigationController.titulo,
               navigationController.actions,
-              true,
+              BOOLEAN_TRUE_VALUE,
             ),
-            drawer: getDrawer(size, _scaffoldKey),
-            /* bottomNavigationBar: GetBuilder<NavigationController>(
-              id: 'bottom_navigation',
-              builder: (_)=> getNavigationBar(_scaffoldKey)
-            ), */
+            drawer: getDrawer(size: size, scaffoldKey: _scaffoldKey),
             body: GetBuilder<NavigationController>(
-                /* id: 'bottom_navigation', */
                 builder: (_) => navigationController
                     .lista[navigationController.indexWidget]),
           ),
