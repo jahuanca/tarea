@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/nueva_pre_tarea/nueva_pre_tarea_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
@@ -11,7 +11,8 @@ import 'package:flutter_tareo/ui/widgets/item_configuracion_swicth_widget.dart';
 import 'package:get/get.dart';
 
 class NuevaPreTareaPage extends StatelessWidget {
-  final NuevaPreTareaController controller = Get.find<NuevaPreTareaController>();
+  final NuevaPreTareaController controller =
+      Get.find<NuevaPreTareaController>();
 
   @override
   Widget build(BuildContext context) {
@@ -66,20 +67,22 @@ class NuevaPreTareaPage extends StatelessWidget {
                         /* error: _.errorCentroCosto, */
                         labelText: 'name',
                         labelValue: '_id',
-                        selectedItem: _.nuevaPreTarea?.laboresCultivoPacking?.presentacionLinea == null
+                        selectedItem: _.nuevaPreTarea?.laboresCultivoPacking
+                                    ?.presentacionLinea ==
+                                null
                             ? null
                             : {
                                 'name':
                                     '${_.nuevaPreTarea.laboresCultivoPacking.presentacionLinea.descripcion.trim()}',
-                                '_id': _.nuevaPreTarea.laboresCultivoPacking.item,
+                                '_id':
+                                    _.nuevaPreTarea.laboresCultivoPacking.item,
                               },
                         onChanged: _.changePresentacion,
                         items: controller.presentaciones.length == 0
                             ? []
                             : controller.presentaciones
                                 .map((e) => {
-                                      'name':
-                                          '${e.descripcion.trim()}',
+                                      'name': '${e.descripcion.trim()}',
                                       '_id': e.idpresentacion,
                                     })
                                 .toList(),
@@ -97,7 +100,8 @@ class NuevaPreTareaPage extends StatelessWidget {
                             : {
                                 'name':
                                     '${_.nuevaPreTarea.centroCosto?.detallecentrocosto?.trim()} ${_.nuevaPreTarea?.centroCosto?.codigoempresa}',
-                                '_id': _.nuevaPreTarea.centroCosto.idcentrocosto,
+                                '_id':
+                                    _.nuevaPreTarea.centroCosto.idcentrocosto,
                               },
                         onChanged: _.changeCentroCosto,
                         items: controller.centrosCosto.length == 0
@@ -118,13 +122,20 @@ class NuevaPreTareaPage extends StatelessWidget {
                         labelText: 'name',
                         error: _.errorActividad,
                         labelValue: '_id',
-                        selectedItem: _.nuevaPreTarea?.laboresCultivoPacking?.actividad == null
-                            ? null
-                            : {
-                                'name':
-                                    _.nuevaPreTarea.laboresCultivoPacking.actividad.descripcion.trim(),
-                                '_id': _.nuevaPreTarea.laboresCultivoPacking.actividad.idactividad,
-                              },
+                        selectedItem:
+                            _.nuevaPreTarea?.laboresCultivoPacking?.actividad ==
+                                    null
+                                ? null
+                                : {
+                                    'name': _
+                                        .nuevaPreTarea
+                                        .laboresCultivoPacking
+                                        .actividad
+                                        .descripcion
+                                        .trim(),
+                                    '_id': _.nuevaPreTarea.laboresCultivoPacking
+                                        .actividad.idactividad,
+                                  },
                         onChanged: _.changeActividad,
                         items: controller.actividades.length == 0
                             ? []
@@ -144,12 +155,16 @@ class NuevaPreTareaPage extends StatelessWidget {
                         labelValue: '_id',
                         error: _.errorLabor,
                         onChanged: _.changeLabor,
-                        selectedItem: _.nuevaPreTarea?.laboresCultivoPacking?.labor == null
-                            ? null
-                            : {
-                                'name': '${_.nuevaPreTarea.laboresCultivoPacking.labor.descripcion}',
-                                '_id': _.nuevaPreTarea.laboresCultivoPacking.labor.idlabor,
-                              },
+                        selectedItem:
+                            _.nuevaPreTarea?.laboresCultivoPacking?.labor ==
+                                    null
+                                ? null
+                                : {
+                                    'name':
+                                        '${_.nuevaPreTarea.laboresCultivoPacking.labor.descripcion}',
+                                    '_id': _.nuevaPreTarea.laboresCultivoPacking
+                                        .labor.idlabor,
+                                  },
                         items: controller.labores.length == 0
                             ? []
                             : controller.labores
@@ -173,7 +188,8 @@ class NuevaPreTareaPage extends StatelessWidget {
                               : {
                                   'name':
                                       '${_.nuevaPreTarea.supervisor.apellidopaterno} ${_.nuevaPreTarea.supervisor.apellidomaterno}, ${_.nuevaPreTarea.supervisor.nombres}',
-                                  '_id': _.nuevaPreTarea.supervisor.codigoempresa,
+                                  '_id':
+                                      _.nuevaPreTarea.supervisor.codigoempresa,
                                 },
                           items: _.supervisors.length == 0
                               ? []
@@ -198,7 +214,8 @@ class NuevaPreTareaPage extends StatelessWidget {
                               : {
                                   'name':
                                       '${_.nuevaPreTarea.digitador.apellidopaterno} ${_.nuevaPreTarea.digitador.apellidomaterno}, ${_.nuevaPreTarea.digitador.nombres}',
-                                  '_id': _.nuevaPreTarea.digitador.codigoempresa,
+                                  '_id':
+                                      _.nuevaPreTarea.digitador.codigoempresa,
                                 },
                           items: _.supervisors.length == 0
                               ? []
@@ -275,7 +292,8 @@ class NuevaPreTareaPage extends StatelessWidget {
                               onlyDate: true,
                               //minDate: _.nuevaPreTarea?.turnotareo=='D' ?  _.nuevaPreTarea.horainicio : null,
                               minDate: null,
-                              dateSelected: _.nuevaPreTarea.horafin ?? DateTime.now(),
+                              dateSelected:
+                                  _.nuevaPreTarea.horafin ?? DateTime.now(),
                               onChanged: () {},
                             ).selectTime(context, _.nuevaPreTarea.horafin);
                             _.changeHoraFin();
@@ -297,17 +315,20 @@ class NuevaPreTareaPage extends StatelessWidget {
                                       iconOverlay: Icons.delete,
                                       onPressedIconOverlay: _.deleteInicioPausa,
                                       onTap: () async {
-                                        _.nuevaPreTarea.pausainicio = await DatePickerWidget(
+                                        _.nuevaPreTarea.pausainicio =
+                                            await DatePickerWidget(
                                           onlyDate: true,
-                                          dateSelected: _.nuevaPreTarea?.pausainicio ?? DateTime.now(),
+                                          dateSelected:
+                                              _.nuevaPreTarea?.pausainicio ??
+                                                  DateTime.now(),
                                           onChanged: () {},
-                                        ).selectTime(
-                                            context, null );
+                                        ).selectTime(context, null);
                                         _.changeInicioPausa();
                                       },
                                       textEditingController:
                                           TextEditingController(
-                                              text: formatoHora(_.nuevaPreTarea.pausainicio)),
+                                              text: formatoHora(
+                                                  _.nuevaPreTarea.pausainicio)),
                                       label: 'Inicio de pausa',
                                       hintText: 'Inicio de pausa'),
                                   SizedBox(
@@ -326,7 +347,8 @@ class NuevaPreTareaPage extends StatelessWidget {
                                 onPressedIconOverlay: _.deleteFinPausa,
                                 error: _.errorPausaFin,
                                 onTap: () async {
-                                  _.nuevaPreTarea.pausafin = await DatePickerWidget(
+                                  _.nuevaPreTarea.pausafin =
+                                      await DatePickerWidget(
                                     onlyDate: true,
                                     dateSelected: DateTime.now(),
                                     //minDate: _.nuevaPreTarea.horainicio,
@@ -335,7 +357,8 @@ class NuevaPreTareaPage extends StatelessWidget {
                                   _.changeFinPausa();
                                 },
                                 textEditingController: TextEditingController(
-                                    text: formatoHora(_.nuevaPreTarea.pausafin)),
+                                    text:
+                                        formatoHora(_.nuevaPreTarea.pausafin)),
                                 label: 'Fin de pausa',
                                 hintText: 'Fin de pausa')
                             : Container()),

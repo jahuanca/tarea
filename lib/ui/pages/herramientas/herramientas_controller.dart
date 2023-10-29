@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_tareo/core/detalles.dart';
-import 'package:flutter_tareo/core/strings.dart';
-import 'package:flutter_tareo/core/tarea.dart';
+import 'package:flutter_tareo/core/utils/detalles.dart';
+import 'package:flutter_tareo/core/utils/strings.dart';
+import 'package:flutter_tareo/core/utils/tarea.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/create_uva_all_detalle_use_case.dart';
@@ -23,37 +23,37 @@ class HerramientasController extends GetxController {
   final CreatePreTareoProcesoUvaUseCase _createPreTareoProcesoUvaUseCase;
   final CreateUvaAllDetalleUseCase _createUvaAllDetalleUseCase;
 
-  HerramientasController(this._createPreTareoProcesoUvaUseCase, this._createUvaAllDetalleUseCase);
+  HerramientasController(
+      this._createPreTareoProcesoUvaUseCase, this._createUvaAllDetalleUseCase);
 
-  int cantidad=0;
+  int cantidad = 0;
 
-  Future<void> cantidadSQLITE() async{
+  Future<void> cantidadSQLITE() async {
     Database database = await openDatabase(
         join(await getDatabasesPath(), 'tareo_esparrago.db'));
 
-    final List<Map<String, dynamic>> maps = await database.query(
-        TABLE_NAME_PERSONAL_PRE_TAREA_ESPARRAGO);
+    final List<Map<String, dynamic>> maps =
+        await database.query(TABLE_NAME_PERSONAL_PRE_TAREA_ESPARRAGO);
     await database.close();
-    cantidad=maps.length ?? 0;
+    cantidad = maps.length ?? 0;
     update(['cantidad']);
   }
 
-  Future<void> sqlite() async{
-    validando=true;
+  Future<void> sqlite() async {
+    validando = true;
     update(['validando']);
 
-        
-
-    validando=false;
+    validando = false;
     update(['validando']);
   }
 
-  Future<void> importarData() async{
+  Future<void> importarData() async {
     validando = true;
     texto = 'Creando tarea';
     update(['validando']);
-    PreTareoProcesoUvaEntity data=new PreTareoProcesoUvaEntity.fromJson(TAREAJSON);
-    data.estadoLocal='PC';
+    PreTareoProcesoUvaEntity data =
+        new PreTareoProcesoUvaEntity.fromJson(TAREAJSON);
+    data.estadoLocal = 'PC';
     texto = 'Creando detalles';
     update(['validando']);
     await _createPreTareoProcesoUvaUseCase.execute(data);
@@ -61,9 +61,10 @@ class HerramientasController extends GetxController {
       texto = 'Creando detalles $i de ${DETALLESJSON.length}';
       update(['validando']);
       var d=DETALLESJSON[i]; */
-      await _createUvaAllDetalleUseCase.execute('uva_detalle_${data.key}', preTareoProcesoUvaDetalleEntityFromJson(jsonEncode(DETALLESJSON)));
+    await _createUvaAllDetalleUseCase.execute('uva_detalle_${data.key}',
+        preTareoProcesoUvaDetalleEntityFromJson(jsonEncode(DETALLESJSON)));
     /* } */
-    validando=false;
+    validando = false;
     update(['validando']);
   }
 
@@ -97,12 +98,14 @@ class HerramientasController extends GetxController {
       update(['validando']);
       Box<PreTareoProcesoUvaEntity> dataHive =
           await Hive.openBox<PreTareoProcesoUvaEntity>(
-              'pre_tareos_uva_sincronizar', );
+        'pre_tareos_uva_sincronizar',
+      );
       texto = 'Obteniendo no migrados';
       update(['validando']);
-      List<PreTareoProcesoUvaEntity> lista = dataHive.values.where((e) => e?.estadoLocal!='M').toList();
+      List<PreTareoProcesoUvaEntity> lista =
+          dataHive.values.where((e) => e?.estadoLocal != 'M').toList();
       for (var i = 0; i < lista.length; i++) {
-        texto = 'Escribiendo ${(i+1)} de ${lista.length}';
+        texto = 'Escribiendo ${(i + 1)} de ${lista.length}';
         update(['validando']);
         await backupFile.writeAsString(jsonEncode(lista[i]),
             mode: FileMode.append);

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/widgets/button_login_widget.dart';
 import 'package:flutter_tareo/ui/widgets/input_label_widget.dart';
 
@@ -57,9 +57,9 @@ class SearchPage extends StatelessWidget {
                 children: [
                   Container(
                       child: InputLabelWidget(
-                        hintText: 'Fecha',
-                        label: 'Fecha',
-                      )),
+                    hintText: 'Fecha',
+                    label: 'Fecha',
+                  )),
                   Container(
                       child: InputLabelWidget(
                     hintText: 'Actividad',
@@ -95,5 +95,4 @@ class SearchPage extends StatelessWidget {
       ),
     );
   }
-
 }

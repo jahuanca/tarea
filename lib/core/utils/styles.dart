@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 
 TextStyle botonSocialStyle() {
@@ -133,7 +133,6 @@ InputBorder inputBorder() {
       borderRadius: BorderRadius.circular(borderRadius),
       borderSide: BorderSide(width: 1, color: primaryColor));
 }
-
 
 InputBorder inputBorderError() {
   return OutlineInputBorder(

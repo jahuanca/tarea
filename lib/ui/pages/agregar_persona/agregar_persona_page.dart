@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
@@ -22,7 +22,8 @@ class AgregarPersonaPage extends StatelessWidget {
     return GetBuilder<AgregarPersonaController>(
       init: controller,
       builder: (_) => Scaffold(
-        appBar: getAppBar(_.editando ? 'Editando persona': 'Agregar persona' , [], true),
+        appBar: getAppBar(
+            _.editando ? 'Editando persona' : 'Agregar persona', [], true),
         backgroundColor: secondColor,
         body: Stack(
           children: [
@@ -41,10 +42,14 @@ class AgregarPersonaPage extends StatelessWidget {
                             labelValue: 'codigoempresa',
                             onChanged: _.changePersonal,
                             enabled: !_.editando,
-                            selectedItem: _.nuevoPersonal?.personal==null ? null : {
-                              'name': _.nuevoPersonal.personal.nombreCompleto,
-                              'codigoempresa': _.nuevoPersonal.personal.codigoempresa,
-                            },
+                            selectedItem: _.nuevoPersonal?.personal == null
+                                ? null
+                                : {
+                                    'name':
+                                        _.nuevoPersonal.personal.nombreCompleto,
+                                    'codigoempresa':
+                                        _.nuevoPersonal.personal.codigoempresa,
+                                  },
                             items: _.personalEmpresa.length == 0
                                 ? []
                                 : controller.personalEmpresa
@@ -68,18 +73,15 @@ class AgregarPersonaPage extends StatelessWidget {
                       builder: (_) => InputLabelWidget(
                           enabled: false,
                           onTap: () async {
-                            _.nuevoPersonal.horainicio =
-                                await DatePickerWidget(
+                            _.nuevoPersonal.horainicio = await DatePickerWidget(
                               onlyDate: true,
                               dateSelected: DateTime.now(),
-                            ).selectTime(context,
-                                    _.nuevoPersonal.horainicio);
+                            ).selectTime(context, _.nuevoPersonal.horainicio);
                             _.changeHoraInicio();
                           },
                           label: 'Hora inicio',
                           textEditingController: TextEditingController(
-                              text: formatoHora(
-                                  _.nuevoPersonal.horainicio)),
+                              text: formatoHora(_.nuevoPersonal.horainicio)),
                           hintText: 'Hora inicio'),
                     ),
                     SizedBox(
@@ -90,29 +92,23 @@ class AgregarPersonaPage extends StatelessWidget {
                       builder: (_) => InputLabelWidget(
                           enabled: false,
                           onTap: () async {
-                            _.nuevoPersonal
-                                .horafin = await DatePickerWidget(
+                            _.nuevoPersonal.horafin = await DatePickerWidget(
                               onlyDate: true,
                               //minDate: _.personalTareaProcesoEntity.horainicio,
                               dateSelected:
-                                  _.nuevoPersonal.horafin ??
-                                      DateTime.now(),
+                                  _.nuevoPersonal.horafin ?? DateTime.now(),
                               onChanged: () {},
-                            ).selectTime(
-                                context, _.nuevoPersonal.horafin);
+                            ).selectTime(context, _.nuevoPersonal.horafin);
                             _.changeHoraFin();
                           },
                           label: 'Hora fin',
                           textEditingController: TextEditingController(
-                              text: formatoHora(
-                                  _.nuevoPersonal.horafin)),
+                              text: formatoHora(_.nuevoPersonal.horafin)),
                           hintText: 'Hora fin'),
                     ),
                     GetBuilder<AgregarPersonaController>(
                         id: 'inicio_pausa',
-                        builder: (_) => (_.nuevoPersonal
-                                        .horainicio !=
-                                    null &&
+                        builder: (_) => (_.nuevoPersonal.horainicio != null &&
                                 _.nuevoPersonal.horafin != null)
                             ? Column(
                                 children: [
@@ -122,22 +118,22 @@ class AgregarPersonaPage extends StatelessWidget {
                                       iconOverlay: Icons.delete,
                                       onPressedIconOverlay: _.deleteInicioPausa,
                                       onTap: () async {
-                                        _.nuevoPersonal
-                                                .pausainicio =
+                                        _.nuevoPersonal.pausainicio =
                                             await DatePickerWidget(
                                           onlyDate: true,
                                           //minDate: _.personalTareaProcesoEntity.horainicio ,
                                           dateSelected: DateTime.now(),
                                           onChanged: () {},
                                         ).selectTime(
-                                                context, _.nuevoPersonal.horainicio ?? DateTime.now());
+                                                context,
+                                                _.nuevoPersonal.horainicio ??
+                                                    DateTime.now());
                                         _.changeInicioPausa();
                                       },
                                       textEditingController:
                                           TextEditingController(
                                               text: formatoHora(
-                                        _.nuevoPersonal
-                                            .pausainicio,
+                                        _.nuevoPersonal.pausainicio,
                                       )),
                                       label: 'Inicio de pausa',
                                       hintText: 'Inicio de pausa'),
@@ -148,30 +144,32 @@ class AgregarPersonaPage extends StatelessWidget {
                               )
                             : Container()),
                     GetBuilder<AgregarPersonaController>(
-                      id: 'fin_pausa',
-                      builder: (_) => (_.nuevoPersonal.horainicio != null &&
+                        id: 'fin_pausa',
+                        builder: (_) => (_.nuevoPersonal.horainicio != null &&
                                 _.nuevoPersonal.horafin != null)
-                      ? InputLabelWidget(
-                          enabled: false,
-                          iconOverlay: Icons.delete,
-                          onPressedIconOverlay: _.deleteFinPausa,
-                          error: _.errorPausaFin,
-                          onTap: () async {
-                            _.nuevoPersonal.pausafin =
-                                await DatePickerWidget(
-                              onlyDate: true,
-                              //minDate: _.personalTareaProcesoEntity.pausainicio ,
-                              dateSelected: DateTime.now(),
-                            ).selectTime(context, _.nuevoPersonal?.pausainicio ?? new DateTime.now());
-                            _.changeFinPausa();
-                          },
-                          textEditingController: TextEditingController(
-                              text: formatoHora(
-                                  _.nuevoPersonal.pausafin)),
-                          label: 'Fin de pausa',
-                          hintText: 'Fin de pausa')
-                        : Container()
-                    ),
+                            ? InputLabelWidget(
+                                enabled: false,
+                                iconOverlay: Icons.delete,
+                                onPressedIconOverlay: _.deleteFinPausa,
+                                error: _.errorPausaFin,
+                                onTap: () async {
+                                  _.nuevoPersonal.pausafin =
+                                      await DatePickerWidget(
+                                    onlyDate: true,
+                                    //minDate: _.personalTareaProcesoEntity.pausainicio ,
+                                    dateSelected: DateTime.now(),
+                                  ).selectTime(
+                                          context,
+                                          _.nuevoPersonal?.pausainicio ??
+                                              new DateTime.now());
+                                  _.changeFinPausa();
+                                },
+                                textEditingController: TextEditingController(
+                                    text:
+                                        formatoHora(_.nuevoPersonal.pausafin)),
+                                label: 'Fin de pausa',
+                                hintText: 'Fin de pausa')
+                            : Container()),
                     GetBuilder<AgregarPersonaController>(
                       id: 'rendimiento',
                       builder: (_) => ItemConfiguracionSwitchWidget(
@@ -191,8 +189,7 @@ class AgregarPersonaPage extends StatelessWidget {
                         label: 'Dia siguiente',
                         tituloTrue: 'Es dia siguiente',
                         tituloFalse: 'No es dia siguiente',
-                        value:
-                            _.nuevoPersonal.diasiguiente ?? false,
+                        value: _.nuevoPersonal.diasiguiente ?? false,
                       ),
                     ),
                     GetBuilder<AgregarPersonaController>(
@@ -201,13 +198,15 @@ class AgregarPersonaPage extends StatelessWidget {
                           label: 'Turno',
                           labelText: 'name',
                           labelValue: '_id',
-                          selectedItem: _.nuevoPersonal.turno == 'D'? {
-                            'name': 'Dia',
-                            '_id': 'D',
-                          } : {
-                            'name': 'Noche',
-                            '_id': 'N',
-                          },
+                          selectedItem: _.nuevoPersonal.turno == 'D'
+                              ? {
+                                  'name': 'Dia',
+                                  '_id': 'D',
+                                }
+                              : {
+                                  'name': 'Noche',
+                                  '_id': 'N',
+                                },
                           onChanged: _.changeTurno,
                           items: [
                             {
@@ -224,7 +223,8 @@ class AgregarPersonaPage extends StatelessWidget {
                       id: 'cantidad_horas',
                       builder: (_) => InputLabelWidget(
                         hintText: 'Cantidad Horas',
-                        textEditingController: TextEditingController(text: _.textoCantidadHoras),
+                        textEditingController:
+                            TextEditingController(text: _.textoCantidadHoras),
                         enabled: false,
                         textInputType: TextInputType.number,
                         label: 'Cantidad Horas',
@@ -235,7 +235,8 @@ class AgregarPersonaPage extends StatelessWidget {
                       builder: (_) => InputLabelWidget(
                         hintText: 'Cantidad rendimiento',
                         error: _.errorCantidadRendimiento,
-                        initialValue: stringOfNumber(_.nuevoPersonal.cantidadrendimiento),
+                        initialValue:
+                            stringOfNumber(_.nuevoPersonal.cantidadrendimiento),
                         onChanged: _.changeCantidadRendimiento,
                         textInputType: TextInputType.number,
                         label: 'Cantidad rendimiento',
@@ -246,7 +247,8 @@ class AgregarPersonaPage extends StatelessWidget {
                       builder: (_) => InputLabelWidget(
                         hintText: 'Cantidad avance',
                         error: _.errorCantidadAvance,
-                        initialValue: stringOfNumber(_.nuevoPersonal.cantidadavance),
+                        initialValue:
+                            stringOfNumber(_.nuevoPersonal.cantidadavance),
                         onChanged: _.changeCantidadAvance,
                         textInputType: TextInputType.number,
                         label: 'Cantidad avance',

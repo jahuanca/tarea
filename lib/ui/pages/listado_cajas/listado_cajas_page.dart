@@ -1,7 +1,7 @@
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/listado_cajas/listado_cajas_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
@@ -9,9 +9,7 @@ import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
 
 class ListadoCajasPage extends StatelessWidget {
-  
-  final ListadoCajasController controller =
-      Get.find<ListadoCajasController>();
+  final ListadoCajasController controller = Get.find<ListadoCajasController>();
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +125,9 @@ class ListadoCajasPage extends StatelessWidget {
                               child: Padding(
                                 padding: EdgeInsets.symmetric(vertical: 5),
                                 child: Container(
-                                  child: Text(_.personalSeleccionado[index].correlativo.toString()),
+                                  child: Text(_
+                                      .personalSeleccionado[index].correlativo
+                                      .toString()),
                                   //color: primaryColor,
                                 ),
                               ),
@@ -137,9 +137,11 @@ class ListadoCajasPage extends StatelessWidget {
                             child: Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                formatoFecha(_.personalSeleccionado[index].fecha),
+                                formatoFecha(
+                                    _.personalSeleccionado[index].fecha),
                                 style: TextStyle(
-                                    fontWeight: FontWeight.normal, fontSize: 14),
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 14),
                               ),
                             ),
                             flex: 10,
@@ -173,8 +175,8 @@ class ListadoCajasPage extends StatelessWidget {
                                                 value: e['key'],
                                                 child: Text(e['value'])))
                                             .toList(),
-                                    onChanged: (value) =>{}
-                                        /* _.onChangedMenu(value, index) */),
+                                    onChanged: (value) => {}
+                                    /* _.onChangedMenu(value, index) */),
                               ),
                               flex: 4),
                           Flexible(child: Container(), flex: 1),
@@ -191,7 +193,8 @@ class ListadoCajasPage extends StatelessWidget {
                           Flexible(
                             child: Container(
                               alignment: Alignment.centerLeft,
-                              child: Text(_.personalSeleccionado[index].cliente?.descripcion ??
+                              child: Text(_.personalSeleccionado[index].cliente
+                                      ?.descripcion ??
                                   ''),
                             ),
                             flex: 10,
@@ -200,7 +203,9 @@ class ListadoCajasPage extends StatelessWidget {
                           Flexible(
                             child: Container(
                               alignment: Alignment.centerLeft,
-                              child: Text(_.personalSeleccionado[index].labor.descripcion ?? ''),
+                              child: Text(_.personalSeleccionado[index].labor
+                                      .descripcion ??
+                                  ''),
                             ),
                             flex: 10,
                           ),
@@ -223,8 +228,10 @@ class ListadoCajasPage extends StatelessWidget {
                                   Container(
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 5),
-                                      child: Text((_
-                                          .personalSeleccionado[index]?.sizeDetails ?? 0).toString()
+                                      child: Text((_.personalSeleccionado[index]
+                                                  ?.sizeDetails ??
+                                              0)
+                                          .toString()
                                           .toString())),
                                   Icon(
                                     Icons.people,
@@ -247,7 +254,6 @@ class ListadoCajasPage extends StatelessWidget {
                       child: Row(
                         children: (true)
                             ? [
-                                
                                 Flexible(child: Container(), flex: 1),
                                 Flexible(
                                   child: Container(
@@ -255,7 +261,8 @@ class ListadoCajasPage extends StatelessWidget {
                                     child: CircleAvatar(
                                       backgroundColor: infoColor,
                                       child: IconButton(
-                                          onPressed: () async => _.goListadoDetalles(index),
+                                          onPressed: () async =>
+                                              _.goListadoDetalles(index),
                                           icon: Icon(
                                             Icons.search,
                                             color: Colors.white,
@@ -272,7 +279,7 @@ class ListadoCajasPage extends StatelessWidget {
                                       backgroundColor: successColor,
                                       child: IconButton(
                                         onPressed: null,
-                                            // ()=> _.goAprobar(index),
+                                        // ()=> _.goAprobar(index),
                                         icon: Icon(Icons.remove_red_eye),
                                         color: Colors.white,
                                       ),
@@ -287,8 +294,7 @@ class ListadoCajasPage extends StatelessWidget {
                                       backgroundColor: dangerColor,
                                       child: IconButton(
                                         onPressed: () => _.goEliminar(
-                                          _.personalSeleccionado[index].key
-                                          ),
+                                            _.personalSeleccionado[index].key),
                                         icon: Icon(Icons.delete),
                                         color: Colors.white,
                                       ),
@@ -307,7 +313,7 @@ class ListadoCajasPage extends StatelessWidget {
                                       backgroundColor: infoColor,
                                       child: IconButton(
                                           onPressed: () {},
-                                              //_.goListadoCajas(index),
+                                          //_.goListadoCajas(index),
                                           icon: Icon(
                                             Icons.search,
                                             color: Colors.white,
@@ -324,7 +330,7 @@ class ListadoCajasPage extends StatelessWidget {
                                       backgroundColor: successColor,
                                       child: IconButton(
                                         onPressed: () {},
-                                            //_.goAprobar(index),
+                                        //_.goAprobar(index),
                                         icon: Icon(Icons.check_rounded),
                                         color: Colors.white,
                                       ),
@@ -332,7 +338,6 @@ class ListadoCajasPage extends StatelessWidget {
                                   ),
                                   flex: 7,
                                 ),
-                                
                                 Flexible(child: Container(), flex: 1),
                                 Flexible(
                                   child: Container(
@@ -340,7 +345,8 @@ class ListadoCajasPage extends StatelessWidget {
                                     child: CircleAvatar(
                                       backgroundColor: alertColor,
                                       child: IconButton(
-                                        onPressed: (){}, // => _.goEditar(index),
+                                        onPressed:
+                                            () {}, // => _.goEditar(index),
                                         icon: Icon(Icons.edit),
                                         color: Colors.white,
                                       ),
@@ -365,7 +371,6 @@ class ListadoCajasPage extends StatelessWidget {
         ),
       ),
     );
-  
   }
 
   Widget _opcionesSeleccionados() {

@@ -1,8 +1,8 @@
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/seleccion/seleccion_controller.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
@@ -57,17 +57,17 @@ class SeleccionPage extends StatelessWidget {
               ),
             ),
             floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.add)
-              ,
-               onPressed: _.goNuevaSeleccion),
+                child: Icon(Icons.add), onPressed: _.goNuevaSeleccion),
           ),
           GetBuilder<SeleccionController>(
-                id: 'validando',
-                builder: (_)=> _.validando ? Container(
-                  color: Colors.black45,
-                  child: Center(child: CircularProgressIndicator()),
-                ) : Container(),
-              ),
+            id: 'validando',
+            builder: (_) => _.validando
+                ? Container(
+                    color: Colors.black45,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : Container(),
+          ),
         ],
       ),
     );
@@ -177,8 +177,8 @@ class SeleccionPage extends StatelessWidget {
                                               value: e['key'],
                                               child: Text(e['value'])))
                                           .toList(),
-                                  onChanged: (value) =>
-                                      _.onChangedMenu(value, _.seleccions[index].key)),
+                                  onChanged: (value) => _.onChangedMenu(
+                                      value, _.seleccions[index].key)),
                             ),
                             flex: 5),
                         Flexible(child: Container(), flex: 1),
@@ -195,9 +195,8 @@ class SeleccionPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.seleccions[index]
-                                    .labor?.descripcion ??
-                                ''),
+                            child: Text(
+                                _.seleccions[index].labor?.descripcion ?? ''),
                           ),
                           flex: 10,
                         ),
@@ -230,9 +229,9 @@ class SeleccionPage extends StatelessWidget {
                                 Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text((_
-                                        .seleccions[index].sizeDetails ?? 0)
-                                        .toString())),
+                                    child: Text(
+                                        (_.seleccions[index].sizeDetails ?? 0)
+                                            .toString())),
                                 Icon(
                                   Icons.people,
                                   color: Colors.black45,
@@ -262,27 +261,27 @@ class SeleccionPage extends StatelessWidget {
                 Flexible(
                   child: Container(
                     child: Row(
-                      children: (_.seleccions[index].estadoLocal != 'P' && _.seleccions[index].estadoLocal!='PC')
+                      children: (_.seleccions[index].estadoLocal != 'P' &&
+                              _.seleccions[index].estadoLocal != 'PC')
                           ? [
-                              
                               Flexible(child: Container(), flex: 1),
-                              if(_.seleccions[index].estadoLocal != 'M')
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: infoColor,
-                                    child: IconButton(
-                                        onPressed: () =>
-                                            _.goMigrar(_.seleccions[index].key),
-                                        icon: Icon(
-                                          Icons.sync,
-                                          color: Colors.white,
-                                        )),
+                              if (_.seleccions[index].estadoLocal != 'M')
+                                Flexible(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: CircleAvatar(
+                                      backgroundColor: infoColor,
+                                      child: IconButton(
+                                          onPressed: () => _.goMigrar(
+                                              _.seleccions[index].key),
+                                          icon: Icon(
+                                            Icons.sync,
+                                            color: Colors.white,
+                                          )),
+                                    ),
                                   ),
+                                  flex: 7,
                                 ),
-                                flex: 7,
-                              ),
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                 child: Container(
@@ -291,7 +290,7 @@ class SeleccionPage extends StatelessWidget {
                                     backgroundColor: successColor,
                                     child: IconButton(
                                       onPressed: null,
-                                          // ()=> _.goAprobar(index),
+                                      // ()=> _.goAprobar(index),
                                       icon: Icon(Icons.remove_red_eye),
                                       color: Colors.white,
                                     ),
@@ -305,7 +304,8 @@ class SeleccionPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: dangerColor,
                                     child: IconButton(
-                                      onPressed: () => _.goEliminar(_.seleccions[index].key),
+                                      onPressed: () =>
+                                          _.goEliminar(_.seleccions[index].key),
                                       icon: Icon(Icons.delete),
                                       color: Colors.white,
                                     ),
@@ -340,8 +340,7 @@ class SeleccionPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: successColor,
                                     child: IconButton(
-                                      onPressed: () =>
-                                          _.goAprobar(index),
+                                      onPressed: () => _.goAprobar(index),
                                       icon: Icon(Icons.check_rounded),
                                       color: Colors.white,
                                     ),
@@ -349,23 +348,23 @@ class SeleccionPage extends StatelessWidget {
                                 ),
                                 flex: 7,
                               ),
-                              if(_.seleccions[index].estadoLocal == 'PC')
-                              Flexible(child: Container(), flex: 1),
-                              if(_.seleccions[index].estadoLocal == 'PC')
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: alertColor,
-                                    child: IconButton(
-                                      onPressed: () => _.goEditar(index),
-                                      icon: Icon(Icons.edit),
-                                      color: Colors.white,
+                              if (_.seleccions[index].estadoLocal == 'PC')
+                                Flexible(child: Container(), flex: 1),
+                              if (_.seleccions[index].estadoLocal == 'PC')
+                                Flexible(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: CircleAvatar(
+                                      backgroundColor: alertColor,
+                                      child: IconButton(
+                                        onPressed: () => _.goEditar(index),
+                                        icon: Icon(Icons.edit),
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
+                                  flex: 7,
                                 ),
-                                flex: 7,
-                              ),
                               Flexible(child: Container(), flex: 1),
                             ],
                     ),

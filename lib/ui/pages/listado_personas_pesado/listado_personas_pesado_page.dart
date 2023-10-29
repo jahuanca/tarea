@@ -1,7 +1,7 @@
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pesado/listado_personas_pesado_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
@@ -9,7 +9,6 @@ import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
 
 class ListadoPersonasPesadoPage extends StatelessWidget {
-  
   final ListadoPersonasPesadoController controller =
       Get.find<ListadoPersonasPesadoController>();
 
@@ -130,8 +129,11 @@ class ListadoPersonasPesadoPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(_.personalSeleccionado[index].esCaja ? 'CAJA' : 'GRUPO'
-                                          /* .personal?.codigoempresa ?? _.personalSeleccionado[index].cliente.abreviatura */),
+                                  child: Text(
+                                      _.personalSeleccionado[index].esCaja
+                                          ? 'CAJA'
+                                          : 'GRUPO'
+                                      /* .personal?.codigoempresa ?? _.personalSeleccionado[index].cliente.abreviatura */),
                                 ),
                                 flex: 10,
                               ),
@@ -141,41 +143,47 @@ class ListadoPersonasPesadoPage extends StatelessWidget {
                                   alignment: Alignment.centerLeft,
                                   child: Text(_.personalSeleccionado[index]
                                           .codigoempresa ??
-                                      _.personalSeleccionado[index].cliente.descripcion),
+                                      _.personalSeleccionado[index].cliente
+                                          .descripcion),
                                 ),
                                 flex: 25,
                               ),
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                   child: Container(
-                                    child: _.seleccionados.length>0 ? Container() : DropdownBelow(
-                                      itemWidth: 200,
-                                      itemTextstyle: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                      boxTextstyle: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: cardColor),
-                                      boxPadding:
-                                          EdgeInsets.fromLTRB(13, 12, 0, 12),
-                                      boxHeight: 45,
-                                      boxWidth: 150,
-                                      icon: Icon(
-                                        Icons.more_horiz,
-                                        color: primaryColor,
-                                      ),
-                                      value: 2,
-                                      items: items == null
-                                          ? []
-                                          : items
-                                              .map((e) => DropdownMenuItem(
-                                                  value: e['key'],
-                                                  child: Text(e['value'])))
-                                              .toList(),
-                                      onChanged: (value) => _.changeOptions(value, index),
-                                    ),
+                                    child: _.seleccionados.length > 0
+                                        ? Container()
+                                        : DropdownBelow(
+                                            itemWidth: 200,
+                                            itemTextstyle: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black),
+                                            boxTextstyle: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                                color: cardColor),
+                                            boxPadding: EdgeInsets.fromLTRB(
+                                                13, 12, 0, 12),
+                                            boxHeight: 45,
+                                            boxWidth: 150,
+                                            icon: Icon(
+                                              Icons.more_horiz,
+                                              color: primaryColor,
+                                            ),
+                                            value: 2,
+                                            items: items == null
+                                                ? []
+                                                : items
+                                                    .map((e) =>
+                                                        DropdownMenuItem(
+                                                            value: e['key'],
+                                                            child: Text(
+                                                                e['value'])))
+                                                    .toList(),
+                                            onChanged: (value) =>
+                                                _.changeOptions(value, index),
+                                          ),
                                   ),
                                   flex: 5),
                               Flexible(child: Container(), flex: 1),
@@ -193,8 +201,8 @@ class ListadoPersonasPesadoPage extends StatelessWidget {
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   child: Text(_.personalSeleccionado[index]
-                                                .labor.descripcion) ??
-                                          '-Sin valor-',
+                                          .labor.descripcion) ??
+                                      '-Sin valor-',
                                 ),
                                 flex: 10,
                               ),
@@ -204,12 +212,12 @@ class ListadoPersonasPesadoPage extends StatelessWidget {
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                       formatoHora(_.personalSeleccionado[index]
-                                                .hora) ??
+                                              .hora) ??
                                           '-Sin hora-',
                                       style: TextStyle(
                                           color: (_.personalSeleccionado[index]
-                                                          .hora ==
-                                                      null)
+                                                      .hora ==
+                                                  null)
                                               ? dangerColor
                                               : Colors.black87)),
                                 ),
@@ -229,7 +237,9 @@ class ListadoPersonasPesadoPage extends StatelessWidget {
                               Expanded(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(_.personalSeleccionado[index].correlativo.toString()),
+                                  child: Text(_
+                                      .personalSeleccionado[index].correlativo
+                                      .toString()),
                                 ),
                                 flex: 4,
                               ),

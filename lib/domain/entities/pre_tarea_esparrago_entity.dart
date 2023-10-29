@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_tareo/core/colors.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_formato_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
@@ -39,8 +39,8 @@ class PreTareaEsparragoEntity {
     this.idtipotarea,
     this.tipoTarea,
     this.sizeDetails,
-  }){
-    estadoLocal='P';
+  }) {
+    estadoLocal = 'P';
   }
 
   @HiveField(0)
@@ -149,20 +149,24 @@ class PreTareaEsparragoEntity {
         idtipotarea: json["idtipotarea"] == null ? null : json["idtipotarea"],
         idcentrocosto:
             json["idcentrocosto"] == null ? null : json["idcentrocosto"],
-        codigosupervisor: json["codigosupervisor"] == null
-            ? null
-            : json["codigosupervisor"],
-        codigodigitador: json["codigodigitador"] == null
-            ? null
-            : json["codigodigitador"],
-        firmaSupervisor: json["firmasupervisor"] == null ? null : json["firmasupervisor"],
+        codigosupervisor:
+            json["codigosupervisor"] == null ? null : json["codigosupervisor"],
+        codigodigitador:
+            json["codigodigitador"] == null ? null : json["codigodigitador"],
+        firmaSupervisor:
+            json["firmasupervisor"] == null ? null : json["firmasupervisor"],
         idusuario: json["idusuario"] == null ? null : json["idusuario"],
-        diasiguiente: json["diasiguiente"] == null ? null : json["diasiguiente"],
+        diasiguiente:
+            json["diasiguiente"] == null ? null : json["diasiguiente"],
         turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
         key: json["key"] == null ? null : json["key"],
         sizeDetails: json["sizeDetails"] == null ? null : json["sizeDetails"],
-        centroCosto: json['Centro_Costo'] == null ? null : CentroCostoEntity.fromJson(json['Centro_Costo']),
-        tipoTarea: json['Tipo_Tarea'] == null ? null : TipoTareaEntity.fromJson(json['Tipo_Tarea']),
+        centroCosto: json['Centro_Costo'] == null
+            ? null
+            : CentroCostoEntity.fromJson(json['Centro_Costo']),
+        tipoTarea: json['Tipo_Tarea'] == null
+            ? null
+            : TipoTareaEntity.fromJson(json['Tipo_Tarea']),
         detalles: json['Pre_Tarea_Esparrago_Formato'] == null
             ? null
             : List<PreTareaEsparragoFormatoEntity>.from(
@@ -183,10 +187,8 @@ class PreTareaEsparragoEntity {
         "pausafin": pausafin == null ? null : pausafin.toIso8601String(),
         "linea": linea == null ? null : linea,
         "idcentrocosto": idcentrocosto == null ? null : idcentrocosto,
-        "codigosupervisor":
-            codigosupervisor == null ? null : codigosupervisor,
-        "codigodigitador":
-            codigodigitador == null ? null : codigodigitador,
+        "codigosupervisor": codigosupervisor == null ? null : codigosupervisor,
+        "codigodigitador": codigodigitador == null ? null : codigodigitador,
         "turnotareo": turnotareo == null ? null : turnotareo,
         "key": key == null ? null : key,
         "firmasupervisor": firmaSupervisor == null ? null : firmaSupervisor,

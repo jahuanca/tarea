@@ -1,8 +1,8 @@
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/tareas/tareas_controller.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
@@ -61,12 +61,14 @@ class TareasPage extends StatelessWidget {
             ),
           ),
           GetBuilder<TareasController>(
-                id: 'validando',
-                builder: (_)=> _.validando ? Container(
-                  color: Colors.black45,
-                  child: Center(child: CircularProgressIndicator()),
-                ) : Container(),
-              ),
+            id: 'validando',
+            builder: (_) => _.validando
+                ? Container(
+                    color: Colors.black45,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : Container(),
+          ),
         ],
       ),
     );
@@ -250,7 +252,7 @@ class TareasPage extends StatelessWidget {
                                         (_.tareas[index].cantidadAvance ?? 0)
                                             .toString())),
                                 Icon(
-                                  Icons.arrow_upward_rounded ,
+                                  Icons.arrow_upward_rounded,
                                   color: Colors.black45,
                                 )
                               ],
@@ -279,28 +281,28 @@ class TareasPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Flexible(child: Container(), flex: 1),
-                        if(_.tareas[index].estadoLocal!='M')
-                        Flexible(
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: CircleAvatar(
-                              backgroundColor: infoColor,
-                              child: IconButton(
-                                  onPressed: () => _
-                                              .tareas[index].estadoLocal ==
-                                          'P'
-                                      ? _.goListadoPersonas(_.tareas[index].key)
-                                      : _.goMigrar(_.tareas[index].key),
-                                  icon: Icon(
-                                    _.tareas[index].estadoLocal == 'P'
-                                        ? Icons.search
-                                        : Icons.sync,
-                                    color: Colors.white,
-                                  )),
+                        if (_.tareas[index].estadoLocal != 'M')
+                          Flexible(
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: CircleAvatar(
+                                backgroundColor: infoColor,
+                                child: IconButton(
+                                    onPressed: () =>
+                                        _.tareas[index].estadoLocal == 'P'
+                                            ? _.goListadoPersonas(
+                                                _.tareas[index].key)
+                                            : _.goMigrar(_.tareas[index].key),
+                                    icon: Icon(
+                                      _.tareas[index].estadoLocal == 'P'
+                                          ? Icons.search
+                                          : Icons.sync,
+                                      color: Colors.white,
+                                    )),
+                              ),
                             ),
+                            flex: 7,
                           ),
-                          flex: 7,
-                        ),
                         Flexible(child: Container(), flex: 1),
                         Flexible(
                           child: Container(
@@ -308,10 +310,10 @@ class TareasPage extends StatelessWidget {
                             child: CircleAvatar(
                               backgroundColor: successColor,
                               child: IconButton(
-                                onPressed: () =>
-                                    _.tareas[index].estadoLocal == 'P'
-                                        ? _.goAprobar(_.tareas[index].key)
-                                        : _.goListadoPersonas(_.tareas[index].key),
+                                onPressed: () => _.tareas[index].estadoLocal ==
+                                        'P'
+                                    ? _.goAprobar(_.tareas[index].key)
+                                    : _.goListadoPersonas(_.tareas[index].key),
                                 icon: _.tareas[index].estadoLocal == 'P'
                                     ? Icon(Icons.check)
                                     : Icon(Icons.remove_red_eye),
@@ -326,11 +328,22 @@ class TareasPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.center,
                             child: CircleAvatar(
-                              backgroundColor: _.tareas[index].estadoLocal=='P' ? alertColor : dangerColor,
+                              backgroundColor:
+                                  _.tareas[index].estadoLocal == 'P'
+                                      ? alertColor
+                                      : dangerColor,
                               child: IconButton(
                                 onPressed: () =>
-                                     _.tareas[index].estadoLocal=='P' ? _.goEditar(_.tareas[index].key,) : _.goEliminar(_.tareas[index].key,),
-                                icon:  Icon( _.tareas[index].estadoLocal=='P' ? Icons.edit  : Icons.delete ),
+                                    _.tareas[index].estadoLocal == 'P'
+                                        ? _.goEditar(
+                                            _.tareas[index].key,
+                                          )
+                                        : _.goEliminar(
+                                            _.tareas[index].key,
+                                          ),
+                                icon: Icon(_.tareas[index].estadoLocal == 'P'
+                                    ? Icons.edit
+                                    : Icons.delete),
                                 color: Colors.white,
                               ),
                             ),

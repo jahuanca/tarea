@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
@@ -260,7 +260,8 @@ class NuevaTareaPage extends StatelessWidget {
                               onlyDate: true,
                               //minDate: _.nuevaTarea?.turnotareo=='D' ?  _.nuevaTarea.horainicio : null,
                               minDate: null,
-                              dateSelected: _.nuevaTarea.horafin ?? DateTime.now(),
+                              dateSelected:
+                                  _.nuevaTarea.horafin ?? DateTime.now(),
                               onChanged: () {},
                             ).selectTime(context, _.nuevaTarea.horafin);
                             _.changeHoraFin();
@@ -282,17 +283,20 @@ class NuevaTareaPage extends StatelessWidget {
                                       iconOverlay: Icons.delete,
                                       onPressedIconOverlay: _.deleteInicioPausa,
                                       onTap: () async {
-                                        _.nuevaTarea.pausainicio = await DatePickerWidget(
+                                        _.nuevaTarea.pausainicio =
+                                            await DatePickerWidget(
                                           onlyDate: true,
-                                          dateSelected: _.nuevaTarea?.pausainicio ?? DateTime.now(),
+                                          dateSelected:
+                                              _.nuevaTarea?.pausainicio ??
+                                                  DateTime.now(),
                                           onChanged: () {},
-                                        ).selectTime(
-                                            context, null );
+                                        ).selectTime(context, null);
                                         _.changeInicioPausa();
                                       },
                                       textEditingController:
                                           TextEditingController(
-                                              text: formatoHora(_.nuevaTarea.pausainicio)),
+                                              text: formatoHora(
+                                                  _.nuevaTarea.pausainicio)),
                                       label: 'Inicio de pausa',
                                       hintText: 'Inicio de pausa'),
                                   SizedBox(
@@ -311,7 +315,8 @@ class NuevaTareaPage extends StatelessWidget {
                                 onPressedIconOverlay: _.deleteFinPausa,
                                 error: _.errorPausaFin,
                                 onTap: () async {
-                                  _.nuevaTarea.pausafin = await DatePickerWidget(
+                                  _.nuevaTarea.pausafin =
+                                      await DatePickerWidget(
                                     onlyDate: true,
                                     dateSelected: DateTime.now(),
                                     minDate: null,

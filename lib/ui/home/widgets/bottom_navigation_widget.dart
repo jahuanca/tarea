@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/ui/home/controllers/navigation_controller.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';

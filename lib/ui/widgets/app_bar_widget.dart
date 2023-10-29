@@ -1,14 +1,12 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 
-AppBar getAppBar(String titulo, List<Widget> actions,[bool bandera = false]) {
-
+AppBar getAppBar(String titulo, List<Widget> actions, [bool bandera = false]) {
   return AppBar(
     automaticallyImplyLeading: bandera,
     iconTheme: IconThemeData(
-      color: (PreferenciasUsuario().modoDark) ? Colors.white : Colors.black, 
+      color: (PreferenciasUsuario().modoDark) ? Colors.white : Colors.black,
     ),
     title: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -18,9 +16,9 @@ AppBar getAppBar(String titulo, List<Widget> actions,[bool bandera = false]) {
           titulo,
           style: TextStyle(
               fontSize: 17,
-              color: PreferenciasUsuario().modoDark ? Colors.white : Colors.black),
+              color:
+                  PreferenciasUsuario().modoDark ? Colors.white : Colors.black),
         ),
-
         Container(
           alignment: Alignment.bottomLeft,
           padding: EdgeInsets.only(left: 10),
@@ -28,7 +26,9 @@ AppBar getAppBar(String titulo, List<Widget> actions,[bool bandera = false]) {
             '${PreferenciasUsuario().lastVersion} - ${PreferenciasUsuario().lastVersionDate}',
             style: TextStyle(
                 fontSize: 10,
-                color: PreferenciasUsuario().modoDark ? Colors.white : Colors.grey),
+                color: PreferenciasUsuario().modoDark
+                    ? Colors.white
+                    : Colors.grey),
           ),
         ),
       ],

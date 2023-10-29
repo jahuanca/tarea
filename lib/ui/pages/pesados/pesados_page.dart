@@ -1,8 +1,8 @@
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/pesados/pesados_controller.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
@@ -57,17 +57,17 @@ class PesadosPage extends StatelessWidget {
               ),
             ),
             floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.add)
-              ,
-               onPressed: _.goNuevaPesado),
+                child: Icon(Icons.add), onPressed: _.goNuevaPesado),
           ),
           GetBuilder<PesadosController>(
-                id: 'validando',
-                builder: (_)=> _.validando ? Container(
-                  color: Colors.black45,
-                  child: Center(child: CircularProgressIndicator()),
-                ) : Container(),
-              ),
+            id: 'validando',
+            builder: (_) => _.validando
+                ? Container(
+                    color: Colors.black45,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : Container(),
+          ),
         ],
       ),
     );
@@ -162,8 +162,10 @@ class PesadosPage extends StatelessWidget {
                                               value: e['key'],
                                               child: Text(e['value'])))
                                           .toList(),
-                                  onChanged: (value) async=>
-                                      _.onChangedMenu(value, _.pesados[index].key, _.pesados[index].idSQLite )),
+                                  onChanged: (value) async => _.onChangedMenu(
+                                      value,
+                                      _.pesados[index].key,
+                                      _.pesados[index].idSQLite)),
                             ),
                             flex: 5),
                         Flexible(child: Container(), flex: 1),
@@ -197,27 +199,27 @@ class PesadosPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Flexible(child: Container(), flex: 1),
-                        if(false)
-                        Flexible(
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: [
-                                Container(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text((_
-                                        .pesados[index].sizeTipoCaja ?? 0)
-                                        .toString())),
-                                Icon(
-                                  Icons.widgets,
-                                  color: Colors.black45,
-                                )
-                              ],
+                        if (false)
+                          Flexible(
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                children: [
+                                  Container(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 5),
+                                      child: Text(
+                                          (_.pesados[index].sizeTipoCaja ?? 0)
+                                              .toString())),
+                                  Icon(
+                                    Icons.widgets,
+                                    color: Colors.black45,
+                                  )
+                                ],
+                              ),
                             ),
+                            flex: 5,
                           ),
-                          flex: 5,
-                        ),
                         Flexible(child: Container(), flex: 1),
                         Flexible(
                           child: Container(
@@ -227,9 +229,9 @@ class PesadosPage extends StatelessWidget {
                                 Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text((_
-                                        .pesados[index].sizeDetails ?? 0)
-                                        .toString())),
+                                    child: Text(
+                                        (_.pesados[index].sizeDetails ?? 0)
+                                            .toString())),
                                 Icon(
                                   Icons.people,
                                   color: Colors.black45,
@@ -244,8 +246,7 @@ class PesadosPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                                _.pesados[index].tipoTarea?.descripcion ??
-                                    ''),
+                                _.pesados[index].tipoTarea?.descripcion ?? ''),
                           ),
                           flex: 10,
                         ),
@@ -259,27 +260,27 @@ class PesadosPage extends StatelessWidget {
                 Flexible(
                   child: Container(
                     child: Row(
-                      children: (_.pesados[index].estadoLocal != 'P' && _.pesados[index].estadoLocal!='PC')
+                      children: (_.pesados[index].estadoLocal != 'P' &&
+                              _.pesados[index].estadoLocal != 'PC')
                           ? [
-                              
                               Flexible(child: Container(), flex: 1),
-                              if(_.pesados[index].estadoLocal != 'M')
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: infoColor,
-                                    child: IconButton(
-                                        onPressed: () =>
-                                            _.goMigrar(_.pesados[index].key),
-                                        icon: Icon(
-                                          Icons.sync,
-                                          color: Colors.white,
-                                        )),
+                              if (_.pesados[index].estadoLocal != 'M')
+                                Flexible(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: CircleAvatar(
+                                      backgroundColor: infoColor,
+                                      child: IconButton(
+                                          onPressed: () =>
+                                              _.goMigrar(_.pesados[index].key),
+                                          icon: Icon(
+                                            Icons.sync,
+                                            color: Colors.white,
+                                          )),
+                                    ),
                                   ),
+                                  flex: 7,
                                 ),
-                                flex: 7,
-                              ),
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                 child: Container(
@@ -287,7 +288,9 @@ class PesadosPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: successColor,
                                     child: IconButton(
-                                      onPressed: ()=> _.goListadoPersonasPreTareaEsparrago(index),
+                                      onPressed: () =>
+                                          _.goListadoPersonasPreTareaEsparrago(
+                                              index),
                                       icon: Icon(Icons.remove_red_eye),
                                       color: Colors.white,
                                     ),
@@ -301,7 +304,8 @@ class PesadosPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: dangerColor,
                                     child: IconButton(
-                                      onPressed: () async => _.goEliminar(_.pesados[index].key),
+                                      onPressed: () async =>
+                                          _.goEliminar(_.pesados[index].key),
                                       icon: Icon(Icons.delete),
                                       color: Colors.white,
                                     ),
@@ -319,8 +323,9 @@ class PesadosPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: infoColor,
                                     child: IconButton(
-                                        onPressed: () =>
-                                            _.goListadoPersonasPreTareaEsparrago(index),
+                                        onPressed: () => _
+                                            .goListadoPersonasPreTareaEsparrago(
+                                                index),
                                         icon: Icon(
                                           Icons.search,
                                           color: Colors.white,
@@ -345,23 +350,24 @@ class PesadosPage extends StatelessWidget {
                                 ),
                                 flex: 7,
                               ),
-                              if(_.pesados[index].estadoLocal == 'PC')
-                              Flexible(child: Container(), flex: 1),
-                              if(_.pesados[index].estadoLocal == 'PC')
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: alertColor,
-                                    child: IconButton(
-                                      onPressed: () async => _.goEditar(_.pesados[index].key),
-                                      icon: Icon(Icons.edit),
-                                      color: Colors.white,
+                              if (_.pesados[index].estadoLocal == 'PC')
+                                Flexible(child: Container(), flex: 1),
+                              if (_.pesados[index].estadoLocal == 'PC')
+                                Flexible(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: CircleAvatar(
+                                      backgroundColor: alertColor,
+                                      child: IconButton(
+                                        onPressed: () async =>
+                                            _.goEditar(_.pesados[index].key),
+                                        icon: Icon(Icons.edit),
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
+                                  flex: 7,
                                 ),
-                                flex: 7,
-                              ),
                               Flexible(child: Container(), flex: 1),
                             ],
                     ),

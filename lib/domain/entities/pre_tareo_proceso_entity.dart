@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_tareo/core/colors.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
@@ -37,9 +37,9 @@ class PreTareoProcesoEntity {
     this.centroCosto,
     this.turnotareo,
     this.diasiguiente,
-  }){
+  }) {
     detalles ??= [];
-    estadoLocal='P';
+    estadoLocal = 'P';
   }
 
   @HiveField(0)
@@ -155,12 +155,15 @@ class PreTareoProcesoEntity {
         activo: json["activo"] == null ? null : json["activo"],
         idusuario: json["idusuario"] == null ? null : json["idusuario"],
         turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
-        diasiguiente: json["diasiguiente"] == null ? null : json["diasiguiente"],
+        diasiguiente:
+            json["diasiguiente"] == null ? null : json["diasiguiente"],
         laboresCultivoPacking: json["Labores_Cultivo_Packing"] == null
             ? null
             : LaboresCultivoPackingEntity.fromJson(
                 json["Labores_Cultivo_Packing"]),
-        centroCosto: json['Centro_Costo'] == null ? null : CentroCostoEntity.fromJson(json['Centro_Costo']),
+        centroCosto: json['Centro_Costo'] == null
+            ? null
+            : CentroCostoEntity.fromJson(json['Centro_Costo']),
         detalles: json['Pre_Tareo_Proceso_Detalles'] == null
             ? null
             : List<PreTareoProcesoDetalleEntity>.from(

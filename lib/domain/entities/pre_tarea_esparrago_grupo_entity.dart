@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_tareo/core/colors.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_grupo_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
@@ -154,7 +154,9 @@ class PreTareaEsparragoGrupoEntity {
         pausafin:
             json["pausafin"] == null ? null : DateTime.parse(json["pausafin"]),
         linea: json["linea"] == null ? null : json["linea"],
-        kilosavance: json["kilosavance"] == null ? null : (json["kilosavance"] as num).toDouble(),
+        kilosavance: json["kilosavance"] == null
+            ? null
+            : (json["kilosavance"] as num).toDouble(),
         idcentrocosto:
             json["idcentrocosto"] == null ? null : json["idcentrocosto"],
         codigosupervisor:
@@ -175,8 +177,9 @@ class PreTareaEsparragoGrupoEntity {
             : CentroCostoEntity.fromJson(json['Centro_Costo']),
         labor:
             json['Labor'] == null ? null : LaborEntity.fromJson(json['Labor']),
-        actividad:
-            json['Actividad'] == null ? null : ActividadEntity.fromJson(json['Actividad']),
+        actividad: json['Actividad'] == null
+            ? null
+            : ActividadEntity.fromJson(json['Actividad']),
         /* detalles: json['Pre_Tarea_Esparrago_Detalle_Grupo'] == null
             ? null
             : List<PreTareaEsparragoDetalleGrupoEntity>.from(
@@ -212,8 +215,7 @@ class PreTareaEsparragoGrupoEntity {
         "kilosavance": kilosavance == null ? null : kilosavance,
         "Pre_Tarea_Esparrago_Detalle_Grupo": detalles == null
             ? null
-            : List<dynamic>.from(
-                detalles.map((x) => x.toJson())),
+            : List<dynamic>.from(detalles.map((x) => x.toJson())),
       };
 }
 

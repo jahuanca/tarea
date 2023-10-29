@@ -1,7 +1,6 @@
-
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_tareo/core/colors.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/domain/entities/personal_pre_tarea_esparrago_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
@@ -41,8 +40,8 @@ class PreTareaEsparragoVariosEntity {
     this.imei,
     this.fechamod,
     this.idSQLite,
-  }){
-    estadoLocal='P';
+  }) {
+    estadoLocal = 'P';
   }
 
   @HiveField(0)
@@ -142,11 +141,14 @@ class PreTareaEsparragoVariosEntity {
 
   factory PreTareaEsparragoVariosEntity.fromJson(Map<String, dynamic> json) =>
       PreTareaEsparragoVariosEntity(
-        itempretareaesparragosvarios: json["itempretareaesparragosvarios"] == null
-            ? null
-            : json["itempretareaesparragosvarios"],
+        itempretareaesparragosvarios:
+            json["itempretareaesparragosvarios"] == null
+                ? null
+                : json["itempretareaesparragosvarios"],
         fecha: json["fecha"] == null ? null : DateTime.tryParse(json["fecha"]),
-        fechamod: json["fechamod"] == null ? null : DateTime.tryParse(json["fechamod"]),
+        fechamod: json["fechamod"] == null
+            ? null
+            : DateTime.tryParse(json["fechamod"]),
         horainicio: json["horainicio"] == null
             ? null
             : DateTime.tryParse(json["horainicio"]),
@@ -155,29 +157,36 @@ class PreTareaEsparragoVariosEntity {
         pausainicio: json["pausainicio"] == null
             ? null
             : DateTime.tryParse(json["pausainicio"]),
-        pausafin:
-            json["pausafin"] == null ? null : DateTime.tryParse(json["pausafin"]),
+        pausafin: json["pausafin"] == null
+            ? null
+            : DateTime.tryParse(json["pausafin"]),
         linea: json["linea"] == null ? null : json["linea"],
         idcentrocosto:
             json["idcentrocosto"] == null ? null : json["idcentrocosto"],
-        codigosupervisor: json["codigosupervisor"] == null
-            ? null
-            : json["codigosupervisor"],
-        codigodigitador: json["codigodigitador"] == null
-            ? null
-            : json["codigodigitador"],
-        firmaSupervisor: json["firmasupervisor"] == null ? null : json["firmasupervisor"],
-        sizeTipoPersona: json["sizeTipoPersona"] == null ? null : json["sizeTipoPersona"],
-        sizeTipoCaja: json["sizeTipoCaja"] == null ? null : json["sizeTipoCaja"],
+        codigosupervisor:
+            json["codigosupervisor"] == null ? null : json["codigosupervisor"],
+        codigodigitador:
+            json["codigodigitador"] == null ? null : json["codigodigitador"],
+        firmaSupervisor:
+            json["firmasupervisor"] == null ? null : json["firmasupervisor"],
+        sizeTipoPersona:
+            json["sizeTipoPersona"] == null ? null : json["sizeTipoPersona"],
+        sizeTipoCaja:
+            json["sizeTipoCaja"] == null ? null : json["sizeTipoCaja"],
         idusuario: json["idusuario"] == null ? null : json["idusuario"],
         idtipotarea: json["idtipotarea"] == null ? null : json["idtipotarea"],
-        tipoTarea: json["tipoTarea"] == null ? null : TipoTareaEntity.fromJson(json["tipoTarea"]),
-        diasiguiente: json["diasiguiente"] == null ? null : json["diasiguiente"],
+        tipoTarea: json["tipoTarea"] == null
+            ? null
+            : TipoTareaEntity.fromJson(json["tipoTarea"]),
+        diasiguiente:
+            json["diasiguiente"] == null ? null : json["diasiguiente"],
         turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
         key: json["key"] == null ? null : json["key"],
         imei: json["imei"] == null ? null : json["imei"],
         sizeDetails: json["sizeDetails"] == null ? null : json["sizeDetails"],
-        centroCosto: json['Centro_Costo'] == null ? null : CentroCostoEntity.fromJson(json['Centro_Costo']),
+        centroCosto: json['Centro_Costo'] == null
+            ? null
+            : CentroCostoEntity.fromJson(json['Centro_Costo']),
         detalles: json['Personal_Pre_Tarea_Esparrago'] == null
             ? null
             : List<PersonalPreTareaEsparragoEntity>.from(
@@ -186,8 +195,9 @@ class PreTareaEsparragoVariosEntity {
       );
 
   Map<String, dynamic> toJson() => {
-        "itempretareaesparragosvarios":
-            itempretareaesparragosvarios == null ? null : itempretareaesparragosvarios,
+        "itempretareaesparragosvarios": itempretareaesparragosvarios == null
+            ? null
+            : itempretareaesparragosvarios,
         "fecha": fecha == null
             ? null
             : "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
@@ -202,10 +212,8 @@ class PreTareaEsparragoVariosEntity {
         "idcentrocosto": idcentrocosto == null ? null : idcentrocosto,
         "sizeTipoPersona": sizeTipoPersona == null ? null : sizeTipoPersona,
         "sizeTipoCaja": sizeTipoCaja == null ? null : sizeTipoCaja,
-        "codigosupervisor":
-            codigosupervisor == null ? null : codigosupervisor,
-        "codigodigitador":
-            codigodigitador == null ? null : codigodigitador,
+        "codigosupervisor": codigosupervisor == null ? null : codigosupervisor,
+        "codigodigitador": codigodigitador == null ? null : codigodigitador,
         "turnotareo": turnotareo == null ? null : turnotareo,
         "key": key == null ? null : key,
         "idtipotarea": idtipotarea == null ? null : idtipotarea,
@@ -214,16 +222,15 @@ class PreTareaEsparragoVariosEntity {
         "firmasupervisor": firmaSupervisor == null ? null : firmaSupervisor,
         "diasiguiente": diasiguiente == null ? null : diasiguiente,
         "idusuario": idusuario == null ? null : idusuario,
-        
         "Personal_Pre_Tarea_Esparrago": detalles == null
             ? null
             : List<dynamic>.from(detalles.map((x) => x.toJson())),
       };
 
-
-Map<String, dynamic> toDB() => {
-        "itempretareaesparragosvarios":
-            itempretareaesparragosvarios == null ? null : itempretareaesparragosvarios,
+  Map<String, dynamic> toDB() => {
+        "itempretareaesparragosvarios": itempretareaesparragosvarios == null
+            ? null
+            : itempretareaesparragosvarios,
         "fecha": fecha == null
             ? null
             : "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
@@ -236,7 +243,7 @@ Map<String, dynamic> toDB() => {
         "linea": linea == null ? null : linea,
         "idcentrocosto": idcentrocosto == null ? null : idcentrocosto,
         "codigosupervisor": codigosupervisor == null ? null : codigosupervisor,
-        "codigodigitador":  codigodigitador == null ? null : codigodigitador,
+        "codigodigitador": codigodigitador == null ? null : codigodigitador,
         "idusuario": idusuario == null ? null : idusuario,
         "imei": imei == null ? null : imei,
         "turnotareo": turnotareo == null ? null : turnotareo,
@@ -246,9 +253,11 @@ Map<String, dynamic> toDB() => {
       };
 }
 
-List<PreTareaEsparragoVariosEntity> preTareaEsparragoVariosEntityFromJson(String str) =>
+List<PreTareaEsparragoVariosEntity> preTareaEsparragoVariosEntityFromJson(
+        String str) =>
     List<PreTareaEsparragoVariosEntity>.from(
         json.decode(str).map((x) => PreTareaEsparragoVariosEntity.fromJson(x)));
 
-String preTareaEsparragoVariosEntityToJson(List<PreTareaEsparragoVariosEntity> data) =>
+String preTareaEsparragoVariosEntityToJson(
+        List<PreTareaEsparragoVariosEntity> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));

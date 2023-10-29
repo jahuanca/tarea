@@ -1,7 +1,7 @@
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/aprobar/aprobar_controller.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
@@ -55,7 +55,6 @@ class AprobarPage extends StatelessWidget {
   }
 
   Widget itemActividad(Size size, BuildContext context, int index) {
-
     return GetBuilder<AprobarController>(
       id: 'seleccionado',
       builder: (_) => GestureDetector(
@@ -124,7 +123,7 @@ class AprobarPage extends StatelessWidget {
                         Flexible(child: Container(), flex: 1),
                         Flexible(
                             child: Container(
-                              /* child: DropdownBelow(
+                                /* child: DropdownBelow(
                                 itemWidth: 200,
                                 itemTextstyle: TextStyle(
                                     fontSize: 14,
@@ -151,7 +150,7 @@ class AprobarPage extends StatelessWidget {
                                         .toList(),
                                 onChanged: (value) {},
                               ), */
-                            ),
+                                ),
                             flex: 5),
                         Flexible(child: Container(), flex: 1),
                       ],

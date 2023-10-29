@@ -1,7 +1,7 @@
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_clasificacion/listado_personas_clasificacion_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
@@ -9,7 +9,6 @@ import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
 
 class ListadoPersonasClasificacionPage extends StatelessWidget {
-  
   final ListadoPersonasClasificacionController controller =
       Get.find<ListadoPersonasClasificacionController>();
 
@@ -49,9 +48,11 @@ class ListadoPersonasClasificacionPage extends StatelessWidget {
                         ),
                       Flexible(
                         flex: 8,
-                        child: GetBuilder<ListadoPersonasClasificacionController>(
+                        child:
+                            GetBuilder<ListadoPersonasClasificacionController>(
                           id: 'listado',
-                          builder: (_) => _.personalSeleccionado?.isEmpty ?? true
+                          builder: (_) => _.personalSeleccionado?.isEmpty ??
+                                  true
                               ? EmptyDataWidget(
                                   titulo: 'No existe equipo asociado.',
                                   onPressed: () => _.update(['listado']),
@@ -158,34 +159,44 @@ class ListadoPersonasClasificacionPage extends StatelessWidget {
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                   child: Container(
-                                    child: _.seleccionados.length>0 ? Container() : DropdownBelow(
-                                      itemWidth: 200,
-                                      itemTextstyle: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                      boxTextstyle: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: cardColor),
-                                      boxPadding:
-                                          EdgeInsets.fromLTRB(13, 12, 0, 12),
-                                      boxHeight: 45,
-                                      boxWidth: 150,
-                                      icon: Icon(
-                                        Icons.more_horiz,
-                                        color: primaryColor,
-                                      ),
-                                      value: 2,
-                                      items: items == null
-                                          ? []
-                                          : items
-                                              .map((e) => DropdownMenuItem(
-                                                  value: e['key'],
-                                                  child: Text(e['value'])))
-                                              .toList(),
-                                      onChanged: (value) => _.changeOptions(value, _.personalSeleccionado[index].key),
-                                    ),
+                                    child: _.seleccionados.length > 0
+                                        ? Container()
+                                        : DropdownBelow(
+                                            itemWidth: 200,
+                                            itemTextstyle: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black),
+                                            boxTextstyle: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                                color: cardColor),
+                                            boxPadding: EdgeInsets.fromLTRB(
+                                                13, 12, 0, 12),
+                                            boxHeight: 45,
+                                            boxWidth: 150,
+                                            icon: Icon(
+                                              Icons.more_horiz,
+                                              color: primaryColor,
+                                            ),
+                                            value: 2,
+                                            items: items == null
+                                                ? []
+                                                : items
+                                                    .map((e) =>
+                                                        DropdownMenuItem(
+                                                            value: e['key'],
+                                                            child: Text(
+                                                                e['value'])))
+                                                    .toList(),
+                                            onChanged: (value) =>
+                                                _.changeOptions(
+                                                    value,
+                                                    _
+                                                        .personalSeleccionado[
+                                                            index]
+                                                        .key),
+                                          ),
                                   ),
                                   flex: 5),
                               Flexible(child: Container(), flex: 1),
@@ -203,8 +214,8 @@ class ListadoPersonasClasificacionPage extends StatelessWidget {
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   child: Text(_.personalSeleccionado[index]
-                                                .labor.descripcion) ??
-                                          '-Sin valor-',
+                                          .labor.descripcion) ??
+                                      '-Sin valor-',
                                 ),
                                 flex: 10,
                               ),
@@ -214,12 +225,12 @@ class ListadoPersonasClasificacionPage extends StatelessWidget {
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                       formatoHora(_.personalSeleccionado[index]
-                                                .hora) ??
+                                              .hora) ??
                                           '-Sin hora-',
                                       style: TextStyle(
                                           color: (_.personalSeleccionado[index]
-                                                          .hora ==
-                                                      null)
+                                                      .hora ==
+                                                  null)
                                               ? dangerColor
                                               : Colors.black87)),
                                 ),
@@ -239,7 +250,7 @@ class ListadoPersonasClasificacionPage extends StatelessWidget {
                               Expanded(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text((index+1).toString()),
+                                  child: Text((index + 1).toString()),
                                 ),
                                 flex: 4,
                               ),

@@ -1,7 +1,7 @@
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/migrar/migrar_controller.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
@@ -38,12 +38,15 @@ class MigrarPage extends StatelessWidget {
                           id: 'tareas',
                           builder: (_) => _.tareas.isEmpty
                               ? EmptyDataWidget(
-                                size: size,
-                                  titulo: 'No existen tareas por migrar.', onPressed: _.getTareas,)
+                                  size: size,
+                                  titulo: 'No existen tareas por migrar.',
+                                  onPressed: _.getTareas,
+                                )
                               : ListView.builder(
                                   itemCount: _.tareas.length,
-                                  itemBuilder: (BuildContext context, int index) =>
-                                      itemActividad(size, context, index),
+                                  itemBuilder:
+                                      (BuildContext context, int index) =>
+                                          itemActividad(size, context, index),
                                 ),
                         ),
                       ),
@@ -52,19 +55,20 @@ class MigrarPage extends StatelessWidget {
                 ),
               )),
           GetBuilder<MigrarController>(
-                id: 'validando',
-                builder: (_)=> _.validando ? Container(
-                  color: Colors.black45,
-                  child: Center(child: CircularProgressIndicator()),
-                ) : Container(),
-              ),
+            id: 'validando',
+            builder: (_) => _.validando
+                ? Container(
+                    color: Colors.black45,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : Container(),
+          ),
         ],
       ),
     );
   }
 
   Widget itemActividad(Size size, BuildContext context, int index) {
-
     return GetBuilder<MigrarController>(
         id: 'seleccionado',
         builder: (_) => GestureDetector(
@@ -135,7 +139,7 @@ class MigrarPage extends StatelessWidget {
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                   child: Container(
-                                    /* child: DropdownBelow(
+                                      /* child: DropdownBelow(
                                       itemWidth: 200,
                                       itemTextstyle: TextStyle(
                                           fontSize: 14,
@@ -163,7 +167,7 @@ class MigrarPage extends StatelessWidget {
                                               .toList(),
                                       onChanged: (value) {},
                                     ), */
-                                  ),
+                                      ),
                                   flex: 5),
                               Flexible(child: Container(), flex: 1),
                             ],

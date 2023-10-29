@@ -1,8 +1,8 @@
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/clasificados/clasificados_controller.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
@@ -62,12 +62,14 @@ class ClasificadosPage extends StatelessWidget {
             ),
           ),
           GetBuilder<ClasificadosController>(
-                id: 'validando',
-                builder: (_)=> _.validando ? Container(
-                  color: Colors.black45,
-                  child: Center(child: CircularProgressIndicator()),
-                ) : Container(),
-              ),
+            id: 'validando',
+            builder: (_) => _.validando
+                ? Container(
+                    color: Colors.black45,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : Container(),
+          ),
         ],
       ),
     );
@@ -195,7 +197,8 @@ class ClasificadosPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.clasificados[index].centroCosto?.detallecentrocosto ??
+                            child: Text(_.clasificados[index].centroCosto
+                                    ?.detallecentrocosto ??
                                 ''),
                           ),
                           flex: 10,
@@ -229,9 +232,9 @@ class ClasificadosPage extends StatelessWidget {
                                 Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text((_
-                                        .clasificados[index].sizeDetails ?? 0)
-                                        .toString())),
+                                    child: Text(
+                                        (_.clasificados[index].sizeDetails ?? 0)
+                                            .toString())),
                                 Icon(
                                   Icons.widgets,
                                   color: Colors.black45,
@@ -245,9 +248,9 @@ class ClasificadosPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(
-                                _.clasificados[index].sede?.detallesubdivision ??
-                                    ''),
+                            child: Text(_.clasificados[index].sede
+                                    ?.detallesubdivision ??
+                                ''),
                           ),
                           flex: 10,
                         ),
@@ -261,27 +264,26 @@ class ClasificadosPage extends StatelessWidget {
                 Flexible(
                   child: Container(
                     child: Row(
-                      children: (_.clasificados[index].estadoLocal != 'P' && _.clasificados[index].estadoLocal!='PC')
+                      children: (_.clasificados[index].estadoLocal != 'P' &&
+                              _.clasificados[index].estadoLocal != 'PC')
                           ? [
-                              
                               Flexible(child: Container(), flex: 1),
-                              if(_.clasificados[index].estadoLocal != 'M')
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: infoColor,
-                                    child: IconButton(
-                                        onPressed: () =>
-                                            _.goMigrar(index),
-                                        icon: Icon(
-                                          Icons.sync,
-                                          color: Colors.white,
-                                        )),
+                              if (_.clasificados[index].estadoLocal != 'M')
+                                Flexible(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: CircleAvatar(
+                                      backgroundColor: infoColor,
+                                      child: IconButton(
+                                          onPressed: () => _.goMigrar(index),
+                                          icon: Icon(
+                                            Icons.sync,
+                                            color: Colors.white,
+                                          )),
+                                    ),
                                   ),
+                                  flex: 7,
                                 ),
-                                flex: 7,
-                              ),
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                 child: Container(
@@ -290,7 +292,7 @@ class ClasificadosPage extends StatelessWidget {
                                     backgroundColor: successColor,
                                     child: IconButton(
                                       onPressed: null,
-                                          // ()=> _.goAprobar(index),
+                                      // ()=> _.goAprobar(index),
                                       icon: Icon(Icons.remove_red_eye),
                                       color: Colors.white,
                                     ),
@@ -339,8 +341,7 @@ class ClasificadosPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: successColor,
                                     child: IconButton(
-                                      onPressed: () =>
-                                          _.goAprobar(index),
+                                      onPressed: () => _.goAprobar(index),
                                       icon: Icon(Icons.check_rounded),
                                       color: Colors.white,
                                     ),
@@ -348,23 +349,23 @@ class ClasificadosPage extends StatelessWidget {
                                 ),
                                 flex: 7,
                               ),
-                              if(_.clasificados[index].estadoLocal == 'PC')
-                              Flexible(child: Container(), flex: 1),
-                              if(_.clasificados[index].estadoLocal == 'PC')
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: alertColor,
-                                    child: IconButton(
-                                      onPressed: () => _.goEditar(index),
-                                      icon: Icon(Icons.edit),
-                                      color: Colors.white,
+                              if (_.clasificados[index].estadoLocal == 'PC')
+                                Flexible(child: Container(), flex: 1),
+                              if (_.clasificados[index].estadoLocal == 'PC')
+                                Flexible(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    child: CircleAvatar(
+                                      backgroundColor: alertColor,
+                                      child: IconButton(
+                                        onPressed: () => _.goEditar(index),
+                                        icon: Icon(Icons.edit),
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
+                                  flex: 7,
                                 ),
-                                flex: 7,
-                              ),
                               Flexible(child: Container(), flex: 1),
                             ],
                     ),

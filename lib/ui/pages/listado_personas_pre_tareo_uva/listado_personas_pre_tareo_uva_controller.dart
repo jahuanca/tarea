@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_tareo/core/tarea.dart';
+import 'package:flutter_tareo/core/utils/tarea.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
@@ -45,13 +45,13 @@ class ListadoPersonasPreTareoUvaController extends GetxController
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   ListadoPersonasPreTareoUvaController(
-      this._getLaborsUseCase,
-      this._getPersonalsEmpresaBySubdivisionUseCase,
-      this._createUvaDetalleUseCase,
-      this._updateUvaDetalleUseCase,
-      this._deleteUvaDetalleUseCase,
-      this._getAllUvaDetallesUseCase,
-      );
+    this._getLaborsUseCase,
+    this._getPersonalsEmpresaBySubdivisionUseCase,
+    this._createUvaDetalleUseCase,
+    this._updateUvaDetalleUseCase,
+    this._deleteUvaDetalleUseCase,
+    this._getAllUvaDetallesUseCase,
+  );
 
   @override
   void onInit() async {
@@ -99,7 +99,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
       print('es valido');
-      sunmiBarcodePlugin.onBarcodeScanned().listen((event) async{
+      sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
         await setCodeBar(event, true);
       });
     } else {
@@ -111,9 +111,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
   Future<void> initPlatformState() async {
     try {
       await sunmiBarcodePlugin.getScannerModel();
-    } on PlatformException {
-      
-    }
+    } on PlatformException {}
   }
 
   void initHoneyScanner() {
@@ -133,12 +131,14 @@ class ListadoPersonasPreTareoUvaController extends GetxController
   }
 
   @override
-  void onReady() async{
+  void onReady() async {
     super.onReady();
-    personalSeleccionado= await _getAllUvaDetallesUseCase.execute('uva_detalle_${preTarea.key}');
+    personalSeleccionado =
+        await _getAllUvaDetallesUseCase.execute('uva_detalle_${preTarea.key}');
     for (var i = 0; i < otrasPreTareas.length; i++) {
-      if(otrasPreTareas[i].detalles==null) otrasPreTareas[i].detalles=[];
-      otrasPreTareas[i].detalles=await _getAllUvaDetallesUseCase.execute('uva_detalle_${otrasPreTareas[i].key}');
+      if (otrasPreTareas[i].detalles == null) otrasPreTareas[i].detalles = [];
+      otrasPreTareas[i].detalles = await _getAllUvaDetallesUseCase
+          .execute('uva_detalle_${otrasPreTareas[i].key}');
     }
     update(['personal_seleccionado']);
     //setValues();
@@ -147,9 +147,9 @@ class ListadoPersonasPreTareoUvaController extends GetxController
   Future<void> setValues() async {
     Stopwatch stopwatch = new Stopwatch();
     stopwatch.start();
-    
+
     var tareas1 =
-          await Hive.openBox<PreTareoProcesoUvaDetalleEntity>('detalles');
+        await Hive.openBox<PreTareoProcesoUvaDetalleEntity>('detalles');
     await tareas1.deleteFromDisk();
     PreTareoProcesoUvaEntity data =
         new PreTareoProcesoUvaEntity.fromJson(TAREAJSON);
@@ -160,14 +160,14 @@ class ListadoPersonasPreTareoUvaController extends GetxController
       }
       preTarea.detalles.add(d);
       /* await _updatePreTareoProcesoUvaUseCase.execute(preTarea, preTarea.key); */
-      
+
       var tareas =
           await Hive.openBox<PreTareoProcesoUvaDetalleEntity>('detalles');
       int key = await tareas.add(d);
-      d.itempretareoprocesouvadetalle=key;
+      d.itempretareoprocesouvadetalle = key;
       await tareas.put(key, d);
       await tareas.close();
-      
+
       /* d.itempretareoprocesouvadetalle=key;
       await tareas.put(key, d); */
       if (i % 100 == 0) {
@@ -182,22 +182,21 @@ class ListadoPersonasPreTareoUvaController extends GetxController
     return;
   }
 
-
   Future<void> getLabores() async {
     labores = await _getLaborsUseCase.execute();
     update(['labores']);
   }
 
   @override
-  void onClose() async{
-    if(await honeywellScanner?.isSupported() ?? false){
+  void onClose() async {
+    if (await honeywellScanner?.isSupported() ?? false) {
       honeywellScanner.stopScanner();
     }
     super.onClose();
   }
 
   @override
-  void onDecoded(String result) async{
+  void onDecoded(String result) async {
     await setCodeBar(result, true);
   }
 
@@ -308,9 +307,8 @@ class ListadoPersonasPreTareoUvaController extends GetxController
               'personal': personal
             });
         if (result != null) {
-          int index=personalSeleccionado.indexWhere((e) => e.key == key);
-          if(index!=-1)
-          personalSeleccionado[index] = result;
+          int index = personalSeleccionado.indexWhere((e) => e.key == key);
+          if (index != -1) personalSeleccionado[index] = result;
           update(['personal_seleccionado']);
         }
         break;
@@ -332,9 +330,10 @@ class ListadoPersonasPreTareoUvaController extends GetxController
       'No',
       () async {
         Get.back();
-        
+
         personalSeleccionado?.removeWhere((e) => e.key == key);
-        await _deleteUvaDetalleUseCase.execute('uva_detalle_${preTarea.key}', key);
+        await _deleteUvaDetalleUseCase.execute(
+            'uva_detalle_${preTarea.key}', key);
         update(['seleccionados', 'personal_seleccionado']);
       },
       () => Get.back(),
@@ -349,11 +348,11 @@ class ListadoPersonasPreTareoUvaController extends GetxController
     });
   }
 
-  bool buscando=false;
+  bool buscando = false;
 
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
-    if (barcode != null && barcode != '-1' && buscando ==false) {
-      buscando=true;
+    if (barcode != null && barcode != '-1' && buscando == false) {
+      buscando = true;
       for (var element in otrasPreTareas) {
         int indexOtra = element.detalles.indexWhere(
             (e) => e.codigotk.toString().trim() == barcode.toString().trim());
@@ -361,7 +360,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
           byLector
               ? toastError('Error', 'Se encuentra en otra tarea')
               : _showNotification(false, 'Se encuentra en otra tarea');
-          buscando=false;        
+          buscando = false;
           return;
         }
       }
@@ -372,7 +371,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
         byLector
             ? toastError('Error', 'Ya se encuentra registrado')
             : await _showNotification(false, 'Ya se encuentra registrado');
-        buscando=false;        
+        buscando = false;
         return;
       }
       List<String> valores = barcode.toString().split('_');
@@ -380,11 +379,11 @@ class ListadoPersonasPreTareoUvaController extends GetxController
       if (index != -1) {
         LaborEntity labor =
             labores?.firstWhere((e) => e.idlabor == int.parse(valores[1]));
-            
+
         int lasItem = (personalSeleccionado.isEmpty)
             ? 0
             : personalSeleccionado.last.numcaja;
-        PreTareoProcesoUvaDetalleEntity d=PreTareoProcesoUvaDetalleEntity(
+        PreTareoProcesoUvaDetalleEntity d = PreTareoProcesoUvaDetalleEntity(
             idlabor: labor.idlabor,
             personal: personal[index],
             labor: labor,
@@ -399,20 +398,21 @@ class ListadoPersonasPreTareoUvaController extends GetxController
             codigotk: barcode.toString().trim(),
             idusuario: PreferenciasUsuario().idUsuario,
             itempretareaprocesouva: preTarea.itempretareaprocesouva);
-        int key=await _createUvaDetalleUseCase.execute('uva_detalle_${preTarea.key}', d);
-        d.key=key;
+        int key = await _createUvaDetalleUseCase.execute(
+            'uva_detalle_${preTarea.key}', d);
+        d.key = key;
         personalSeleccionado.add(d);
         update(['personal_seleccionado']);
         byLector
             ? toastExito('Éxito', 'Registrado con exito')
             : await _showNotification(true, 'Registrado con exito');
-        buscando=false;        
+        buscando = false;
         return;
       } else {
         byLector
             ? toastError('Error', 'No se encuentra en la lista')
             : await _showNotification(false, 'No se encuentra en la lista');
-        buscando=false;        
+        buscando = false;
         return;
       }
     }

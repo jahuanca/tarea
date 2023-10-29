@@ -1,7 +1,7 @@
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo/listado_personas_pre_tareo_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
@@ -9,7 +9,6 @@ import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
 
 class ListadoPersonasPreTareoPage extends StatelessWidget {
-  
   final ListadoPersonasPreTareoController controller =
       Get.find<ListadoPersonasPreTareoController>();
 
@@ -149,34 +148,39 @@ class ListadoPersonasPreTareoPage extends StatelessWidget {
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                   child: Container(
-                                    child: _.seleccionados.length>0 ? Container() : DropdownBelow(
-                                      itemWidth: 200,
-                                      itemTextstyle: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                      boxTextstyle: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: cardColor),
-                                      boxPadding:
-                                          EdgeInsets.fromLTRB(13, 12, 0, 12),
-                                      boxHeight: 45,
-                                      boxWidth: 150,
-                                      icon: Icon(
-                                        Icons.more_horiz,
-                                        color: primaryColor,
-                                      ),
-                                      value: 2,
-                                      items: items == null
-                                          ? []
-                                          : items
-                                              .map((e) => DropdownMenuItem(
-                                                  value: e['key'],
-                                                  child: Text(e['value'])))
-                                              .toList(),
-                                      onChanged: (value) => _.changeOptions(value, index),
-                                    ),
+                                    child: _.seleccionados.length > 0
+                                        ? Container()
+                                        : DropdownBelow(
+                                            itemWidth: 200,
+                                            itemTextstyle: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black),
+                                            boxTextstyle: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                                color: cardColor),
+                                            boxPadding: EdgeInsets.fromLTRB(
+                                                13, 12, 0, 12),
+                                            boxHeight: 45,
+                                            boxWidth: 150,
+                                            icon: Icon(
+                                              Icons.more_horiz,
+                                              color: primaryColor,
+                                            ),
+                                            value: 2,
+                                            items: items == null
+                                                ? []
+                                                : items
+                                                    .map((e) =>
+                                                        DropdownMenuItem(
+                                                            value: e['key'],
+                                                            child: Text(
+                                                                e['value'])))
+                                                    .toList(),
+                                            onChanged: (value) =>
+                                                _.changeOptions(value, index),
+                                          ),
                                   ),
                                   flex: 5),
                               Flexible(child: Container(), flex: 1),
@@ -193,9 +197,9 @@ class ListadoPersonasPreTareoPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(formatoFecha(_.personalSeleccionado[index]
-                                                .fecha) ??
-                                          '-Sin fecha-'),
+                                  child: Text(formatoFecha(_
+                                          .personalSeleccionado[index].fecha) ??
+                                      '-Sin fecha-'),
                                 ),
                                 flex: 10,
                               ),
@@ -205,12 +209,12 @@ class ListadoPersonasPreTareoPage extends StatelessWidget {
                                   alignment: Alignment.centerLeft,
                                   child: Text(
                                       formatoHora(_.personalSeleccionado[index]
-                                                .hora) ??
+                                              .hora) ??
                                           '-Sin hora-',
                                       style: TextStyle(
                                           color: (_.personalSeleccionado[index]
-                                                          .hora ==
-                                                      null)
+                                                      .hora ==
+                                                  null)
                                               ? dangerColor
                                               : Colors.black87)),
                                 ),
@@ -230,7 +234,9 @@ class ListadoPersonasPreTareoPage extends StatelessWidget {
                               Expanded(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(_.personalSeleccionado[index].numcaja.toString()),
+                                  child: Text(_
+                                      .personalSeleccionado[index].numcaja
+                                      .toString()),
                                 ),
                                 flex: 4,
                               ),

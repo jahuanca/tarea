@@ -1,6 +1,6 @@
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
-import 'package:flutter_tareo/core/styles.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
+import 'package:flutter_tareo/core/utils/styles.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter/material.dart';
 
@@ -38,14 +38,20 @@ class RadioGroupWidget extends StatelessWidget {
                       padding: EdgeInsets.only(bottom: 10),
                       child: Container(
                         decoration: BoxDecoration(
-                            color: (PreferenciasUsuario().modoDark) ? cardColorDark : cardColor,
+                            color: (PreferenciasUsuario().modoDark)
+                                ? cardColorDark
+                                : cardColor,
                             border: Border.all(color: primaryColor),
                             borderRadius: BorderRadius.circular(borderRadius)),
                         child: Theme(
                           data: ThemeData(
-                              accentColor: (PreferenciasUsuario().modoDark) ? primaryColor : primaryColor,
-                              unselectedWidgetColor: (PreferenciasUsuario().modoDark) ? primaryColor : primaryColor
-                              ),
+                              accentColor: (PreferenciasUsuario().modoDark)
+                                  ? primaryColor
+                                  : primaryColor,
+                              unselectedWidgetColor:
+                                  (PreferenciasUsuario().modoDark)
+                                      ? primaryColor
+                                      : primaryColor),
                           child: RadioListTile(
                             title: Text(
                               "${data['name']}",

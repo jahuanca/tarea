@@ -1,8 +1,8 @@
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/pre_tareos_uva/pre_tareos_uva_controller.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
@@ -60,12 +60,14 @@ class PreTareosUvaPage extends StatelessWidget {
             ),
           ),
           GetBuilder<PreTareosUvaController>(
-                id: 'validando',
-                builder: (_)=> _.validando ? Container(
-                  color: Colors.black45,
-                  child: Center(child: CircularProgressIndicator()),
-                ) : Container(),
-              ),
+            id: 'validando',
+            builder: (_) => _.validando
+                ? Container(
+                    color: Colors.black45,
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : Container(),
+          ),
         ],
       ),
     );
@@ -173,7 +175,7 @@ class PreTareosUvaPage extends StatelessWidget {
                                               value: e['key'],
                                               child: Text(e['value'])))
                                           .toList(),
-                                  onChanged: (value) async=>
+                                  onChanged: (value) async =>
                                       _.onChangedMenu(value, index)),
                             ),
                             flex: 5),
@@ -226,9 +228,9 @@ class PreTareosUvaPage extends StatelessWidget {
                                 Container(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text((_
-                                        .preTareosUva[index].sizeDetails ?? 0)
-                                        .toString())),
+                                    child: Text(
+                                        (_.preTareosUva[index].sizeDetails ?? 0)
+                                            .toString())),
                                 Icon(
                                   Icons.people,
                                   color: Colors.black45,
@@ -242,9 +244,9 @@ class PreTareosUvaPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(
-                                _.preTareosUva[index].sede?.detallesubdivision ??
-                                    ''),
+                            child: Text(_.preTareosUva[index].sede
+                                    ?.detallesubdivision ??
+                                ''),
                           ),
                           flex: 10,
                         ),

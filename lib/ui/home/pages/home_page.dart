@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/ui/home/controllers/home_controller.dart';
 import 'package:flutter_tareo/ui/widgets/input_label_widget.dart';
 import 'package:flutter_tareo/ui/widgets/radio_group_widget.dart';

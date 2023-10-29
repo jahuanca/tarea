@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_tareo/core/colors.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
@@ -40,7 +40,7 @@ class TareaProcesoEntity {
     this.sizeDetails,
     this.cantidadAvance,
     this.codigoempresadigitador,
-  }) ;
+  });
 
   @HiveField(0)
   int itemtareoproceso;
@@ -109,24 +109,24 @@ class TareaProcesoEntity {
   @HiveField(32)
   double cantidadAvance;
 
-  String get fechaHora{
-    if(fecha==null || horainicio==null || horafin == null){
-      fecha=DateTime.now();
-      horainicio=DateTime.now();
-      horafin=DateTime.now();
+  String get fechaHora {
+    if (fecha == null || horainicio == null || horafin == null) {
+      fecha = DateTime.now();
+      horainicio = DateTime.now();
+      horafin = DateTime.now();
     }
     return DateFormat('dd').format(fecha) +
-      "/" +
-      DateFormat('MM', 'es').format(fecha) +
-      "/" +
-      DateFormat('yyyy').format(fecha) +
-      "  " +
-      DateFormat('HH:mm').format(horainicio)+
-      " - " +
-      DateFormat('HH:mm').format(horafin);
+        "/" +
+        DateFormat('MM', 'es').format(fecha) +
+        "/" +
+        DateFormat('yyyy').format(fecha) +
+        "  " +
+        DateFormat('HH:mm').format(horainicio) +
+        " - " +
+        DateFormat('HH:mm').format(horafin);
   }
 
-  Color get colorEstado{
+  Color get colorEstado {
     switch (estadoLocal) {
       case 'P':
         return alertColor;
@@ -145,32 +145,52 @@ class TareaProcesoEntity {
 
   factory TareaProcesoEntity.fromJson(Map<String, dynamic> json) =>
       TareaProcesoEntity(
-        itemtareoproceso: json["itemtareoproceso"] == null ? null : json['itemtareoproceso'],
-        codigoempresasupervisor: json["codigoempresasupervisor"] == null ? null : json['codigoempresasupervisor'],
-        codigoempresadigitador: json["codigoempresadigitador"] == null ? null : json['codigoempresadigitador'],
+        itemtareoproceso:
+            json["itemtareoproceso"] == null ? null : json['itemtareoproceso'],
+        codigoempresasupervisor: json["codigoempresasupervisor"] == null
+            ? null
+            : json['codigoempresasupervisor'],
+        codigoempresadigitador: json["codigoempresadigitador"] == null
+            ? null
+            : json['codigoempresadigitador'],
         sizeDetails: json["sizeDetails"] == null ? null : json['sizeDetails'],
         fecha: json["fecha"] == null ? null : DateTime.tryParse(json['fecha']),
         idactividad: json["idactividad"] == null ? null : json['idactividad'],
         idlabor: json["idlabor"] == null ? null : json['idlabor'],
-        idcentrocosto: json["idcentrocosto"] == null ? null : json['idcentrocosto'],
+        idcentrocosto:
+            json["idcentrocosto"] == null ? null : json['idcentrocosto'],
         turnotareo: json["turnotareo"] == null ? null : json['turnotareo'],
-        fechamod: json["fechamod"] == null ? null : DateTime.tryParse(json['fechamod']),
+        fechamod: json["fechamod"] == null
+            ? null
+            : DateTime.tryParse(json['fechamod']),
         idusuario: json["idusuario"] == null ? null : json['idusuario'],
         idestado: json["idestado"] == null ? null : json['idestado'],
         escampo: json["escampo"] == null ? null : json['escampo'],
         espacking: json["espacking"] == null ? null : json['espacking'],
-        diasiguiente: json["diasiguiente"] == null ? null : json['diasiguiente'],
-        cantidadAvance: json["cantidadAvance"] == null ? null : json['cantidadAvance'],
+        diasiguiente:
+            json["diasiguiente"] == null ? null : json['diasiguiente'],
+        cantidadAvance:
+            json["cantidadAvance"] == null ? null : json['cantidadAvance'],
         esjornal: json["esjornal"] == null ? null : json['esjornal'],
         key: json["key"] == null ? null : json['key'],
-        esrendimiento: json["esrendimiento"] == null ? null : json['esrendimiento'],
+        esrendimiento:
+            json["esrendimiento"] == null ? null : json['esrendimiento'],
         pathUrl: json["pathUrl"] == null ? null : json['fileUrl'],
-        horainicio: json["horainicio"] == null ? null : DateTime.tryParse(json['horainicio']),
-        horafin: json["horafin"] == null ? null : DateTime.tryParse(json['horafin']),
-        pausainicio: json["pausainicio"] == null ? null : DateTime.tryParse(json['pausainicio']),
-        pausafin: json["pausafin"] == null ? null : DateTime.parse(json['pausafin']),
+        horainicio: json["horainicio"] == null
+            ? null
+            : DateTime.tryParse(json['horainicio']),
+        horafin:
+            json["horafin"] == null ? null : DateTime.tryParse(json['horafin']),
+        pausainicio: json["pausainicio"] == null
+            ? null
+            : DateTime.tryParse(json['pausainicio']),
+        pausafin:
+            json["pausafin"] == null ? null : DateTime.parse(json['pausafin']),
         estadoLocal: json["estadoLocal"] == null ? null : json['estadoLocal'],
-        personal: json['personal']==null ? null : List<PersonalTareaProcesoEntity>.from(json["personal"].map((x) => PersonalTareaProcesoEntity.fromJson(x))),
+        personal: json['personal'] == null
+            ? null
+            : List<PersonalTareaProcesoEntity>.from(json["personal"]
+                .map((x) => PersonalTareaProcesoEntity.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -199,6 +219,8 @@ class TareaProcesoEntity {
         'horafin': horafin?.toIso8601String(),
         'pausainicio': pausainicio?.toIso8601String(),
         'pausafin': pausafin?.toIso8601String(),
-        "personal": personal == null ? null : List<dynamic>.from(personal.map((x) => x.toJson())),
+        "personal": personal == null
+            ? null
+            : List<dynamic>.from(personal.map((x) => x.toJson())),
       };
 }

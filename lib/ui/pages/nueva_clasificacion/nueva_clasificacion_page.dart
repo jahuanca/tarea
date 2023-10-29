@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/nueva_clasificacion/nueva_clasificacion_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
@@ -11,7 +11,8 @@ import 'package:flutter_tareo/ui/widgets/item_configuracion_swicth_widget.dart';
 import 'package:get/get.dart';
 
 class NuevaClasificacionPage extends StatelessWidget {
-  final NuevaClasificacionController controller = Get.find<NuevaClasificacionController>();
+  final NuevaClasificacionController controller =
+      Get.find<NuevaClasificacionController>();
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,9 @@ class NuevaClasificacionPage extends StatelessWidget {
         children: [
           Scaffold(
             appBar: getAppBar(
-                controller.editando ? 'Editando Clasifido' : 'Nuevo Clasificado',
+                controller.editando
+                    ? 'Editando Clasifido'
+                    : 'Nuevo Clasificado',
                 [],
                 true),
             backgroundColor: secondColor,
@@ -71,15 +74,15 @@ class NuevaClasificacionPage extends StatelessWidget {
                             : {
                                 'name':
                                     '${_.nuevaClasificacion.tipoTarea?.descripcion?.trim()}',
-                                '_id': _.nuevaClasificacion.tipoTarea?.idtipotarea,
+                                '_id':
+                                    _.nuevaClasificacion.tipoTarea?.idtipotarea,
                               },
                         onChanged: _.changeTipoTarea,
                         items: controller.tipoTareas.length == 0
                             ? []
                             : controller.tipoTareas
                                 .map((e) => {
-                                      'name':
-                                          '${e.descripcion?.trim()}',
+                                      'name': '${e.descripcion?.trim()}',
                                       '_id': e.idtipotarea,
                                     })
                                 .toList(),
@@ -97,7 +100,8 @@ class NuevaClasificacionPage extends StatelessWidget {
                             : {
                                 'name':
                                     '${_.nuevaClasificacion.centroCosto?.detallecentrocosto?.trim()} ${_.nuevaClasificacion?.centroCosto?.codigoempresa}',
-                                '_id': _.nuevaClasificacion.centroCosto.idcentrocosto,
+                                '_id': _.nuevaClasificacion.centroCosto
+                                    .idcentrocosto,
                               },
                         onChanged: _.changeCentroCosto,
                         items: controller.centrosCosto.length == 0
@@ -124,7 +128,8 @@ class NuevaClasificacionPage extends StatelessWidget {
                               : {
                                   'name':
                                       '${_.nuevaClasificacion.supervisor.apellidopaterno} ${_.nuevaClasificacion.supervisor.apellidomaterno}, ${_.nuevaClasificacion.supervisor.nombres}',
-                                  '_id': _.nuevaClasificacion.supervisor.codigoempresa,
+                                  '_id': _.nuevaClasificacion.supervisor
+                                      .codigoempresa,
                                 },
                           items: _.supervisors.length == 0
                               ? []
@@ -149,7 +154,8 @@ class NuevaClasificacionPage extends StatelessWidget {
                               : {
                                   'name':
                                       '${_.nuevaClasificacion.digitador.apellidopaterno} ${_.nuevaClasificacion.digitador.apellidomaterno}, ${_.nuevaClasificacion.digitador.nombres}',
-                                  '_id': _.nuevaClasificacion.digitador.codigoempresa,
+                                  '_id': _.nuevaClasificacion.digitador
+                                      .codigoempresa,
                                 },
                           items: _.supervisors.length == 0
                               ? []
@@ -202,15 +208,18 @@ class NuevaClasificacionPage extends StatelessWidget {
                           enabled: false,
                           error: _.errorHoraInicio,
                           onTap: () async {
-                            _.nuevaClasificacion.horainicio = await DatePickerWidget(
+                            _.nuevaClasificacion.horainicio =
+                                await DatePickerWidget(
                               onlyDate: true,
                               dateSelected: DateTime.now(),
-                            ).selectTime(context, _.nuevaClasificacion.horainicio);
+                            ).selectTime(
+                                    context, _.nuevaClasificacion.horainicio);
                             _.changeHoraInicio();
                           },
                           label: 'Hora inicio',
                           textEditingController: TextEditingController(
-                              text: formatoHora(_.nuevaClasificacion.horainicio)),
+                              text:
+                                  formatoHora(_.nuevaClasificacion.horainicio)),
                           hintText: 'Hora inicio'),
                     ),
                     SizedBox(
@@ -222,11 +231,13 @@ class NuevaClasificacionPage extends StatelessWidget {
                           enabled: false,
                           error: _.errorHoraFin,
                           onTap: () async {
-                            _.nuevaClasificacion.horafin = await DatePickerWidget(
+                            _.nuevaClasificacion.horafin =
+                                await DatePickerWidget(
                               onlyDate: true,
                               //minDate: _.nuevaClasificacion?.turnotareo=='D' ?  _.nuevaClasificacion.horainicio : null,
                               minDate: null,
-                              dateSelected: _.nuevaClasificacion?.horafin ?? DateTime.now(),
+                              dateSelected: _.nuevaClasificacion?.horafin ??
+                                  DateTime.now(),
                               onChanged: () {},
                             ).selectTime(context, _.nuevaClasificacion.horafin);
                             _.changeHoraFin();
@@ -238,7 +249,8 @@ class NuevaClasificacionPage extends StatelessWidget {
                     ),
                     GetBuilder<NuevaClasificacionController>(
                         id: 'inicio_pausa',
-                        builder: (_) => (_.nuevaClasificacion.horainicio != null &&
+                        builder: (_) => (_.nuevaClasificacion.horainicio !=
+                                    null &&
                                 _.nuevaClasificacion.horafin != null)
                             ? Column(
                                 children: [
@@ -248,17 +260,21 @@ class NuevaClasificacionPage extends StatelessWidget {
                                       iconOverlay: Icons.delete,
                                       onPressedIconOverlay: _.deleteInicioPausa,
                                       onTap: () async {
-                                        _.nuevaClasificacion.pausainicio = await DatePickerWidget(
+                                        _.nuevaClasificacion.pausainicio =
+                                            await DatePickerWidget(
                                           onlyDate: true,
-                                          dateSelected: _.nuevaClasificacion?.pausainicio ?? DateTime.now(),
+                                          dateSelected: _.nuevaClasificacion
+                                                  ?.pausainicio ??
+                                              DateTime.now(),
                                           onChanged: () {},
-                                        ).selectTime(
-                                            context, null );
+                                        ).selectTime(context, null);
                                         _.changeInicioPausa();
                                       },
                                       textEditingController:
                                           TextEditingController(
-                                              text: formatoHora(_.nuevaClasificacion.pausainicio)),
+                                              text: formatoHora(_
+                                                  .nuevaClasificacion
+                                                  .pausainicio)),
                                       label: 'Inicio de pausa',
                                       hintText: 'Inicio de pausa'),
                                   SizedBox(
@@ -269,7 +285,8 @@ class NuevaClasificacionPage extends StatelessWidget {
                             : Container()),
                     GetBuilder<NuevaClasificacionController>(
                         id: 'fin_pausa',
-                        builder: (_) => (_.nuevaClasificacion.horainicio != null &&
+                        builder: (_) => (_.nuevaClasificacion.horainicio !=
+                                    null &&
                                 _.nuevaClasificacion.horafin != null)
                             ? InputLabelWidget(
                                 enabled: false,
@@ -277,7 +294,8 @@ class NuevaClasificacionPage extends StatelessWidget {
                                 onPressedIconOverlay: _.deleteFinPausa,
                                 error: _.errorPausaFin,
                                 onTap: () async {
-                                  _.nuevaClasificacion.pausafin = await DatePickerWidget(
+                                  _.nuevaClasificacion.pausafin =
+                                      await DatePickerWidget(
                                     onlyDate: true,
                                     dateSelected: DateTime.now(),
                                     //minDate: _.nuevaClasificacion.horainicio,
@@ -286,7 +304,8 @@ class NuevaClasificacionPage extends StatelessWidget {
                                   _.changeFinPausa();
                                 },
                                 textEditingController: TextEditingController(
-                                    text: formatoHora(_.nuevaClasificacion.pausafin)),
+                                    text: formatoHora(
+                                        _.nuevaClasificacion.pausafin)),
                                 label: 'Fin de pausa',
                                 hintText: 'Fin de pausa')
                             : Container()),

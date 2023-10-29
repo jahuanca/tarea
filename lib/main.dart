@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/strings.dart';
+import 'package:flutter_tareo/core/utils/strings.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/calibre_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
@@ -85,18 +85,16 @@ void main() async {
   Hive.registerAdapter(EstadoEntityAdapter());
   Hive.registerAdapter(PersonalPreTareaEsparragoEntityAdapter());
 
-  Database  db=await openDatabase(
+  Database db = await openDatabase(
     join(await getDatabasesPath(), 'tareo_esparrago.db'),
-    onCreate: (db, version) async{
+    onCreate: (db, version) async {
       await db.execute(TABLE_PRETAREAESPARRAGO);
       return await db.execute(TABLE_PERSONALPRETAREAESPARRAGO);
-      
     },
     version: 1,
   );
 
   await db.close();
-  
 
   runApp(MyApp());
 }

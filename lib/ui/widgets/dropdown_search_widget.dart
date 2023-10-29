@@ -1,7 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
-import 'package:flutter_tareo/core/styles.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
+import 'package:flutter_tareo/core/utils/styles.dart';
 import 'package:flutter/material.dart';
 
 class DropdownSearchWidget extends StatelessWidget {
@@ -49,7 +49,7 @@ class DropdownSearchWidget extends StatelessWidget {
           height: size.height * inputDimension,
           width: size.width,
           child: DropdownSearch<Map<String, dynamic>>(
-            enabled: enabled,
+              enabled: enabled,
               emptyBuilder: (context, searchEntry) => Material(
                     child: Container(
                       alignment: Alignment.center,
@@ -58,9 +58,11 @@ class DropdownSearchWidget extends StatelessWidget {
                   ),
               mode: Mode.BOTTOM_SHEET,
               dropdownSearchDecoration: InputDecoration(
-                border: error==null ? inputBorder() : inputBorderError(),
-                enabledBorder: error==null ? inputBorder() : inputBorderError(),
-                focusedBorder: error==null ? inputBorder() : inputBorderError(),
+                border: error == null ? inputBorder() : inputBorderError(),
+                enabledBorder:
+                    error == null ? inputBorder() : inputBorderError(),
+                focusedBorder:
+                    error == null ? inputBorder() : inputBorderError(),
                 filled: true,
                 fillColor: cardColor,
                 contentPadding: contentPaddingInputs,
@@ -73,7 +75,7 @@ class DropdownSearchWidget extends StatelessWidget {
               showSearchBox: true,
               items: items,
               itemAsString: (item) => item[labelText],
-              hint: label==null ? 'Sin datos' : "Sin ${label.toLowerCase()}",
+              hint: label == null ? 'Sin datos' : "Sin ${label.toLowerCase()}",
               onChanged: (data) => onChanged(data[labelValue].toString()),
               selectedItem: selectedItem != null
                   ? selectedItem

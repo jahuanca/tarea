@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/nueva_seleccion/nueva_seleccion_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
@@ -11,7 +11,8 @@ import 'package:flutter_tareo/ui/widgets/item_configuracion_swicth_widget.dart';
 import 'package:get/get.dart';
 
 class NuevaSeleccionPage extends StatelessWidget {
-  final NuevaSeleccionController controller = Get.find<NuevaSeleccionController>();
+  final NuevaSeleccionController controller =
+      Get.find<NuevaSeleccionController>();
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +72,8 @@ class NuevaSeleccionPage extends StatelessWidget {
                             : {
                                 'name':
                                     '${_.nuevaSeleccion.centroCosto?.detallecentrocosto?.trim()} ${_.nuevaSeleccion.centroCosto?.codigoempresa}',
-                                '_id': _.nuevaSeleccion.centroCosto.idcentrocosto,
+                                '_id':
+                                    _.nuevaSeleccion.centroCosto.idcentrocosto,
                               },
                         onChanged: _.changeCentroCosto,
                         items: controller.centrosCosto.length == 0
@@ -95,8 +97,8 @@ class NuevaSeleccionPage extends StatelessWidget {
                         selectedItem: _.nuevaSeleccion?.actividad == null
                             ? null
                             : {
-                                'name':
-                                    _.nuevaSeleccion.actividad.descripcion.trim(),
+                                'name': _.nuevaSeleccion.actividad.descripcion
+                                    .trim(),
                                 '_id': _.nuevaSeleccion.actividad.idactividad,
                               },
                         onChanged: _.changeActividad,
@@ -147,7 +149,8 @@ class NuevaSeleccionPage extends StatelessWidget {
                               : {
                                   'name':
                                       '${_.nuevaSeleccion.supervisor.apellidopaterno} ${_.nuevaSeleccion.supervisor.apellidomaterno}, ${_.nuevaSeleccion.supervisor.nombres}',
-                                  '_id': _.nuevaSeleccion.supervisor.codigoempresa,
+                                  '_id':
+                                      _.nuevaSeleccion.supervisor.codigoempresa,
                                 },
                           items: _.supervisors.length == 0
                               ? []
@@ -172,7 +175,8 @@ class NuevaSeleccionPage extends StatelessWidget {
                               : {
                                   'name':
                                       '${_.nuevaSeleccion.digitador.apellidopaterno} ${_.nuevaSeleccion.digitador.apellidomaterno}, ${_.nuevaSeleccion.digitador.nombres}',
-                                  '_id': _.nuevaSeleccion.digitador.codigoempresa,
+                                  '_id':
+                                      _.nuevaSeleccion.digitador.codigoempresa,
                                 },
                           items: _.supervisors.length == 0
                               ? []
@@ -225,7 +229,8 @@ class NuevaSeleccionPage extends StatelessWidget {
                           enabled: false,
                           error: _.errorHoraInicio,
                           onTap: () async {
-                            _.nuevaSeleccion.horainicio = await DatePickerWidget(
+                            _.nuevaSeleccion.horainicio =
+                                await DatePickerWidget(
                               onlyDate: true,
                               dateSelected: DateTime.now(),
                             ).selectTime(context, _.nuevaSeleccion.horainicio);
@@ -249,7 +254,8 @@ class NuevaSeleccionPage extends StatelessWidget {
                               onlyDate: true,
                               //minDate: _.nuevaPreTarea?.turnotareo=='D' ?  _.nuevaPreTarea.horainicio : null,
                               minDate: null,
-                              dateSelected: _.nuevaSeleccion?.horafin ?? DateTime.now(),
+                              dateSelected:
+                                  _.nuevaSeleccion?.horafin ?? DateTime.now(),
                               onChanged: () {},
                             ).selectTime(context, _.nuevaSeleccion.horafin);
                             _.changeHoraFin();
@@ -271,17 +277,20 @@ class NuevaSeleccionPage extends StatelessWidget {
                                       iconOverlay: Icons.delete,
                                       onPressedIconOverlay: _.deleteInicioPausa,
                                       onTap: () async {
-                                        _.nuevaSeleccion.pausainicio = await DatePickerWidget(
+                                        _.nuevaSeleccion.pausainicio =
+                                            await DatePickerWidget(
                                           onlyDate: true,
-                                          dateSelected: _.nuevaSeleccion?.pausainicio ?? DateTime.now(),
+                                          dateSelected:
+                                              _.nuevaSeleccion?.pausainicio ??
+                                                  DateTime.now(),
                                           onChanged: () {},
-                                        ).selectTime(
-                                            context, null );
+                                        ).selectTime(context, null);
                                         _.changeInicioPausa();
                                       },
                                       textEditingController:
                                           TextEditingController(
-                                              text: formatoHora(_.nuevaSeleccion.pausainicio)),
+                                              text: formatoHora(_
+                                                  .nuevaSeleccion.pausainicio)),
                                       label: 'Inicio de pausa',
                                       hintText: 'Inicio de pausa'),
                                   SizedBox(
@@ -300,7 +309,8 @@ class NuevaSeleccionPage extends StatelessWidget {
                                 onPressedIconOverlay: _.deleteFinPausa,
                                 error: _.errorPausaFin,
                                 onTap: () async {
-                                  _.nuevaSeleccion.pausafin = await DatePickerWidget(
+                                  _.nuevaSeleccion.pausafin =
+                                      await DatePickerWidget(
                                     onlyDate: true,
                                     dateSelected: DateTime.now(),
                                     //minDate: _.nuevaPreTarea.horainicio,
@@ -309,7 +319,8 @@ class NuevaSeleccionPage extends StatelessWidget {
                                   _.changeFinPausa();
                                 },
                                 textEditingController: TextEditingController(
-                                    text: formatoHora(_.nuevaSeleccion.pausafin)),
+                                    text:
+                                        formatoHora(_.nuevaSeleccion.pausafin)),
                                 label: 'Fin de pausa',
                                 hintText: 'Fin de pausa')
                             : Container()),
@@ -317,7 +328,9 @@ class NuevaSeleccionPage extends StatelessWidget {
                       id: 'kilos_avance',
                       builder: (_) => InputLabelWidget(
                         hintText: 'Kilos avance',
-                        initialValue: _.nuevaSeleccion.kilosavance == null ? '' : _.nuevaSeleccion.kilosavance.toString(),
+                        initialValue: _.nuevaSeleccion.kilosavance == null
+                            ? ''
+                            : _.nuevaSeleccion.kilosavance.toString(),
                         error: _.errorKilosavance,
                         onChanged: _.changeCantidadAvance,
                         textInputType: TextInputType.number,
@@ -328,7 +341,9 @@ class NuevaSeleccionPage extends StatelessWidget {
                       id: 'linea',
                       builder: (_) => InputLabelWidget(
                         hintText: 'linea',
-                        initialValue: _.nuevaSeleccion.linea == null ? '' : _.nuevaSeleccion.linea.toString(),
+                        initialValue: _.nuevaSeleccion.linea == null
+                            ? ''
+                            : _.nuevaSeleccion.linea.toString(),
                         error: _.errorLinea,
                         onChanged: _.changeLinea,
                         textInputType: TextInputType.number,

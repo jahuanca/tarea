@@ -1,7 +1,7 @@
 import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/core/colors.dart';
-import 'package:flutter_tareo/core/dimens.dart';
+import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
@@ -20,19 +20,20 @@ class ListadoPersonasPage extends StatelessWidget {
       init: controller,
       id: 'personal_seleccionado',
       builder: (_) => WillPopScope(
-        onWillPop:  () async{
-             _.onWillPop();
-            //Navigator.pop(Get.overlayContext, [_.personalSeleccionado.length, ]);
-            return new Future(() => false);
-        } ,
+        onWillPop: () async {
+          _.onWillPop();
+          //Navigator.pop(Get.overlayContext, [_.personalSeleccionado.length, ]);
+          return new Future(() => false);
+        },
         child: Stack(
           children: [
             Scaffold(
               appBar: getAppBar(
                   '${_.personalSeleccionado.length}',
                   [
-                    if(_.tarea.estadoLocal == 'P')
-                    IconButton(onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
+                    if (_.tarea.estadoLocal == 'P')
+                      IconButton(
+                          onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
                   ],
                   true),
               backgroundColor: secondColor,
@@ -56,7 +57,7 @@ class ListadoPersonasPage extends StatelessWidget {
                           builder: (_) => _.personalSeleccionado.isEmpty
                               ? EmptyDataWidget(
                                   titulo: 'No existe equipo asociado.',
-                                  onPressed: () async=> _.getPersonal,
+                                  onPressed: () async => _.getPersonal,
                                   size: size)
                               : ListView.builder(
                                   itemCount: _.personalSeleccionado.length,
@@ -70,10 +71,12 @@ class ListadoPersonasPage extends StatelessWidget {
                   ),
                 ),
               ),
-              floatingActionButton: (_.tarea?.estadoLocal == 'P') ? FloatingActionButton(
-                onPressed: _.goNuevoPersonaTareaProceso,
-                child: Icon(Icons.add),
-              ) : Container(),
+              floatingActionButton: (_.tarea?.estadoLocal == 'P')
+                  ? FloatingActionButton(
+                      onPressed: _.goNuevoPersonaTareaProceso,
+                      child: Icon(Icons.add),
+                    )
+                  : Container(),
             ),
             GetBuilder<ListadoPersonasController>(
               id: 'validando',
@@ -147,37 +150,46 @@ class ListadoPersonasPage extends StatelessWidget {
                                 ),
                                 flex: 25,
                               ),
-                              
                               Flexible(
                                   child: Container(
-                                    child: _.seleccionados.length>0 ? Container() : DropdownBelow(
-                                      itemWidth: 200,
-                                      itemTextstyle: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                          color: Colors.black),
-                                      boxTextstyle: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: cardColor),
-                                      boxPadding:
-                                          EdgeInsets.fromLTRB(13, 12, 0, 12),
-                                      boxHeight: 45,
-                                      boxWidth: 150,
-                                      icon: Icon(
-                                        Icons.more_horiz,
-                                        color: primaryColor,
-                                      ),
-                                      value: 1,
-                                      items: items == null
-                                          ? []
-                                          : items
-                                              .map((e) => DropdownMenuItem(
-                                                  value: e['key'],
-                                                  child: Text(e['value'])))
-                                              .toList(),
-                                      onChanged: (value) => _.changeOptions(value, _.personalSeleccionado[index].key),
-                                    ),
+                                    child: _.seleccionados.length > 0
+                                        ? Container()
+                                        : DropdownBelow(
+                                            itemWidth: 200,
+                                            itemTextstyle: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black),
+                                            boxTextstyle: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                                color: cardColor),
+                                            boxPadding: EdgeInsets.fromLTRB(
+                                                13, 12, 0, 12),
+                                            boxHeight: 45,
+                                            boxWidth: 150,
+                                            icon: Icon(
+                                              Icons.more_horiz,
+                                              color: primaryColor,
+                                            ),
+                                            value: 1,
+                                            items: items == null
+                                                ? []
+                                                : items
+                                                    .map((e) =>
+                                                        DropdownMenuItem(
+                                                            value: e['key'],
+                                                            child: Text(
+                                                                e['value'])))
+                                                    .toList(),
+                                            onChanged: (value) =>
+                                                _.changeOptions(
+                                                    value,
+                                                    _
+                                                        .personalSeleccionado[
+                                                            index]
+                                                        .key),
+                                          ),
                                   ),
                                   flex: 5),
                               Flexible(child: Container(), flex: 1),
@@ -196,8 +208,13 @@ class ListadoPersonasPage extends StatelessWidget {
                                   alignment: Alignment.centerLeft,
                                   child: Row(
                                     children: [
-                                      Icon(Icons.watch_outlined,),
-                                      Text(toHorasMinutos(_.personalSeleccionado[index].cantidadHoras ?? 0)),
+                                      Icon(
+                                        Icons.watch_outlined,
+                                      ),
+                                      Text(toHorasMinutos(_
+                                              .personalSeleccionado[index]
+                                              .cantidadHoras ??
+                                          0)),
                                     ],
                                   ),
                                 ),
@@ -209,17 +226,34 @@ class ListadoPersonasPage extends StatelessWidget {
                                   alignment: Alignment.centerLeft,
                                   child: Row(
                                     children: [
-                                      Icon(_.personalSeleccionado[index].esrendimiento ? Icons.arrow_upward_sharp : Icons.timeline_outlined, color: infoColor,),
-                                      Text(_.personalSeleccionado[index].esrendimiento ?? false ? 'R: ' : 'J: '),
-                                      Text((
-                                        
-                                        ((_.personalSeleccionado[index].esrendimiento ?? false) ? 
-                                          _.personalSeleccionado[index].cantidadrendimiento
-                                        : _.personalSeleccionado[index].cantidadavance ) 
-                                        
-                                        ?? 0).toString(),
-                                          style: TextStyle(
-                                              color: Colors.black87)),
+                                      Icon(
+                                        _.personalSeleccionado[index]
+                                                .esrendimiento
+                                            ? Icons.arrow_upward_sharp
+                                            : Icons.timeline_outlined,
+                                        color: infoColor,
+                                      ),
+                                      Text(_.personalSeleccionado[index]
+                                                  .esrendimiento ??
+                                              false
+                                          ? 'R: '
+                                          : 'J: '),
+                                      Text(
+                                          (((_.personalSeleccionado[index]
+                                                              .esrendimiento ??
+                                                          false)
+                                                      ? _
+                                                          .personalSeleccionado[
+                                                              index]
+                                                          .cantidadrendimiento
+                                                      : _
+                                                          .personalSeleccionado[
+                                                              index]
+                                                          .cantidadavance) ??
+                                                  0)
+                                              .toString(),
+                                          style:
+                                              TextStyle(color: Colors.black87)),
                                     ],
                                   ),
                                 ),
@@ -251,14 +285,15 @@ class ListadoPersonasPage extends StatelessWidget {
                                               ) ??
                                               '-Sin horas-',
                                           style: TextStyle(
-                                              color: (_.personalSeleccionado[index]
-                                                              .horainicio ==
-                                                          null ||
-                                                      _.personalSeleccionado[index]
-                                                              .horafin ==
-                                                          null)
-                                                  ? dangerColor
-                                                  : Colors.black87)),
+                                              color:
+                                                  (_.personalSeleccionado[index]
+                                                                  .horainicio ==
+                                                              null ||
+                                                          _.personalSeleccionado[index]
+                                                                  .horafin ==
+                                                              null)
+                                                      ? dangerColor
+                                                      : Colors.black87)),
                                     ],
                                   ),
                                 ),
@@ -280,7 +315,9 @@ class ListadoPersonasPage extends StatelessWidget {
                                             ) ??
                                             '-Sin pausas-'),
                                         style: TextStyle(
-                                            color: (_.personalSeleccionado[index]
+                                            color: (_
+                                                            .personalSeleccionado[
+                                                                index]
                                                             .pausainicio ==
                                                         null ||
                                                     _.personalSeleccionado[index]
