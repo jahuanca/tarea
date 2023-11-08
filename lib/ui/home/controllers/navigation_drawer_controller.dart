@@ -13,6 +13,7 @@ import 'package:flutter_tareo/di/tareas_binding.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
 import 'package:flutter_tareo/ui/control_asistencia/pages/home_asistencia_page.dart';
 import 'package:flutter_tareo/ui/home/controllers/navigation_controller.dart';
+import 'package:flutter_tareo/ui/home/utils/dynamics.dart';
 import 'package:flutter_tareo/ui/login/pages/login_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:get/get.dart';
@@ -32,81 +33,11 @@ class NavigationDrawerController extends GetxController {
     update(['usuario', 'navigation']);
   }
 
-  void goConfiguracion() {
-    /* Get.to(()=> ConfiguracionPage()); */
-  }
-
-  void goFavoritos() {
-    /* FavoritosBinding().dependencies();
-    Get.to(()=> FavoritosPage()); */
-  }
-
-  void goTareas(GlobalKey<ScaffoldState> scaffoldKey) {
-    TareasBinding().dependencies();
-    index = 1;
+  void goEvent(titles value, GlobalKey<ScaffoldState> scaffoldKey) {
+    index = NAVIGATIONS[value].value;
+    NAVIGATIONS[value].dependencies;
     update(['navigation']);
-    Get.find<NavigationController>().eventos(1, scaffoldKey);
-  }
-
-  void goMigrar(GlobalKey<ScaffoldState> scaffoldKey) {
-    MigrarBinding().dependencies();
-    index = 3;
-    update(['navigation']);
-    Get.find<NavigationController>().eventos(3, scaffoldKey);
-  }
-
-  void goPreTareo(GlobalKey<ScaffoldState> scaffoldKey) {
-    PreTareosBinding().dependencies();
-    index = 4;
-    update(['navigation']);
-    Get.find<NavigationController>().eventos(4, scaffoldKey);
-  }
-
-  void goEsparragos(GlobalKey<ScaffoldState> scaffoldKey) {
-    EsparragosBinding().dependencies();
-    index = 6;
-    update(['navigation']);
-    Get.find<NavigationController>().eventos(6, scaffoldKey);
-  }
-
-  void goPreTareoUva(GlobalKey<ScaffoldState> scaffoldKey) {
-    PreTareosUvaBinding().dependencies();
-    index = 5;
-    update(['navigation']);
-    Get.find<NavigationController>().eventos(5, scaffoldKey);
-  }
-
-  void goAprobar(GlobalKey<ScaffoldState> scaffoldKey) {
-    AprobarBinding().dependencies();
-    index = 8;
-    update(['navigation']);
-    Get.find<NavigationController>().eventos(2, scaffoldKey);
-  }
-
-  void goHome(GlobalKey<ScaffoldState> scaffoldKey) {
-    HomeBinding().dependencies();
-    index = 0;
-    update(['navigation']);
-    Get.find<NavigationController>().eventos(0, scaffoldKey);
-  }
-
-  void goAsistencia(GlobalKey<ScaffoldState> scaffoldKey) {
-    Get.to(HomeAsistenciaPage());
-    index = 8;
-    update(['navigation']);
-    Get.find<NavigationController>().eventos(0, scaffoldKey);
-  }
-
-  void goMisEventos() {
-    /* MisEventosBinding().dependencies();
-    Get.to(()=> MisEventosPage()); */
-  }
-
-  void goHerramientas(GlobalKey<ScaffoldState> scaffoldKey) {
-    HerramientasBinding().dependencies();
-    index = 7;
-    update(['navigation']);
-    Get.find<NavigationController>().eventos(7, scaffoldKey);
+    Get.find<NavigationController>().eventos(index, scaffoldKey);
   }
 
   void cerrarSesion() {

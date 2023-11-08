@@ -32,7 +32,7 @@ class NavigationPage extends GetWidget<NavigationController> {
             drawer: getDrawer(size: size, scaffoldKey: _scaffoldKey),
             body: GetBuilder<NavigationController>(
                 builder: (_) => navigationController
-                    .lista[navigationController.indexWidget]),
+                    .listWidgets[navigationController.indexWidget]),
           ),
         ),
       ),

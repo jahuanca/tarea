@@ -2,6 +2,7 @@ import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/core/utils/styles.dart';
+import 'package:flutter_tareo/ui/home/utils/dynamics.dart';
 import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/home/controllers/navigation_drawer_controller.dart';
@@ -84,7 +85,19 @@ Drawer getDrawer({Size size, GlobalKey<ScaffoldState> scaffoldKey}) {
                 ),
               ),
             ),
-            _itemDrawer(size, Icons.home, 'Inicio', () => _.goHome(scaffoldKey),
+            Column(
+              children: titles.values
+                  .map((e) => _itemDrawer(
+                      size,
+                      NAVIGATIONS[e].icon,
+                      NAVIGATIONS[e].title,
+                      () => _.goEvent(e, scaffoldKey),
+                      _.index == e.index))
+                  .toList(),
+            )
+            /*_itemDrawer(size, Icons.home, 'Inicio', () => _.goEvent(
+              titles.start,
+              scaffoldKey),
                 _.index == 0),
             _itemDrawer(size, Icons.person_pin_outlined, 'Asistencia',
                 () => _.goAsistencia(scaffoldKey), _.index == 0),
@@ -101,7 +114,7 @@ Drawer getDrawer({Size size, GlobalKey<ScaffoldState> scaffoldKey}) {
             _itemDrawer(size, Icons.settings, 'Configuración', _.goMisEventos,
                 _.index == -1),
             _itemDrawer(size, Icons.exit_to_app, 'Cerrar sesión',
-                _.cerrarSesion, _.index == -1),
+                _.cerrarSesion, _.index == -1),*/
           ],
         ),
       ),

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_tareo/core/utils/config.dart';
-import 'package:flutter_tareo/core/utils/strings.dart';
 import 'package:flutter_tareo/domain/entities/message_entity.dart';
 import 'package:flutter_tareo/domain/utils/http_manager.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
@@ -11,7 +10,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_tareo/domain/utils/app_exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const timeout = Duration(seconds: 90);
+const timeout = Duration(seconds: TIME_OUT_VALUE);
 
 class AppHttpManager implements HttpManager {
   @override

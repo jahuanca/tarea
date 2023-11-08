@@ -6,3 +6,4 @@ const String URL_SERVER_SHORT = 'http://$URL_SERVER';
 const String ROUTE_IMAGES = 'assets/images/';
 const bool SHOW_LOG = BOOLEAN_TRUE_VALUE;
 const String CURRENT_MANDANTE = 'qas';
+const int TIME_OUT_VALUE = 90;

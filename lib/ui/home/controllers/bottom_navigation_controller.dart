@@ -9,6 +9,7 @@ class BottomNavigationController extends GetxController {
         scaffoldKey.currentState.openDrawer();
         break;
       default:
+        break;
     }
   }
 }

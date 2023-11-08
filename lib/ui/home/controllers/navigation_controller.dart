@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:flutter_tareo/ui/control_asistencia/pages/home_asistencia_page.dart';
 import 'package:flutter_tareo/ui/home/pages/home_page.dart';
+import 'package:flutter_tareo/ui/home/utils/dynamics.dart';
 import 'package:flutter_tareo/ui/pages/aprobar/aprobar_page.dart';
 import 'package:flutter_tareo/ui/pages/esparragos/esparragos_page.dart';
 import 'package:flutter_tareo/ui/pages/herramientas/herramientas_page.dart';
@@ -18,7 +20,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 class NavigationController extends GetxController {
   NavigationController();
 
-  final List<Widget> lista = [
+  final List<Widget> listWidgets = [
     HomePage(),
     TareasPage(),
     AprobarPage(),
@@ -27,6 +29,7 @@ class NavigationController extends GetxController {
     PreTareosUvaPage(),
     EsparragosPage(),
     HerramientasPage(),
+    HomeAsistenciaPage(),
   ];
 
   @override
@@ -35,94 +38,56 @@ class NavigationController extends GetxController {
   }
 
   int indexWidget = 0;
-  String titulo = 'Inicio';
+  String titulo = NAVIGATIONS[titles.start].title;
 
   List<Widget> actions = [];
 
-  void eventos(int index, GlobalKey<ScaffoldState> scaffoldKey) {
+  void eventos(int value, GlobalKey<ScaffoldState> scaffoldKey) {
+    titles currentTitle =
+        NAVIGATIONS.keys.firstWhere((e) => NAVIGATIONS[e].value == value);
     actions.clear();
-    switch (index) {
-      case 0:
-        titulo = 'Inicio';
-        scaffoldKey.currentState.openEndDrawer();
-        indexWidget = index;
-        update(['bottom_navigation']);
+    titulo = NAVIGATIONS[currentTitle].title;
+    indexWidget = NAVIGATIONS[currentTitle].value;
+    scaffoldKey.currentState.openEndDrawer();
+    switch (currentTitle) {
+      case titles.start:
         break;
 
-      case 1:
-        //scaffoldKey.currentState.openDrawer();
-        actions.add(IconButton(
-            //onPressed: () => Get.to(() => SearchPage()),
-            onPressed: showSearch,
-            icon: Icon(Icons.search)));
-        titulo = 'Tareas';
-        scaffoldKey.currentState.openEndDrawer();
-        indexWidget = index;
-        update(['bottom_navigation']);
+      case titles.tareas:
+        actions
+            .add(IconButton(onPressed: showSearch, icon: Icon(Icons.search)));
         break;
 
-      case 2:
-        //scaffoldKey.currentState.openDrawer();
+      /*case titles.aprobacion:
         actions.add(IconButton(
             onPressed: () => Get.to(() => SearchPage()),
             icon: Icon(Icons.search)));
-        titulo = 'Aprobación';
-        scaffoldKey.currentState.openEndDrawer();
-        indexWidget = index;
-        update(['bottom_navigation']);
         break;
 
-      case 3:
+      case titles.migracion:
         actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
-        titulo = 'Migración';
-        scaffoldKey.currentState.openEndDrawer();
-        indexWidget = index;
-        update(['bottom_navigation']);
         break;
 
-      case 4:
+      case titles.arandano:
         actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
-        titulo = 'Arándano';
-        scaffoldKey.currentState.openEndDrawer();
-        indexWidget = index;
-        update(['bottom_navigation']);
-        break;
+        break;*/
 
-      case 5:
+      case titles.packing:
         actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
-        titulo = 'Packing';
-        scaffoldKey.currentState.openEndDrawer();
-        indexWidget = index;
-        update(['bottom_navigation']);
         break;
 
-      case 6:
-        titulo = 'Esparrago';
-        scaffoldKey.currentState.openEndDrawer();
-        indexWidget = index;
-        update(['bottom_navigation']);
+      case titles.esparrago:
         break;
 
-      case 7:
-        titulo = 'Herramientas';
-        scaffoldKey.currentState.openEndDrawer();
-        indexWidget = index;
-        update(['bottom_navigation']);
+      case titles.herramientas:
         break;
 
-      case 8:
-        //scaffoldKey.currentState.openDrawer();
-        titulo = 'Control de asistencia';
-        scaffoldKey.currentState.openEndDrawer();
-        indexWidget = index;
-        update(['bottom_navigation']);
+      case titles.asistencias:
         break;
-
       default:
-        indexWidget = index;
-        update(['bottom_navigation']);
         break;
     }
+    update(['bottom_navigation']);
   }
 
   void showSearch() {

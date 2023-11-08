@@ -17,3 +17,6 @@ const String NAVIGATION_DRAWER_WIDGET_ID_USER = 'usuario';
 
 /* STRINGS TAGS */
 const String NAVIGATION_DRAWER_WIDGET_TAG_PROFILE = 'profile';
+
+/* STRINGS */
+
