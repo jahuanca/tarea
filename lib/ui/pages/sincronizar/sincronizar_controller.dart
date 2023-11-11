@@ -15,6 +15,7 @@ import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/tipo_tarea_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
 import 'package:flutter_tareo/domain/entities/via_envio_entity.dart';
+import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_personal_empresa_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_turnos_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_ubicacions_use_case.dart';
@@ -40,7 +41,6 @@ import 'package:hive/hive.dart';
 import 'package:package_info/package_info.dart';
 
 class SincronizarController extends GetxController {
-  List<ActividadEntity> actividades = [];
   List<LaborEntity> labores = [];
   List<EsparragoAgrupaPersonalEntity> agrupaPersonals = [];
   List<SubdivisionEntity> sedes = [];
@@ -58,8 +58,8 @@ class SincronizarController extends GetxController {
   int sizeTurnos = ZERO_INT_VALUE;
   int sizeUbicacions = ZERO_INT_VALUE;
   int sizePersonal = ZERO_INT_VALUE;
+  int sizeActividads = ZERO_INT_VALUE;
 
-  final GetActividadsUseCase _getActividadsUseCase;
   final GetSubdivisonsUseCase _getSubdivisonsUseCase;
   final GetLaborsUseCase _getLaborsUseCase;
   final GetUsuariosUseCase _getUsuariosUseCase;
@@ -77,9 +77,10 @@ class SincronizarController extends GetxController {
   final SincronizarTurnosUseCase _sincronizarTurnosUseCase;
   final SincronizarUbicacionsUseCase _sincronizarUbicacionsUseCase;
   final SincronizarPersonalEmpresasUseCase _sincronizarPersonalEmpresasUseCase;
+  final SincronizarActividadsUseCase _sincronizarActividadsUseCase;
 
   SincronizarController(
-    this._getActividadsUseCase,
+    this._sincronizarActividadsUseCase,
     this._getEstadosUseCase,
     this._getViaEnviosUseCase,
     this._getCalibresUseCase,
@@ -113,12 +114,10 @@ class SincronizarController extends GetxController {
   void onReady() async {
     super.onReady();
 
-    await getActividades();
     await getSedes();
     await getLabores();
     await getCentrosCosto();
     await getUsuarios();
-    //await getPersonal();
     await getCultivos();
     await getClientes();
     await getEstados();
@@ -226,19 +225,6 @@ class SincronizarController extends GetxController {
     await laboresCultivoPackingSincronizados.compact();
     await laboresCultivoPackingSincronizados.close();
     update(['labores_cultivo_packing']);
-    return true;
-  }
-
-  Future<bool> getActividades() async {
-    actividades = await _getActividadsUseCase.execute();
-    Box<ActividadEntity> actividadesSincronizadas =
-        await Hive.openBox<ActividadEntity>('actividades_sincronizar');
-
-    await actividadesSincronizadas?.clear();
-    await actividadesSincronizadas.addAll(actividades);
-    await actividadesSincronizadas.compact();
-    await actividadesSincronizadas.close();
-    update(['actividades']);
     return true;
   }
 

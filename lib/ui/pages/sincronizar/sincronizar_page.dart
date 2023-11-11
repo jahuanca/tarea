@@ -21,10 +21,8 @@ class SincronizarPage extends StatelessWidget {
             body: ListView(
               children: [
                 itemEncabezado(size),
-                GetBuilder<SincronizarController>(
-                    id: 'actividades',
-                    builder: (_) => itemSincronizado(size, 'actividades',
-                        'Actividades', _.actividades.length.toString())),
+                itemSincronizado(size, 'actividades', 'Actividades',
+                    _.sizeActividads.toString()),
                 GetBuilder<SincronizarController>(
                     id: 'sedes',
                     builder: (_) => itemSincronizado(

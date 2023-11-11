@@ -2,45 +2,44 @@ import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/core/utils/dimens.dart';
-import 'package:flutter_tareo/ui/control_asistencia/controllers/listado_asistencias_controller.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
+import 'package:flutter_tareo/ui/control_asistencia/listado_asistencia_registro/listado_asistencia_registro_controller.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/strings.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
 
-class ListadoAsistenciasPage extends StatelessWidget {
-  final ListadoAsistenciasController controller =
-      Get.find<ListadoAsistenciasController>();
+class ListadoRegistroAsistenciaPage extends StatelessWidget {
+  final ListadoAsistenciaRegistroController controller =
+      Get.find<ListadoAsistenciaRegistroController>();
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
-    return GetBuilder<ListadoAsistenciasController>(
+    return GetBuilder<ListadoAsistenciaRegistroController>(
       init: controller,
       id: 'personal_seleccionado',
       builder: (_) => WillPopScope(
-        onWillPop: () async {
-          _.onWillPop();
-          //Navigator.pop(Get.overlayContext, [_.personalSeleccionado.length, ]);
-          return new Future(() => false);
-        },
+        onWillPop: _.onWillPop,
         child: Stack(
           children: [
             Scaffold(
               appBar: getAppBar(
-                  '${_.personalSeleccionado.length}',
+                  '${_.registrosSeleccionados.length}',
                   [
-                    if (_.tarea.estadoLocal == 'P')
-                      IconButton(
-                          onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
+                    IconButton(
+                        onPressed: _.goLectorCode, icon: Icon(Icons.qr_code))
                   ],
-                  true),
+                  BOOLEAN_TRUE_VALUE),
               backgroundColor: secondColor,
               body: RefreshIndicator(
-                onRefresh: () async => _.getPersonal,
-                child: GetBuilder<ListadoAsistenciasController>(
-                  id: 'seleccionado',
+                onRefresh: () async =>
+                    _.update([LISTADO_ASISTENCIA_REGISTRO_ID]),
+                child: GetBuilder<ListadoAsistenciaRegistroController>(
+                  id: SELECCIONADO_ID,
                   builder: (_) => Column(
                     children: [
                       if (_.seleccionados.length > 0)
@@ -52,15 +51,16 @@ class ListadoAsistenciasPage extends StatelessWidget {
                         ),
                       Flexible(
                         flex: 8,
-                        child: GetBuilder<ListadoAsistenciasController>(
-                          id: 'listado',
-                          builder: (_) => _.personalSeleccionado.isEmpty
+                        child: GetBuilder<ListadoAsistenciaRegistroController>(
+                          id: LISTADO_ASISTENCIA_REGISTRO_ID,
+                          builder: (_) => _.registrosSeleccionados.isEmpty
                               ? EmptyDataWidget(
-                                  titulo: 'No existe equipo asociado.',
-                                  onPressed: () async => _.getPersonal,
+                                  titulo: EMPTY_REGISTROS_ASISTENCIAS_STRING,
+                                  onPressed: () => _
+                                      .update([LISTADO_ASISTENCIA_REGISTRO_ID]),
                                   size: size)
                               : ListView.builder(
-                                  itemCount: _.personalSeleccionado.length,
+                                  itemCount: _.registrosSeleccionados.length,
                                   itemBuilder:
                                       (BuildContext context, int index) =>
                                           itemActividad(size, context, index),
@@ -71,15 +71,9 @@ class ListadoAsistenciasPage extends StatelessWidget {
                   ),
                 ),
               ),
-              floatingActionButton: (_.tarea?.estadoLocal == 'P')
-                  ? FloatingActionButton(
-                      onPressed: _.goNuevoPersonaTareaProceso,
-                      child: Icon(Icons.add),
-                    )
-                  : Container(),
             ),
-            GetBuilder<ListadoAsistenciasController>(
-              id: 'validando',
+            GetBuilder<ListadoAsistenciaRegistroController>(
+              id: VALIDANDO_ID,
               builder: (_) => _.validando
                   ? Container(
                       color: Colors.black45,
@@ -95,12 +89,11 @@ class ListadoAsistenciasPage extends StatelessWidget {
 
   Widget itemActividad(Size size, context, index) {
     final items = [
-      {'key': 1, 'value': 'Editar'},
       {'key': 2, 'value': 'Eliminar'},
     ];
 
-    return GetBuilder<ListadoAsistenciasController>(
-        id: 'seleccionado',
+    return GetBuilder<ListadoAsistenciaRegistroController>(
+        id: SELECCIONADO_ID,
         builder: (_) => GestureDetector(
               onLongPress: _.seleccionados.length > 0
                   ? null
@@ -134,8 +127,8 @@ class ListadoAsistenciasPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(_.personalSeleccionado[index]
-                                          .personal?.nrodocumento ??
+                                  child: Text(_.registrosSeleccionados[index]
+                                          .codigoempresa ??
                                       ''),
                                 ),
                                 flex: 10,
@@ -143,13 +136,14 @@ class ListadoAsistenciasPage extends StatelessWidget {
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                 child: Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(_.personalSeleccionado[index]
-                                          .personal?.nombreCompleto ??
-                                      ''),
+                                  child: Text(formatoFecha(_
+                                          .registrosSeleccionados[index]
+                                          .fechaentrada) ??
+                                      '-Sin fecha-'),
                                 ),
-                                flex: 25,
+                                flex: 20,
                               ),
+                              Flexible(child: Container(), flex: 1),
                               Flexible(
                                   child: Container(
                                     child: _.seleccionados.length > 0
@@ -172,7 +166,7 @@ class ListadoAsistenciasPage extends StatelessWidget {
                                               Icons.more_horiz,
                                               color: primaryColor,
                                             ),
-                                            value: 1,
+                                            value: 2,
                                             items: items == null
                                                 ? []
                                                 : items
@@ -186,7 +180,7 @@ class ListadoAsistenciasPage extends StatelessWidget {
                                                 _.changeOptions(
                                                     value,
                                                     _
-                                                        .personalSeleccionado[
+                                                        .registrosSeleccionados[
                                                             index]
                                                         .key),
                                           ),
@@ -206,58 +200,30 @@ class ListadoAsistenciasPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.watch_outlined,
-                                      ),
-                                      Text(toHorasMinutos(_
-                                              .personalSeleccionado[index]
-                                              .cantidadHoras ??
-                                          0)),
-                                    ],
-                                  ),
+                                  child: Text(formatoHora(_
+                                      .registrosSeleccionados[index]
+                                      .horaentrada)),
                                 ),
-                                flex: 8,
+                                flex: 10,
                               ),
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        _.personalSeleccionado[index]
-                                                .esrendimiento
-                                            ? Icons.arrow_upward_sharp
-                                            : Icons.timeline_outlined,
-                                        color: infoColor,
-                                      ),
-                                      Text(_.personalSeleccionado[index]
-                                                  .esrendimiento ??
-                                              false
-                                          ? 'R: '
-                                          : 'J: '),
-                                      Text(
-                                          (((_.personalSeleccionado[index]
-                                                              .esrendimiento ??
-                                                          false)
-                                                      ? _
-                                                          .personalSeleccionado[
-                                                              index]
-                                                          .cantidadrendimiento
-                                                      : _
-                                                          .personalSeleccionado[
-                                                              index]
-                                                          .cantidadavance) ??
-                                                  0)
-                                              .toString(),
-                                          style:
-                                              TextStyle(color: Colors.black87)),
-                                    ],
-                                  ),
+                                  child: Text(
+                                      formatoHora(_
+                                              .registrosSeleccionados[index]
+                                              .horasalida) ??
+                                          'Salida pendiente',
+                                      style: TextStyle(
+                                          color:
+                                              (_.registrosSeleccionados[index]
+                                                          .horaentrada ==
+                                                      null)
+                                                  ? dangerColor
+                                                  : Colors.black87)),
                                 ),
-                                flex: 8,
+                                flex: 10,
                               ),
                               Flexible(child: Container(), flex: 1),
                             ],
@@ -270,66 +236,24 @@ class ListadoAsistenciasPage extends StatelessWidget {
                           child: Row(
                             children: [
                               Expanded(child: Container(), flex: 1),
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.watch_later_outlined),
-                                      Text(
-                                          formatoFechaOnlyHoras(
-                                                _.personalSeleccionado[index]
-                                                    .horainicio,
-                                                _.personalSeleccionado[index]
-                                                    .horafin,
-                                              ) ??
-                                              '-Sin horas-',
-                                          style: TextStyle(
-                                              color:
-                                                  (_.personalSeleccionado[index]
-                                                                  .horainicio ==
-                                                              null ||
-                                                          _.personalSeleccionado[index]
-                                                                  .horafin ==
-                                                              null)
-                                                      ? dangerColor
-                                                      : Colors.black87)),
-                                    ],
-                                  ),
-                                ),
-                                flex: 8,
-                              ),
-                              Expanded(child: Container(), flex: 1),
                               Expanded(
                                 child: Container(
-                                  alignment: Alignment.center,
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.pause_circle_outline),
-                                      Text(
-                                        (formatoFechaOnlyHoras(
-                                              _.personalSeleccionado[index]
-                                                  .pausainicio,
-                                              _.personalSeleccionado[index]
-                                                  .pausafin,
-                                            ) ??
-                                            '-Sin pausas-'),
-                                        style: TextStyle(
-                                            color: (_
-                                                            .personalSeleccionado[
-                                                                index]
-                                                            .pausainicio ==
-                                                        null ||
-                                                    _.personalSeleccionado[index]
-                                                            .pausainicio ==
-                                                        null)
-                                                ? Colors.grey
-                                                : Colors.black87),
-                                      ),
-                                    ],
+                                  alignment: Alignment.centerLeft,
+                                  child: Text((index + 1).toString()),
+                                ),
+                                flex: 2,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  child: Text(
+                                    _.registrosSeleccionados[index].personal
+                                            ?.nombreCompleto ??
+                                        '-sin nombre-',
+                                    style: TextStyle(
+                                        overflow: TextOverflow.ellipsis),
                                   ),
                                 ),
-                                flex: 8,
+                                flex: 12,
                               ),
                               Expanded(child: Container(), flex: 1),
                             ],
@@ -351,8 +275,8 @@ class ListadoAsistenciasPage extends StatelessWidget {
       {'key': 3, 'value': 'Actualizar datos'},
     ];
 
-    return GetBuilder<ListadoAsistenciasController>(
-      id: 'seleccionado',
+    return GetBuilder<ListadoAsistenciaRegistroController>(
+      id: SELECCIONADO_ID,
       builder: (_) => Container(
         decoration: BoxDecoration(color: Colors.white, border: Border.all()),
         child: Row(

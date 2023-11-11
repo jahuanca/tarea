@@ -19,4 +19,7 @@ const String NAVIGATION_DRAWER_WIDGET_ID_USER = 'usuario';
 const String NAVIGATION_DRAWER_WIDGET_TAG_PROFILE = 'profile';
 
 /* STRINGS */
-
+const String ALERT_STRING = "Alerta";
+const String CANCEL_STRING = "Cancelar";
+const String YES_STRING = "Sí";
+const String NO_STRING = "No";

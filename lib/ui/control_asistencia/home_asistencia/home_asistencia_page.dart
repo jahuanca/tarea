@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/core/utils/dimens.dart';
-import 'package:flutter_tareo/ui/control_asistencia/controllers/home_asistencia_controller.dart';
+import 'package:flutter_tareo/ui/control_asistencia/home_asistencia/home_asistencia_controller.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/strings.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
@@ -37,14 +39,14 @@ class HomeAsistenciaPage extends StatelessWidget {
                   Flexible(
                     flex: 8,
                     child: RefreshIndicator(
-                      onRefresh: _.getRegistrosAsistencia,
+                      onRefresh: _.getAsistencias,
                       child: GetBuilder<HomeAsistenciaController>(
-                        id: 'asistencias',
+                        id: LISTADO_ASISTENCIAS_ID,
                         builder: (_) => _.asistencias.isEmpty
                             ? EmptyDataWidget(
-                                titulo: 'No existen registros de asistencias.',
+                                titulo: EMPTY_ASISTENCIAS_STRING,
                                 size: size,
-                                onPressed: _.getRegistrosAsistencia)
+                                onPressed: _.getAsistencias)
                             : ListView.builder(
                                 itemCount: _.asistencias.length,
                                 itemBuilder:
@@ -63,7 +65,7 @@ class HomeAsistenciaPage extends StatelessWidget {
             ),
           ),
           GetBuilder<HomeAsistenciaController>(
-            id: 'validando',
+            id: VALIDANDO_ID,
             builder: (_) => _.validando
                 ? Container(
                     color: Colors.black45,
@@ -138,16 +140,8 @@ class HomeAsistenciaPage extends StatelessWidget {
                         ),
                         Flexible(child: Container(), flex: 1),
                         Flexible(
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              _.asistencias[index].idturno ?? '',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          flex: 15,
+                          child: Container(),
+                          flex: 1,
                         ),
                         Flexible(child: Container(), flex: 1),
                         Flexible(
@@ -196,8 +190,8 @@ class HomeAsistenciaPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child:
-                                Text(_.asistencias[index].turno?.detalleturno ?? ''),
+                            child: Text(
+                                _.asistencias[index].ubicacion.ubicacion ?? ''),
                           ),
                           flex: 10,
                         ),
@@ -205,9 +199,8 @@ class HomeAsistenciaPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.asistencias[index].turno
-                                    ?.turno ??
-                                ''),
+                            child: Text(
+                                _.asistencias[index].turno?.detalleturno ?? ''),
                           ),
                           flex: 10,
                         ),
@@ -243,32 +236,12 @@ class HomeAsistenciaPage extends StatelessWidget {
                           flex: 7,
                         ),
                         Flexible(
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: [
-                                Container(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 5),
-                                    child: Text(
-                                        (_.asistencias[index].idturno ?? 0)
-                                            .toString())),
-                                Icon(
-                                  Icons.arrow_upward_rounded,
-                                  color: Colors.black45,
-                                )
-                              ],
-                            ),
-                          ),
+                          child: Container(),
                           flex: 7,
                         ),
                         Flexible(child: Container(), flex: 1),
                         Flexible(
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                                _.asistencias[index].turno?.turno ?? ''),
-                          ),
+                          child: Container(),
                           flex: 15,
                         ),
                         Flexible(child: Container(), flex: 1),
@@ -290,11 +263,12 @@ class HomeAsistenciaPage extends StatelessWidget {
                               child: CircleAvatar(
                                 backgroundColor: infoColor,
                                 child: IconButton(
-                                    onPressed: () =>
-                                        _.asistencias[index].estadoLocal == 'P'
-                                            ? _.goListadoRegistros(
-                                                _.asistencias[index].key)
-                                            : _.goMigrar(_.asistencias[index].key),
+                                    onPressed: () => _.asistencias[index]
+                                                .estadoLocal ==
+                                            'P'
+                                        ? _.goListadoRegistrosAsistencias(
+                                            _.asistencias[index].key)
+                                        : _.goMigrar(_.asistencias[index].key),
                                     icon: Icon(
                                       _.asistencias[index].estadoLocal == 'P'
                                           ? Icons.search
@@ -312,10 +286,11 @@ class HomeAsistenciaPage extends StatelessWidget {
                             child: CircleAvatar(
                               backgroundColor: successColor,
                               child: IconButton(
-                                onPressed: () => _.asistencias[index].estadoLocal ==
-                                        'P'
-                                    ? _.goAprobar(_.asistencias[index].key)
-                                    : _.goListadoRegistros(_.asistencias[index].key),
+                                onPressed: () =>
+                                    _.asistencias[index].estadoLocal == 'P'
+                                        ? _.goAprobar(_.asistencias[index].key)
+                                        : _.goListadoRegistrosAsistencias(
+                                            _.asistencias[index].key),
                                 icon: _.asistencias[index].estadoLocal == 'P'
                                     ? Icon(Icons.check)
                                     : Icon(Icons.remove_red_eye),
@@ -343,9 +318,10 @@ class HomeAsistenciaPage extends StatelessWidget {
                                         : _.goEliminar(
                                             _.asistencias[index].key,
                                           ),
-                                icon: Icon(_.asistencias[index].estadoLocal == 'P'
-                                    ? Icons.edit
-                                    : Icons.delete),
+                                icon: Icon(
+                                    _.asistencias[index].estadoLocal == 'P'
+                                        ? Icons.edit
+                                        : Icons.delete),
                                 color: Colors.white,
                               ),
                             ),

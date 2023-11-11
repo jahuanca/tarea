@@ -21,9 +21,7 @@ class SincronizarRepositoryImplementation extends SincronizarRepository {
       url: '/turno',
     );
 
-    List<TurnoEntity> turnos = turnoEntityFromJson(res);
-    await setData(TURNO_HIVE_STRING, turnos);
-    return turnos.length;
+    return await setData(TURNO_HIVE_STRING, turnoEntityFromJson(res));
   }
 
   @override
@@ -31,11 +29,8 @@ class SincronizarRepositoryImplementation extends SincronizarRepository {
     final res = await http.get(
       url: '/asistencia_ubicacion',
     );
-
-    List<AsistenciaUbicacionEntity> ubicacions =
-        asistenciaUbicacionEntityFromJson(res);
-    await setData(UBICACION_HIVE_STRING, ubicacions);
-    return ubicacions.length;
+    return await setData(
+        UBICACION_HIVE_STRING, asistenciaUbicacionEntityFromJson(res));
   }
 
   @override
@@ -56,16 +51,25 @@ class SincronizarRepositoryImplementation extends SincronizarRepository {
       });
       personal.addAll(personalEmpresaEntityFromJson(res));
     }
-
-    await setData(PERSONAL_HIVE_STRING, personal);
-    return personal.length;
+    return await setData(PERSONAL_HIVE_STRING, personal);
   }
 
-  Future<void> setData(String pathBox, List<dynamic> values) async {
+  @override
+  Future<int> getActividads() async {
+    final res = await http.get(
+      url: '/actividad',
+    );
+
+    return await setData(
+        ACTIVIDAD_HIVE_STRING, asistenciaUbicacionEntityFromJson(res));
+  }
+
+  Future<int> setData(String pathBox, List<dynamic> values) async {
     final box = await Hive.openBox(pathBox);
     await box?.clear();
     await box.addAll(values);
     await box.compact();
     await box.close();
+    return values.length;
   }
 }

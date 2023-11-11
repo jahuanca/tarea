@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/strings/sqLiteDB.dart';
 
 import 'package:flutter_tareo/ui/app.dart';
-import 'package:flutter_tareo/ui/utils/adapters.dart';
+import 'package:flutter_tareo/ui/utils/init_adapters.dart';
 import 'package:path/path.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:sqflite/sqflite.dart';

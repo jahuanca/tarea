@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter_tareo/domain/entities/asistencia_fecha_turno_entity.dart';
+import 'package:flutter_tareo/domain/entities/asistencia_registro_personal_entity.dart';
 import 'package:flutter_tareo/domain/entities/asistencia_ubicacion_entity.dart';
 import 'package:flutter_tareo/domain/entities/turno_entity.dart';
 import 'package:hive/hive.dart';
@@ -80,4 +82,6 @@ Future<void> initAdapters() async {
   Hive.registerAdapter(PersonalPreTareaEsparragoEntityAdapter());
   Hive.registerAdapter(TurnoEntityAdapter());
   Hive.registerAdapter(AsistenciaUbicacionEntityAdapter());
+  Hive.registerAdapter(AsistenciaFechaTurnoEntityAdapter());
+  Hive.registerAdapter(AsistenciaRegistroPersonalEntityAdapter());
 }

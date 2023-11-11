@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter_tareo/core/utils/numbers.dart';
+import 'package:flutter_tareo/di/control_asistencia/listado_registro_asistencia_binding.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/home_asistencia/create_asistencia_use_case.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/home_asistencia/delete_asistencia_use_case.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/home_asistencia/export_asistencia_to_excel_use_case.dart';
@@ -7,13 +9,14 @@ import 'package:flutter_tareo/domain/control_asistencia/use_cases/home_asistenci
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/home_asistencia/migrar_asistencia_use_case.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/home_asistencia/update_asistencia_use_case.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/home_asistencia/upload_file_of_asistencia_use_case.dart';
-import 'package:flutter_tareo/domain/control_asistencia/use_cases/registro_asistencia/create_registro_asistencia_use_case.dart';
-import 'package:flutter_tareo/domain/control_asistencia/use_cases/registro_asistencia/get_all_registro_asistencia_use_case.dart';
+import 'package:flutter_tareo/domain/control_asistencia/use_cases/listado_registros_asistencias/get_all_asistencia_registro_use_case.dart';
 import 'package:flutter_tareo/domain/entities/asistencia_fecha_turno_entity.dart';
 import 'package:flutter_tareo/domain/entities/asistencia_registro_personal_entity.dart';
 import 'package:flutter_tareo/di/control_asistencia/nueva_asistencia_binding.dart';
-import 'package:flutter_tareo/ui/control_asistencia/pages/listado_asistencias_page.dart';
-import 'package:flutter_tareo/ui/control_asistencia/pages/nueva_asistencia_page.dart';
+import 'package:flutter_tareo/ui/control_asistencia/listado_asistencia_registro/listado_asistencia_registro_page.dart';
+import 'package:flutter_tareo/ui/control_asistencia/nueva_asistencia/nueva_asistencia_page.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
+import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
@@ -31,23 +34,30 @@ class HomeAsistenciaController extends GetxController {
   final MigrarAsistenciaUseCase _migrarAsistenciaUseCase;
   final UploadFileOfAsistenciaUseCase _uploadFileOfAsistenciaUseCase;
   final ExportAsistenciaToExcelUseCase _exportAsistenciaToExcelUseCase;
-  final GetAllRegistroAsistenciaUseCase _getAllRegistroAsistenciaUseCase;
-  final CreateRegistroAsistenciaUseCase _createRegistroAsistenciaUseCase;
+  final GetAllAsistenciaRegistroUseCase _getAllRegistroAsistenciaUseCase;
 
   HomeAsistenciaController(
-    this._createAsistenciaUseCase,
-    this._getAllAsistenciaUseCase,
-    this._updateAsistenciaUseCase,
-    this._deleteAsistenciaUseCase,
-    this._migrarAsistenciaUseCase,
-    this._uploadFileOfAsistenciaUseCase,
-    this._exportAsistenciaToExcelUseCase,
-    this._getAllRegistroAsistenciaUseCase,
-    this._createRegistroAsistenciaUseCase,
-  );
+      this._createAsistenciaUseCase,
+      this._getAllAsistenciaUseCase,
+      this._updateAsistenciaUseCase,
+      this._deleteAsistenciaUseCase,
+      this._migrarAsistenciaUseCase,
+      this._uploadFileOfAsistenciaUseCase,
+      this._exportAsistenciaToExcelUseCase,
+      this._getAllRegistroAsistenciaUseCase);
 
-  Future<void> getRegistrosAsistencia() async {
+  @override
+  void onInit() async {
+    await getAsistencias();
+    super.onInit();
+  }
+
+  Future<void> getAsistencias() async {
+    validando = BOOLEAN_TRUE_VALUE;
+    update([VALIDANDO_ID]);
     asistencias = await _getAllAsistenciaUseCase.execute();
+    validando = BOOLEAN_FALSE_VALUE;
+    update([LISTADO_ASISTENCIAS_ID, VALIDANDO_ID]);
     return;
   }
 
@@ -57,10 +67,9 @@ class HomeAsistenciaController extends GetxController {
         await Get.to<AsistenciaFechaTurnoEntity>(() => NuevaAsistenciaPage());
     if (result != null) {
       result.idusuario = PreferenciasUsuario().idUsuario;
-      int id = await _createAsistenciaUseCase.execute(result);
-      result.key = id;
+      result.key = await _createAsistenciaUseCase.execute(result);
       asistencias.add(result);
-      update(['registros']);
+      update([LISTADO_ASISTENCIAS_ID]);
     }
   }
 
@@ -101,7 +110,7 @@ class HomeAsistenciaController extends GetxController {
       'No',
       () async {
         await delete(index);
-        update(['asistencias']);
+        update([LISTADO_ASISTENCIAS_ID]);
         Get.back();
       },
       () => Get.back(),
@@ -145,8 +154,8 @@ class HomeAsistenciaController extends GetxController {
     if (asistencia.sizeDetails == null || asistencia.sizeDetails == 0) {
       return 'No se puede aprobar una asistencia que no tiene registros';
     } else {
-      asistencia.detalles = await _getAllRegistroAsistenciaUseCase
-          .execute('personal_asistencia_proceso_${asistencia.key}');
+      asistencia.detalles =
+          await _getAllRegistroAsistenciaUseCase.execute(asistencia.key);
       for (AsistenciaRegistroPersonalEntity item in asistencia?.detalles) {
         /*if(item.validadoParaAprobar!=null){
           return item.validadoParaAprobar;
@@ -156,24 +165,21 @@ class HomeAsistenciaController extends GetxController {
     return null;
   }
 
-  Future<void> goListadoRegistros(int key) async {
+  Future<void> goListadoRegistrosAsistencias(int key) async {
     int index = asistencias.indexWhere((e) => e.key == key);
-    //ListadoPersonasBinding().dependencies();
+    ListadoRegistroAsistenciaBinding().dependencies();
     final resultado =
-        await Get.to<List<num>>(() => ListadoAsistenciasPage(), arguments: {
+        await Get.to<int>(() => ListadoRegistroAsistenciaPage(), arguments: {
       'asistencia': asistencias[index],
-      'index': index,
-      'turno': asistencias[index].turno
     });
 
     if (resultado != null) {
       validando = true;
-      update(['validando']);
-      asistencias[index].sizeDetails = resultado.first;
-      //asistencias[index].cantidadAvance = resultado.last;
+      update([VALIDANDO_ID]);
+      asistencias[index].sizeDetails = resultado;
       //await _updateAsistenciaUseCase.execute(asistencias[index], asistencias[index].key);
       validando = false;
-      update(['validando', 'asistencias']);
+      update(['validando', LISTADO_ASISTENCIAS_ID]);
     }
   }
 
@@ -195,8 +201,8 @@ class HomeAsistenciaController extends GetxController {
     } else {
       basicAlert(
         Get.overlayContext,
-        'Alerta',
-        'Esta asistencai aun no ha sido aprobada',
+        ALERT_STRING,
+        'Esta asistencia aun no ha sido aprobada',
         'Aceptar',
         () => Get.back(),
       );
@@ -204,8 +210,8 @@ class HomeAsistenciaController extends GetxController {
   }
 
   Future<void> migrar(int index) async {
-    validando = true;
-    update(['validando']);
+    validando = BOOLEAN_TRUE_VALUE;
+    update([VALIDANDO_ID]);
     AsistenciaFechaTurnoEntity asistenciaMigrada =
         await _migrarAsistenciaUseCase.execute(asistencias[index]);
     if (asistenciaMigrada != null) {
@@ -220,19 +226,19 @@ class HomeAsistenciaController extends GetxController {
       await _updateAsistenciaUseCase.execute(
           asistencias[index], asistencias[index].key);
     }
-    validando = false;
+    validando = BOOLEAN_FALSE_VALUE;
 
-    update(['validando', 'asistencias']);
+    update(['validando', LISTADO_ASISTENCIAS_ID]);
   }
 
   void goEditar(int key) {
     int index = asistencias.indexWhere((element) => element.key == key);
     basicDialog(
       Get.overlayContext,
-      'Alerta',
+      ALERT_STRING,
       '¿Esta seguro de editar la siguiente tarea?',
-      'Si',
-      'No',
+      YES_STRING,
+      NO_STRING,
       () async {
         Get.back();
         await editarAsistencia(index);
@@ -251,7 +257,7 @@ class HomeAsistenciaController extends GetxController {
       asistencias[index] = result;
       await _updateAsistenciaUseCase.execute(
           asistencias[index], asistencias[index].key);
-      update(['asistencias']);
+      update([LISTADO_ASISTENCIAS_ID]);
     }
   }
 }

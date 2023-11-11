@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/turno/get_all_turnos_use_case.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/ubicacion/get_all_ubicacions_use_case.dart';
 import 'package:flutter_tareo/domain/entities/asistencia_fecha_turno_entity.dart';
 import 'package:flutter_tareo/domain/entities/asistencia_ubicacion_entity.dart';
 import 'package:flutter_tareo/domain/entities/turno_entity.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/strings.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/validators_utils.dart';
@@ -105,13 +104,12 @@ class NuevaAsistenciaController extends GetxController {
 
   void changeFecha() {
     nuevaAsistencia.fecha = fecha;
-    update(['fecha']);
     errorFecha = (nuevaAsistencia.fecha == null) ? 'Ingrese una fecha' : null;
     update(['fecha']);
   }
 
   void changeUbicacion(String id) {
-    errorUbicacion = validatorUtilText(id, 'Ubicación', {
+    errorUbicacion = validatorUtilText(id, UBICACION_LABEL, {
       'required': '',
     });
     int index = ubicacions.indexWhere((e) => e.idubicacion == int.parse(id));
@@ -126,7 +124,7 @@ class NuevaAsistenciaController extends GetxController {
   }
 
   Future<void> changeTurno(String id) async {
-    errorTurno = validatorUtilText(id, 'Turno', {
+    errorTurno = validatorUtilText(id, TURNO_LABEL, {
       'required': '',
     });
     int index = turnos?.indexWhere((e) => e.idturno.toString().trim() == id);
@@ -146,7 +144,7 @@ class NuevaAsistenciaController extends GetxController {
     if (mensaje == null) {
       nuevaAsistencia.idusuario = PreferenciasUsuario().idUsuario;
       nuevaAsistencia.estadoLocal = 'P';
-      log(nuevaAsistencia.toJson().toString());
+      nuevaAsistencia.fechamod = new DateTime.now();
       Get.back(result: nuevaAsistencia);
     } else {
       toastError('Error', mensaje);
@@ -155,7 +153,6 @@ class NuevaAsistenciaController extends GetxController {
 
   Future<String> validar() async {
     changeFecha();
-    //await changeActividad(nuevaAsistencia.idactividad.toString());
     await changeTurno(nuevaAsistencia.idturno.toString());
     await changeUbicacion(nuevaAsistencia.idubicacion.toString());
     if (errorTurno != null) return errorTurno;

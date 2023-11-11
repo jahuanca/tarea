@@ -61,7 +61,8 @@ class PersonalEmpresaEntity {
         fechamod: DateTime?.parse(json["fechamod"]),
         idtipodocumento: json["idtipodocumento"],
         fechaingreso: json['fechaingreso'] == null
-            ? null : DateTime?.parse(json["fechaingreso"]),
+            ? null
+            : DateTime?.parse(json["fechaingreso"]),
         bloqueado: json["bloqueado"],
         fechacese: json['fechacese'] == null
             ? null
@@ -85,11 +86,13 @@ class PersonalEmpresaEntity {
         "nrodocumento": nrodocumento,
         "fechamod": fechamod.toIso8601String(),
         "idtipodocumento": idtipodocumento,
-        "fechaingreso":
-            "${fechaingreso.year.toString().padLeft(4, '0')}-${fechaingreso.month.toString().padLeft(2, '0')}-${fechaingreso.day.toString().padLeft(2, '0')}",
+        "fechaingreso": fechaingreso == null
+            ? null
+            : "${fechaingreso.year.toString().padLeft(4, '0')}-${fechaingreso.month.toString().padLeft(2, '0')}-${fechaingreso.day.toString().padLeft(2, '0')}",
         "bloqueado": bloqueado,
-        "fechacese":
-            "${fechacese.year.toString().padLeft(4, '0')}-${fechacese.month.toString().padLeft(2, '0')}-${fechacese.day.toString().padLeft(2, '0')}",
+        "fechacese": fechacese == null
+            ? null
+            : "${fechacese?.year.toString().padLeft(4, '0')}-${fechacese.month.toString().padLeft(2, '0')}-${fechacese.day.toString().padLeft(2, '0')}",
         "idusuario": idusuario,
         "PersonalEmpresa_Subdivision": personalEmpresaSubdivision.toJson(),
       };

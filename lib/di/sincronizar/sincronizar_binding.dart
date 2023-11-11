@@ -1,4 +1,3 @@
-import 'package:flutter_tareo/data/repositories/actividad_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/calibre_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/centro_costo_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/cliente_repository_implementation.dart';
@@ -14,7 +13,6 @@ import 'package:flutter_tareo/data/repositories/tipo_tarea_repository_implementa
 import 'package:flutter_tareo/data/repositories/usuario_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/via_envio_repository_implementation.dart';
 import 'package:flutter_tareo/data/sincronizar/repositories/sincronizar_repository_implementation.dart';
-import 'package:flutter_tareo/domain/repositories/actividad_repository.dart';
 import 'package:flutter_tareo/domain/repositories/calibre_repository.dart';
 import 'package:flutter_tareo/domain/repositories/centro_costo_repository.dart';
 import 'package:flutter_tareo/domain/repositories/cliente_repository.dart';
@@ -30,6 +28,7 @@ import 'package:flutter_tareo/domain/repositories/tipo_tarea_repository.dart';
 import 'package:flutter_tareo/domain/repositories/usuario_repository.dart';
 import 'package:flutter_tareo/domain/repositories/via_envio_repository.dart';
 import 'package:flutter_tareo/domain/sincronizar/repositories/sincronizar_repository.dart';
+import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_personal_empresa_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_turnos_use_case.dart';
 import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_ubicacions_use_case.dart';
@@ -54,7 +53,6 @@ import 'package:get/get.dart';
 class SincronizarBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<ActividadRepository>(() => ActividadRepositoryImplementation());
     Get.lazyPut<SubdivisionRepository>(
         () => SubdivisionRepositoryImplementation());
     Get.lazyPut<LaborRepository>(() => LaborRepositoryImplementation());
@@ -105,6 +103,8 @@ class SincronizarBinding extends Bindings {
         () => SincronizarUbicacionsUseCase(Get.find()));
     Get.lazyReplace<SincronizarPersonalEmpresasUseCase>(
         () => SincronizarPersonalEmpresasUseCase(Get.find()));
+    Get.lazyReplace<SincronizarActividadsUseCase>(
+        () => SincronizarActividadsUseCase(Get.find()));
 
     Get.lazyPut<SincronizarController>(() => SincronizarController(
         Get.find(),
