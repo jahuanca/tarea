@@ -1,4 +1,4 @@
-import 'package:flutter_tareo/core/utils/strings.dart';
+import 'package:flutter_tareo/core/utils/strings/sqLiteDB.dart';
 import 'package:flutter_tareo/domain/entities/personal_pre_tarea_esparrago_entity.dart';
 import 'package:flutter_tareo/domain/repositories/personal_pre_tarea_esparrago_repository.dart';
 import 'package:hive/hive.dart';

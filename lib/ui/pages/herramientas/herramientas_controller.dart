@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_tareo/core/utils/detalles.dart';
-import 'package:flutter_tareo/core/utils/strings.dart';
+import 'package:flutter_tareo/core/utils/strings/sqLiteDB.dart';
 import 'package:flutter_tareo/core/utils/tarea.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';

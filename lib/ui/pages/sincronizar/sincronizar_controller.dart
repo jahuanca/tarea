@@ -1,4 +1,4 @@
-
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/calibre_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
@@ -15,6 +15,9 @@ import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/tipo_tarea_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
 import 'package:flutter_tareo/domain/entities/via_envio_entity.dart';
+import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_personal_empresa_use_case.dart';
+import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_turnos_use_case.dart';
+import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_ubicacions_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_calibre_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_clientes_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_current_time_world_use_case.dart';
@@ -25,7 +28,6 @@ import 'package:flutter_tareo/domain/use_cases/sincronizar/get_pre_tareo_proceso
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_tipo_tareas_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_usuarios_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_via_envio_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
@@ -37,30 +39,30 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:package_info/package_info.dart';
 
-class SincronizarController extends GetxController{
-
-  List<ActividadEntity> actividades=[];
-  List<LaborEntity> labores=[];
-  List<EsparragoAgrupaPersonalEntity> agrupaPersonals=[];
-  List<SubdivisionEntity> sedes=[];
-  List<UsuarioEntity> usuarios=[];
-  List<PersonalEmpresaEntity> personal=[];
-  List<PreTareoProcesoEntity> preTareos=[];
-  List<ClienteEntity> clientes=[];
-  List<TipoTareaEntity> tipoTareas=[];
-  List<CentroCostoEntity> centrosCosto=[];
-  List<LaboresCultivoPackingEntity> laboresCultivoPacking=[];
-  List<CultivoEntity> cultivos=[];
-  List<EstadoEntity> estados=[];
-  List<CalibreEntity> calibres=[];
-  List<ViaEnvioEntity> viaEnvios=[];
-  
+class SincronizarController extends GetxController {
+  List<ActividadEntity> actividades = [];
+  List<LaborEntity> labores = [];
+  List<EsparragoAgrupaPersonalEntity> agrupaPersonals = [];
+  List<SubdivisionEntity> sedes = [];
+  List<UsuarioEntity> usuarios = [];
+  List<PersonalEmpresaEntity> personal = [];
+  List<PreTareoProcesoEntity> preTareos = [];
+  List<ClienteEntity> clientes = [];
+  List<TipoTareaEntity> tipoTareas = [];
+  List<CentroCostoEntity> centrosCosto = [];
+  List<LaboresCultivoPackingEntity> laboresCultivoPacking = [];
+  List<CultivoEntity> cultivos = [];
+  List<EstadoEntity> estados = [];
+  List<CalibreEntity> calibres = [];
+  List<ViaEnvioEntity> viaEnvios = [];
+  int sizeTurnos = ZERO_INT_VALUE;
+  int sizeUbicacions = ZERO_INT_VALUE;
+  int sizePersonal = ZERO_INT_VALUE;
 
   final GetActividadsUseCase _getActividadsUseCase;
   final GetSubdivisonsUseCase _getSubdivisonsUseCase;
   final GetLaborsUseCase _getLaborsUseCase;
   final GetUsuariosUseCase _getUsuariosUseCase;
-  final GetPersonalsEmpresaUseCase _getPersonalsEmpresaUseCase;
   final GetCentroCostosUseCase _getCentroCostosUseCase;
   final GetCurrentTimeWorldUseCase _getCurrentTimeWorldUseCase;
   final GetPreTareoProcesosUseCase _getPreTareoProcesosUseCase;
@@ -72,41 +74,51 @@ class SincronizarController extends GetxController{
   final GetViaEnviosUseCase _getViaEnviosUseCase;
   final GetEsparragoAgrupaPersonalsUseCase _getEsparragoAgrupaPersonalsUseCase;
   final GetCalibresUseCase _getCalibresUseCase;
-  
+  final SincronizarTurnosUseCase _sincronizarTurnosUseCase;
+  final SincronizarUbicacionsUseCase _sincronizarUbicacionsUseCase;
+  final SincronizarPersonalEmpresasUseCase _sincronizarPersonalEmpresasUseCase;
 
   SincronizarController(
-    this._getActividadsUseCase, 
+    this._getActividadsUseCase,
     this._getEstadosUseCase,
     this._getViaEnviosUseCase,
     this._getCalibresUseCase,
-    this._getSubdivisonsUseCase, 
-    this._getLaborsUseCase, 
-    this._getUsuariosUseCase, 
-    this._getPersonalsEmpresaUseCase, 
-    this._getCentroCostosUseCase, 
-    this._getCurrentTimeWorldUseCase, this._getPreTareoProcesosUseCase, this._getLaboresCultivoPackingUseCase, this._getCultivosUseCase, this._getClientesUseCase, this._getTipoTareasUseCase, this._getEsparragoAgrupaPersonalsUseCase);
+    this._getSubdivisonsUseCase,
+    this._getLaborsUseCase,
+    this._getUsuariosUseCase,
+    this._getCentroCostosUseCase,
+    this._getCurrentTimeWorldUseCase,
+    this._getPreTareoProcesosUseCase,
+    this._getLaboresCultivoPackingUseCase,
+    this._getCultivosUseCase,
+    this._getClientesUseCase,
+    this._getTipoTareasUseCase,
+    this._getEsparragoAgrupaPersonalsUseCase,
+    this._sincronizarTurnosUseCase,
+    this._sincronizarUbicacionsUseCase,
+    this._sincronizarPersonalEmpresasUseCase,
+  );
 
-  bool validando=false;
+  bool validando = false;
 
   @override
-  void onInit(){
+  void onInit() {
     super.onInit();
-    PreferenciasUsuario().offLine=false;
-    validando=true;
+    PreferenciasUsuario().offLine = false;
+    validando = true;
     update(['validando']);
-
   }
 
   @override
-  void onReady()async{
+  void onReady() async {
     super.onReady();
-    
+
     await getActividades();
     await getSedes();
     await getLabores();
     await getCentrosCosto();
     await getUsuarios();
-    await getPersonal();
+    //await getPersonal();
     await getCultivos();
     await getClientes();
     await getEstados();
@@ -114,16 +126,22 @@ class SincronizarController extends GetxController{
     await getViaEnvios();
     await getTipoTareas();
     await getEsparragoAgrupaPersonal();
-    validando=false;
+
+    sizeTurnos = await _sincronizarTurnosUseCase.execute();
+    sizeUbicacions = await _sincronizarUbicacionsUseCase.execute();
+    sizePersonal = await _sincronizarPersonalEmpresasUseCase.execute();
+
+    validando = false;
     await setLog();
     update(['validando']);
-    PreferenciasUsuario().offLine=true;
+    PreferenciasUsuario().offLine = true;
   }
 
-  Future<bool> getClientes()async{
-    clientes=await _getClientesUseCase.execute();
-    Box<ClienteEntity> clientesSincronizados = await Hive.openBox<ClienteEntity>('clientes_sincronizar');
-    
+  Future<bool> getClientes() async {
+    clientes = await _getClientesUseCase.execute();
+    Box<ClienteEntity> clientesSincronizados =
+        await Hive.openBox<ClienteEntity>('clientes_sincronizar');
+
     await clientesSincronizados?.clear();
     await clientesSincronizados.addAll(clientes);
     await clientesSincronizados.compact();
@@ -132,10 +150,11 @@ class SincronizarController extends GetxController{
     return true;
   }
 
-  Future<bool> getCalibres()async{
-    calibres=await _getCalibresUseCase.execute();
-    Box<CalibreEntity> calibresSincronizados = await Hive.openBox<CalibreEntity>('calibres_sincronizar');
-    
+  Future<bool> getCalibres() async {
+    calibres = await _getCalibresUseCase.execute();
+    Box<CalibreEntity> calibresSincronizados =
+        await Hive.openBox<CalibreEntity>('calibres_sincronizar');
+
     await calibresSincronizados?.clear();
     await calibresSincronizados.addAll(calibres);
     await calibresSincronizados.compact();
@@ -144,10 +163,11 @@ class SincronizarController extends GetxController{
     return true;
   }
 
-  Future<bool> getViaEnvios()async{
-    viaEnvios=await _getViaEnviosUseCase.execute();
-    Box<ViaEnvioEntity> viaEnviosSincronizados = await Hive.openBox<ViaEnvioEntity>('via_envios_sincronizar');
-    
+  Future<bool> getViaEnvios() async {
+    viaEnvios = await _getViaEnviosUseCase.execute();
+    Box<ViaEnvioEntity> viaEnviosSincronizados =
+        await Hive.openBox<ViaEnvioEntity>('via_envios_sincronizar');
+
     await viaEnviosSincronizados?.clear();
     await viaEnviosSincronizados.addAll(viaEnvios);
     await viaEnviosSincronizados.compact();
@@ -156,10 +176,11 @@ class SincronizarController extends GetxController{
     return true;
   }
 
-  Future<bool> getEstados()async{
-    estados=await _getEstadosUseCase.execute();
-    Box<EstadoEntity> estadosSincronizados = await Hive.openBox<EstadoEntity>('estados_sincronizar');
-    
+  Future<bool> getEstados() async {
+    estados = await _getEstadosUseCase.execute();
+    Box<EstadoEntity> estadosSincronizados =
+        await Hive.openBox<EstadoEntity>('estados_sincronizar');
+
     await estadosSincronizados?.clear();
     await estadosSincronizados.addAll(estados);
     await estadosSincronizados.compact();
@@ -168,10 +189,11 @@ class SincronizarController extends GetxController{
     return true;
   }
 
-  Future<bool> getTipoTareas()async{
-    tipoTareas=await _getTipoTareasUseCase.execute();
-    Box<TipoTareaEntity> tipoTareasSincronizados = await Hive.openBox<TipoTareaEntity>('tipo_tareas_sincronizar');
-    
+  Future<bool> getTipoTareas() async {
+    tipoTareas = await _getTipoTareasUseCase.execute();
+    Box<TipoTareaEntity> tipoTareasSincronizados =
+        await Hive.openBox<TipoTareaEntity>('tipo_tareas_sincronizar');
+
     await tipoTareasSincronizados?.clear();
     await tipoTareasSincronizados.addAll(tipoTareas);
     await tipoTareasSincronizados.compact();
@@ -180,10 +202,11 @@ class SincronizarController extends GetxController{
     return true;
   }
 
-  Future<bool> getPreTareos()async{
-    preTareos=await _getPreTareoProcesosUseCase.execute();
-    Box<PreTareoProcesoEntity> preTareosSincronizados = await Hive.openBox<PreTareoProcesoEntity>('pre_tareos_sincronizar');
-    
+  Future<bool> getPreTareos() async {
+    preTareos = await _getPreTareoProcesosUseCase.execute();
+    Box<PreTareoProcesoEntity> preTareosSincronizados =
+        await Hive.openBox<PreTareoProcesoEntity>('pre_tareos_sincronizar');
+
     await preTareosSincronizados?.clear();
     await preTareosSincronizados.addAll(preTareos);
     await preTareosSincronizados.compact();
@@ -192,10 +215,12 @@ class SincronizarController extends GetxController{
     return true;
   }
 
-  Future<bool> getLaboresCultivoPacking()async{
-    laboresCultivoPacking=await _getLaboresCultivoPackingUseCase.execute();
-    Box<LaboresCultivoPackingEntity> laboresCultivoPackingSincronizados = await Hive.openBox<LaboresCultivoPackingEntity>('labores_cultivo_packing_sincronizar');
-    
+  Future<bool> getLaboresCultivoPacking() async {
+    laboresCultivoPacking = await _getLaboresCultivoPackingUseCase.execute();
+    Box<LaboresCultivoPackingEntity> laboresCultivoPackingSincronizados =
+        await Hive.openBox<LaboresCultivoPackingEntity>(
+            'labores_cultivo_packing_sincronizar');
+
     await laboresCultivoPackingSincronizados?.clear();
     await laboresCultivoPackingSincronizados.addAll(laboresCultivoPacking);
     await laboresCultivoPackingSincronizados.compact();
@@ -204,10 +229,11 @@ class SincronizarController extends GetxController{
     return true;
   }
 
-  Future<bool> getActividades()async{
-    actividades=await _getActividadsUseCase.execute();
-    Box<ActividadEntity> actividadesSincronizadas = await Hive.openBox<ActividadEntity>('actividades_sincronizar');
-    
+  Future<bool> getActividades() async {
+    actividades = await _getActividadsUseCase.execute();
+    Box<ActividadEntity> actividadesSincronizadas =
+        await Hive.openBox<ActividadEntity>('actividades_sincronizar');
+
     await actividadesSincronizadas?.clear();
     await actividadesSincronizadas.addAll(actividades);
     await actividadesSincronizadas.compact();
@@ -216,9 +242,10 @@ class SincronizarController extends GetxController{
     return true;
   }
 
-  Future<void> getSedes()async{
-    sedes= await _getSubdivisonsUseCase.execute();
-    var sedesSincronizadas = await Hive.openBox<SubdivisionEntity>('sedes_sincronizar');
+  Future<void> getSedes() async {
+    sedes = await _getSubdivisonsUseCase.execute();
+    var sedesSincronizadas =
+        await Hive.openBox<SubdivisionEntity>('sedes_sincronizar');
     await sedesSincronizadas.clear();
     await sedesSincronizadas.addAll(sedes);
     await sedesSincronizadas.compact();
@@ -226,9 +253,10 @@ class SincronizarController extends GetxController{
     update(['sedes']);
   }
 
-  Future<void> getCultivos()async{
-    cultivos= await _getCultivosUseCase.execute();
-    var cultivosSincronizadas = await Hive.openBox<CultivoEntity>('cultivos_sincronizar');
+  Future<void> getCultivos() async {
+    cultivos = await _getCultivosUseCase.execute();
+    var cultivosSincronizadas =
+        await Hive.openBox<CultivoEntity>('cultivos_sincronizar');
     await cultivosSincronizadas.clear();
     await cultivosSincronizadas.addAll(cultivos);
     await cultivosSincronizadas.compact();
@@ -236,9 +264,10 @@ class SincronizarController extends GetxController{
     update(['cultivos']);
   }
 
-  Future<void> getLabores()async{
-    labores= await _getLaborsUseCase.execute();
-    var laboresSincronizadas = await Hive.openBox<LaborEntity>('labores_sincronizar');
+  Future<void> getLabores() async {
+    labores = await _getLaborsUseCase.execute();
+    var laboresSincronizadas =
+        await Hive.openBox<LaborEntity>('labores_sincronizar');
     await laboresSincronizadas.clear();
     await laboresSincronizadas.addAll(labores);
     await laboresSincronizadas.compact();
@@ -246,9 +275,11 @@ class SincronizarController extends GetxController{
     update(['labores']);
   }
 
-  Future<void> getEsparragoAgrupaPersonal()async{
-    agrupaPersonals= await _getEsparragoAgrupaPersonalsUseCase.execute();
-    var agrupaPersonalSincronizar = await Hive.openBox<EsparragoAgrupaPersonalEntity>('esparrago_agrupa_sincronizar');
+  Future<void> getEsparragoAgrupaPersonal() async {
+    agrupaPersonals = await _getEsparragoAgrupaPersonalsUseCase.execute();
+    var agrupaPersonalSincronizar =
+        await Hive.openBox<EsparragoAgrupaPersonalEntity>(
+            'esparrago_agrupa_sincronizar');
     await agrupaPersonalSincronizar.clear();
     await agrupaPersonalSincronizar.addAll(agrupaPersonals);
     await agrupaPersonalSincronizar.compact();
@@ -256,55 +287,43 @@ class SincronizarController extends GetxController{
     update(['esparrago_agrupa']);
   }
 
-  Future<void> setLog()async{
+  Future<void> setLog() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     String version = packageInfo.version;
     var logs = await Hive.openBox<LogEntity>('log_sincronizar');
-    PreferenciasUsuario().lastVersion=version;
-    PreferenciasUsuario().lastVersionDate=formatoFechaHora((await _getCurrentTimeWorldUseCase.execute()).datetime);
+    PreferenciasUsuario().lastVersion = version;
+    PreferenciasUsuario().lastVersionDate = formatoFechaHora(
+        (await _getCurrentTimeWorldUseCase.execute()).datetime);
     print(PreferenciasUsuario().lastVersion);
     print(PreferenciasUsuario().lastVersionDate);
-    await logs.add(
-      new LogEntity(
-        id: DateTime.now().microsecond,
-        fecha: DateTime.now(),
-        version: version,
-      )
-    );
+    await logs.add(new LogEntity(
+      id: DateTime.now().microsecond,
+      fecha: DateTime.now(),
+      version: version,
+    ));
     await logs.close();
     update(['version']);
   }
 
-  Future<void> getUsuarios()async{
-    usuarios= await _getUsuariosUseCase.execute();
-    var usuariosSincronizadas = await Hive.openBox<UsuarioEntity>('usuarios_sincronizar');
+  Future<void> getUsuarios() async {
+    usuarios = await _getUsuariosUseCase.execute();
+    var usuariosSincronizadas =
+        await Hive.openBox<UsuarioEntity>('usuarios_sincronizar');
     await usuariosSincronizadas.clear();
     await usuariosSincronizadas.addAll(usuarios);
     await usuariosSincronizadas.compact();
     await usuariosSincronizadas.close();
     update(['usuarios']);
-
   }
 
-  Future<void> getPersonal()async{
-    personal= await _getPersonalsEmpresaUseCase.execute();
-    var personalSincronizadas = await Hive.openBox<PersonalEmpresaEntity>('personal_sincronizar');
-    await personalSincronizadas.clear();
-    await personalSincronizadas.addAll(personal);
-    await personalSincronizadas.compact();
-    await personalSincronizadas.close();
-    update(['personal_empresa']);
-  }
-
-  Future<void> getCentrosCosto()async{
-    centrosCosto= await _getCentroCostosUseCase.execute();
-    Box<CentroCostoEntity> centrosCostoSincronizados = await Hive.openBox<CentroCostoEntity>('centros_costo_sincronizar');
+  Future<void> getCentrosCosto() async {
+    centrosCosto = await _getCentroCostosUseCase.execute();
+    Box<CentroCostoEntity> centrosCostoSincronizados =
+        await Hive.openBox<CentroCostoEntity>('centros_costo_sincronizar');
     await centrosCostoSincronizados.clear();
     await centrosCostoSincronizados.addAll(centrosCosto);
     await centrosCostoSincronizados.compact();
     await centrosCostoSincronizados.close();
     update(['centro_costo']);
   }
-
-
 }

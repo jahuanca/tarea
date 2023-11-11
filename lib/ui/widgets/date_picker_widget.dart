@@ -30,8 +30,8 @@ class DatePickerWidget {
     this.error,
     this.onlyDate = true,
     this.dateSelected,
-    this.maxYear = 2023,
-    this.minYear = 2020,
+    this.maxYear = 2027,
+    this.minYear = 2022,
     this.minDate,
   });
 
@@ -57,8 +57,9 @@ class DatePickerWidget {
     TimeOfDay picked;
     picked = await showTimePicker(
       context: context,
-      initialTime:
-          (minDate != null) ? TimeOfDay.fromDateTime(selectedDate ?? minDate) : TimeOfDay.now(),
+      initialTime: (minDate != null)
+          ? TimeOfDay.fromDateTime(selectedDate ?? minDate)
+          : TimeOfDay.now(),
     );
     if (picked == null) {
       return selectedDate;
@@ -77,7 +78,7 @@ class DatePickerWidget {
         toastError('Error', 'Fecha debe ser mayor');
         return minDate.add(Duration(minutes: 1));
       }
-    }else{
+    } else {
       return selectedDate;
     }
     //onChanged(selectedDate, picked);

@@ -1,3 +1,4 @@
+import 'package:flutter_tareo/core/utils/strings/hiveDB.dart';
 import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/repositories/personal_empresa_repository.dart';
@@ -12,7 +13,7 @@ class PersonalEmpresaRepositoryImplementation
   Future<List<PersonalEmpresaEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
       Box dataHive =
-          await Hive.openBox<PersonalEmpresaEntity>('personal_sincronizar');
+          await Hive.openBox<PersonalEmpresaEntity>(PERSONAL_HIVE_STRING);
       List<PersonalEmpresaEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       await dataHive.close();
@@ -33,7 +34,7 @@ class PersonalEmpresaRepositoryImplementation
       int idSubdivision) async {
     if (PreferenciasUsuario().offLine) {
       Box<PersonalEmpresaEntity> dataHive =
-          await Hive.openBox<PersonalEmpresaEntity>('personal_sincronizar');
+          await Hive.openBox<PersonalEmpresaEntity>(PERSONAL_HIVE_STRING);
       List<PersonalEmpresaEntity> local = [];
       dataHive.values.forEach((element) {
         if (element.personalEmpresaSubdivision != null &&

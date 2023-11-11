@@ -1,5 +1,5 @@
 import 'package:flutter_tareo/di/home/navigation_binding.dart';
-import 'package:flutter_tareo/di/sincronizar_binding.dart';
+import 'package:flutter_tareo/di/sincronizar/sincronizar_binding.dart';
 import 'package:flutter_tareo/domain/entities/log_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';

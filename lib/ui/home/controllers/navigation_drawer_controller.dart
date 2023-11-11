@@ -1,17 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/data/repositories/storage_repository_implementation.dart';
-import 'package:flutter_tareo/di/aprobar_binding.dart';
-import 'package:flutter_tareo/di/esparragos_binding.dart';
-import 'package:flutter_tareo/di/herramientas_binding.dart';
-import 'package:flutter_tareo/di/home/home_binding.dart';
 import 'package:flutter_tareo/di/login/login_binding.dart';
-import 'package:flutter_tareo/di/migrar_binding.dart';
-import 'package:flutter_tareo/di/pre_tareos_binding.dart';
-import 'package:flutter_tareo/di/pre_tareos_uva_binding.dart';
-import 'package:flutter_tareo/di/tareas_binding.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
-import 'package:flutter_tareo/ui/control_asistencia/pages/home_asistencia_page.dart';
 import 'package:flutter_tareo/ui/home/controllers/navigation_controller.dart';
 import 'package:flutter_tareo/ui/home/utils/dynamics.dart';
 import 'package:flutter_tareo/ui/login/pages/login_page.dart';

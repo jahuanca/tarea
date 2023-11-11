@@ -92,29 +92,9 @@ Drawer getDrawer({Size size, GlobalKey<ScaffoldState> scaffoldKey}) {
                       NAVIGATIONS[e].icon,
                       NAVIGATIONS[e].title,
                       () => _.goEvent(e, scaffoldKey),
-                      _.index == e.index))
+                      _.index == NAVIGATIONS[e].value))
                   .toList(),
             )
-            /*_itemDrawer(size, Icons.home, 'Inicio', () => _.goEvent(
-              titles.start,
-              scaffoldKey),
-                _.index == 0),
-            _itemDrawer(size, Icons.person_pin_outlined, 'Asistencia',
-                () => _.goAsistencia(scaffoldKey), _.index == 0),
-            _itemDrawer(size, Icons.file_copy, 'Tareas',
-                () => _.goTareas(scaffoldKey), _.index == 1),
-            if (PreferenciasUsuario().idSede == 7)
-              _itemDrawer(size, 'assets/images/uva_icon.png', 'Packing',
-                  () => _.goPreTareoUva(scaffoldKey), _.index == 5),
-            if (PreferenciasUsuario().idSede == 7)
-              _itemDrawer(size, 'assets/images/arandano_icon.png', 'Esparrago',
-                  () => _.goEsparragos(scaffoldKey), _.index == 6),
-            _itemDrawer(size, Icons.construction, 'Herramientas',
-                () => _.goHerramientas(scaffoldKey), _.index == 7),
-            _itemDrawer(size, Icons.settings, 'Configuración', _.goMisEventos,
-                _.index == -1),
-            _itemDrawer(size, Icons.exit_to_app, 'Cerrar sesión',
-                _.cerrarSesion, _.index == -1),*/
           ],
         ),
       ),

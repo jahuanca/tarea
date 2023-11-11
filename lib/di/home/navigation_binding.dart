@@ -1,4 +1,5 @@
 import 'package:flutter_tareo/di/aprobar_binding.dart';
+import 'package:flutter_tareo/di/control_asistencia/asistencias_binding.dart';
 import 'package:flutter_tareo/di/esparragos_binding.dart';
 import 'package:flutter_tareo/di/herramientas_binding.dart';
 import 'package:flutter_tareo/di/home/home_binding.dart';
@@ -20,6 +21,7 @@ class NavigationBinding extends Bindings {
     PreTareosUvaBinding().dependencies();
     EsparragosBinding().dependencies();
     HerramientasBinding().dependencies();
+    AsistenciaBinding().dependencies();
 
     Get.lazyPut<NavigationController>(() => NavigationController());
   }

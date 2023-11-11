@@ -1,36 +1,15 @@
 import 'dart:async';
 
-import 'package:flutter_tareo/ui/control_asistencia/pages/home_asistencia_page.dart';
-import 'package:flutter_tareo/ui/home/pages/home_page.dart';
 import 'package:flutter_tareo/ui/home/utils/dynamics.dart';
-import 'package:flutter_tareo/ui/pages/aprobar/aprobar_page.dart';
-import 'package:flutter_tareo/ui/pages/esparragos/esparragos_page.dart';
-import 'package:flutter_tareo/ui/pages/herramientas/herramientas_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tareo/ui/pages/migrar/migrar_page.dart';
-import 'package:flutter_tareo/ui/pages/pre_tareos/pre_tareos_page.dart';
-import 'package:flutter_tareo/ui/pages/pre_tareos_uva/pre_tareos_uva_page.dart';
 import 'package:flutter_tareo/ui/pages/search/search_page.dart';
-import 'package:flutter_tareo/ui/pages/tareas/tareas_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class NavigationController extends GetxController {
   NavigationController();
-
-  final List<Widget> listWidgets = [
-    HomePage(),
-    TareasPage(),
-    AprobarPage(),
-    MigrarPage(),
-    PreTareosPage(),
-    PreTareosUvaPage(),
-    EsparragosPage(),
-    HerramientasPage(),
-    HomeAsistenciaPage(),
-  ];
 
   @override
   void onReady() async {
@@ -43,8 +22,7 @@ class NavigationController extends GetxController {
   List<Widget> actions = [];
 
   void eventos(int value, GlobalKey<ScaffoldState> scaffoldKey) {
-    titles currentTitle =
-        NAVIGATIONS.keys.firstWhere((e) => NAVIGATIONS[e].value == value);
+    titles currentTitle = getTitle(value);
     actions.clear();
     titulo = NAVIGATIONS[currentTitle].title;
     indexWidget = NAVIGATIONS[currentTitle].value;

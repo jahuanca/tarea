@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/di/esparragos_binding.dart';
+import 'package:flutter_tareo/di/home/home_binding.dart';
+import 'package:flutter_tareo/di/pre_tareos_uva_binding.dart';
 import 'package:flutter_tareo/di/tareas_binding.dart';
 import 'package:flutter_tareo/ui/control_asistencia/pages/home_asistencia_page.dart';
 import 'package:flutter_tareo/ui/home/pages/home_page.dart';
 import 'package:flutter_tareo/ui/home/utils/navigation.dart';
 import 'package:flutter_tareo/ui/pages/esparragos/esparragos_page.dart';
 import 'package:flutter_tareo/ui/pages/herramientas/herramientas_page.dart';
-import 'package:flutter_tareo/ui/pages/pre_tareos/pre_tareos_page.dart';
 import 'package:flutter_tareo/ui/pages/pre_tareos_uva/pre_tareos_uva_page.dart';
 import 'package:flutter_tareo/ui/pages/tareas/tareas_page.dart';
 
@@ -20,12 +22,15 @@ enum titles {
   logout,
 }
 
+titles getTitle(int value) =>
+    NAVIGATIONS.keys.firstWhere((e) => NAVIGATIONS[e].value == value);
+
 Map<titles, NavigationItem> NAVIGATIONS = {
   titles.start: NavigationItem(
     icon: Icons.home,
     title: 'Inicio',
     value: 0,
-    dependencies: () {},
+    dependencies: () => HomeBinding().dependencies(),
     widget: HomePage(),
   ),
   titles.tareas: NavigationItem(
@@ -39,14 +44,14 @@ Map<titles, NavigationItem> NAVIGATIONS = {
     icon: 'assets/images/uva_icon.png',
     title: 'Packing',
     value: 5,
-    dependencies: () {},
+    dependencies: () => PreTareosUvaBinding().dependencies(),
     widget: PreTareosUvaPage(),
   ),
   titles.esparrago: NavigationItem(
     icon: 'assets/images/arandano_icon.png',
     title: 'Esparrago',
     value: 6,
-    dependencies: () {},
+    dependencies: () => EsparragosBinding().dependencies(),
     widget: EsparragosPage(),
   ),
   titles.herramientas: NavigationItem(

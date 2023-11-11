@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/ui/home/controllers/navigation_controller.dart';
+import 'package:flutter_tareo/ui/home/utils/dynamics.dart';
 import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/home/widgets/navigation_drawer_widget.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
@@ -31,8 +32,9 @@ class NavigationPage extends GetWidget<NavigationController> {
             ),
             drawer: getDrawer(size: size, scaffoldKey: _scaffoldKey),
             body: GetBuilder<NavigationController>(
-                builder: (_) => navigationController
-                    .listWidgets[navigationController.indexWidget]),
+                builder: (_) =>
+                    NAVIGATIONS[getTitle(navigationController.indexWidget)]
+                        .widget),
           ),
         ),
       ),

@@ -1,5 +1,5 @@
 import 'package:flutter_tareo/core/utils/numbers.dart';
-import 'package:flutter_tareo/di/sincronizar_binding.dart';
+import 'package:flutter_tareo/di/sincronizar/sincronizar_binding.dart';
 import 'package:flutter_tareo/ui/pages/sincronizar/sincronizar_page.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';

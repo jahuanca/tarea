@@ -11,7 +11,7 @@ class NavigationItem {
     @required this.title,
     @required this.icon,
     @required this.value,
-    @required dependencies,
-    @required widget,
+    @required this.dependencies,
+    @required this.widget,
   });
 }
