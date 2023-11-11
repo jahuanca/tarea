@@ -1,3 +1,4 @@
+import 'package:flutter_tareo/core/utils/strings/hiveDB.dart';
 import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/repositories/actividad_repository.dart';
@@ -10,8 +11,7 @@ class ActividadRepositoryImplementation extends ActividadRepository {
   @override
   Future<List<ActividadEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
-      Box dataHive =
-          await Hive.openBox<ActividadEntity>('actividades_sincronizar');
+      Box dataHive = await Hive.openBox<ActividadEntity>(ACTIVIDAD_HIVE_STRING);
       List<ActividadEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       await dataHive.compact();
@@ -33,7 +33,7 @@ class ActividadRepositoryImplementation extends ActividadRepository {
       Map<String, dynamic> valores) async {
     if (PreferenciasUsuario().offLine) {
       Box<ActividadEntity> dataHive =
-          await Hive.openBox<ActividadEntity>('actividades_sincronizar');
+          await Hive.openBox<ActividadEntity>(ACTIVIDAD_HIVE_STRING);
       List<ActividadEntity> local = [];
 
       dataHive.values.forEach((e) {

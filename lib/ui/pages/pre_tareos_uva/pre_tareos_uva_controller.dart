@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -76,10 +75,10 @@ class PreTareosUvaController extends GetxController {
   }
 
   Future<void> goExcel(int index) async {
-    validando=true;
+    validando = true;
     update(['validando']);
     await _exportPackingToExcelUseCase.execute(preTareosUva[index].key);
-    validando=false;
+    validando = false;
     update(['validando']);
   }
 
@@ -87,11 +86,9 @@ class PreTareosUvaController extends GetxController {
     String mensaje = await validarParaAprobar(index);
     if (mensaje != null) {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        mensaje,
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: mensaje,
+        onPressed: () => Get.back(),
       );
     } else {
       basicDialog(
@@ -134,7 +131,8 @@ class PreTareosUvaController extends GetxController {
     PreTareoProcesoUvaEntity tarea = preTareosUva[index];
     if (tarea.sizeDetails == null || tarea.sizeDetails == 0) {
       return 'No se puede aprobar una actividad que no tiene personal';
-    }/*  else {
+    }
+    /*  else {
       for (var item in tarea.detalles) {
         if (!item.validadoParaAprobar) {
           return 'Verifique que todos los datos del personal esten llenos';
@@ -160,11 +158,9 @@ class PreTareosUvaController extends GetxController {
       );
     } else {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        'Esta tarea aun no ha sido aprobada',
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: 'Esta tarea aun no ha sido aprobada',
+        onPressed: () => Get.back(),
       );
     }
   }
@@ -200,16 +196,15 @@ class PreTareosUvaController extends GetxController {
     otras.addAll(preTareosUva);
     otras.removeAt(index);
     ListadoPersonasPreTareoUvaBinding().dependencies();
-    final resultado = await Get.to<int>(
-        () => ListadoPersonasPreTareoUvaPage(),
-        arguments: {
-          'otras': otras,
-          'tarea': preTareosUva[index],
-          'index': index,
-        });
+    final resultado =
+        await Get.to<int>(() => ListadoPersonasPreTareoUvaPage(), arguments: {
+      'otras': otras,
+      'tarea': preTareosUva[index],
+      'index': index,
+    });
 
     if (resultado != null) {
-      preTareosUva[index].sizeDetails=resultado;
+      preTareosUva[index].sizeDetails = resultado;
       await _updatePreTareoProcesoUvaUseCase.execute(
           preTareosUva[index], preTareosUva[index].key);
     }
@@ -239,8 +234,8 @@ class PreTareosUvaController extends GetxController {
     final result =
         await Get.to<PreTareoProcesoUvaEntity>(() => NuevaPreTareaUvaPage());
     if (result != null) {
-      int id=await _createPreTareoProcesoUvaUseCase.execute(result);
-      result.key=id;
+      int id = await _createPreTareoProcesoUvaUseCase.execute(result);
+      result.key = id;
       preTareosUva.insert(0, result);
       update(['tareas']);
     }
@@ -267,8 +262,8 @@ class PreTareosUvaController extends GetxController {
         arguments: {'tarea': preTareosUva[index]});
     if (result != null) {
       result.idusuario = PreferenciasUsuario().idUsuario;
-      int id=await _createPreTareoProcesoUvaUseCase.execute(result);
-      result.key=id;
+      int id = await _createPreTareoProcesoUvaUseCase.execute(result);
+      result.key = id;
       preTareosUva.add(result);
       update(['tareas']);
     }

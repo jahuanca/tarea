@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +52,7 @@ class PreTareosController extends GetxController {
   }
 
   Future<void> getTareas() async {
-    preTareos=[];
+    preTareos = [];
     preTareos = await _getAllPreTareoProcesoUseCase.execute();
     update(['tareas']);
     return;
@@ -86,11 +85,9 @@ class PreTareosController extends GetxController {
     String mensaje = await validarParaAprobar(index);
     if (mensaje != null) {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        mensaje,
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: mensaje,
+        onPressed: () => Get.back(),
       );
     } else {
       basicDialog(
@@ -159,11 +156,9 @@ class PreTareosController extends GetxController {
       );
     } else {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        'Esta tarea aun no ha sido aprobada',
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: 'Esta tarea aun no ha sido aprobada',
+        onPressed: () => Get.back(),
       );
     }
   }

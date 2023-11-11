@@ -94,11 +94,9 @@ class NuevaAsistenciaController extends GetxController {
 
   void mostrarDialog(String mensaje) {
     basicAlert(
-      Get.overlayContext,
-      'Alerta',
-      mensaje,
-      'Aceptar',
-      () => Get.back(),
+      context: Get.overlayContext,
+      message: mensaje,
+      onPressed: () => Get.back(),
     );
   }
 

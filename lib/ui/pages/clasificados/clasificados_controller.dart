@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +53,7 @@ class ClasificadosController extends GetxController {
   }
 
   Future<void> getTareas() async {
-    clasificados=[];
+    clasificados = [];
     clasificados = await _getAllClasificacionUseCase.execute();
     update(['tareas']);
     return;
@@ -87,11 +86,9 @@ class ClasificadosController extends GetxController {
     String mensaje = await validarParaAprobar(index);
     if (mensaje != null) {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        mensaje,
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: mensaje,
+        onPressed: () => Get.back(),
       );
     } else {
       basicDialog(
@@ -121,7 +118,8 @@ class ClasificadosController extends GetxController {
 
         clasificados[index].pathUrl = _image.path;
         clasificados[index].estadoLocal = 'A';
-        await _updateClasificacionUseCase.execute(clasificados[index], clasificados[index].key);
+        await _updateClasificacionUseCase.execute(
+            clasificados[index], clasificados[index].key);
 
         update(['seleccionado']);
       }
@@ -161,11 +159,9 @@ class ClasificadosController extends GetxController {
       );
     } else {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        'Esta tarea aun no ha sido aprobada',
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: 'Esta tarea aun no ha sido aprobada',
+        onPressed: () => Get.back(),
       );
     }
   }
@@ -178,12 +174,15 @@ class ClasificadosController extends GetxController {
     if (tareaMigrada != null) {
       toastExito('Exito', 'Tarea migrada con exito');
       clasificados[index].estadoLocal = 'M';
-      clasificados[index].itempretareaesparrago= tareaMigrada.itempretareaesparrago;
-      await _updateClasificacionUseCase.execute(clasificados[index], clasificados[index].key);
+      clasificados[index].itempretareaesparrago =
+          tareaMigrada.itempretareaesparrago;
+      await _updateClasificacionUseCase.execute(
+          clasificados[index], clasificados[index].key);
       tareaMigrada = await _uploadFileOfPreTareoUseCase.execute(
           clasificados[index], File(clasificados[index].pathUrl));
       clasificados[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
-      await _updateClasificacionUseCase.execute(clasificados[index], clasificados[index].key);
+      await _updateClasificacionUseCase.execute(
+          clasificados[index], clasificados[index].key);
     }
     validando = false;
     update(['validando', 'tareas']);
@@ -193,23 +192,21 @@ class ClasificadosController extends GetxController {
     await _migrarAllPreTareoUseCase.execute(preTareos[index]);
   } */
 
-
   Future<void> goListadoCajas(int index) async {
     List<PreTareaEsparragoEntity> otras = [];
     otras.addAll(clasificados);
     otras.removeAt(index);
     ListadoCajasBinding().dependencies();
-    final resultado = await Get.to<int>(
-        () => ListadoCajasPage(),
-        arguments: {
-          'otras': otras,
-          'tarea': clasificados[index],
-          'index': index,
-        });
+    final resultado = await Get.to<int>(() => ListadoCajasPage(), arguments: {
+      'otras': otras,
+      'tarea': clasificados[index],
+      'index': index,
+    });
 
     if (resultado != null) {
       clasificados[index].sizeDetails = resultado;
-      await _updateClasificacionUseCase.execute(clasificados[index], clasificados[index].key);
+      await _updateClasificacionUseCase.execute(
+          clasificados[index], clasificados[index].key);
       update(['tareas']);
     }
   }
@@ -219,17 +216,17 @@ class ClasificadosController extends GetxController {
     otras.addAll(clasificados);
     otras.removeAt(index);
     ListadoPersonasClasificacionBinding().dependencies();
-    final resultado = await Get.to<int>(
-        () => ListadoPersonasClasificacionPage(),
-        arguments: {
-          'otras': otras,
-          'tarea': clasificados[index],
-          'index': index,
-        });
+    final resultado =
+        await Get.to<int>(() => ListadoPersonasClasificacionPage(), arguments: {
+      'otras': otras,
+      'tarea': clasificados[index],
+      'index': index,
+    });
 
     if (resultado != null) {
       clasificados[index].sizeDetails = resultado;
-      await _updateClasificacionUseCase.execute(clasificados[index], clasificados[index].key);
+      await _updateClasificacionUseCase.execute(
+          clasificados[index], clasificados[index].key);
       update(['tareas']);
     }
   }
@@ -272,7 +269,8 @@ class ClasificadosController extends GetxController {
     if (result != null) {
       result.idusuario = PreferenciasUsuario().idUsuario;
       clasificados[index] = result;
-      await _updateClasificacionUseCase.execute(clasificados[index], clasificados[index].key);
+      await _updateClasificacionUseCase.execute(
+          clasificados[index], clasificados[index].key);
       update(['tareas']);
     }
   }

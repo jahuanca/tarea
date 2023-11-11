@@ -23,8 +23,7 @@ class AgregarPersonaController extends GetxController {
   TareaProcesoEntity tareaSeleccionada;
 
   PersonalEmpresaEntity personaSeleccionada;
-  PersonalTareaProcesoEntity nuevoPersonal =
-      new PersonalTareaProcesoEntity();
+  PersonalTareaProcesoEntity nuevoPersonal = new PersonalTareaProcesoEntity();
   CreatePersonalTareaProcesoUseCase _createPersonalTareaProcesoUseCase;
   UpdatePersonalTareaProcesoUseCase _updatePersonalTareaProcesoUseCase;
 
@@ -45,8 +44,7 @@ class AgregarPersonaController extends GetxController {
     this._updatePersonalTareaProcesoUseCase,
   );
 
-
-  void extraerDetalles(){
+  void extraerDetalles() {
     /*nuevoPersonal.cantidadavance = 0;
     nuevoPersonal.cantidadrendimiento = 0;
     nuevoPersonal.turno = tareaSeleccionada.turnotareo;
@@ -65,22 +63,27 @@ class AgregarPersonaController extends GetxController {
     nuevoPersonal.esrendimiento = tareaSeleccionada.esrendimiento;
     nuevoPersonal.diasiguiente = tareaSeleccionada.diasiguiente;
 
-    changeCantidadAvance(nuevoPersonal.cantidadavance!=null ? nuevoPersonal.cantidadavance.toString() :  '0');
+    changeCantidadAvance(nuevoPersonal.cantidadavance != null
+        ? nuevoPersonal.cantidadavance.toString()
+        : '0');
     changeRendimiento(nuevoPersonal.esjornal ?? false);
-    changeCantidadRendimiento(nuevoPersonal.cantidadrendimiento!=null ? nuevoPersonal.cantidadrendimiento.toString() :  '0');
-    changeTurno(nuevoPersonal.turno!=null ? nuevoPersonal.turno.toString() :  'D');
+    changeCantidadRendimiento(nuevoPersonal.cantidadrendimiento != null
+        ? nuevoPersonal.cantidadrendimiento.toString()
+        : '0');
+    changeTurno(
+        nuevoPersonal.turno != null ? nuevoPersonal.turno.toString() : 'D');
     changeDiaSiguiente(nuevoPersonal.diasiguiente ?? false);
-    
+
     calcularCantidadHoras();
     update([
-          'hora_inicio',
-          'hora_fin',
-          'pausa_inicio',
-          'pausa_fin',
-          'turno',
-          'dia_siguiente',
-          'rendimiento'
-        ]);
+      'hora_inicio',
+      'hora_fin',
+      'pausa_inicio',
+      'pausa_fin',
+      'turno',
+      'dia_siguiente',
+      'rendimiento'
+    ]);
   }
 
   @override
@@ -91,7 +94,6 @@ class AgregarPersonaController extends GetxController {
         tareaSeleccionada = Get.arguments['tarea'] as TareaProcesoEntity;
 
         extraerDetalles();
-        
       }
       if (Get.arguments['cantidad'] != null) {
         cantidadEnviada = Get.arguments['cantidad'] as int;
@@ -99,9 +101,9 @@ class AgregarPersonaController extends GetxController {
       }
 
       if (Get.arguments['personal_tarea_proceso'] != null) {
-        nuevoPersonal = Get.arguments['personal_tarea_proceso'] as PersonalTareaProcesoEntity;
+        nuevoPersonal = Get.arguments['personal_tarea_proceso']
+            as PersonalTareaProcesoEntity;
         editando = true;
-        
       }
 
       if (Get.arguments['personal_seleccionado'] != null) {
@@ -109,16 +111,15 @@ class AgregarPersonaController extends GetxController {
             as List<PersonalTareaProcesoEntity>;
       }
 
-
       if (Get.arguments['personal'] != null) {
         personalEmpresa =
             Get.arguments['personal'] as List<PersonalEmpresaEntity>;
         if (personalEmpresa.length > 0) {
-          if(editando){
-            personaSeleccionada=nuevoPersonal.personal;
-          }else{
+          if (editando) {
+            personaSeleccionada = nuevoPersonal.personal;
+          } else {
             personaSeleccionada = personalEmpresa.first;
-            nuevoPersonal.codigoempresa=personalEmpresa.first.codigoempresa;
+            nuevoPersonal.codigoempresa = personalEmpresa.first.codigoempresa;
           }
           changePersonal(nuevoPersonal.codigoempresa ?? 'null');
         }
@@ -147,15 +148,13 @@ class AgregarPersonaController extends GetxController {
     int index = personalSeleccionado.indexWhere((e) => e.codigoempresa == id);
     if (index != -1) {
       nuevoPersonal.personal = personaSeleccionada;
-      nuevoPersonal.personal.codigoempresa =
-          personaSeleccionada.codigoempresa;
+      nuevoPersonal.personal.codigoempresa = personaSeleccionada.codigoempresa;
       mostrarDialog('Personal ya registrado');
       errorPersonal = 'Personal ya se encuentra registrado.';
     } else {
       errorPersonal = null;
       nuevoPersonal.personal = personaSeleccionada;
-      nuevoPersonal.personal.codigoempresa =
-          personaSeleccionada.codigoempresa;
+      nuevoPersonal.personal.codigoempresa = personaSeleccionada.codigoempresa;
     }
     update(['personal']);
   }
@@ -198,13 +197,11 @@ class AgregarPersonaController extends GetxController {
       return;
     }
 
-
     if (nuevoPersonal.personal == null) {
       toastError('Error', 'No existe persona seleccionada');
       return;
     }
-    nuevoPersonal.codigoempresa =
-    nuevoPersonal.personal.codigoempresa;
+    nuevoPersonal.codigoempresa = nuevoPersonal.personal.codigoempresa;
     nuevoPersonal.idusuario = PreferenciasUsuario().idUsuario;
     Get.back(result: nuevoPersonal);
   }
@@ -251,8 +248,7 @@ class AgregarPersonaController extends GetxController {
       nuevoPersonal.cantidadrendimiento = rendimiento;
       errorCantidadRendimiento = null;
     } else {
-      if ([null, ''].contains(value) &&
-          nuevoPersonal.esrendimiento) {
+      if ([null, ''].contains(value) && nuevoPersonal.esrendimiento) {
         errorCantidadRendimiento = null;
         nuevoPersonal.cantidadrendimiento = null;
       } else {
@@ -284,21 +280,20 @@ class AgregarPersonaController extends GetxController {
   void calcularCantidadHoras() {
     int cantidadHoras;
     int cantidadMinutos;
-    if (nuevoPersonal.horainicio == null ||
-        nuevoPersonal.horafin == null) {
+    if (nuevoPersonal.horainicio == null || nuevoPersonal.horafin == null) {
       return;
     }
     DateTime hInicio = nuevoPersonal.horainicio;
     DateTime hFin = nuevoPersonal.horafin;
 
     if (hFin.isBefore(hInicio)) {
-      hFin=DateTime(hInicio.year, hInicio.month, hInicio.day+1, hFin.hour, hFin.minute);
+      hFin = DateTime(
+          hInicio.year, hInicio.month, hInicio.day + 1, hFin.hour, hFin.minute);
       //hFin.add(Duration(days: 1));
     }
 
     cantidadMinutos = hFin.difference(hInicio).inMinutes;
-    if (nuevoPersonal.pausainicio != null &&
-        nuevoPersonal.pausafin != null) {
+    if (nuevoPersonal.pausainicio != null && nuevoPersonal.pausafin != null) {
       DateTime pInicio = nuevoPersonal.pausainicio;
       DateTime pFin = nuevoPersonal.pausafin;
 
@@ -326,9 +321,8 @@ class AgregarPersonaController extends GetxController {
   }
 
   void changeHoraFin() {
-    errorHoraFin = (nuevoPersonal.horafin == null)
-        ? 'Debe elegir una hora de fin'
-        : null;
+    errorHoraFin =
+        (nuevoPersonal.horafin == null) ? 'Debe elegir una hora de fin' : null;
     calcularCantidadHoras();
     update(['hora_fin', 'inicio_pausa', 'fin_pausa']);
   }
@@ -373,11 +367,9 @@ class AgregarPersonaController extends GetxController {
 
   void mostrarDialog(String mensaje) {
     basicAlert(
-      Get.overlayContext,
-      'Alerta',
-      mensaje,
-      'Aceptar',
-      () => Get.back(),
+      context: Get.overlayContext,
+      message: mensaje,
+      onPressed: () => Get.back(),
     );
   }
 
@@ -385,21 +377,18 @@ class AgregarPersonaController extends GetxController {
     changeHoraInicio();
     changeHoraFin();
     changePersonal(personaSeleccionada.codigoempresa);
-    changeCantidadRendimiento(
-        nuevoPersonal.cantidadrendimiento.toString());
+    changeCantidadRendimiento(nuevoPersonal.cantidadrendimiento.toString());
 
     if (errorPersonal != null) return errorPersonal;
     if (errorHoraInicio != null) return errorHoraInicio;
     if (errorHoraFin != null) return errorHoraFin;
 
-    if (nuevoPersonal.pausainicio != null &&
-        nuevoPersonal.pausafin == null) {
+    if (nuevoPersonal.pausainicio != null && nuevoPersonal.pausafin == null) {
       errorPausaFin = 'Debe ingresar la hora de fin de pausa';
       return errorPausaFin;
     }
     errorPausaFin = null;
-    if (nuevoPersonal.pausafin != null &&
-        nuevoPersonal.pausainicio == null) {
+    if (nuevoPersonal.pausafin != null && nuevoPersonal.pausainicio == null) {
       errorPausaInicio = 'Debe ingresar la hora de inicio de pausa';
       return errorPausaInicio;
     }

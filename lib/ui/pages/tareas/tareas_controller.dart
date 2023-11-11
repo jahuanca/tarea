@@ -24,8 +24,7 @@ import 'package:get/get.dart';
 import 'package:image_editor_pro/image_editor_pro.dart';
 
 class TareasController extends GetxController {
-
-  bool validando=false;
+  bool validando = false;
 
   final CreateTareaProcesoUseCase _createTareaProcesoUseCase;
   final GetAllTareaProcesoUseCase _getAllTareaProcesoUseCase;
@@ -35,23 +34,20 @@ class TareasController extends GetxController {
   final UploadFileOfTareaUseCase _uploadFileOfTareaUseCase;
   final ExportTareaToExcelUseCase _exportTareaToExcelUseCase;
 
-  
-
-
   final GetAllPersonalTareaProcesoUseCase _getAllPersonalTareaProcesoUseCase;
   final CreatePersonalTareaProcesoUseCase _createPersonalTareaProcesoUseCase;
 
   TareasController(
-      this._createTareaProcesoUseCase,
-      this._getAllTareaProcesoUseCase,
-      this._updateTareaProcesoUseCase,
-      this._deleteTareaProcesoUseCase,
-      this._migrarAllTareaUseCase,
-      this._uploadFileOfTareaUseCase,
-      this._exportTareaToExcelUseCase,
-      this._getAllPersonalTareaProcesoUseCase,
-      this._createPersonalTareaProcesoUseCase,
-      );
+    this._createTareaProcesoUseCase,
+    this._getAllTareaProcesoUseCase,
+    this._updateTareaProcesoUseCase,
+    this._deleteTareaProcesoUseCase,
+    this._migrarAllTareaUseCase,
+    this._uploadFileOfTareaUseCase,
+    this._exportTareaToExcelUseCase,
+    this._getAllPersonalTareaProcesoUseCase,
+    this._createPersonalTareaProcesoUseCase,
+  );
 
   @override
   void onInit() async {
@@ -65,7 +61,7 @@ class TareasController extends GetxController {
   }
 
   void onChangedMenu(dynamic value, int key) async {
-    int index=tareas.indexWhere((element) => element.key == key);
+    int index = tareas.indexWhere((element) => element.key == key);
     switch (value.toInt()) {
       case 1:
         await _exportTareaToExcelUseCase.execute(key);
@@ -86,9 +82,10 @@ class TareasController extends GetxController {
     if (tarea.sizeDetails == null || tarea.sizeDetails == 0) {
       return 'No se puede aprobar una tarea que no tiene personal';
     } else {
-      tarea.personal=await _getAllPersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${tarea.key}');
+      tarea.personal = await _getAllPersonalTareaProcesoUseCase
+          .execute('personal_tarea_proceso_${tarea.key}');
       for (PersonalTareaProcesoEntity item in tarea?.personal) {
-        if(item.validadoParaAprobar!=null){
+        if (item.validadoParaAprobar != null) {
           return item.validadoParaAprobar;
         }
       }
@@ -101,11 +98,9 @@ class TareasController extends GetxController {
     String mensaje = await validarParaAprobar(index);
     if (mensaje != null) {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        mensaje,
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: mensaje,
+        onPressed: () => Get.back(),
       );
     } else {
       basicDialog(
@@ -164,7 +159,7 @@ class TareasController extends GetxController {
   }
 
   Future<void> goListadoPersonas(int key) async {
-    int index=tareas.indexWhere((e) => e.key == key);
+    int index = tareas.indexWhere((e) => e.key == key);
     ListadoPersonasBinding().dependencies();
     final resultado = await Get.to<List<num>>(() => ListadoPersonasPage(),
         arguments: {
@@ -174,13 +169,13 @@ class TareasController extends GetxController {
         });
 
     if (resultado != null) {
-      validando=true;
+      validando = true;
       update(['validando']);
       tareas[index].sizeDetails = resultado.first;
       tareas[index].cantidadAvance = resultado.last;
       await _updateTareaProcesoUseCase.execute(
           tareas[index], tareas[index].key);
-      validando=false;
+      validando = false;
       update(['validando', 'tareas']);
     }
   }
@@ -233,31 +228,32 @@ class TareasController extends GetxController {
     final result = await Get.to<TareaProcesoEntity>(() => NuevaTareaPage(),
         arguments: {'tarea': tareas[index], 'copiando': true});
     if (result != null) {
-      List<PersonalTareaProcesoEntity> personalCopiar=[];
-      personalCopiar.addAll(
-      await _getAllPersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${tareas[index].key}')
-      ?? []);
+      List<PersonalTareaProcesoEntity> personalCopiar = [];
+      personalCopiar.addAll(await _getAllPersonalTareaProcesoUseCase
+              .execute('personal_tarea_proceso_${tareas[index].key}') ??
+          []);
       result.idusuario = PreferenciasUsuario().idUsuario;
-      result.sizeDetails=personalCopiar.length;
+      result.sizeDetails = personalCopiar.length;
       int id = await _createTareaProcesoUseCase.execute(result);
       result.key = id;
       tareas.add(result);
 
       for (var p in personalCopiar) {
-        p.horainicio=result.horainicio;
-        p.horafin=result.horafin;
-        p.pausainicio=result.pausainicio;
-        p.pausafin=result.pausafin;
-        await _createPersonalTareaProcesoUseCase.execute('personal_tarea_proceso_${id}', p);
+        p.horainicio = result.horainicio;
+        p.horafin = result.horafin;
+        p.pausainicio = result.pausainicio;
+        p.pausafin = result.pausafin;
+        await _createPersonalTareaProcesoUseCase.execute(
+            'personal_tarea_proceso_${id}', p);
       }
-      
+
       update(['tareas', 'seleccionado']);
     }
   }
 
-  Future<void> goEliminar(int key) async{
-    int index=tareas.indexWhere((e) => e.key==key);
-    if(index==-1) toastError('Error', 'No se pudo eliminar la tarea.');
+  Future<void> goEliminar(int key) async {
+    int index = tareas.indexWhere((e) => e.key == key);
+    if (index == -1) toastError('Error', 'No se pudo eliminar la tarea.');
     await basicDialog(
       Get.overlayContext,
       'Alerta',
@@ -273,7 +269,7 @@ class TareasController extends GetxController {
     );
   }
 
-  Future<void> goCopiar(int index) async{
+  Future<void> goCopiar(int index) async {
     basicDialog(
       Get.overlayContext,
       'Alerta',
@@ -305,7 +301,7 @@ class TareasController extends GetxController {
   }
 
   void goMigrar(int key) {
-    int index=tareas.indexWhere((element) => element.key == key);
+    int index = tareas.indexWhere((element) => element.key == key);
     if (tareas[index].estadoLocal == 'A') {
       basicDialog(
         Get.overlayContext,
@@ -321,11 +317,9 @@ class TareasController extends GetxController {
       );
     } else {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        'Esta tarea aun no ha sido aprobada',
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: 'Esta tarea aun no ha sido aprobada',
+        onPressed: () => Get.back(),
       );
     }
   }
@@ -339,11 +333,13 @@ class TareasController extends GetxController {
       toastExito('Exito', 'Tarea migrada con exito');
       tareas[index].estadoLocal = 'M';
       tareas[index].itemtareoproceso = tareaMigrada.itemtareoproceso;
-      await _updateTareaProcesoUseCase.execute(tareas[index], tareas[index].key);
+      await _updateTareaProcesoUseCase.execute(
+          tareas[index], tareas[index].key);
       tareaMigrada = await _uploadFileOfTareaUseCase.execute(
           tareas[index], File(tareas[index].pathUrl));
       tareas[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
-      await _updateTareaProcesoUseCase.execute(tareas[index], tareas[index].key);
+      await _updateTareaProcesoUseCase.execute(
+          tareas[index], tareas[index].key);
     }
     validando = false;
 

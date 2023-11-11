@@ -56,26 +56,27 @@ class PesadosController extends GetxController {
   @override
   void onReady() async {
     super.onReady();
-    validando=true;
+    validando = true;
     update(['validando']);
     await sendResumenVarios();
     try {
-      timer= new Timer.periodic(Duration(minutes: 3), (Timer t) => sendResumenVarios());
+      timer = new Timer.periodic(
+          Duration(minutes: 3), (Timer t) => sendResumenVarios());
     } catch (e) {
       toastError('UI: timer', e.toString());
     }
     await getTareas();
-    validando=false;
+    validando = false;
     update(['validando']);
   }
 
   @override
-  void onClose(){
+  void onClose() {
     timer.cancel();
     super.onClose();
   }
 
-  Future<void> sendResumenVarios()async{
+  Future<void> sendResumenVarios() async {
     try {
       await _sendResumenVariosEsparragoUseCase.execute();
     } catch (e) {
@@ -113,10 +114,10 @@ class PesadosController extends GetxController {
   }
 
   Future<void> goExcel(int idDB) async {
-    validando=true;
+    validando = true;
     update(['validando']);
     await _exportEsparragoToExcelUseCase.execute(idDB);
-    validando=false;
+    validando = false;
     update(['validando']);
   }
 
@@ -125,11 +126,9 @@ class PesadosController extends GetxController {
     String mensaje = await validarParaAprobar(index);
     if (mensaje != null) {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        mensaje,
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: mensaje,
+        onPressed: () => Get.back(),
       );
     } else {
       basicDialog(
@@ -147,19 +146,19 @@ class PesadosController extends GetxController {
     }
   }
 
-  Future<void> goDatosEnLinea() async{
-    bool resultado= await basicDialog(
-        Get.overlayContext,
-        'Alerta',
-        '¿Desea ver los datos en linea?',
-        'Si',
-        'No',
-        () async => Get.back(result: true),
-        () async => Get.back(result: false),
-      );
+  Future<void> goDatosEnLinea() async {
+    bool resultado = await basicDialog(
+      Get.overlayContext,
+      'Alerta',
+      '¿Desea ver los datos en linea?',
+      'Si',
+      'No',
+      () async => Get.back(result: true),
+      () async => Get.back(result: false),
+    );
 
-    if(resultado){
-      Get.to(()=> InformacionLinea());
+    if (resultado) {
+      Get.to(() => InformacionLinea());
     }
   }
 
@@ -209,11 +208,9 @@ class PesadosController extends GetxController {
       );
     } else {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        'Esta tarea aun no ha sido aprobada',
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: 'Esta tarea aun no ha sido aprobada',
+        onPressed: () => Get.back(),
       );
     }
   }
@@ -250,7 +247,7 @@ class PesadosController extends GetxController {
       'index': index,
     });
 
-    if (resultado != null && resultado.length==3) {
+    if (resultado != null && resultado.length == 3) {
       pesados[index].sizeDetails = resultado[0];
       /* pesados[index].sizeTipoCaja = resultado[1];
       pesados[index].sizeTipoPersona = resultado[2]; */
@@ -259,18 +256,18 @@ class PesadosController extends GetxController {
     }
   }
 
-
   Future<void> goListadoPersonasPreTareaEsparrago(int index) async {
     List<PreTareaEsparragoVariosEntity> otras = [];
     otras.addAll(pesados);
     otras.removeAt(index);
     ListadoPersonasPreTareaEsparragoBinding().dependencies();
-    final resultado =
-        await Get.to<int>(() => ListadoPersonasPreTareaEsparragoPage(), arguments: {
-      'otras': otras,
-      'tarea': pesados[index],
-      'index': index,
-    });
+    final resultado = await Get.to<int>(
+        () => ListadoPersonasPreTareaEsparragoPage(),
+        arguments: {
+          'otras': otras,
+          'tarea': pesados[index],
+          'index': index,
+        });
 
     if (resultado != null) {
       pesados[index].sizeDetails = resultado;
@@ -280,8 +277,6 @@ class PesadosController extends GetxController {
       update(['tareas']);
     }
   }
-
-
 
   Future<void> delete(int index) async {
     await _deletePesadoUseCase.execute(pesados[index].key);
@@ -333,17 +328,17 @@ class PesadosController extends GetxController {
         () => NuevaTareaPage(),
         arguments: {'tarea': pesados[index]});
     if (result != null) {
-      validando=true;
+      validando = true;
       update(['validando']);
       result.idusuario = PreferenciasUsuario().idUsuario;
       pesados.add(result);
       await _createPesadoUseCase.execute(pesados.last);
-      validando=false;
-      update(['tareas','validando']);
+      validando = false;
+      update(['tareas', 'validando']);
     }
   }
 
-  Future<void> goEliminar(int key) async{
+  Future<void> goEliminar(int key) async {
     int index = pesados.indexWhere((element) => element.key == key);
     await basicDialog(
       Get.overlayContext,
@@ -376,7 +371,7 @@ class PesadosController extends GetxController {
     );
   }
 
-  Future<void> goEditar(int key) async{
+  Future<void> goEditar(int key) async {
     await basicDialog(
       Get.overlayContext,
       'Alerta',

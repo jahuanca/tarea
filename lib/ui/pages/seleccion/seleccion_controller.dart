@@ -1,4 +1,3 @@
-
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +52,7 @@ class SeleccionController extends GetxController {
   }
 
   Future<void> getTareas() async {
-    seleccions=[];
+    seleccions = [];
     seleccions = await _getAllSeleccionUseCase.execute();
     update(['tareas']);
     return;
@@ -85,11 +84,9 @@ class SeleccionController extends GetxController {
     String mensaje = await validarParaAprobar(index);
     if (mensaje != null) {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        mensaje,
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: mensaje,
+        onPressed: () => Get.back(),
       );
     } else {
       basicDialog(
@@ -119,7 +116,8 @@ class SeleccionController extends GetxController {
 
         seleccions[index].pathUrl = _image.path;
         seleccions[index].estadoLocal = 'A';
-        await _updateSeleccionUseCase.execute(seleccions[index], seleccions[index].key);
+        await _updateSeleccionUseCase.execute(
+            seleccions[index], seleccions[index].key);
 
         update(['seleccionado']);
       }
@@ -143,7 +141,7 @@ class SeleccionController extends GetxController {
   }
 
   Future<void> goMigrar(int key) async {
-    int index=seleccions.indexWhere((element) => element.key == key);
+    int index = seleccions.indexWhere((element) => element.key == key);
     if (seleccions[index].estadoLocal == 'A') {
       basicDialog(
         Get.overlayContext,
@@ -159,11 +157,9 @@ class SeleccionController extends GetxController {
       );
     } else {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        'Esta tarea aun no ha sido aprobada',
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: 'Esta tarea aun no ha sido aprobada',
+        onPressed: () => Get.back(),
       );
     }
   }
@@ -176,43 +172,44 @@ class SeleccionController extends GetxController {
     if (tareaMigrada != null) {
       toastExito('Exito', 'Tarea migrada con exito');
       seleccions[index].estadoLocal = 'M';
-      seleccions[index].itempretareaesparragogrupo = tareaMigrada.itempretareaesparragogrupo;
-      await _updateSeleccionUseCase.execute(seleccions[index], seleccions[index].key);
+      seleccions[index].itempretareaesparragogrupo =
+          tareaMigrada.itempretareaesparragogrupo;
+      await _updateSeleccionUseCase.execute(
+          seleccions[index], seleccions[index].key);
       tareaMigrada = await _uploadFileOfSeleccionUseCase.execute(
           seleccions[index], File(seleccions[index].pathUrl));
       seleccions[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
-      await _updateSeleccionUseCase.execute(seleccions[index], seleccions[index].key);
+      await _updateSeleccionUseCase.execute(
+          seleccions[index], seleccions[index].key);
     }
     validando = false;
     update(['validando', 'tareas']);
   }
-
-  
 
   Future<void> goListadoPersonas(int index) async {
     List<PreTareaEsparragoGrupoEntity> otras = [];
     otras.addAll(seleccions);
     otras.removeAt(index);
     ListadoPersonasSeleccionBinding().dependencies();
-    final resultado = await Get.to<int>(
-        () => ListadoPersonasSeleccionPage(),
-        arguments: {
-          'otras': otras,
-          'tarea': seleccions[index],
-          'index': index,
-        });
+    final resultado =
+        await Get.to<int>(() => ListadoPersonasSeleccionPage(), arguments: {
+      'otras': otras,
+      'tarea': seleccions[index],
+      'index': index,
+    });
 
     if (resultado != null) {
       seleccions[index].sizeDetails = resultado;
-      await _updateSeleccionUseCase.execute(seleccions[index], seleccions[index].key);
-      
+      await _updateSeleccionUseCase.execute(
+          seleccions[index], seleccions[index].key);
+
       update(['tareas']);
     }
   }
 
   Future<void> delete(int key) async {
     await _deleteSeleccionUseCase.execute(key);
-    int index=seleccions.indexWhere((element) => element.key == key);
+    int index = seleccions.indexWhere((element) => element.key == key);
     seleccions.removeAt(index);
   }
 
@@ -234,9 +231,9 @@ class SeleccionController extends GetxController {
     final result =
         await Get.to<PreTareaEsparragoGrupoEntity>(() => NuevaSeleccionPage());
     if (result != null) {
-      result.idusuario=PreferenciasUsuario().idUsuario;
-      int key=await _createSeleccionUseCase.execute(result);
-      result.key=key;
+      result.idusuario = PreferenciasUsuario().idUsuario;
+      int key = await _createSeleccionUseCase.execute(result);
+      result.key = key;
       seleccions.insert(0, result);
       update(['tareas']);
     }
@@ -250,14 +247,16 @@ class SeleccionController extends GetxController {
     if (result != null) {
       result.idusuario = PreferenciasUsuario().idUsuario;
       seleccions[index] = result;
-      await _updateSeleccionUseCase.execute(seleccions[index], seleccions[index].key);
+      await _updateSeleccionUseCase.execute(
+          seleccions[index], seleccions[index].key);
       update(['tareas']);
     }
   }
 
   Future<void> copiarSeleccion(int index) async {
     NuevaPreTareaBinding().dependencies();
-    final result = await Get.to<PreTareaEsparragoGrupoEntity>(() => NuevaTareaPage(),
+    final result = await Get.to<PreTareaEsparragoGrupoEntity>(
+        () => NuevaTareaPage(),
         arguments: {'tarea': seleccions[index]});
     if (result != null) {
       result.idusuario = PreferenciasUsuario().idUsuario;

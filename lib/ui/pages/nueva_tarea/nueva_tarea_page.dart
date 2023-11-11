@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
-import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
@@ -353,80 +352,6 @@ class NuevaTareaPage extends StatelessWidget {
                   )
                 : Container(),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _agregarMultimedia(Size size, BuildContext context) {
-    return Container(
-      height: size.height * 0.17,
-      decoration: BoxDecoration(
-          border: Border.all(
-            color: primaryColor,
-          ),
-          borderRadius: BorderRadius.circular(borderRadius),
-          color: primaryColor.withAlpha(50)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Flexible(child: Container(), flex: 1),
-          Flexible(
-              child: GetBuilder<NuevaTareaController>(
-                id: 'personal',
-                builder: (_) => Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    '${_.nuevaTarea.personal?.length ?? 0} personas',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                ),
-              ),
-              flex: 2),
-          Flexible(child: Container(), flex: 1),
-          Flexible(
-            flex: 3,
-            child: Row(
-              children: [
-                Flexible(
-                  child: Container(),
-                  flex: 1,
-                ),
-                Flexible(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: IconButton(
-                        //onPressed: controller.goListadoPersonas,
-                        onPressed: null,
-                        icon: Icon(Icons.search, size: 40),
-                      ),
-                    ),
-                    flex: 1),
-                Flexible(
-                  child: Container(),
-                  flex: 1,
-                ),
-                Flexible(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: IconButton(
-                        //onPressed: controller.goAgregarPersona,
-                        onPressed: null,
-                        icon: Icon(Icons.person_add, size: 40),
-                      ),
-                    ),
-                    flex: 1),
-                Flexible(
-                  child: Container(),
-                  flex: 1,
-                ),
-              ],
-            ),
-          ),
-          Flexible(child: Container(), flex: 1),
         ],
       ),
     );

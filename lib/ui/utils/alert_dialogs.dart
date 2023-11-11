@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:get/get.dart';
 
 Future<dynamic> basicDialog(
@@ -29,20 +30,20 @@ Future<dynamic> basicDialog(
 }
 
 Future<dynamic> basicAlert(
-    BuildContext context,
-    String titulo,
-    String contenido,
+    {BuildContext context,
+    String title,
+    String message,
     String pressed,
-    void Function() onPressed) {
+    void Function() onPressed}) {
   return showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text(titulo),
-      content: Text(contenido),
+      title: Text(title ?? ALERT_STRING),
+      content: Text(message),
       actions: <Widget>[
         FlatButton(
           onPressed: onPressed,
-          child: Text(pressed),
+          child: Text(pressed ?? ACCEPT_STRING),
         ),
       ],
     ),

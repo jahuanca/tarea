@@ -21,5 +21,6 @@ const String NAVIGATION_DRAWER_WIDGET_TAG_PROFILE = 'profile';
 /* STRINGS */
 const String ALERT_STRING = "Alerta";
 const String CANCEL_STRING = "Cancelar";
+const String ACCEPT_STRING = "Aceptar";
 const String YES_STRING = "Sí";
 const String NO_STRING = "No";

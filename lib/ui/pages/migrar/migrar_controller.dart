@@ -69,11 +69,9 @@ class MigrarController extends GetxController {
       );
     } else {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        'Esta tarea aun no ha sido aprobada',
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: 'Esta tarea aun no ha sido aprobada',
+        onPressed: () => Get.back(),
       );
     }
   }
@@ -87,11 +85,13 @@ class MigrarController extends GetxController {
       toastExito('Exito', 'Tarea migrada con exito');
       tareas[index].estadoLocal = 'M';
       tareas[index].itemtareoproceso = tareaMigrada.itemtareoproceso;
-      await _updateTareaProcesoUseCase.execute(tareas[index], tareas[index].key);
+      await _updateTareaProcesoUseCase.execute(
+          tareas[index], tareas[index].key);
       tareaMigrada = await _uploadFileOfTareaUseCase.execute(
           tareas[index], File(tareas[index].pathUrl));
       tareas[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
-      await _updateTareaProcesoUseCase.execute(tareas[index], tareas[index].key);
+      await _updateTareaProcesoUseCase.execute(
+          tareas[index], tareas[index].key);
     }
     validando = false;
 

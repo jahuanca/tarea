@@ -72,7 +72,7 @@ class NuevaTareaController extends GetxController {
         firstTime = true;
         nuevaTarea = TareaProcesoEntity.fromJson(
             (Get.arguments['tarea'] as TareaProcesoEntity).toJson());
-        fecha=nuevaTarea.fecha;
+        fecha = nuevaTarea.fecha;
         if (Get.arguments['copiando'] != null) {
           copiando = true;
           nuevaTarea.horainicio = null;
@@ -89,7 +89,7 @@ class NuevaTareaController extends GetxController {
         }
       }
     }
-    if (nuevaTarea == null){
+    if (nuevaTarea == null) {
       nuevaTarea = new TareaProcesoEntity();
       //nuevaTarea.fechamod = fecha;
       nuevaTarea.escampo = true;
@@ -232,11 +232,9 @@ class NuevaTareaController extends GetxController {
 
   void mostrarDialog(String mensaje) {
     basicAlert(
-      Get.overlayContext,
-      'Alerta',
-      mensaje,
-      'Aceptar',
-      () => Get.back(),
+      context: Get.overlayContext,
+      message: mensaje,
+      onPressed: () => Get.back(),
     );
   }
 

@@ -1,4 +1,3 @@
-
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
@@ -21,7 +20,6 @@ import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 
 class NuevaPesadoController extends GetxController {
-  
   final GetSubdivisonsUseCase _getSubdivisonsUseCase;
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
@@ -69,13 +67,15 @@ class NuevaPesadoController extends GetxController {
       if (Get.arguments['tarea'] != null) {
         editando = true;
         nuevaPreTarea = Get.arguments['tarea'] as PreTareaEsparragoVariosEntity;
-        fecha=nuevaPreTarea.fecha;
-        if(nuevaPreTarea.detalles==null) nuevaPreTarea.detalles=[];
+        fecha = nuevaPreTarea.fecha;
+        if (nuevaPreTarea.detalles == null) nuevaPreTarea.detalles = [];
       }
     }
-    if (nuevaPreTarea == null) nuevaPreTarea = new PreTareaEsparragoVariosEntity();
-    if(nuevaPreTarea.detalles==null) nuevaPreTarea.detalles=[];
-    if(nuevaPreTarea?.fechamod == null) nuevaPreTarea?.fechamod= new DateTime.now();
+    if (nuevaPreTarea == null)
+      nuevaPreTarea = new PreTareaEsparragoVariosEntity();
+    if (nuevaPreTarea.detalles == null) nuevaPreTarea.detalles = [];
+    if (nuevaPreTarea?.fechamod == null)
+      nuevaPreTarea?.fechamod = new DateTime.now();
   }
 
   void setEditValues() {
@@ -106,14 +106,15 @@ class NuevaPesadoController extends GetxController {
         .firstWhere((e) => e.idsubdivision == idSubdivision);
     validando = true;
     update(['validando']);
-    supervisors = await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
+    supervisors =
+        await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
     if (supervisors.length > 0) {
       nuevaPreTarea.supervisor = supervisors[0];
       nuevaPreTarea.digitador = supervisors[0];
       changeSupervisor(nuevaPreTarea.supervisor.codigoempresa);
       changeDigitador(nuevaPreTarea.digitador.codigoempresa);
     }
-    update(['supervisors','digitadors']);
+    update(['supervisors', 'digitadors']);
     validando = false;
     update(['validando']);
   }
@@ -186,11 +187,9 @@ class NuevaPesadoController extends GetxController {
 
   void mostrarDialog(String mensaje) {
     basicAlert(
-      Get.overlayContext,
-      'Alerta',
-      mensaje,
-      'Aceptar',
-      () => Get.back(),
+      context: Get.overlayContext,
+      message: mensaje,
+      onPressed: () => Get.back(),
     );
   }
 
@@ -208,8 +207,7 @@ class NuevaPesadoController extends GetxController {
     int index = supervisors.indexWhere((e) => e.codigoempresa.toString() == id);
     if (errorSupervisor == null && index != -1) {
       nuevaPreTarea.supervisor = supervisors[index];
-      nuevaPreTarea.codigosupervisor =
-          nuevaPreTarea.supervisor.codigoempresa;
+      nuevaPreTarea.codigosupervisor = nuevaPreTarea.supervisor.codigoempresa;
     } else {
       nuevaPreTarea.supervisor = null;
       nuevaPreTarea.codigosupervisor = null;
@@ -225,8 +223,7 @@ class NuevaPesadoController extends GetxController {
     int index = supervisors.indexWhere((e) => e.codigoempresa.toString() == id);
     if (errorDigitador == null && index != -1) {
       nuevaPreTarea.digitador = supervisors[index];
-      nuevaPreTarea.codigodigitador =
-          supervisors[index].codigoempresa;
+      nuevaPreTarea.codigodigitador = supervisors[index].codigoempresa;
     } else {
       nuevaPreTarea.digitador = null;
       nuevaPreTarea.codigodigitador = null;
@@ -258,8 +255,7 @@ class NuevaPesadoController extends GetxController {
     errorTipoTarea = validatorUtilText(id, 'Tipo de tarea', {
       'required': '',
     });
-    int index =
-        tiposTarea.indexWhere((e) => e.idtipotarea== int.parse(id));
+    int index = tiposTarea.indexWhere((e) => e.idtipotarea == int.parse(id));
     if (errorTipoTarea == null && index != -1) {
       nuevaPreTarea.tipoTarea = tiposTarea[index];
       nuevaPreTarea.idtipotarea = int.parse(id);
@@ -273,11 +269,9 @@ class NuevaPesadoController extends GetxController {
   void goBack() {
     String mensaje = validar();
     if (mensaje == null) {
-
-      nuevaPreTarea.idusuario=PreferenciasUsuario().idUsuario;
-      nuevaPreTarea.imei=PreferenciasUsuario().imei;
-      nuevaPreTarea.estadoLocal='PC';
-      
+      nuevaPreTarea.idusuario = PreferenciasUsuario().idUsuario;
+      nuevaPreTarea.imei = PreferenciasUsuario().imei;
+      nuevaPreTarea.estadoLocal = 'PC';
 
       Get.back(result: nuevaPreTarea);
     } else {
@@ -320,7 +314,7 @@ class NuevaPesadoController extends GetxController {
     changeHoraInicio();
     changeDiaSiguiente(nuevaPreTarea.diasiguiente ?? false);
     changeHoraFin();
-    
+
     if (errorActividad != null) return errorActividad;
     if (errorTipoTarea != null) return errorTipoTarea;
     if (errorLabor != null) return errorLabor;

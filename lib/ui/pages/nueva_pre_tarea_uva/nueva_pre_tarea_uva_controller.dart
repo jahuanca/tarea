@@ -1,4 +1,3 @@
-
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
@@ -21,7 +20,6 @@ import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 
 class NuevaPreTareaUvaController extends GetxController {
-  
   final GetSubdivisonsUseCase _getSubdivisonsUseCase;
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
@@ -69,11 +67,11 @@ class NuevaPreTareaUvaController extends GetxController {
       if (Get.arguments['tarea'] != null) {
         editando = true;
         nuevaPreTarea = Get.arguments['tarea'] as PreTareoProcesoUvaEntity;
-        if(nuevaPreTarea.detalles==null) nuevaPreTarea.detalles=[];
+        if (nuevaPreTarea.detalles == null) nuevaPreTarea.detalles = [];
       }
     }
     if (nuevaPreTarea == null) nuevaPreTarea = new PreTareoProcesoUvaEntity();
-    if(nuevaPreTarea.detalles==null) nuevaPreTarea.detalles=[];
+    if (nuevaPreTarea.detalles == null) nuevaPreTarea.detalles = [];
     nuevaPreTarea.fechamod = fecha;
   }
 
@@ -105,14 +103,15 @@ class NuevaPreTareaUvaController extends GetxController {
         .firstWhere((e) => e.idsubdivision == idSubdivision);
     validando = true;
     update(['validando']);
-    supervisors = await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
+    supervisors =
+        await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
     if (supervisors.length > 0) {
       nuevaPreTarea.supervisor = supervisors[0];
       nuevaPreTarea.digitador = supervisors[0];
       changeSupervisor(nuevaPreTarea.supervisor.codigoempresa);
       changeDigitador(nuevaPreTarea.digitador.codigoempresa);
     }
-    update(['supervisors','digitadors']);
+    update(['supervisors', 'digitadors']);
     validando = false;
     update(['validando']);
   }
@@ -203,11 +202,9 @@ class NuevaPreTareaUvaController extends GetxController {
 
   void mostrarDialog(String mensaje) {
     basicAlert(
-      Get.overlayContext,
-      'Alerta',
-      mensaje,
-      'Aceptar',
-      () => Get.back(),
+      context: Get.overlayContext,
+      message: mensaje,
+      onPressed: () => Get.back(),
     );
   }
 
@@ -242,8 +239,7 @@ class NuevaPreTareaUvaController extends GetxController {
     int index = supervisors.indexWhere((e) => e.codigoempresa.toString() == id);
     if (errorDigitador == null && index != -1) {
       nuevaPreTarea.digitador = supervisors[index];
-      nuevaPreTarea.codigoempresadigitador =
-          supervisors[index].codigoempresa;
+      nuevaPreTarea.codigoempresadigitador = supervisors[index].codigoempresa;
     } else {
       nuevaPreTarea.digitador = null;
       nuevaPreTarea.codigoempresadigitador = null;
@@ -275,8 +271,7 @@ class NuevaPreTareaUvaController extends GetxController {
     errorCultivo = validatorUtilText(id, 'Cultivo', {
       'required': '',
     });
-    int index =
-        cultivos.indexWhere((e) => e.idcultivo== int.parse(id));
+    int index = cultivos.indexWhere((e) => e.idcultivo == int.parse(id));
     if (errorCultivo == null && index != -1) {
       nuevaPreTarea.cultivo = cultivos[index];
       nuevaPreTarea.idcultivo = int.parse(id);
@@ -290,9 +285,8 @@ class NuevaPreTareaUvaController extends GetxController {
   void goBack() {
     String mensaje = validar();
     if (mensaje == null) {
-
-      nuevaPreTarea.idusuario=PreferenciasUsuario().idUsuario;
-      nuevaPreTarea.estadoLocal='PC';
+      nuevaPreTarea.idusuario = PreferenciasUsuario().idUsuario;
+      nuevaPreTarea.estadoLocal = 'PC';
       Get.back(result: nuevaPreTarea);
     } else {
       toastError('Error', mensaje);

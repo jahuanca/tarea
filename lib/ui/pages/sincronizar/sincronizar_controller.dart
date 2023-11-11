@@ -1,5 +1,4 @@
 import 'package:flutter_tareo/core/utils/numbers.dart';
-import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/calibre_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
@@ -29,11 +28,11 @@ import 'package:flutter_tareo/domain/use_cases/sincronizar/get_pre_tareo_proceso
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_tipo_tareas_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_usuarios_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_via_envio_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_labors_use_case.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:get/get.dart';
@@ -129,11 +128,11 @@ class SincronizarController extends GetxController {
     sizeTurnos = await _sincronizarTurnosUseCase.execute();
     sizeUbicacions = await _sincronizarUbicacionsUseCase.execute();
     sizePersonal = await _sincronizarPersonalEmpresasUseCase.execute();
-
-    validando = false;
+    sizeActividads = await _sincronizarActividadsUseCase.execute();
+    validando = BOOLEAN_FALSE_VALUE;
     await setLog();
-    update(['validando']);
-    PreferenciasUsuario().offLine = true;
+    update([VALIDANDO_ID]);
+    PreferenciasUsuario().offLine = BOOLEAN_TRUE_VALUE;
   }
 
   Future<bool> getClientes() async {

@@ -127,11 +127,9 @@ class HomeAsistenciaController extends GetxController {
     String mensaje = await validarParaAprobar(index);
     if (mensaje != null) {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        mensaje,
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: mensaje,
+        onPressed: () => Get.back(),
       );
     } else {
       basicDialog(
@@ -200,11 +198,9 @@ class HomeAsistenciaController extends GetxController {
       );
     } else {
       basicAlert(
-        Get.overlayContext,
-        ALERT_STRING,
-        'Esta asistencia aun no ha sido aprobada',
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: 'Esta asistencia aun no ha sido aprobada',
+        onPressed: () => Get.back(),
       );
     }
   }

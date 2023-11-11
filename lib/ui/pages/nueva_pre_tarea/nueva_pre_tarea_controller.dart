@@ -1,4 +1,3 @@
-
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
@@ -76,7 +75,6 @@ class NuevaPreTareaController extends GetxController {
     if (nuevaPreTarea == null) nuevaPreTarea = new PreTareoProcesoEntity();
     nuevaPreTarea.fechamod = fecha;
     super.onInit();
-    
   }
 
   void setEditValues() {
@@ -274,11 +272,9 @@ class NuevaPreTareaController extends GetxController {
 
   void mostrarDialog(String mensaje) {
     basicAlert(
-      Get.overlayContext,
-      'Alerta',
-      mensaje,
-      'Aceptar',
-      () => Get.back(),
+      context: Get.overlayContext,
+      message: mensaje,
+      onPressed: () => Get.back(),
     );
   }
 
@@ -398,7 +394,8 @@ class NuevaPreTareaController extends GetxController {
         LaboresCultivoPackingEntity actual =
             nuevaPreTarea.laboresCultivoPacking;
         if (e.idactividad == actual.idactividad &&
-            e.idlabor == actual.idlabor && e.idcultivo==1 &&
+            e.idlabor == actual.idlabor &&
+            e.idcultivo == 1 &&
             e.idpresentacion == actual.idpresentacion) {
           nuevaPreTarea.item = e.item;
           nuevaPreTarea.laboresCultivoPacking = actual;

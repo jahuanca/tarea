@@ -60,7 +60,8 @@ class AprobarController extends GetxController {
 
         tareas[index].pathUrl = _image.path;
         tareas[index].estadoLocal = 'A';
-        await _updateTareaProcesoUseCase.execute(tareas[index], tareas[index].key);
+        await _updateTareaProcesoUseCase.execute(
+            tareas[index], tareas[index].key);
 
         update(['seleccionado']);
       }
@@ -73,9 +74,9 @@ class AprobarController extends GetxController {
     TareaProcesoEntity tarea = tareas[index];
     if (tarea.personal == null || tarea.personal.isEmpty) {
       return 'No se puede aprobar una tarea que no tiene personal';
-    }else{
+    } else {
       for (PersonalTareaProcesoEntity item in tarea.personal) {
-        if(item.validadoParaAprobar!=null){
+        if (item.validadoParaAprobar != null) {
           return item.validadoParaAprobar;
         }
       }
@@ -87,13 +88,10 @@ class AprobarController extends GetxController {
     String mensaje = await validarParaAprobar(index);
     if (mensaje != null) {
       basicAlert(
-        Get.overlayContext,
-        'Alerta',
-        mensaje,
-        'Aceptar',
-        () => Get.back(),
+        context: Get.overlayContext,
+        message: mensaje,
+        onPressed: () => Get.back(),
       );
-    
     } else {
       basicDialog(
         Get.overlayContext,
@@ -102,7 +100,6 @@ class AprobarController extends GetxController {
         'Si',
         'No',
         () async {
-          
           Get.back();
           await getimageditor(index);
         },

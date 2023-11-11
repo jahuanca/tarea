@@ -1,4 +1,3 @@
-
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
@@ -75,7 +74,7 @@ class NuevaSeleccionController extends GetxController {
     if (nuevaSeleccion == null) {
       nuevaSeleccion = new PreTareaEsparragoGrupoEntity();
       nuevaSeleccion.turnotareo = 'D';
-      if (nuevaSeleccion.sizeDetails== null) nuevaSeleccion.sizeDetails = 0;
+      if (nuevaSeleccion.sizeDetails == null) nuevaSeleccion.sizeDetails = 0;
     }
 
     /* nuevaPreTarea.fechamod = fecha; */
@@ -214,11 +213,9 @@ class NuevaSeleccionController extends GetxController {
 
   void mostrarDialog(String mensaje) {
     basicAlert(
-      Get.overlayContext,
-      'Alerta',
-      mensaje,
-      'Aceptar',
-      () => Get.back(),
+      context: Get.overlayContext,
+      message: mensaje,
+      onPressed: () => Get.back(),
     );
   }
 
@@ -407,5 +404,4 @@ class NuevaSeleccionController extends GetxController {
 
     update(['linea']);
   }
-
 }
