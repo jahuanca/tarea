@@ -83,13 +83,10 @@ class NavigationController extends GetxController {
 
   Future<bool> goBack() async {
     return await basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      'Saldra de la aplicación, ¿esta seguro?',
-      'Si',
-      'No',
-      () => Get.back(result: true),
-      () => Get.back(result: false),
+      context: Get.overlayContext,
+      message: 'Saldra de la aplicación, ¿esta seguro?',
+      onPressed: () => Get.back(result: true),
+      onCancel: () => Get.back(result: false),
     );
   }
 }

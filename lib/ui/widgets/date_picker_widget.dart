@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 
 class DatePickerWidget {
   final Size size;
@@ -75,7 +76,7 @@ class DatePickerWidget {
       if (toDouble(picked) > toDouble(TimeOfDay.fromDateTime(minDate))) {
         return selectedDate;
       } else {
-        toastError('Error', 'Fecha debe ser mayor');
+        toast(type: TypeToast.ERROR, message: 'Fecha debe ser mayor');
         return minDate.add(Duration(minutes: 1));
       }
     } else {

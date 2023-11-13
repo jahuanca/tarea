@@ -19,6 +19,7 @@ import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart
 import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 
@@ -327,7 +328,7 @@ class NuevaTareaController extends GetxController {
 
   Future<void> goAgregarPersona() async {
     if (supervisors.length == 0) {
-      toastError('Error', 'No hay personal en dicha sede');
+      toast(type: TypeToast.ERROR, message: 'No hay personal en dicha sede');
       return;
     }
 
@@ -354,7 +355,7 @@ class NuevaTareaController extends GetxController {
       log(nuevaTarea.toJson().toString());
       Get.back(result: nuevaTarea);
     } else {
-      toastError('Error', mensaje);
+      toast(type: TypeToast.ERROR, message: mensaje);
     }
   }
 

@@ -17,6 +17,7 @@ import 'package:flutter_tareo/ui/pages/nueva_seleccion/nueva_seleccion_page.dart
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:image_editor_pro/image_editor_pro.dart';
 
@@ -90,16 +91,13 @@ class SeleccionController extends GetxController {
       );
     } else {
       basicDialog(
-        Get.overlayContext,
-        'Alerta',
-        '¿Desea aprobar esta actividad?',
-        'Si',
-        'No',
-        () async {
+        context: Get.overlayContext,
+        message: '¿Desea aprobar esta actividad?',
+        onPressed: () async {
           Get.back();
           await getimageditor(index);
         },
-        () => Get.back(),
+        onCancel: () => Get.back(),
       );
     }
   }
@@ -144,16 +142,13 @@ class SeleccionController extends GetxController {
     int index = seleccions.indexWhere((element) => element.key == key);
     if (seleccions[index].estadoLocal == 'A') {
       basicDialog(
-        Get.overlayContext,
-        'Alerta',
-        '¿Desea migrar esta actividad?',
-        'Si',
-        'No',
-        () async {
+        context: Get.overlayContext,
+        message: '¿Desea migrar esta actividad?',
+        onPressed: () async {
           Get.back();
           await migrar(index);
         },
-        () => Get.back(),
+        onCancel: () => Get.back(),
       );
     } else {
       basicAlert(
@@ -170,7 +165,7 @@ class SeleccionController extends GetxController {
     PreTareaEsparragoGrupoEntity tareaMigrada =
         await _migrarAllSeleccionUseCase.execute(seleccions[index].key);
     if (tareaMigrada != null) {
-      toastExito('Exito', 'Tarea migrada con exito');
+      toast(type: TypeToast.SUCCESS, message: 'Tarea migrada con exito');
       seleccions[index].estadoLocal = 'M';
       seleccions[index].itempretareaesparragogrupo =
           tareaMigrada.itempretareaesparragogrupo;
@@ -268,47 +263,38 @@ class SeleccionController extends GetxController {
 
   void goEliminar(int key) {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de eliminar este Seleccion?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de eliminar este Seleccion?',
+      onPressed: () async {
         await delete(key);
         update(['tareas']);
         Get.back();
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
   void goCopiar(int index) {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de copiar la siguiente tarea?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de copiar la siguiente tarea?',
+      onPressed: () async {
         Get.back();
         await copiarSeleccion(index);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
   void goEditar(int index) {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de editar la actividad?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de editar la actividad?',
+      onPressed: () async {
         Get.back();
         await editarSeleccion(index);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 }

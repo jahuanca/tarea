@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
 import 'package:flutter_tareo/domain/entities/esparrago_agrupa_personal_entity.dart';
@@ -18,6 +19,7 @@ import 'package:flutter_tareo/domain/use_cases/pesados_seleccion/get_all_pesado_
 import 'package:flutter_tareo/domain/use_cases/pesados_seleccion/update_pesado_detalle_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
@@ -167,12 +169,12 @@ class ListadoPersonasPesadoController extends GetxController
 
   @override
   void onDecoded(String result) async {
-    await setCodeBar(result, true);
+    await setCodeBar(result, BOOLEAN_TRUE_VALUE);
   }
 
   @override
   void onError(Exception error) {
-    toastError('Error', error.toString());
+    toast(type: TypeToast.ERROR, message: error.toString());
   }
 
   Future<void> _showNotification(bool success, String mensaje) async {
@@ -248,12 +250,9 @@ class ListadoPersonasPesadoController extends GetxController
 
   void goEliminar(int index) {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta eliminar el personal?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta eliminar el personal?',
+      onPressed: () async {
         Get.back();
         PreTareaEsparragoDetalleVariosEntity item =
             personalSeleccionado.removeAt(index);
@@ -270,7 +269,7 @@ class ListadoPersonasPesadoController extends GetxController
             'pesado_detalles_${preTarea.key}', item.key);
         update(['seleccionados', 'personal_seleccionado']);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
@@ -295,7 +294,8 @@ class ListadoPersonasPesadoController extends GetxController
             (e) => e.codigotk.toString().trim() == barcode.toString().trim());
         if (indexOtra != -1) {
           byLector
-              ? toastError('Error', 'Se encuentra en otra tarea')
+              ? toast(
+                  type: TypeToast.ERROR, message: 'Se encuentra en otra tarea')
               : await _showNotification(false, 'Se encuentra en otra tarea');
           await detalles.close();
           buscando = false;
@@ -308,7 +308,8 @@ class ListadoPersonasPesadoController extends GetxController
           (e) => e.codigotk.toString().trim() == barcode.toString().trim());
       if (indexEncontrado != -1) {
         byLector
-            ? toastError('Error', 'Ya se encuentra registrado')
+            ? toast(
+                type: TypeToast.ERROR, message: 'Ya se encuentra registrado')
             : await _showNotification(false, 'Ya se encuentra registrado');
         buscando = false;
         update(['personal_seleccionado']);
@@ -321,14 +322,16 @@ class ListadoPersonasPesadoController extends GetxController
         return;
       }
       bool esCaja = (valores.length == 4) ? true : false;
-      
-      int index = grupos.indexWhere((e) => e.itemagruparpersonal == int.parse(valores[ esCaja ? 2 : 0]));
-      
+
+      int index = grupos.indexWhere(
+          (e) => e.itemagruparpersonal == int.parse(valores[esCaja ? 2 : 0]));
+
       int indexCliente = clientes
           .indexWhere((e) => e.idcliente == int.parse(valores[esCaja ? 0 : 1]));
       if (indexCliente == -1) {
         byLector
-            ? toastError('Error', 'No se encontro al cliente.')
+            ? toast(
+                type: TypeToast.ERROR, message: 'No se encontro al cliente.')
             : await _showNotification(false, 'No se encontro al cliente.');
         buscando = false;
         update(['personal_seleccionado']);
@@ -374,13 +377,16 @@ class ListadoPersonasPesadoController extends GetxController
         await _updatePesadoUseCase.execute(preTarea, preTarea.key);
 
         byLector
-            ? toastExito('Éxito', 'Registrado con exito')
-            : await _showNotification(true, 'Registrado con exito');
-        buscando = false;
+            ? toast(type: TypeToast.SUCCESS, message: 'Registrado con exito')
+            : await _showNotification(
+                BOOLEAN_TRUE_VALUE, 'Registrado con exito');
+        buscando = BOOLEAN_FALSE_VALUE;
         return;
       } else {
         byLector
-            ? toastError('Error', 'Grupo no se encuentra en la lista')
+            ? toast(
+                type: TypeToast.ERROR,
+                message: 'Grupo no se encuentra en la lista')
             : _showNotification(false, 'Grupo no se encuentra en la lista');
         buscando = false;
         return;

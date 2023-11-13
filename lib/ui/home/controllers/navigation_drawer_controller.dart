@@ -33,18 +33,15 @@ class NavigationDrawerController extends GetxController {
 
   void cerrarSesion() {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de cerrar sesión?',
-      'Si',
-      'No',
-      () {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de cerrar sesión?',
+      onPressed: () {
         Get.back();
         StorageRepositoryImplementation().clearAllData();
         LoginBinding().dependencies();
         Get.offAll(() => LoginPage());
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 

@@ -10,6 +10,7 @@ import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_
 import 'package:flutter_tareo/ui/pages/sincronizar/sincronizar_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -99,7 +100,7 @@ class LoginController extends GetxController {
   Future<void> ingresar() async {
     String mensaje = validar();
     if (mensaje != null) {
-      toastError('Error', mensaje);
+      toast(type: TypeToast.ERROR, message: mensaje);
       return;
     }
     validando = true;

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_tareo/core/utils/detalles.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/core/utils/strings/sqLiteDB.dart';
 import 'package:flutter_tareo/core/utils/tarea.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart'
 import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/create_uva_all_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/create_pre_tareo_proceso_uva_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:path/path.dart';
@@ -110,14 +112,13 @@ class HerramientasController extends GetxController {
         await backupFile.writeAsString(jsonEncode(lista[i]),
             mode: FileMode.append);
       }
-      validando = false;
-      toastExito('Exito', 'Exportado en ${filePath}');
+      validando = BOOLEAN_FALSE_VALUE;
+      toast(type: TypeToast.SUCCESS, message: 'Exportado en ${filePath}');
       update(['validando']);
       return;
     } catch (e) {
-      validando = false;
-      print(e.toString());
-      toastError('Error', e.toString());
+      validando = BOOLEAN_FALSE_VALUE;
+      toast(type: TypeToast.ERROR, message: e.toString());
       update(['validando']);
     }
   }

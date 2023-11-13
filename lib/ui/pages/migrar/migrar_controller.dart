@@ -6,6 +6,7 @@ import 'package:flutter_tareo/domain/use_cases/migrar/upload_file_of_tarea_use_c
 import 'package:flutter_tareo/domain/use_cases/tareas/get_all_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/tareas/update_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 
 class MigrarController extends GetxController {
@@ -56,16 +57,13 @@ class MigrarController extends GetxController {
   void goMigrar(int index) {
     if (tareas[index].estadoLocal == 'A') {
       basicDialog(
-        Get.overlayContext,
-        'Alerta',
-        '¿Desea migrar esta tarea?',
-        'Si',
-        'No',
-        () async {
+        context: Get.overlayContext,
+        message: '¿Desea migrar esta tarea?',
+        onPressed: () async {
           Get.back();
           await migrar(index);
         },
-        () => Get.back(),
+        onCancel: () => Get.back(),
       );
     } else {
       basicAlert(
@@ -82,7 +80,7 @@ class MigrarController extends GetxController {
     TareaProcesoEntity tareaMigrada =
         await _migrarAllTareaUseCase.execute(tareas[index].key);
     if (tareaMigrada != null) {
-      toastExito('Exito', 'Tarea migrada con exito');
+      toast(type: TypeToast.SUCCESS, message: 'Tarea migrada con exito');
       tareas[index].estadoLocal = 'M';
       tareas[index].itemtareoproceso = tareaMigrada.itemtareoproceso;
       await _updateTareaProcesoUseCase.execute(

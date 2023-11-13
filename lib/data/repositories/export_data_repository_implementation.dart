@@ -18,6 +18,7 @@ import 'package:flutter_tareo/domain/repositories/export_data_repository.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/listas.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:path/path.dart';
@@ -78,7 +79,7 @@ class ExportDataRepositoryImplementation extends ExportDataRepository {
       ..createSync(recursive: true)
       ..writeAsBytesSync(fileBytes);
 
-    toastExito('Exito', 'Archivo ubicado en $ruta');
+    toast(type: TypeToast.SUCCESS, message: 'Archivo ubicado en $ruta');
     return;
   }
 
@@ -154,7 +155,7 @@ class ExportDataRepositoryImplementation extends ExportDataRepository {
       ..createSync(recursive: true)
       ..writeAsBytesSync(fileBytes);
 
-    toastExito('Exito', 'Archivo ubicado en $ruta');
+    toast(type: TypeToast.SUCCESS, message: 'Archivo ubicado en $ruta');
     return;
   }
 
@@ -205,7 +206,7 @@ class ExportDataRepositoryImplementation extends ExportDataRepository {
       ..createSync(recursive: true)
       ..writeAsBytesSync(fileBytes);
 
-    toastExito('Exito', 'Archivo ubicado en $ruta');
+    toast(type: TypeToast.SUCCESS, message: 'Archivo ubicado en $ruta');
     return;
   }
 
@@ -256,7 +257,7 @@ class ExportDataRepositoryImplementation extends ExportDataRepository {
       ..createSync(recursive: true)
       ..writeAsBytesSync(fileBytes);
 
-    toastExito('Exito', 'Archivo ubicado en $ruta');
+    toast(type: TypeToast.SUCCESS, message: 'Archivo ubicado en $ruta');
     return;
   }
 
@@ -306,7 +307,7 @@ class ExportDataRepositoryImplementation extends ExportDataRepository {
       ..createSync(recursive: true)
       ..writeAsBytesSync(fileBytes);
 
-    toastExito('Exito', 'Archivo ubicado en $ruta');
+    toast(type: TypeToast.SUCCESS, message: 'Archivo ubicado en $ruta');
     return;
   }
 
@@ -435,7 +436,7 @@ class ExportDataRepositoryImplementation extends ExportDataRepository {
       ..createSync(recursive: true)
       ..writeAsBytesSync(fileBytes);
 
-    toastExito('Exito', 'Archivo ubicado en $ruta');
+    toast(type: TypeToast.SUCCESS, message: 'Archivo ubicado en $ruta');
     return;
   }
 }

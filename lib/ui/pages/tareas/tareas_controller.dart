@@ -20,6 +20,7 @@ import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_page.da
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:image_editor_pro/image_editor_pro.dart';
 
@@ -104,16 +105,13 @@ class TareasController extends GetxController {
       );
     } else {
       basicDialog(
-        Get.overlayContext,
-        'Alerta',
-        '¿Desea aprobar esta tarea?',
-        'Si',
-        'No',
-        () async {
+        context: Get.overlayContext,
+        message: '¿Desea aprobar esta tarea?',
+        onPressed: () async {
           Get.back();
           await getimageditor(index);
         },
-        () => Get.back(),
+        onCancel: () => Get.back(),
       );
     }
   }
@@ -253,50 +251,42 @@ class TareasController extends GetxController {
 
   Future<void> goEliminar(int key) async {
     int index = tareas.indexWhere((e) => e.key == key);
-    if (index == -1) toastError('Error', 'No se pudo eliminar la tarea.');
+    if (index == -1)
+      toast(type: TypeToast.ERROR, message: 'No se pudo eliminar la tarea.');
     await basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de eliminar esta tarea?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de eliminar esta tarea?',
+      onPressed: () async {
         await delete(index);
         update(['tareas']);
         Get.back();
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
   Future<void> goCopiar(int index) async {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de copiar la siguiente tarea?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de copiar la siguiente tarea?',
+      onPressed: () async {
         Get.back();
         await copiarTarea(index);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
   void goEditar(int key) {
     int index = tareas.indexWhere((element) => element.key == key);
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de editar la siguiente tarea?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de editar la siguiente tarea?',
+      onPressed: () async {
         Get.back();
         await editarTarea(index);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
@@ -304,16 +294,13 @@ class TareasController extends GetxController {
     int index = tareas.indexWhere((element) => element.key == key);
     if (tareas[index].estadoLocal == 'A') {
       basicDialog(
-        Get.overlayContext,
-        'Alerta',
-        '¿Desea migrar esta tarea?',
-        'Si',
-        'No',
-        () async {
+        context: Get.overlayContext,
+        message: '¿Desea migrar esta tarea?',
+        onPressed: () async {
           Get.back();
           await migrar(index);
         },
-        () => Get.back(),
+        onCancel: () => Get.back(),
       );
     } else {
       basicAlert(
@@ -330,7 +317,7 @@ class TareasController extends GetxController {
     TareaProcesoEntity tareaMigrada =
         await _migrarAllTareaUseCase.execute(tareas[index].key);
     if (tareaMigrada != null) {
-      toastExito('Exito', 'Tarea migrada con exito');
+      toast(type: TypeToast.SUCCESS, message: 'Tarea migrada con exito');
       tareas[index].estadoLocal = 'M';
       tareas[index].itemtareoproceso = tareaMigrada.itemtareoproceso;
       await _updateTareaProcesoUseCase.execute(

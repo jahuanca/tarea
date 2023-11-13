@@ -14,6 +14,7 @@ import 'package:flutter_tareo/domain/use_cases/caja_detalles/get_all_caja_detall
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
 import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
@@ -40,7 +41,6 @@ class ListadoPersonasClasificacionController extends GetxController {
   final GetAllCajaDetalleUseCase _getAllCajaDetalleUseCase;
   final CreateCajaDetalleUseCase _createCajaDetalleUseCase;
   final DeleteCajaDetalleUseCase _deleteCajaDetalleUseCase;
-  
 
   bool validando = false;
   bool editando = false;
@@ -49,16 +49,17 @@ class ListadoPersonasClasificacionController extends GetxController {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   ListadoPersonasClasificacionController(
-      this._getPersonalsEmpresaBySubdivisionUseCase,
-      this._getActividadsUseCase,
-      this._getLaborsUseCase,
-      this._createCajaDetalleUseCase,
-      this._deleteCajaDetalleUseCase,
-      this._getAllCajaDetalleUseCase,
+    this._getPersonalsEmpresaBySubdivisionUseCase,
+    this._getActividadsUseCase,
+    this._getLaborsUseCase,
+    this._createCajaDetalleUseCase,
+    this._deleteCajaDetalleUseCase,
+    this._getAllCajaDetalleUseCase,
   );
 
-  Future<void> getDetalles()async{
-    personalSeleccionado=await _getAllCajaDetalleUseCase.execute('caja_detalle_$keyCaja');
+  Future<void> getDetalles() async {
+    personalSeleccionado =
+        await _getAllCajaDetalleUseCase.execute('caja_detalle_$keyCaja');
     update(['personal_seleccionado']);
   }
 
@@ -137,7 +138,6 @@ class ListadoPersonasClasificacionController extends GetxController {
     List<CodeFormat> codeFormats = [];
     codeFormats.addAll(CodeFormatUtils.ALL_1D_FORMATS);
     codeFormats.addAll(CodeFormatUtils.ALL_2D_FORMATS);
-
   }
 
   @override
@@ -211,18 +211,15 @@ class ListadoPersonasClasificacionController extends GetxController {
 
   void goEliminar(int key) {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta eliminar el personal?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta eliminar el personal?',
+      onPressed: () async {
         Get.back();
         personalSeleccionado.removeWhere((element) => element.key == key);
         await _deleteCajaDetalleUseCase.execute('caja_detalle_$keyCaja', key);
         update(['seleccionados', 'personal_seleccionado']);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
@@ -244,7 +241,8 @@ class ListadoPersonasClasificacionController extends GetxController {
           .indexWhere((e) => e.codigotk == barcode.toString().trim());
       if (indexEncontrado != -1) {
         byLector
-            ? toastError('Error', 'Ya se encuentra registrado')
+            ? toast(
+                type: TypeToast.ERROR, message: 'Ya se encuentra registrado')
             : await _showNotification(false, 'Ya se encuentra registrado');
         buscando = false;
         update(['personal_seleccionado']);
@@ -263,7 +261,7 @@ class ListadoPersonasClasificacionController extends GetxController {
         int indexLabor =
             labores.indexWhere((e) => e.idlabor == int.parse(valores[2]));
 
-        PreTareaEsparragoDetalleEntity d=PreTareaEsparragoDetalleEntity(
+        PreTareaEsparragoDetalleEntity d = PreTareaEsparragoDetalleEntity(
           personal: personal[index],
           codigoempresa: personal[index].codigoempresa,
           fecha: DateTime.now(),
@@ -279,20 +277,21 @@ class ListadoPersonasClasificacionController extends GetxController {
           idusuario: PreferenciasUsuario().idUsuario,
         );
 
-        
-        int key=await _createCajaDetalleUseCase.execute('caja_detalle_$keyCaja', d);
-        d.key=key;
+        int key =
+            await _createCajaDetalleUseCase.execute('caja_detalle_$keyCaja', d);
+        d.key = key;
         personalSeleccionado.add(d);
 
         byLector
-            ? toastExito('Éxito', 'Registrado con exito')
+            ? toast(type: TypeToast.SUCCESS, message: 'Registrado con exito')
             : await _showNotification(true, 'Registrado con exito');
         buscando = false;
         update(['personal_seleccionado']);
         return;
       } else {
         byLector
-            ? toastError('Error', 'No se encuentra en la lista')
+            ? toast(
+                type: TypeToast.ERROR, message: 'No se encuentra en la lista')
             : await _showNotification(false, 'No se encuentra en la lista');
         buscando = false;
         update(['personal_seleccionado']);

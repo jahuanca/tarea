@@ -5,6 +5,7 @@ import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
 import 'package:flutter_tareo/domain/repositories/auth_repository.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:hive/hive.dart';
 
 class AuthRepositoryImplementation extends AuthRepository {
@@ -31,15 +32,18 @@ class AuthRepositoryImplementation extends AuthRepository {
                 return u;
               }
             }
-            toastError('Error', 'Usuario no vinculado con la sede');
+            toast(
+                type: TypeToast.ERROR,
+                message: 'Usuario no vinculado con la sede');
             return null;
           } else {
-            toastError('Error', 'Usuario no vinculado.');
+            toast(type: TypeToast.ERROR, message: 'Usuario no vinculado.');
             return null;
           }
         }
       }
-      toastError('Error', 'Verifique usuario o contraseña.');
+      toast(type: TypeToast.ERROR, message: 'Verifique usuario o contraseña.');
+
       return null;
     }
 

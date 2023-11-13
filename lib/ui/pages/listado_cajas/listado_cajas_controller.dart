@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/di/listado_personas_clasificacion_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
@@ -19,6 +20,7 @@ import 'package:flutter_tareo/ui/pages/listado_personas_clasificacion/listado_pe
 import 'package:flutter_tareo/ui/pages/listado_personas_clasificacion/listado_personas_clasificacion_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
 import 'package:uuid/uuid.dart';
@@ -56,9 +58,9 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   ListadoCajasController(
-    this._getClientesUseCase, 
+    this._getClientesUseCase,
     this._getActividadsUseCase,
-    this._getLaborsUseCase, 
+    this._getLaborsUseCase,
     this._updateClasificacionUseCase,
     this._createClasificadoCajaUseCase,
     this._updateClasificadoCajaUseCase,
@@ -66,8 +68,9 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
     this._getAllClasificadoCajasUseCase,
   );
 
-  Future<void> getCajas()async{
-    personalSeleccionado= await _getAllClasificadoCajasUseCase.execute('clasificado_caja_${preTarea.key}');
+  Future<void> getCajas() async {
+    personalSeleccionado = await _getAllClasificadoCajasUseCase
+        .execute('clasificado_caja_${preTarea.key}');
     update(['personal_seleccionado']);
   }
 
@@ -161,7 +164,7 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
 
   @override
   void onError(Exception error) {
-    toastError('Error', error.toString());
+    toast(type: TypeToast.ERROR, message: error.toString());
   }
 
   Future<void> _showNotification(bool success, String mensaje) async {
@@ -198,13 +201,15 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
   Future<bool> onWillPop() async {
     personalSeleccionado.forEach((e) {
       if (e.hora == null) {
-        toastError('Error',
-            'Existe un personal con datos vacios. Por favor, ingreselos.');
-        return false;
+        toast(
+            type: TypeToast.ERROR,
+            message:
+                'Existe un personal con datos vacios. Por favor, ingreselos.');
+        return BOOLEAN_FALSE_VALUE;
       }
     });
     Get.back(result: personalSeleccionado.length);
-    return true;
+    return BOOLEAN_TRUE_VALUE;
   }
 
   Future<void> goListadoDetalles(int index) async {
@@ -228,7 +233,10 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
     if (resultado != null) {
       Get.delete<ListadoPersonasClasificacionController>();
       personalSeleccionado[index].sizeDetails = resultado;
-      await _updateClasificadoCajaUseCase.execute('clasificado_caja_${preTarea.key}', personalSeleccionado[index].key, personalSeleccionado[index]);
+      await _updateClasificadoCajaUseCase.execute(
+          'clasificado_caja_${preTarea.key}',
+          personalSeleccionado[index].key,
+          personalSeleccionado[index]);
       update(['item_$index']);
     }
   }
@@ -263,18 +271,16 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
 
   void goEliminar(int key) {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta eliminar la caja?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta eliminar la caja?',
+      onPressed: () async {
         Get.back();
         personalSeleccionado.removeWhere((e) => e.key == key);
-        await _deleteClasificadoCajaUseCase.execute('clasificado_caja_${preTarea.key}', key);
+        await _deleteClasificadoCajaUseCase.execute(
+            'clasificado_caja_${preTarea.key}', key);
         update(['seleccionados', 'personal_seleccionado']);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
@@ -292,14 +298,17 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
     if (barcode != null && barcode != '-1' && buscando == false) {
       buscando = true;
       for (var element in otrasPreTareas) {
-
-        List<PreTareaEsparragoFormatoEntity> detalles= await _getAllClasificadoCajasUseCase.execute('clasificado_caja_${element.key}');
+        List<PreTareaEsparragoFormatoEntity> detalles =
+            await _getAllClasificadoCajasUseCase
+                .execute('clasificado_caja_${element.key}');
         int indexOtra = detalles.indexWhere(
             (e) => e.codigotk.toString().trim() == barcode.toString().trim());
         if (indexOtra != -1) {
           byLector
-              ? toastError('Error', 'Se encuentra en otra tarea')
-              : await _showNotification(false, 'Se encuentra en otra tarea');
+              ? toast(
+                  type: TypeToast.ERROR, message: 'Se encuentra en otra tarea')
+              : await _showNotification(
+                  BOOLEAN_FALSE_VALUE, 'Se encuentra en otra tarea');
           buscando = false;
           return;
         }
@@ -309,9 +318,11 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
           (e) => e.codigotk.toString().trim() == barcode.toString().trim());
       if (indexEncontrado != -1) {
         byLector
-            ? toastError('Error', 'Ya se encuentra registrado')
-            : await _showNotification(false, 'Ya se encuentra registrado');
-        buscando = false;
+            ? toast(
+                type: TypeToast.ERROR, message: 'Ya se encuentra registrado')
+            : await _showNotification(
+                BOOLEAN_FALSE_VALUE, 'Ya se encuentra registrado');
+        buscando = BOOLEAN_FALSE_VALUE;
         update(['personal_seleccionado']);
         return;
       }
@@ -322,37 +333,38 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
       if (index != -1) {
         int indexLabor =
             labores.indexWhere((e) => e.idlabor == int.parse(valores[1]));
-        PreTareaEsparragoFormatoEntity p=PreTareaEsparragoFormatoEntity(
-              cliente: clientes[index],
-              idcliente: clientes[index].idcliente,
-              fecha: DateTime.now(),
-              hora: DateTime.now(),
-              imei: PreferenciasUsuario().imei ?? '',
-              idestado: 1,
-              linea: 1,
-              idlabor: labores[indexLabor].idlabor,
-              idactividad: labores[indexLabor].idactividad,
-              labor: labores[indexLabor],
-              correlativo: int.parse(valores[2]),
-              codigotk: barcode.toString().trim(),
-              idusuario: PreferenciasUsuario().idUsuario,
-            );
+        PreTareaEsparragoFormatoEntity p = PreTareaEsparragoFormatoEntity(
+          cliente: clientes[index],
+          idcliente: clientes[index].idcliente,
+          fecha: DateTime.now(),
+          hora: DateTime.now(),
+          imei: PreferenciasUsuario().imei ?? '',
+          idestado: 1,
+          linea: 1,
+          idlabor: labores[indexLabor].idlabor,
+          idactividad: labores[indexLabor].idactividad,
+          labor: labores[indexLabor],
+          correlativo: int.parse(valores[2]),
+          codigotk: barcode.toString().trim(),
+          idusuario: PreferenciasUsuario().idUsuario,
+        );
 
-        int key=await _createClasificadoCajaUseCase.execute('clasificado_caja_${preTarea.key}', p);
-        p.key=key;
-        personalSeleccionado.insert(
-            0,
-            p);
+        int key = await _createClasificadoCajaUseCase.execute(
+            'clasificado_caja_${preTarea.key}', p);
+        p.key = key;
+        personalSeleccionado.insert(0, p);
         update(['personal_seleccionado']);
         byLector
-            ? toastExito('Éxito', 'Registrado con exito')
+            ? toast(type: TypeToast.SUCCESS, message: 'Registrado con exito')
             : await _showNotification(true, 'Registrado con exito');
         buscando = false;
         return;
       } else {
         byLector
-            ? toastError('Error', 'No se encuentra en la lista')
-            : await _showNotification(false, 'No se encuentra en la lista');
+            ? toast(
+                type: TypeToast.ERROR, message: 'No se encuentra en la lista')
+            : await _showNotification(
+                BOOLEAN_FALSE_VALUE, 'No se encuentra en la lista');
         buscando = false;
         return;
       }

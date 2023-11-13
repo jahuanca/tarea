@@ -94,16 +94,13 @@ class AprobarController extends GetxController {
       );
     } else {
       basicDialog(
-        Get.overlayContext,
-        'Alerta',
-        '¿Desea aprobar esta tarea?',
-        'Si',
-        'No',
-        () async {
+        context: Get.overlayContext,
+        message: '¿Desea aprobar esta tarea?',
+        onPressed: () async {
           Get.back();
           await getimageditor(index);
         },
-        () => Get.back(),
+        onCancel: () => Get.back(),
       );
     }
   }

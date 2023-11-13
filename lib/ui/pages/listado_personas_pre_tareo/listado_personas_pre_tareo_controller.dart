@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_tareo/domain/use_cases/pre_tareos/update_pre_tareo_proce
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
 import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
@@ -21,7 +23,7 @@ class ListadoPersonasPreTareoController extends GetxController
   List<PreTareoProcesoDetalleEntity> personalSeleccionado = [];
   int indexTarea;
   PreTareoProcesoEntity preTarea;
-  List<PreTareoProcesoEntity> otrasPreTareas=[];
+  List<PreTareoProcesoEntity> otrasPreTareas = [];
 
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
@@ -39,11 +41,10 @@ class ListadoPersonasPreTareoController extends GetxController
 
   @override
   void onInit() async {
-
     super.onInit();
     if (Get.arguments != null) {
-      if(Get.arguments['otras'] != null){
-        otrasPreTareas= Get.arguments['otras'] as List<PreTareoProcesoEntity>;
+      if (Get.arguments['otras'] != null) {
+        otrasPreTareas = Get.arguments['otras'] as List<PreTareoProcesoEntity>;
       }
       if (Get.arguments['tarea'] != null) {
         preTarea = Get.arguments['tarea'] as PreTareoProcesoEntity;
@@ -82,7 +83,7 @@ class ListadoPersonasPreTareoController extends GetxController
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
       print('es valido');
-      sunmiBarcodePlugin.onBarcodeScanned().listen((event) async{
+      sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
         await setCodeBar(event, true);
       });
     } else {
@@ -119,21 +120,21 @@ class ListadoPersonasPreTareoController extends GetxController
   }
 
   @override
-  void onClose() async{
-    if(await honeywellScanner?.isSupported() ?? false){
+  void onClose() async {
+    if (await honeywellScanner?.isSupported() ?? false) {
       honeywellScanner.stopScanner();
     }
     super.onClose();
   }
 
   @override
-  void onDecoded(String result) async{
-    await setCodeBar(result, true);
+  void onDecoded(String result) async {
+    await setCodeBar(result, BOOLEAN_TRUE_VALUE);
   }
 
   @override
   void onError(Exception error) {
-    toastError('Error', error.toString());
+    toast(type: TypeToast.ERROR, message: error.toString());
   }
 
   Future<void> _showNotification(bool success, String mensaje) async {
@@ -170,13 +171,15 @@ class ListadoPersonasPreTareoController extends GetxController
   Future<bool> onWillPop() async {
     personalSeleccionado.forEach((e) {
       if (e.hora == null) {
-        toastError('Error',
-            'Existe un personal con datos vacios. Por favor, ingreselos.');
-        return false;
+        toast(
+            type: TypeToast.ERROR,
+            message:
+                'Existe un personal con datos vacios. Por favor, ingreselos.');
+        return BOOLEAN_FALSE_VALUE;
       }
     });
     Get.back(result: personalSeleccionado);
-    return true;
+    return BOOLEAN_TRUE_VALUE;
   }
 
   void goNuevoPersonaTareaProceso() async {
@@ -253,18 +256,15 @@ class ListadoPersonasPreTareoController extends GetxController
 
   void goEliminar(int index) {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta eliminar el personal?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta eliminar el personal?',
+      onPressed: () async {
         Get.back();
         personalSeleccionado.removeAt(index);
         await _updatePreTareoProcesoUseCase.execute(preTarea, indexTarea);
         update(['seleccionados', 'personal_seleccionado']);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
@@ -276,18 +276,20 @@ class ListadoPersonasPreTareoController extends GetxController
     });
   }
 
-  bool buscando=false;
+  bool buscando = false;
 
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
-    if (barcode != null && barcode != '-1' && buscando==false) {
-      buscando=true;
+    if (barcode != null && barcode != '-1' && buscando == false) {
+      buscando = true;
       for (var element in otrasPreTareas) {
-        int indexOtra= element.detalles.indexWhere((e) => e.codigotk.toString().trim() == barcode.toString().trim());
-        if(indexOtra != -1){
+        int indexOtra = element.detalles.indexWhere(
+            (e) => e.codigotk.toString().trim() == barcode.toString().trim());
+        if (indexOtra != -1) {
           byLector
-            ? toastError('Error', 'Se encuentra en otra tarea')
-            : await _showNotification(false, 'Se encuentra en otra tarea');
-          buscando=false;        
+              ? toast(
+                  type: TypeToast.ERROR, message: 'Se encuentra en otra tarea')
+              : await _showNotification(false, 'Se encuentra en otra tarea');
+          buscando = false;
           return;
         }
       }
@@ -296,9 +298,10 @@ class ListadoPersonasPreTareoController extends GetxController
           .indexWhere((e) => e.codigotk == barcode.toString());
       if (indexEncontrado != -1) {
         byLector
-            ? toastError('Error', 'Ya se encuentra registrado')
+            ? toast(
+                type: TypeToast.ERROR, message: 'Ya se encuentra registrado')
             : await _showNotification(false, 'Ya se encuentra registrado');
-        buscando=false;        
+        buscando = false;
         return;
       }
 
@@ -320,18 +323,19 @@ class ListadoPersonasPreTareoController extends GetxController
             idusuario: PreferenciasUsuario().idUsuario,
             itempretareaproceso: preTarea.itempretareaproceso));
         update(['personal_seleccionado']);
-        preTarea.detalles=personalSeleccionado;
+        preTarea.detalles = personalSeleccionado;
         await _updatePreTareoProcesoUseCase.execute(preTarea, indexTarea);
         byLector
-            ? toastExito('Éxito', 'Registrado con exito')
+            ? toast(type: TypeToast.SUCCESS, message: 'Registrado con exito')
             : await _showNotification(true, 'Registrado con exito');
-        buscando=false;        
+        buscando = false;
         return;
       } else {
         byLector
-            ? toastError('Error', 'No se encuentra en la lista')
+            ? toast(
+                type: TypeToast.ERROR, message: 'No se encuentra en la lista')
             : await _showNotification(false, 'No se encuentra en la lista');
-        buscando=false;        
+        buscando = false;
         return;
       }
     }

@@ -15,6 +15,7 @@ import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo_uva/listado_pe
 import 'package:flutter_tareo/ui/pages/nueva_pre_tarea_uva/nueva_pre_tarea_uva_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:image_editor_pro/image_editor_pro.dart';
 
@@ -92,16 +93,13 @@ class PreTareosUvaController extends GetxController {
       );
     } else {
       basicDialog(
-        Get.overlayContext,
-        'Alerta',
-        '¿Desea aprobar esta actividad?',
-        'Si',
-        'No',
-        () async {
+        context: Get.overlayContext,
+        message: '¿Desea aprobar esta actividad?',
+        onPressed: () async {
           Get.back();
           await getimageditor(index);
         },
-        () => Get.back(),
+        onCancel: () => Get.back(),
       );
     }
   }
@@ -145,16 +143,13 @@ class PreTareosUvaController extends GetxController {
   Future<void> goMigrar(int index) async {
     if (preTareosUva[index].estadoLocal == 'A') {
       basicDialog(
-        Get.overlayContext,
-        'Alerta',
-        '¿Desea migrar esta actividad?',
-        'Si',
-        'No',
-        () async {
+        context: Get.overlayContext,
+        message: '¿Desea migrar esta actividad?',
+        onPressed: () async {
           Get.back();
           await migrar(index);
         },
-        () => Get.back(),
+        onCancel: () => Get.back(),
       );
     } else {
       basicAlert(
@@ -171,7 +166,7 @@ class PreTareosUvaController extends GetxController {
     PreTareoProcesoUvaEntity tareaMigrada =
         await _migrarAllPreTareoUvaUseCase.execute(preTareosUva[index].key);
     if (tareaMigrada != null) {
-      toastExito('Exito', 'Tarea migrada con exito');
+      toast(type: TypeToast.SUCCESS, message: 'Tarea migrada con exito');
       preTareosUva[index].estadoLocal = 'M';
       preTareosUva[index].itempretareaprocesouva =
           tareaMigrada.itempretareaprocesouva;
@@ -271,47 +266,38 @@ class PreTareosUvaController extends GetxController {
 
   void goEliminar(int index) {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de eliminar esta tarea?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de eliminar esta tarea?',
+      onPressed: () async {
         await delete(index);
         update(['tareas']);
         Get.back();
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
   void goCopiar(int index) {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de copiar la siguiente tarea?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de copiar la siguiente tarea?',
+      onPressed: () async {
         Get.back();
         await copiarTarea(index);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
   void goEditar(int index) {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de editar la actividad?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de editar la actividad?',
+      onPressed: () async {
         Get.back();
         await editarTarea(index);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 }

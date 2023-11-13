@@ -13,6 +13,7 @@ import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 
@@ -315,7 +316,7 @@ class NuevaSeleccionController extends GetxController {
       nuevaSeleccion.estadoLocal = 'PC';
       Get.back(result: nuevaSeleccion);
     } else {
-      toastError('Error', mensaje);
+      toast(type: TypeToast.ERROR, message: mensaje);
     }
   }
 

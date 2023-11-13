@@ -16,6 +16,7 @@ import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_
 import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo_uva/listado_personas_pre_tareo_uva_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 
@@ -289,7 +290,7 @@ class NuevaPreTareaUvaController extends GetxController {
       nuevaPreTarea.estadoLocal = 'PC';
       Get.back(result: nuevaPreTarea);
     } else {
-      toastError('Error', mensaje);
+      toast(type: TypeToast.ERROR, message: mensaje);
     }
   }
 

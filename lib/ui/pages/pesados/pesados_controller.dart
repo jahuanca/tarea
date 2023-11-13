@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/di/listado_personas_pesado_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_pre_tarea_esparrago_binding.dart';
 import 'package:flutter_tareo/di/nueva_pesado_binding.dart';
@@ -22,6 +23,7 @@ import 'package:flutter_tareo/ui/pages/nueva_pesado/nueva_pesado_page.dart';
 import 'package:flutter_tareo/ui/pages/nueva_tarea/nueva_tarea_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:image_editor_pro/image_editor_pro.dart';
 
@@ -63,7 +65,7 @@ class PesadosController extends GetxController {
       timer = new Timer.periodic(
           Duration(minutes: 3), (Timer t) => sendResumenVarios());
     } catch (e) {
-      toastError('UI: timer', e.toString());
+      toast(type: TypeToast.ERROR, title: 'UI: timer', message: e.toString());
     }
     await getTareas();
     validando = false;
@@ -80,7 +82,10 @@ class PesadosController extends GetxController {
     try {
       await _sendResumenVariosEsparragoUseCase.execute();
     } catch (e) {
-      toastError('UI: sendresumenvarios', e.toString());
+      toast(
+          type: TypeToast.ERROR,
+          title: 'UI: sendresumenvarios',
+          message: e.toString());
     }
   }
 
@@ -89,7 +94,8 @@ class PesadosController extends GetxController {
     try {
       pesados = await _getAllPesadoUseCase.execute();
     } catch (e) {
-      toastError('UI: getTareas', e.toString());
+      toast(
+          type: TypeToast.ERROR, title: 'UI: getTareas', message: e.toString());
     }
     update(['tareas']);
     return;
@@ -132,29 +138,23 @@ class PesadosController extends GetxController {
       );
     } else {
       basicDialog(
-        Get.overlayContext,
-        'Alerta',
-        '¿Desea aprobar esta actividad?',
-        'Si',
-        'No',
-        () async {
+        context: Get.overlayContext,
+        message: '¿Desea aprobar esta actividad?',
+        onPressed: () async {
           Get.back();
           await getimageditor(index);
         },
-        () => Get.back(),
+        onCancel: () => Get.back(),
       );
     }
   }
 
   Future<void> goDatosEnLinea() async {
     bool resultado = await basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Desea ver los datos en linea?',
-      'Si',
-      'No',
-      () async => Get.back(result: true),
-      () async => Get.back(result: false),
+      context: Get.overlayContext,
+      message: '¿Desea ver los datos en linea?',
+      onPressed: () async => Get.back(result: BOOLEAN_TRUE_VALUE),
+      onCancel: () async => Get.back(result: BOOLEAN_FALSE_VALUE),
     );
 
     if (resultado) {
@@ -195,16 +195,13 @@ class PesadosController extends GetxController {
     int index = pesados.indexWhere((element) => element.key == key);
     if (pesados[index].estadoLocal == 'A') {
       basicDialog(
-        Get.overlayContext,
-        'Alerta',
-        '¿Desea migrar esta actividad?',
-        'Si',
-        'No',
-        () async {
+        context: Get.overlayContext,
+        message: '¿Desea migrar esta actividad?',
+        onPressed: () async {
           Get.back();
           await migrar(index);
         },
-        () => Get.back(),
+        onCancel: () => Get.back(),
       );
     } else {
       basicAlert(
@@ -221,7 +218,7 @@ class PesadosController extends GetxController {
     PreTareaEsparragoVariosEntity tareaMigrada =
         await _migrarAllPesadoUseCase.execute(pesados[index].key);
     if (tareaMigrada != null) {
-      toastExito('Exito', 'Tarea migrada con exito');
+      toast(type: TypeToast.SUCCESS, message: 'Tarea migrada con exito');
       pesados[index].estadoLocal = 'M';
       pesados[index].itempretareaesparragosvarios =
           tareaMigrada.itempretareaesparragosvarios;
@@ -341,48 +338,39 @@ class PesadosController extends GetxController {
   Future<void> goEliminar(int key) async {
     int index = pesados.indexWhere((element) => element.key == key);
     await basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de eliminar este pesado?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de eliminar este pesado?',
+      onPressed: () async {
         await delete(index);
         update(['tareas']);
         Get.back();
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
   void goCopiar(int key) {
     int index = pesados.indexWhere((element) => element.key == key);
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de copiar la siguiente tarea?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de copiar la siguiente tarea?',
+      onPressed: () async {
         Get.back();
         await copiarPesado(index);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
   Future<void> goEditar(int key) async {
     await basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de editar la actividad?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de editar la actividad?',
+      onPressed: () async {
         Get.back();
         await editarPesado(key);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 }

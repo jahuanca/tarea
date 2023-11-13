@@ -1,28 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 
 Future<dynamic> basicDialog(
-    BuildContext context,
-    String titulo,
-    String contenido,
-    String pressed,
-    String cancel,
-    void Function() onPressed,
-    void Function() onCancel) {
+    {BuildContext context,
+    String title = ALERT_STRING,
+    @required String message,
+    String textPositive = YES_STRING,
+    String textNegative = NO_STRING,
+    @required void Function() onPressed,
+    @required void Function() onCancel}) {
   return showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text(titulo),
-      content: Text(contenido),
+      title: Text(title),
+      content: Text(message),
       actions: <Widget>[
         FlatButton(
           onPressed: onCancel,
-          child: Text(cancel),
+          child: Text(textNegative),
         ),
         FlatButton(
           onPressed: onPressed,
-          child: Text(pressed),
+          child: Text(textPositive),
         ),
       ],
     ),
@@ -31,53 +32,36 @@ Future<dynamic> basicDialog(
 
 Future<dynamic> basicAlert(
     {BuildContext context,
-    String title,
-    String message,
-    String pressed,
+    String title = ALERT_STRING,
+    @required String message,
+    String textButton = ACCEPT_STRING,
     void Function() onPressed}) {
   return showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: Text(title ?? ALERT_STRING),
+      title: Text(title),
       content: Text(message),
       actions: <Widget>[
         FlatButton(
           onPressed: onPressed,
-          child: Text(pressed ?? ACCEPT_STRING),
+          child: Text(textButton),
         ),
       ],
     ),
   );
 }
 
-void toastExito(String titulo, String mensaje, [int duration = 1000]) {
+void toast(
+    {@required TypeToast type,
+    String title,
+    @required String message,
+    int duration = 1000}) {
   Get.snackbar(
-    titulo,
-    mensaje,
-    snackPosition: SnackPosition.BOTTOM,
-    backgroundColor: Colors.green,
-    colorText: Colors.white,
+    title ?? typesToast[type].title,
+    message,
+    snackPosition: typesToast[type].snackPosition,
+    backgroundColor: typesToast[type].backgroundColor,
+    colorText: typesToast[type].colorText,
     duration: Duration(milliseconds: duration),
   );
-}
-
-void toastMensaje(String titulo, String mensaje) {
-  Get.snackbar(titulo, mensaje,
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: Colors.green,
-      colorText: Colors.white);
-}
-
-void toastAdvertencia(String titulo, String mensaje) {
-  Get.snackbar(titulo, mensaje,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Color(0xFFF5CC31),
-      colorText: Colors.white);
-}
-
-void toastError(String titulo, String mensaje) {
-  Get.snackbar(titulo, mensaje,
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.red,
-      colorText: Colors.white);
 }

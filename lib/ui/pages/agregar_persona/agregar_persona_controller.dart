@@ -7,6 +7,7 @@ import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/create_per
 import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/update_personal_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 
@@ -172,7 +173,7 @@ class AgregarPersonaController extends GetxController {
   void guardar() async {
     String mensaje = validar();
     if (mensaje != null) {
-      toastError('Error', mensaje);
+      toast(type: TypeToast.ERROR, message: mensaje);
       return;
     }
     if (actualizando) {
@@ -198,7 +199,7 @@ class AgregarPersonaController extends GetxController {
     }
 
     if (nuevoPersonal.personal == null) {
-      toastError('Error', 'No existe persona seleccionada');
+      toast(type: TypeToast.ERROR, message: 'No existe persona seleccionada');
       return;
     }
     nuevoPersonal.codigoempresa = nuevoPersonal.personal.codigoempresa;

@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
@@ -15,6 +16,7 @@ import 'package:flutter_tareo/domain/use_cases/tareas/update_tarea_proceso_use_c
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
 import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
@@ -146,7 +148,7 @@ class ListadoPersonasController extends GetxController
 
   @override
   void onError(Exception error) {
-    toastError('Error', error.toString());
+    toast(type: TypeToast.ERROR, message: error.toString());
   }
 
   Future<void> _showNotification(bool success, String mensaje) async {
@@ -184,9 +186,11 @@ class ListadoPersonasController extends GetxController
     double cantidadAvance = 0;
     personalSeleccionado.forEach((e) {
       if (e.horainicio == null || e.horafin == null) {
-        toastError('Error',
-            'Existe un personal con datos vacios. Por favor, ingreselos.');
-        return false;
+        toast(
+            type: TypeToast.ERROR,
+            message:
+                'Existe un personal con datos vacios. Por favor, ingreselos.');
+        return BOOLEAN_FALSE_VALUE;
       }
 
       /* if (tarea.esrendimiento) {
@@ -200,7 +204,6 @@ class ListadoPersonasController extends GetxController
       if (e.esrendimiento ?? false) {
         cantidadAvance = cantidadAvance + (e.cantidadrendimiento ?? 0);
       }
-
     });
 
     Get.back(result: [personalSeleccionado.length, cantidadAvance]);
@@ -296,12 +299,9 @@ class ListadoPersonasController extends GetxController
 
   void goEliminar(int index) {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta eliminar el personal?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta eliminar el personal?',
+      onPressed: () async {
         Get.back();
         await _deletePersonalTareaProcesoUseCase.execute(
             'personal_tarea_proceso_${tarea.key}',
@@ -309,7 +309,7 @@ class ListadoPersonasController extends GetxController
         personalSeleccionado.removeAt(index);
         update(['personal_seleccionado']);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
@@ -318,7 +318,6 @@ class ListadoPersonasController extends GetxController
       FlutterBarcodeScanner.getBarcodeStreamReceiver(
               "#ff6666", "Cancelar", false, ScanMode.DEFAULT)
           .listen((barcode) async {
-        
         await setCodeBar(barcode);
       });
     }
@@ -333,10 +332,12 @@ class ListadoPersonasController extends GetxController
           .indexWhere((e) => e.personal.nrodocumento == barcode.toString());
       if (indexEncontrado != -1) {
         byLector
-            ? toastError('Error', 'Ya se encuentra registrado')
-            : await _showNotification(false, 'Ya se encuentra registrado');
+            ? toast(
+                type: TypeToast.ERROR, message: 'Ya se encuentra registrado')
+            : await _showNotification(
+                BOOLEAN_FALSE_VALUE, 'Ya se encuentra registrado');
         update(['personal_seleccionado']);
-        buscando = false;
+        buscando = BOOLEAN_FALSE_VALUE;
         return;
       }
       int index =
@@ -360,16 +361,17 @@ class ListadoPersonasController extends GetxController
         p.key = key;
         personalSeleccionado.add(p);
         byLector
-            ? toastExito('Éxito', 'Registrado con exito')
+            ? toast(type: TypeToast.SUCCESS, message: 'Registrado con exito')
             : await _showNotification(true, 'Registrado con exito');
         buscando = false;
         update(['personal_seleccionado']);
         return;
       } else {
         byLector
-            ? toastError('Error', 'No se encuentra en la lista')
+            ? toast(
+                type: TypeToast.ERROR, message: 'No se encuentra en la lista')
             : await _showNotification(false, 'No se encuentra en la lista');
-        buscando = false;
+        buscando = BOOLEAN_FALSE_VALUE;
         update(['personal_seleccionado']);
         return;
       }

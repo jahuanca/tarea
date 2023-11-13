@@ -24,3 +24,7 @@ const String CANCEL_STRING = "Cancelar";
 const String ACCEPT_STRING = "Aceptar";
 const String YES_STRING = "Sí";
 const String NO_STRING = "No";
+const String SUCCESS_STRING = "Éxito";
+const String ERROR_STRING = "Error";
+const String WARNING_STRING = "Advertencia";
+const String INFO_STRING = "Información";

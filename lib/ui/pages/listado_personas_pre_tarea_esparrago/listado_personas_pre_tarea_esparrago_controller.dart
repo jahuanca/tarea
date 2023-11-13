@@ -19,6 +19,7 @@ import 'package:flutter_tareo/domain/use_cases/personal_pre_tarea_esparrago/crea
 import 'package:flutter_tareo/domain/use_cases/personal_pre_tarea_esparrago/get_all_personal_pre_tarea_esparrago_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
 import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
@@ -38,16 +39,20 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
   List<LaborEntity> labores = [];
 
   final GetCalibresUseCase _getCalibresUseCase;
-  
+
   final GetViaEnviosUseCase _getViaEnviosUseCase;
   final GetLaborsUseCase _getLaborsUseCase;
   final GetClientesUseCase _getClientesUseCase;
   final UpdatePesadoUseCase _updatePesadoUseCase;
 
-  final GetAllPersonalPreTareaEsparragoUseCase _getAllPersonalPreTareaEsparragoUseCase;
-  final CreatePersonalPreTareaEsparragoUseCase _createPersonalPreTareaEsparragoUseCase;
-  final UpdatePersonalPreTareaEsparragoUseCase _updatePersonalPreTareaEsparragoUseCase;
-  final DeletePersonalPreTareaEsparragoUseCase _deletePersonalPreTareaEsparragoUseCase;
+  final GetAllPersonalPreTareaEsparragoUseCase
+      _getAllPersonalPreTareaEsparragoUseCase;
+  final CreatePersonalPreTareaEsparragoUseCase
+      _createPersonalPreTareaEsparragoUseCase;
+  final UpdatePersonalPreTareaEsparragoUseCase
+      _updatePersonalPreTareaEsparragoUseCase;
+  final DeletePersonalPreTareaEsparragoUseCase
+      _deletePersonalPreTareaEsparragoUseCase;
   bool validando = false;
   bool editando = false;
   int sizeDetailsCaja = 0;
@@ -71,7 +76,7 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
 
   @override
   void onInit() async {
-    validando=true;
+    validando = true;
     update(['validando']);
     calibres = await _getCalibresUseCase.execute();
     viasEnvio = await _getViaEnviosUseCase.execute();
@@ -96,7 +101,6 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
         editando = true;
         indexTarea = Get.arguments['index'] as int;
       }
-
     }
 
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -111,14 +115,14 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
       initPlatformState();
       print('es valido');
       sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
-        if(preTarea?.estadoLocal != 'A'){
+        if (preTarea?.estadoLocal != 'A') {
           await setCodeBar(event, true);
         }
       });
     } else {
       initHoneyScanner();
     }
-    validando=false;
+    validando = false;
     update(['validando']);
   }
 
@@ -159,14 +163,14 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
 
   @override
   void onDecoded(String result) async {
-    if(preTarea?.estadoLocal != 'A'){
+    if (preTarea?.estadoLocal != 'A') {
       await setCodeBar(result, true);
     }
   }
 
   @override
   void onError(Exception error) {
-    toastError('Error', error.toString());
+    toast(type: TypeToast.ERROR, message: error.toString());
   }
 
   Future<void> _showNotification(bool success, String mensaje) async {
@@ -191,9 +195,9 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
   }
 
   void seleccionar(int index) {
-    if(esperandoCierre){
-      toastError('Error', 'Termine o cierre la etiqueta.');
-       return;
+    if (esperandoCierre) {
+      toast(type: TypeToast.ERROR, message: 'Termine o cierre la etiqueta.');
+      return;
     }
     int i = seleccionados.indexWhere((element) => element == index);
     if (i == -1) {
@@ -205,14 +209,17 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
   }
 
   Future<bool> onWillPop() async {
-    Get.back(result: esperandoCierre ? personalSeleccionado.length-1 : personalSeleccionado.length,);
+    Get.back(
+      result: esperandoCierre
+          ? personalSeleccionado.length - 1
+          : personalSeleccionado.length,
+    );
     return true;
   }
 
   Future<void> changeOptionsGlobal(dynamic index) async {
     switch (index) {
       case 1:
-        
         seleccionados.clear();
         for (var i = 0; i < personalSeleccionado.length; i++) {
           seleccionados.add(i);
@@ -231,9 +238,8 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
   Future<void> changeOptions(dynamic index, int key) async {
     switch (index) {
       case 2:
-        int index =
-            personalSeleccionado.indexWhere((e) => e.key == key);
-        if(index!=-1) goEliminar(index);
+        int index = personalSeleccionado.indexWhere((e) => e.key == key);
+        if (index != -1) goEliminar(index);
 
         break;
       default:
@@ -243,51 +249,54 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
 
   void goEliminar(int index) {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de eliminar el registro?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de eliminar el registro?',
+      onPressed: () async {
         Get.back();
-        PersonalPreTareaEsparragoEntity item = personalSeleccionado.removeAt(index);
-        
-        preTarea.sizeDetails = esperandoCierre ? personalSeleccionado.length - 1 : personalSeleccionado.length;
+        PersonalPreTareaEsparragoEntity item =
+            personalSeleccionado.removeAt(index);
+
+        preTarea.sizeDetails = esperandoCierre
+            ? personalSeleccionado.length - 1
+            : personalSeleccionado.length;
         await _updatePesadoUseCase.execute(preTarea, preTarea.key);
 
         await _deletePersonalPreTareaEsparragoUseCase.execute(
             'personal_pre_tarea_esparrago_${preTarea.key}', item.key);
         update(['seleccionados', 'personal_seleccionado']);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
   Future<void> goLectorCode() async {
-    if(preTarea?.estadoLocal != 'A'){
-      String barcode=await FlutterBarcodeScanner.scanBarcode("#ff6666", "Cancelar", false, ScanMode.BARCODE);
+    if (preTarea?.estadoLocal != 'A') {
+      String barcode = await FlutterBarcodeScanner.scanBarcode(
+          "#ff6666", "Cancelar", false, ScanMode.BARCODE);
       await setCodeBar(barcode);
     }
   }
 
   bool buscando = false;
-  bool esperandoCierre=false;
+  bool esperandoCierre = false;
 
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
     if (barcode != null && barcode != '-1') {
-      List<String> codigos=barcode.toString().trim().split('_');
-      if(barcode.toString().trim().toUpperCase()[0]=='A'){
+      List<String> codigos = barcode.toString().trim().split('_');
+      if (barcode.toString().trim().toUpperCase()[0] == 'A') {
         print('Es apertura');
-        
-        if(codigos.length < 6 ){
-          toastError('Error', 'Etiqueta de apertura, con datos incompletos.');
+
+        if (codigos.length < 6) {
+          toast(
+              type: TypeToast.ERROR,
+              message: 'Etiqueta de apertura, con datos incompletos.');
           return;
         }
 
         /*int index=personalSeleccionado.indexWhere((e) => e.codigotkcaja == barcode.toString().trim());
 
         if(index != -1){
-          toastError('Error', 'Esta etiqueta ya ha sido registrada.');
+          toast(type: TypeToast.ERROR, message: 'Esta etiqueta ya ha sido registrada.');
           return;
         }
 
@@ -299,135 +308,160 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
             (e) => '${e.codigotkcaja}'== '${barcode.toString().trim()}');
 
           if(indexROtra!=-1){
-            toastError('Error', 'Esta etiqueta ya esta en otra pretarea.');
+            toast(type: TypeToast.ERROR, message: 'Esta etiqueta ya esta en otra pretarea.');
             return;
           } 
         }*/
 
-        int indexLabor=labores.indexWhere((e) => e.idlabor == int.tryParse(codigos[1]));
+        int indexLabor =
+            labores.indexWhere((e) => e.idlabor == int.tryParse(codigos[1]));
 
-        if(indexLabor == -1){
-          toastError('Error', 'No se pudo encontrar la labor');
+        if (indexLabor == -1) {
+          toast(
+              type: TypeToast.ERROR, message: 'No se pudo encontrar la labor');
           return;
         }
 
-        int indexCliente=clientes.indexWhere((e) => e.idcliente == int.tryParse(codigos[2]));
+        int indexCliente =
+            clientes.indexWhere((e) => e.idcliente == int.tryParse(codigos[2]));
 
-        if(indexCliente == -1){
-          toastError('Error', 'No se pudo encontrar el cliente');
+        if (indexCliente == -1) {
+          toast(
+              type: TypeToast.ERROR,
+              message: 'No se pudo encontrar el cliente');
           return;
         }
 
-        int indexCalibre=calibres.indexWhere((e) => e.idcalibre == int.tryParse(codigos[3]));
+        int indexCalibre =
+            calibres.indexWhere((e) => e.idcalibre == int.tryParse(codigos[3]));
 
-        if(indexCalibre == -1){
-          toastError('Error', 'No se pudo encontrar el calibre');
+        if (indexCalibre == -1) {
+          toast(
+              type: TypeToast.ERROR,
+              message: 'No se pudo encontrar el calibre');
           return;
         }
 
-        int indexViaEnvio=viasEnvio.indexWhere((e) => e.idvia== int.tryParse(codigos[4]));
+        int indexViaEnvio =
+            viasEnvio.indexWhere((e) => e.idvia == int.tryParse(codigos[4]));
 
-        if(indexViaEnvio == -1){
-          toastError('Error', 'No se pudo encontrar la vía de envío.');
+        if (indexViaEnvio == -1) {
+          toast(
+              type: TypeToast.ERROR,
+              message: 'No se pudo encontrar la vía de envío.');
           return;
         }
 
-        esperandoCierre=true;
-        personalSeleccionado.insert(0,
-          new PersonalPreTareaEsparragoEntity(
-            idcliente: clientes[indexCliente].idcliente,
-            cliente: clientes[indexCliente],
-            idlabor: labores[indexLabor].idlabor,
-            labor: labores[indexLabor],
-            idvia: viasEnvio[indexViaEnvio].idvia,
-            viaEnvio: viasEnvio[indexViaEnvio],
-            correlativocaja: int.tryParse(codigos[5]),
-            codigotkcaja: barcode.toString().trim(),
-            idcalibre: calibres[indexCalibre].idcalibre,
-            calibre: calibres[indexCalibre],
-            esperandoCierre: esperandoCierre,
-            idSQLitePreTareaEsparrago: preTarea.idSQLite,
-          )
-        );
-
+        esperandoCierre = true;
+        personalSeleccionado.insert(
+            0,
+            new PersonalPreTareaEsparragoEntity(
+              idcliente: clientes[indexCliente].idcliente,
+              cliente: clientes[indexCliente],
+              idlabor: labores[indexLabor].idlabor,
+              labor: labores[indexLabor],
+              idvia: viasEnvio[indexViaEnvio].idvia,
+              viaEnvio: viasEnvio[indexViaEnvio],
+              correlativocaja: int.tryParse(codigos[5]),
+              codigotkcaja: barcode.toString().trim(),
+              idcalibre: calibres[indexCalibre].idcalibre,
+              calibre: calibres[indexCalibre],
+              esperandoCierre: esperandoCierre,
+              idSQLitePreTareaEsparrago: preTarea.idSQLite,
+            ));
       }
-      if(barcode.toString().trim().toUpperCase()[0]=='C'){
-        if(!esperandoCierre){
-          toastError('Error', 'Se esta esperando una etiqueta de apertura.');
+      if (barcode.toString().trim().toUpperCase()[0] == 'C') {
+        if (!esperandoCierre) {
+          toast(
+              type: TypeToast.ERROR,
+              message: 'Se esta esperando una etiqueta de apertura.');
           return;
         }
 
-        if(codigos.length < 4 ){
-          toastError('Error', 'Etiqueta de cierre, con datos incompletos.');
+        if (codigos.length < 4) {
+          toast(
+              type: TypeToast.ERROR,
+              message: 'Etiqueta de cierre, con datos incompletos.');
           return;
         }
 
         print('Es cierre');
 
-        int index=personalSeleccionado.indexWhere((e) => e.esperandoCierre==true);
+        int index =
+            personalSeleccionado.indexWhere((e) => e.esperandoCierre == true);
 
-        if(index==-1){
-          toastError('Error', 'No existe etiqueta que espera ser cerrada.');
+        if (index == -1) {
+          toast(
+              type: TypeToast.ERROR,
+              message: 'No existe etiqueta que espera ser cerrada.');
           return;
         }
 
-        int indexR=personalSeleccionado.indexWhere(
-          (e) => '${e.codigotkmesa}'=='${barcode.toString().trim()}');
+        int indexR = personalSeleccionado.indexWhere(
+            (e) => '${e.codigotkmesa}' == '${barcode.toString().trim()}');
 
-        if(indexR!=-1){
-          toastError('Error', 'Esta etiqueta de cierre ya ha sido registrada.');
+        if (indexR != -1) {
+          toast(
+              type: TypeToast.ERROR,
+              message: 'Esta etiqueta de cierre ya ha sido registrada.');
           return;
         }
 
         for (PreTareaEsparragoVariosEntity otra in otrasPreTareas) {
+          List<PersonalPreTareaEsparragoEntity> otroPersonal =
+              await _getAllPersonalPreTareaEsparragoUseCase
+                  .execute('personal_pre_tarea_esparrago_${otra.key}');
 
-          List<PersonalPreTareaEsparragoEntity> otroPersonal=await _getAllPersonalPreTareaEsparragoUseCase.execute('personal_pre_tarea_esparrago_${otra.key}');
+          int indexROtra = otroPersonal.indexWhere(
+              (e) => '${e.codigotkmesa}' == '${barcode.toString().trim()}');
 
-          int indexROtra=otroPersonal.indexWhere(
-            (e) => '${e.codigotkmesa}'== '${barcode.toString().trim()}');
-
-          if(indexROtra!=-1){
-            toastError('Error', 'Esta etiqueta ya esta en otra pretarea.');
+          if (indexROtra != -1) {
+            toast(
+                type: TypeToast.ERROR,
+                message: 'Esta etiqueta ya esta en otra pretarea.');
             return;
-          } 
+          }
         }
-        
-        if(index != -1){
-          personalSeleccionado[index].codigotkmesa=barcode.toString().trim();
-          personalSeleccionado[index].esperandoCierre=false;
-          personalSeleccionado[index].mesa=codigos[1];
-          personalSeleccionado[index].linea=codigos[2];
-          personalSeleccionado[index].correlativomesa=int.tryParse(codigos[3]) ?? 0;
 
-          personalSeleccionado[index].idusuario=PreferenciasUsuario().idUsuario;
-          personalSeleccionado[index].fecha= new DateTime.now();
-          personalSeleccionado[index].hora=new DateTime.now();
+        if (index != -1) {
+          personalSeleccionado[index].codigotkmesa = barcode.toString().trim();
+          personalSeleccionado[index].esperandoCierre = false;
+          personalSeleccionado[index].mesa = codigos[1];
+          personalSeleccionado[index].linea = codigos[2];
+          personalSeleccionado[index].correlativomesa =
+              int.tryParse(codigos[3]) ?? 0;
 
-          int key=await _createPersonalPreTareaEsparragoUseCase.execute('personal_pre_tarea_esparrago_${preTarea.key}', personalSeleccionado[index]);
-          personalSeleccionado[index].key=key;
-          await _updatePersonalPreTareaEsparragoUseCase.execute('personal_pre_tarea_esparrago_${preTarea.key}', key, personalSeleccionado[index]);
-          preTarea.sizeDetails=personalSeleccionado.length;
+          personalSeleccionado[index].idusuario =
+              PreferenciasUsuario().idUsuario;
+          personalSeleccionado[index].fecha = new DateTime.now();
+          personalSeleccionado[index].hora = new DateTime.now();
+
+          int key = await _createPersonalPreTareaEsparragoUseCase.execute(
+              'personal_pre_tarea_esparrago_${preTarea.key}',
+              personalSeleccionado[index]);
+          personalSeleccionado[index].key = key;
+          await _updatePersonalPreTareaEsparragoUseCase.execute(
+              'personal_pre_tarea_esparrago_${preTarea.key}',
+              key,
+              personalSeleccionado[index]);
+          preTarea.sizeDetails = personalSeleccionado.length;
           await _updatePesadoUseCase.execute(preTarea, preTarea.key);
-          esperandoCierre=false;
+          esperandoCierre = false;
         }
       }
       update(['seleccionados', 'personal_seleccionado']);
     }
   }
 
-  Future<void> goCancelarEsperando(int index)async{
-
-    bool resultado= await basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de cancelar este registro?',
-      'Si',
-      'No',
-      ()async=> Get.back(result: true),
-      ()async=> Get.back(result: false),
+  Future<void> goCancelarEsperando(int index) async {
+    bool resultado = await basicDialog(
+      context: Get.overlayContext,
+      message: '¿Esta seguro de cancelar este registro?',
+      onPressed: () async => Get.back(result: true),
+      onCancel: () async => Get.back(result: false),
     );
-    if(resultado != null && resultado){
-      esperandoCierre=false;
+    if (resultado != null && resultado) {
+      esperandoCierre = false;
       personalSeleccionado.removeAt(index);
       update(['seleccionados', 'personal_seleccionado']);
     }

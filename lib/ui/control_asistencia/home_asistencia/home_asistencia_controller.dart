@@ -16,9 +16,9 @@ import 'package:flutter_tareo/di/control_asistencia/nueva_asistencia_binding.dar
 import 'package:flutter_tareo/ui/control_asistencia/listado_asistencia_registro/listado_asistencia_registro_page.dart';
 import 'package:flutter_tareo/ui/control_asistencia/nueva_asistencia/nueva_asistencia_page.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
-import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 
 class HomeAsistenciaController extends GetxController {
@@ -101,19 +101,18 @@ class HomeAsistenciaController extends GetxController {
 
   Future<void> goEliminar(int key) async {
     int index = asistencias.indexWhere((e) => e.key == key);
-    if (index == -1) toastError('Error', 'No se pudo eliminar la tarea.');
+    if (index == -1)
+      toast(type: TypeToast.ERROR, message: 'No se pudo eliminar la tarea.');
+
     await basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Esta seguro de eliminar esta asistencia?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de eliminar esta asistencia?',
+      onPressed: () async {
         await delete(index);
         update([LISTADO_ASISTENCIAS_ID]);
         Get.back();
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
@@ -133,16 +132,13 @@ class HomeAsistenciaController extends GetxController {
       );
     } else {
       basicDialog(
-        Get.overlayContext,
-        'Alerta',
-        '¿Desea aprobar esta asistencia?',
-        'Si',
-        'No',
-        () async {
+        context: Get.overlayContext,
+        message: '¿Desea aprobar esta asistencia?',
+        onPressed: () async {
           Get.back();
           //await getimageditor(index);
         },
-        () => Get.back(),
+        onCancel: () => Get.back(),
       );
     }
   }
@@ -185,16 +181,13 @@ class HomeAsistenciaController extends GetxController {
     int index = asistencias.indexWhere((element) => element.key == key);
     if (asistencias[index].estadoLocal == 'A') {
       basicDialog(
-        Get.overlayContext,
-        'Alerta',
-        '¿Desea migrar esta asistencia?',
-        'Si',
-        'No',
-        () async {
+        context: Get.overlayContext,
+        message: '¿Desea migrar esta asistencia?',
+        onPressed: () async {
           Get.back();
           await migrar(index);
         },
-        () => Get.back(),
+        onCancel: () => Get.back(),
       );
     } else {
       basicAlert(
@@ -211,7 +204,7 @@ class HomeAsistenciaController extends GetxController {
     AsistenciaFechaTurnoEntity asistenciaMigrada =
         await _migrarAsistenciaUseCase.execute(asistencias[index]);
     if (asistenciaMigrada != null) {
-      toastExito('Exito', 'Asistencia migrada con exito');
+      toast(type: TypeToast.SUCCESS, message: 'Asistencia migrada con exito');
       asistencias[index].estadoLocal = 'M';
       //asistencias[index].itemtareoproceso = asistenciaMigrada.itemtareoproceso;
       await _updateAsistenciaUseCase.execute(
@@ -230,16 +223,13 @@ class HomeAsistenciaController extends GetxController {
   void goEditar(int key) {
     int index = asistencias.indexWhere((element) => element.key == key);
     basicDialog(
-      Get.overlayContext,
-      ALERT_STRING,
-      '¿Esta seguro de editar la siguiente tarea?',
-      YES_STRING,
-      NO_STRING,
-      () async {
+      context: Get.overlayContext,
+      message: '¿Esta seguro de editar la siguiente tarea?',
+      onPressed: () async {
         Get.back();
         await editarAsistencia(index);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 

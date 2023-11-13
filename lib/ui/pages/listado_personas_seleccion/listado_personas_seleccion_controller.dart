@@ -10,6 +10,7 @@ import 'package:flutter_tareo/domain/use_cases/listado_personas_seleccion/get_al
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
 import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
@@ -52,8 +53,8 @@ class ListadoPersonasSeleccionController extends GetxController
   }
 
   Future<void> addVehiculo() async {
-    if(dni?.length != 8){
-      toastError('Error', 'Dimension minima 8 digitos.');
+    if (dni?.length != 8) {
+      toast(type: TypeToast.ERROR, message: 'Dimension minima 8 digitos.');
       return;
     }
 
@@ -161,7 +162,7 @@ class ListadoPersonasSeleccionController extends GetxController
 
   @override
   void onError(Exception error) {
-    toastError('Error', error.toString());
+    toast(type: TypeToast.ERROR, message: error.toString());
   }
 
   Future<void> _showNotification(bool success, String mensaje) async {
@@ -238,19 +239,16 @@ class ListadoPersonasSeleccionController extends GetxController
 
   void goEliminar(int key) {
     basicDialog(
-      Get.overlayContext,
-      'Alerta',
-      '¿Desea eliminar el personal?',
-      'Si',
-      'No',
-      () async {
+      context: Get.overlayContext,
+      message: '¿Desea eliminar el personal?',
+      onPressed: () async {
         Get.back();
         personalSeleccionado.removeWhere((e) => e.key == key);
         await _deleteSeleccionDetalleUseCase.execute(
             'seleccion_detalles_${preTarea.key}', key);
         update(['seleccionados', 'personal_seleccionado']);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
@@ -262,25 +260,25 @@ class ListadoPersonasSeleccionController extends GetxController
     });
   }
 
-  bool buscando=false;
+  bool buscando = false;
 
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
     if (barcode != null && barcode != '-1' && buscando == false) {
-      buscando=true;
-      int indexEncontrado = personalSeleccionado
-          .indexWhere((e) => e.codigotk.toString().trim() == barcode.toString().trim());
+      buscando = true;
+      int indexEncontrado = personalSeleccionado.indexWhere(
+          (e) => e.codigotk.toString().trim() == barcode.toString().trim());
       if (indexEncontrado != -1) {
         byLector
-            ? toastError('Error', 'Ya se encuentra registrado')
+            ? toast(
+                type: TypeToast.ERROR, message: 'Ya se encuentra registrado')
             : await _showNotification(false, 'Ya se encuentra registrado');
-        buscando=false;        
+        buscando = false;
         return;
       }
 
       int index = personal.indexWhere(
           (e) => e.nrodocumento.trim() == barcode.toString().trim());
       if (index != -1) {
-
         PreTareaEsparragoDetalleGrupoEntity d =
             PreTareaEsparragoDetalleGrupoEntity(
                 personal: personal[index],
@@ -293,20 +291,22 @@ class ListadoPersonasSeleccionController extends GetxController
                 idusuario: PreferenciasUsuario().idUsuario,
                 itempretareaesparragogrupo:
                     preTarea.itempretareaesparragogrupo);
-        int key=await _createSeleccionDetalleUseCase.execute('seleccion_detalles_${preTarea.key}', d);
-        d.key=key;
+        int key = await _createSeleccionDetalleUseCase.execute(
+            'seleccion_detalles_${preTarea.key}', d);
+        d.key = key;
         personalSeleccionado.add(d);
         update(['personal_seleccionado']);
         byLector
-            ? toastExito('Éxito', 'Registrado con exito')
+            ? toast(type: TypeToast.SUCCESS, message: 'Registrado con exito')
             : await _showNotification(true, 'Registrado con exito');
-        buscando=false;        
+        buscando = false;
         return;
       } else {
         byLector
-            ? toastError('Error', 'No se encuentra en la lista')
+            ? toast(
+                type: TypeToast.ERROR, message: 'No se encuentra en la lista')
             : await _showNotification(false, 'No se encuentra en la lista');
-        buscando=false;        
+        buscando = false;
         return;
       }
     }

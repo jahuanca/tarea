@@ -14,6 +14,7 @@ import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
 import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
@@ -132,7 +133,7 @@ class ListadoAsistenciaRegistroController extends GetxController
 
   @override
   void onError(Exception error) {
-    toastError('Error', error.toString());
+    toast(type: TypeToast.ERROR, message: error.toString());
   }
 
   Future<void> _showNotification(bool success, String mensaje) async {
@@ -201,18 +202,15 @@ class ListadoAsistenciaRegistroController extends GetxController
 
   Future<void> goEliminar(int key) async {
     basicDialog(
-      Get.overlayContext,
-      ALERT_STRING,
-      '¿Desea eliminar el registro?',
-      YES_STRING,
-      NO_STRING,
-      () async {
+      context: Get.overlayContext,
+      message: '¿Desea eliminar el registro?',
+      onPressed: () async {
         Get.back();
         registrosSeleccionados.removeWhere((e) => e.key == key);
         await _deleteAsistenciaRegistroUseCase.execute(asistencia.key, key);
         update(['seleccionados', 'personal_seleccionado']);
       },
-      () => Get.back(),
+      onCancel: () => Get.back(),
     );
   }
 
@@ -241,7 +239,7 @@ class ListadoAsistenciaRegistroController extends GetxController
             .add(Duration(minutes: 5))
             .isBefore(DateTime.now())) {
           byLector
-              ? toastError('Error', 'Debe esperar 5 minutos.')
+              ? toast(type: TypeToast.ERROR, message: 'Debe esperar 5 minutos.')
               : await _showNotification(
                   BOOLEAN_FALSE_VALUE, 'Debe esperar 5 minutos.');
           return;
@@ -253,14 +251,14 @@ class ListadoAsistenciaRegistroController extends GetxController
           newDetalle,
         );
         byLector
-            ? toastExito('Exito', 'Registro cerrado.')
+            ? toast(type: TypeToast.SUCCESS, message: 'Registro cerrado.')
             : await _showNotification(BOOLEAN_TRUE_VALUE, 'Registro cerrado.');
         update(['${LISTADO_ASISTENCIA_REGISTRO_ID}_${newDetalle.key}']);
         return;
       }
       /*if (indexEncontrado != -1) {
         byLector
-            ? toastError('Error', 'Ya se encuentra registrado')
+            ? toast(type: TypeToast.ERROR, message: 'Ya se encuentra registrado')
             : await _showNotification(false, 'Ya se encuentra registrado');
         buscando = false;
         return;
@@ -282,13 +280,14 @@ class ListadoAsistenciaRegistroController extends GetxController
         registrosSeleccionados.add(d);
         update(['personal_seleccionado']);
         byLector
-            ? toastExito('Éxito', 'Registrado con exito')
+            ? toast(type: TypeToast.SUCCESS, message: 'Registrado con exito')
             : await _showNotification(true, 'Registrado con exito');
         buscando = false;
         return;
       } else {
         byLector
-            ? toastError('Error', 'No se encuentra en la lista')
+            ? toast(
+                type: TypeToast.ERROR, message: 'No se encuentra en la lista')
             : await _showNotification(false, 'No se encuentra en la lista');
         buscando = false;
         return;
