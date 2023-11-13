@@ -173,23 +173,6 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
     toast(type: TypeToast.ERROR, message: error.toString());
   }
 
-  Future<void> _showNotification(bool success, String mensaje) async {
-    final android = AndroidNotificationDetails(
-        'channel id', 'channel name', 'channel description',
-        priority: Priority.high, importance: Importance.max);
-    final iOS = IOSNotificationDetails();
-    final platform = NotificationDetails(android: android, iOS: iOS);
-    false;
-
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      success ? 'Exito' : 'Error',
-      mensaje,
-      platform,
-      payload: '',
-    );
-  }
-
   Future<dynamic> _onSelectNotification(String json) async {
     return;
   }

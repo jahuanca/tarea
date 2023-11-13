@@ -10,7 +10,6 @@ import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/tipo_tarea_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_tipo_tareas_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
@@ -24,7 +23,6 @@ class NuevaClasificacionController extends GetxController {
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
   final GetCentroCostosUseCase _getCentroCostosUseCase;
-  final GetCultivosUseCase _getCultivosUseCase;
   final GetTipoTareasUseCase _getTipoTareasUseCase;
 
   DateTime fecha = DateTime.now();
@@ -60,7 +58,6 @@ class NuevaClasificacionController extends GetxController {
   NuevaClasificacionController(
     this._getSubdivisonsUseCase,
     this._getPersonalsEmpresaBySubdivisionUseCase,
-    this._getCultivosUseCase,
     this._getCentroCostosUseCase,
     this._getTipoTareasUseCase,
   );
@@ -321,8 +318,6 @@ class NuevaClasificacionController extends GetxController {
     errorPausaInicio = null;
 
     //PUEDEN SER NULOS: inicioPausa y finPausa (00:00:00)
-
-    //TODO: en caso de haber inicio de pausa validar que esten dentro de horafin y horainicio
     return null;
   }
 }

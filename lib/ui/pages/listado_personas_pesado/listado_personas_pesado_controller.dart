@@ -16,7 +16,6 @@ import 'package:flutter_tareo/domain/use_cases/pesados/update_pesado_use_case.da
 import 'package:flutter_tareo/domain/use_cases/pesados_seleccion/create_pesado_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados_seleccion/delete_pesado_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/pesados_seleccion/get_all_pesado_detalles_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pesados_seleccion/update_pesado_detalle_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/type_toast.dart';
@@ -46,7 +45,6 @@ class ListadoPersonasPesadoController extends GetxController
 
   final GetAllPesadoDetallesUseCase _getAllPesadoDetallesUseCase;
   final CreatePesadoDetalleUseCase _createPesadoDetalleUseCase;
-  final UpdatePesadoDetalleUseCase _updatePesadoDetalleUseCase;
   final DeletePesadoDetalleUseCase _deletePesadoDetalleUseCase;
   bool validando = false;
   bool editando = false;
@@ -65,7 +63,6 @@ class ListadoPersonasPesadoController extends GetxController
     this._updatePesadoUseCase,
     this._getAllPesadoDetallesUseCase,
     this._createPesadoDetalleUseCase,
-    this._updatePesadoDetalleUseCase,
     this._deletePesadoDetalleUseCase,
   );
 

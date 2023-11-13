@@ -7,12 +7,10 @@ import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empresa_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/create_personal_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/delete_personal_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/get_all_personal_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/update_personal_tarea_proceso_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/tareas/update_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -28,10 +26,7 @@ class ListadoPersonasController extends GetxController
   List<PersonalTareaProcesoEntity> personalSeleccionado = [];
   int indexTarea;
   TareaProcesoEntity tarea;
-  GetPersonalsEmpresaBySubdivisionUseCase
-      _getPersonalsEmpresaBySubdivisionUseCase;
   GetPersonalsEmpresaUseCase _getPersonalEmpresaUseCase;
-  UpdateTareaProcesoUseCase _updateTareaProcesoUseCase;
   bool validando = false;
   bool editando = false;
   final GetAllPersonalTareaProcesoUseCase _getAllPersonalTareaProcesoUseCase;
@@ -44,14 +39,11 @@ class ListadoPersonasController extends GetxController
   SunmiBarcodePlugin sunmiBarcodePlugin;
 
   ListadoPersonasController(
-    this._getAllPersonalTareaProcesoUseCase,
-    this._createPersonalTareaProcesoUseCase,
-    this._updatePersonalTareaProcesoUseCase,
-    this._deletePersonalTareaProcesoUseCase,
-    this._getPersonalsEmpresaBySubdivisionUseCase,
-    this._getPersonalEmpresaUseCase,
-    this._updateTareaProcesoUseCase,
-  );
+      this._getAllPersonalTareaProcesoUseCase,
+      this._createPersonalTareaProcesoUseCase,
+      this._updatePersonalTareaProcesoUseCase,
+      this._deletePersonalTareaProcesoUseCase,
+      this._getPersonalEmpresaUseCase);
 
   Future<void> getPersonal() async {
     personalSeleccionado = await _getAllPersonalTareaProcesoUseCase

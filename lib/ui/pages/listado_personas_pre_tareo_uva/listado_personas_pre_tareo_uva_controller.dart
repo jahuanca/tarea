@@ -12,7 +12,6 @@ import 'package:flutter_tareo/domain/use_cases/sincronizar/get_labors_use_case.d
 import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/create_uva_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/delete_uva_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/get_all_uva_detalles_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/update_uva_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
@@ -36,7 +35,6 @@ class ListadoPersonasPreTareoUvaController extends GetxController
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
   final CreateUvaDetalleUseCase _createUvaDetalleUseCase;
-  final UpdateUvaDetalleUseCase _updateUvaDetalleUseCase;
   final DeleteUvaDetalleUseCase _deleteUvaDetalleUseCase;
   final GetAllUvaDetallesUseCase _getAllUvaDetallesUseCase;
   bool validando = false;
@@ -50,7 +48,6 @@ class ListadoPersonasPreTareoUvaController extends GetxController
     this._getLaborsUseCase,
     this._getPersonalsEmpresaBySubdivisionUseCase,
     this._createUvaDetalleUseCase,
-    this._updateUvaDetalleUseCase,
     this._deleteUvaDetalleUseCase,
     this._getAllUvaDetallesUseCase,
   );

@@ -199,27 +199,6 @@ class PesadosPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Flexible(child: Container(), flex: 1),
-                        if (false)
-                          Flexible(
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              child: Row(
-                                children: [
-                                  Container(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 5),
-                                      child: Text(
-                                          (_.pesados[index].sizeTipoCaja ?? 0)
-                                              .toString())),
-                                  Icon(
-                                    Icons.widgets,
-                                    color: Colors.black45,
-                                  )
-                                ],
-                              ),
-                            ),
-                            flex: 5,
-                          ),
                         Flexible(child: Container(), flex: 1),
                         Flexible(
                           child: Container(

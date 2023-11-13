@@ -11,7 +11,6 @@ import 'package:flutter_tareo/domain/control_asistencia/use_cases/home_asistenci
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/home_asistencia/upload_file_of_asistencia_use_case.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/listado_registros_asistencias/get_all_asistencia_registro_use_case.dart';
 import 'package:flutter_tareo/domain/entities/asistencia_fecha_turno_entity.dart';
-import 'package:flutter_tareo/domain/entities/asistencia_registro_personal_entity.dart';
 import 'package:flutter_tareo/di/control_asistencia/nueva_asistencia_binding.dart';
 import 'package:flutter_tareo/ui/control_asistencia/listado_asistencia_registro/listado_asistencia_registro_page.dart';
 import 'package:flutter_tareo/ui/control_asistencia/nueva_asistencia/nueva_asistencia_page.dart';
@@ -84,7 +83,7 @@ class HomeAsistenciaController extends GetxController {
   }
 
   void onChangedMenu(dynamic value, int key) async {
-    int index = asistencias.indexWhere((element) => element.key == key);
+    asistencias.indexWhere((element) => element.key == key);
     switch (value.toInt()) {
       case 1:
         await _exportAsistenciaToExcelUseCase.execute(key);
@@ -150,11 +149,11 @@ class HomeAsistenciaController extends GetxController {
     } else {
       asistencia.detalles =
           await _getAllRegistroAsistenciaUseCase.execute(asistencia.key);
-      for (AsistenciaRegistroPersonalEntity item in asistencia?.detalles) {
-        /*if(item.validadoParaAprobar!=null){
+      /*for (AsistenciaRegistroPersonalEntity item in asistencia?.detalles) {
+        if(item.validadoParaAprobar!=null){
           return item.validadoParaAprobar;
-        }*/
-      }
+        }
+      }*/
     }
     return null;
   }

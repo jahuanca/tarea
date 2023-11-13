@@ -43,7 +43,6 @@ class AuthRepositoryImplementation extends AuthRepository {
         }
       }
       toast(type: TypeToast.ERROR, message: 'Verifique usuario o contraseña.');
-
       return null;
     }
 

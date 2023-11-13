@@ -367,10 +367,7 @@ class NuevaPesadoPage extends StatelessWidget {
                 Flexible(
                     child: Container(
                       alignment: Alignment.center,
-                      child: IconButton(
-                        //onPressed: controller.goListadoPersonas,
-                        icon: Icon(Icons.search, size: 40),
-                      ),
+                      child: Icon(Icons.search, size: 40),
                     ),
                     flex: 1),
                 Flexible(

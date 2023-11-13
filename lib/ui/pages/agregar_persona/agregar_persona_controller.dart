@@ -3,8 +3,6 @@ import 'package:flutter_tareo/domain/entities/personal_tarea_proceso_entity.dart
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/create_personal_tarea_proceso_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/personal_tarea_proceso/update_personal_tarea_proceso_use_case.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/type_toast.dart';
@@ -25,8 +23,6 @@ class AgregarPersonaController extends GetxController {
 
   PersonalEmpresaEntity personaSeleccionada;
   PersonalTareaProcesoEntity nuevoPersonal = new PersonalTareaProcesoEntity();
-  CreatePersonalTareaProcesoUseCase _createPersonalTareaProcesoUseCase;
-  UpdatePersonalTareaProcesoUseCase _updatePersonalTareaProcesoUseCase;
 
   String errorHoraInicio,
       errorHoraFin,
@@ -39,11 +35,7 @@ class AgregarPersonaController extends GetxController {
 
   String textoCantidadHoras = '---Sin calcular---';
 
-  AgregarPersonaController(
-    this._getPersonalsEmpresaBySubdivisionUseCase,
-    this._createPersonalTareaProcesoUseCase,
-    this._updatePersonalTareaProcesoUseCase,
-  );
+  AgregarPersonaController(this._getPersonalsEmpresaBySubdivisionUseCase);
 
   void extraerDetalles() {
     /*nuevoPersonal.cantidadavance = 0;

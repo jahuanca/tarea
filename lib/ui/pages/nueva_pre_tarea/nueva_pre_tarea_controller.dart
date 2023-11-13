@@ -9,9 +9,7 @@ import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_labores_cultivo_packing_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_actividads_by_key_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_labors_by_key_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo/listado_personas_pre_tareo_page.dart';
@@ -22,8 +20,6 @@ import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 
 class NuevaPreTareaController extends GetxController {
-  final GetActividadsByKeyUseCase _getActividadsByKeyUseCase;
-  final GetLaborsByKeyUseCase _getLaborsByKeyUseCase;
   final GetSubdivisonsUseCase _getSubdivisonsUseCase;
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
@@ -57,8 +53,6 @@ class NuevaPreTareaController extends GetxController {
   List<PersonalEmpresaEntity> supervisors = [];
 
   NuevaPreTareaController(
-      this._getActividadsByKeyUseCase,
-      this._getLaborsByKeyUseCase,
       this._getSubdivisonsUseCase,
       this._getPersonalsEmpresaBySubdivisionUseCase,
       this._getLaboresCultivoPackingUseCase,

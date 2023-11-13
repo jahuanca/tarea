@@ -13,7 +13,6 @@ import 'package:flutter_tareo/domain/use_cases/agregar_persona/get_personal_empr
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_actividads_by_key_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_by_key_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_labors_by_key_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas/listado_personas_page.dart';
@@ -27,8 +26,6 @@ class NuevaTareaController extends GetxController {
   GetActividadsByKeyUseCase _getActividadsByKeyUseCase;
   GetLaborsByKeyUseCase _getLaborsByKeyUseCase;
   GetSubdivisonsUseCase _getSubdivisonsUseCase;
-  GetPersonalsEmpresaBySubdivisionUseCase
-      _getPersonalsEmpresaBySubdivisionUseCase;
 
   GetPersonalsEmpresaUseCase _getPersonalsEmpresaUseCase;
 
@@ -60,7 +57,6 @@ class NuevaTareaController extends GetxController {
       this._getActividadsByKeyUseCase,
       this._getLaborsByKeyUseCase,
       this._getSubdivisonsUseCase,
-      this._getPersonalsEmpresaBySubdivisionUseCase,
       this._getPersonalsEmpresaUseCase,
       this._getCentroCostosByKeyUseCase);
 

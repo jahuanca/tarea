@@ -11,7 +11,6 @@ import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_formato_entity
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_actividads_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_clientes_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_labors_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/clasificacion/update_clasificacion_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/clasificados_caja/create_clasificado_caja_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/clasificados_caja/delete_clasificado_caja_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/clasificados_caja/get_all_clasificado_caja_use_case.dart';
@@ -39,7 +38,6 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
   List<LaborEntity> labores = [];
 
   final GetClientesUseCase _getClientesUseCase;
-  final UpdateClasificacionUseCase _updateClasificacionUseCase;
   final GetActividadsUseCase _getActividadsUseCase;
   final GetLaborsUseCase _getLaborsUseCase;
 
@@ -61,7 +59,6 @@ class ListadoCajasController extends GetxController implements ScannerCallBack {
     this._getClientesUseCase,
     this._getActividadsUseCase,
     this._getLaborsUseCase,
-    this._updateClasificacionUseCase,
     this._createClasificadoCajaUseCase,
     this._updateClasificadoCajaUseCase,
     this._deleteClasificadoCajaUseCase,

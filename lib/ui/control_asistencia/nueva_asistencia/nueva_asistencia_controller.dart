@@ -7,6 +7,7 @@ import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/strings.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 
@@ -145,7 +146,7 @@ class NuevaAsistenciaController extends GetxController {
       nuevaAsistencia.fechamod = new DateTime.now();
       Get.back(result: nuevaAsistencia);
     } else {
-      toastError('Error', mensaje);
+      toast(type: TypeToast.ERROR, message: mensaje);
     }
   }
 
