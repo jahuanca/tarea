@@ -1,7 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/numbers.dart';
-import 'package:flutter_tareo/di/control_asistencia/listado_registro_asistencia_binding.dart';
+import 'package:flutter_tareo/di/control_asistencia/listado_asistencia_registro_binding.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/home_asistencia/create_asistencia_use_case.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/home_asistencia/delete_asistencia_use_case.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/home_asistencia/export_asistencia_to_excel_use_case.dart';
@@ -19,6 +22,7 @@ import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
+import 'package:image_editor_pro/image_editor_pro.dart';
 
 class HomeAsistenciaController extends GetxController {
   List<int> seleccionados = [];
@@ -47,8 +51,13 @@ class HomeAsistenciaController extends GetxController {
 
   @override
   void onInit() async {
-    await getAsistencias();
     super.onInit();
+  }
+
+  @override
+  void onReady() async {
+    await getAsistencias();
+    super.onReady();
   }
 
   Future<void> getAsistencias() async {
@@ -65,9 +74,13 @@ class HomeAsistenciaController extends GetxController {
     final result =
         await Get.to<AsistenciaFechaTurnoEntity>(() => NuevaAsistenciaPage());
     if (result != null) {
+      validando = BOOLEAN_TRUE_VALUE;
+      update([VALIDANDO_ID]);
       result.idusuario = PreferenciasUsuario().idUsuario;
-      result.key = await _createAsistenciaUseCase.execute(result);
-      asistencias.add(result);
+      result.setId = await _createAsistenciaUseCase.execute(result);
+      validando = BOOLEAN_FALSE_VALUE;
+      update([VALIDANDO_ID]);
+      asistencias.insert(ZERO_INT_VALUE, result);
       update([LISTADO_ASISTENCIAS_ID]);
     }
   }
@@ -83,7 +96,7 @@ class HomeAsistenciaController extends GetxController {
   }
 
   void onChangedMenu(dynamic value, int key) async {
-    asistencias.indexWhere((element) => element.key == key);
+    asistencias.indexWhere((element) => element.getId == key);
     switch (value.toInt()) {
       case 1:
         await _exportAsistenciaToExcelUseCase.execute(key);
@@ -99,29 +112,35 @@ class HomeAsistenciaController extends GetxController {
   }
 
   Future<void> goEliminar(int key) async {
-    int index = asistencias.indexWhere((e) => e.key == key);
+    int index = asistencias.indexWhere((e) => e.getId == key);
     if (index == -1)
       toast(type: TypeToast.ERROR, message: 'No se pudo eliminar la tarea.');
 
-    await basicDialog(
+    bool result = await basicDialog(
       context: Get.overlayContext,
       message: '¿Esta seguro de eliminar esta asistencia?',
       onPressed: () async {
-        await delete(index);
-        update([LISTADO_ASISTENCIAS_ID]);
-        Get.back();
+        Get.back(result: BOOLEAN_TRUE_VALUE);
       },
-      onCancel: () => Get.back(),
+      onCancel: () => Get.back(result: BOOLEAN_FALSE_VALUE),
     );
+    if (result) {
+      validando = BOOLEAN_TRUE_VALUE;
+      update([VALIDANDO_ID]);
+      await delete(index);
+      update([LISTADO_ASISTENCIAS_ID]);
+      validando = BOOLEAN_FALSE_VALUE;
+      update([VALIDANDO_ID]);
+    }
   }
 
   Future<void> delete(int index) async {
-    await _deleteAsistenciaUseCase.execute(asistencias[index].key);
+    await _deleteAsistenciaUseCase.execute(asistencias[index].getId);
     asistencias.removeAt(index);
   }
 
   void goAprobar(int key) async {
-    int index = asistencias.indexWhere((element) => element.key == key);
+    int index = asistencias.indexWhere((element) => element.getId == key);
     String mensaje = await validarParaAprobar(index);
     if (mensaje != null) {
       basicAlert(
@@ -135,11 +154,36 @@ class HomeAsistenciaController extends GetxController {
         message: '¿Desea aprobar esta asistencia?',
         onPressed: () async {
           Get.back();
-          //await getimageditor(index);
+          await getimageditor(index);
         },
         onCancel: () => Get.back(),
       );
     }
+  }
+
+  Future<void> getimageditor(int index) async {
+    Navigator.push(Get.overlayContext, MaterialPageRoute(builder: (context) {
+      return ImageEditorPro(
+        appBarColor: Color(0xFF009ee0),
+        bottomBarColor: Colors.white,
+      );
+    })).then((geteditimage) async {
+      if (geteditimage != null) {
+        File _image = geteditimage[0];
+
+        asistencias[index].pathUrl = _image.path;
+        asistencias[index].estadoLocal = 'A';
+        validando = BOOLEAN_TRUE_VALUE;
+        update([VALIDANDO_ID]);
+        await _updateAsistenciaUseCase.execute(
+            asistencias[index], asistencias[index].getId);
+        validando = BOOLEAN_FALSE_VALUE;
+        update([VALIDANDO_ID]);
+        update([SELECCIONADO_ID]);
+      }
+    }).catchError((er) {
+      print(er);
+    });
   }
 
   Future<String> validarParaAprobar(int index) async {
@@ -148,7 +192,7 @@ class HomeAsistenciaController extends GetxController {
       return 'No se puede aprobar una asistencia que no tiene registros';
     } else {
       asistencia.detalles =
-          await _getAllRegistroAsistenciaUseCase.execute(asistencia.key);
+          await _getAllRegistroAsistenciaUseCase.execute(asistencia.getId);
       /*for (AsistenciaRegistroPersonalEntity item in asistencia?.detalles) {
         if(item.validadoParaAprobar!=null){
           return item.validadoParaAprobar;
@@ -159,8 +203,8 @@ class HomeAsistenciaController extends GetxController {
   }
 
   Future<void> goListadoRegistrosAsistencias(int key) async {
-    int index = asistencias.indexWhere((e) => e.key == key);
-    ListadoRegistroAsistenciaBinding().dependencies();
+    int index = asistencias.indexWhere((e) => e.getId == key);
+    ListadoAsistenciaRegistroBinding().dependencies();
     final resultado =
         await Get.to<int>(() => ListadoRegistroAsistenciaPage(), arguments: {
       'asistencia': asistencias[index],
@@ -170,14 +214,14 @@ class HomeAsistenciaController extends GetxController {
       validando = true;
       update([VALIDANDO_ID]);
       asistencias[index].sizeDetails = resultado;
-      //await _updateAsistenciaUseCase.execute(asistencias[index], asistencias[index].key);
+      //await _updateAsistenciaUseCase.execute(asistencias[index], asistencias[index].getId);
       validando = false;
       update(['validando', LISTADO_ASISTENCIAS_ID]);
     }
   }
 
   void goMigrar(int key) {
-    int index = asistencias.indexWhere((element) => element.key == key);
+    int index = asistencias.indexWhere((element) => element.getId == key);
     if (asistencias[index].estadoLocal == 'A') {
       basicDialog(
         context: Get.overlayContext,
@@ -205,22 +249,23 @@ class HomeAsistenciaController extends GetxController {
     if (asistenciaMigrada != null) {
       toast(type: TypeToast.SUCCESS, message: 'Asistencia migrada con exito');
       asistencias[index].estadoLocal = 'M';
-      //asistencias[index].itemtareoproceso = asistenciaMigrada.itemtareoproceso;
+      asistencias[index].idasistenciaturno =
+          asistenciaMigrada.idasistenciaturno;
       await _updateAsistenciaUseCase.execute(
-          asistencias[index], asistencias[index].key);
+          asistencias[index], asistencias[index].getId);
       asistenciaMigrada = await _uploadFileOfAsistenciaUseCase.execute(
           asistencias[index], File(asistencias[index].pathUrl));
       asistencias[index].firmaSupervisor = asistenciaMigrada?.firmaSupervisor;
       await _updateAsistenciaUseCase.execute(
-          asistencias[index], asistencias[index].key);
+          asistencias[index], asistencias[index].getId);
     }
     validando = BOOLEAN_FALSE_VALUE;
 
-    update(['validando', LISTADO_ASISTENCIAS_ID]);
+    update([VALIDANDO_ID, LISTADO_ASISTENCIAS_ID]);
   }
 
   void goEditar(int key) {
-    int index = asistencias.indexWhere((element) => element.key == key);
+    int index = asistencias.indexWhere((element) => element.getId == key);
     basicDialog(
       context: Get.overlayContext,
       message: '¿Esta seguro de editar la siguiente tarea?',
@@ -241,7 +286,7 @@ class HomeAsistenciaController extends GetxController {
       result.idusuario = PreferenciasUsuario().idUsuario;
       asistencias[index] = result;
       await _updateAsistenciaUseCase.execute(
-          asistencias[index], asistencias[index].key);
+          asistencias[index], asistencias[index].getId);
       update([LISTADO_ASISTENCIAS_ID]);
     }
   }

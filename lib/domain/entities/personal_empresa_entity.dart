@@ -94,7 +94,7 @@ class PersonalEmpresaEntity {
             ? null
             : "${fechacese?.year.toString().padLeft(4, '0')}-${fechacese.month.toString().padLeft(2, '0')}-${fechacese.day.toString().padLeft(2, '0')}",
         "idusuario": idusuario,
-        "PersonalEmpresa_Subdivision": personalEmpresaSubdivision.toJson(),
+        "PersonalEmpresa_Subdivision": personalEmpresaSubdivision?.toJson(),
       };
 }
 

@@ -63,7 +63,6 @@ class ListadoPersonasPreTareoUvaController extends GetxController
 
       if (Get.arguments['tarea'] != null) {
         preTarea = Get.arguments['tarea'] as PreTareoProcesoUvaEntity;
-        print(preTarea.key);
         personalSeleccionado = [];
         update(['personal_seleccionado']);
       }
@@ -97,12 +96,10 @@ class ListadoPersonasPreTareoUvaController extends GetxController
     await getLabores();
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
-      print('es valido');
       sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
         await setCodeBar(event, true);
       });
     } else {
-      print('no es valido SUNMI');
       initHoneyScanner();
     }
   }

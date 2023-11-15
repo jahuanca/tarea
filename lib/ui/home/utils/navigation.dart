@@ -5,7 +5,7 @@ class NavigationItem {
   int value;
   dynamic icon;
   void Function() dependencies;
-  Widget widget;
+  dynamic widget;
 
   NavigationItem({
     @required this.title,

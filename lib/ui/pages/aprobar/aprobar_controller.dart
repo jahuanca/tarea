@@ -32,7 +32,6 @@ class AprobarController extends GetxController {
   }
 
   void seleccionar(int index) {
-    print(tareas[index].estadoLocal);
     int i = seleccionados.indexWhere((element) => element == index);
     if (i == -1) {
       seleccionados.add(index);

@@ -55,7 +55,7 @@ void toast(
     {@required TypeToast type,
     String title,
     @required String message,
-    int duration = 1000}) {
+    int duration = 800}) {
   Get.snackbar(
     title ?? typesToast[type].title,
     message,

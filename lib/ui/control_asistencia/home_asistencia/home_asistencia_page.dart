@@ -173,7 +173,7 @@ class HomeAsistenciaPage extends StatelessWidget {
                                               child: Text(e['value'])))
                                           .toList(),
                                   onChanged: (value) => _.onChangedMenu(
-                                      value, _.asistencias[index].key)),
+                                      value, _.asistencias[index].getId)),
                             ),
                             flex: 5),
                         Flexible(child: Container(), flex: 1),
@@ -199,8 +199,8 @@ class HomeAsistenciaPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(
-                                _.asistencias[index].turno?.detalleturno ?? ''),
+                            child:
+                                Text(_.asistencias[index].turno?.turno ?? ''),
                           ),
                           flex: 10,
                         ),
@@ -236,13 +236,29 @@ class HomeAsistenciaPage extends StatelessWidget {
                           flex: 7,
                         ),
                         Flexible(
-                          child: Container(),
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: [
+                                Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 5),
+                                    child: Text(
+                                        (_.asistencias[index].sizeSalidas ?? 0)
+                                            .toString())),
+                                Icon(
+                                  Icons.info_outline,
+                                  color: Colors.black45,
+                                )
+                              ],
+                            ),
+                          ),
                           flex: 7,
                         ),
                         Flexible(child: Container(), flex: 1),
                         Flexible(
                           child: Container(),
-                          flex: 15,
+                          flex: 10,
                         ),
                         Flexible(child: Container(), flex: 1),
                       ],
@@ -263,12 +279,12 @@ class HomeAsistenciaPage extends StatelessWidget {
                               child: CircleAvatar(
                                 backgroundColor: infoColor,
                                 child: IconButton(
-                                    onPressed: () => _.asistencias[index]
-                                                .estadoLocal ==
-                                            'P'
-                                        ? _.goListadoRegistrosAsistencias(
-                                            _.asistencias[index].key)
-                                        : _.goMigrar(_.asistencias[index].key),
+                                    onPressed: () =>
+                                        _.asistencias[index].estadoLocal == 'P'
+                                            ? _.goListadoRegistrosAsistencias(
+                                                _.asistencias[index].getId)
+                                            : _.goMigrar(
+                                                _.asistencias[index].getId),
                                     icon: Icon(
                                       _.asistencias[index].estadoLocal == 'P'
                                           ? Icons.search
@@ -286,11 +302,12 @@ class HomeAsistenciaPage extends StatelessWidget {
                             child: CircleAvatar(
                               backgroundColor: successColor,
                               child: IconButton(
-                                onPressed: () =>
-                                    _.asistencias[index].estadoLocal == 'P'
-                                        ? _.goAprobar(_.asistencias[index].key)
-                                        : _.goListadoRegistrosAsistencias(
-                                            _.asistencias[index].key),
+                                onPressed: () => _
+                                            .asistencias[index].estadoLocal ==
+                                        'P'
+                                    ? _.goAprobar(_.asistencias[index].getId)
+                                    : _.goListadoRegistrosAsistencias(
+                                        _.asistencias[index].getId),
                                 icon: _.asistencias[index].estadoLocal == 'P'
                                     ? Icon(Icons.check)
                                     : Icon(Icons.remove_red_eye),
@@ -313,10 +330,10 @@ class HomeAsistenciaPage extends StatelessWidget {
                                 onPressed: () =>
                                     _.asistencias[index].estadoLocal == 'P'
                                         ? _.goEditar(
-                                            _.asistencias[index].key,
+                                            _.asistencias[index].getId,
                                           )
                                         : _.goEliminar(
-                                            _.asistencias[index].key,
+                                            _.asistencias[index].getId,
                                           ),
                                 icon: Icon(
                                     _.asistencias[index].estadoLocal == 'P'

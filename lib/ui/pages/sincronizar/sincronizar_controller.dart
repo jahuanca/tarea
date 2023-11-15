@@ -279,8 +279,6 @@ class SincronizarController extends GetxController {
     PreferenciasUsuario().lastVersion = version;
     PreferenciasUsuario().lastVersionDate = formatoFechaHora(
         (await _getCurrentTimeWorldUseCase.execute()).datetime);
-    print(PreferenciasUsuario().lastVersion);
-    print(PreferenciasUsuario().lastVersionDate);
     await logs.add(new LogEntity(
       id: DateTime.now().microsecond,
       fecha: DateTime.now(),

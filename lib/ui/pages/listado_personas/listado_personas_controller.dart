@@ -199,8 +199,6 @@ class ListadoPersonasController extends GetxController
     });
 
     Get.back(result: [personalSeleccionado.length, cantidadAvance]);
-    //Get.back(result: [personalSeleccionado.length, 0]);
-    print('retornado');
     return true;
   }
 

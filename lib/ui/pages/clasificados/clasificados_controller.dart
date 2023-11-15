@@ -80,7 +80,6 @@ class ClasificadosController extends GetxController {
 
   void goExcel(int index) async {
     await _exportDataToExcelUseCase.execute(clasificados[index]);
-    print('exportando');
   }
 
   void goAprobar(int index) async {
@@ -257,7 +256,6 @@ class ClasificadosController extends GetxController {
 
   Future<void> editarTarea(int index) async {
     NuevaClasificacionBinding().dependencies();
-    print(clasificados[index].horafin);
     final result = await Get.to<PreTareaEsparragoEntity>(
         () => NuevaClasificacionPage(),
         arguments: {'tarea': clasificados[index]});

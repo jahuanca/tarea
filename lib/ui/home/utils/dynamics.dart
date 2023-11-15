@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/di/control_asistencia/asistencias_binding.dart';
 import 'package:flutter_tareo/di/esparragos_binding.dart';
 import 'package:flutter_tareo/di/home/home_binding.dart';
 import 'package:flutter_tareo/di/pre_tareos_uva_binding.dart';
@@ -30,21 +31,21 @@ Map<titles, NavigationItem> NAVIGATIONS = {
     icon: Icons.home,
     title: 'Inicio',
     value: 0,
-    dependencies: () => HomeBinding().dependencies(),
+    dependencies: HomeBinding().dependencies,
     widget: HomePage(),
   ),
   titles.tareas: NavigationItem(
     icon: Icons.file_copy,
     title: 'Tareas',
     value: 1,
-    dependencies: () => TareasBinding().dependencies(),
+    dependencies: TareasBinding().dependencies,
     widget: TareasPage(),
   ),
   titles.packing: NavigationItem(
     icon: 'assets/images/uva_icon.png',
     title: 'Packing',
     value: 5,
-    dependencies: () => PreTareosUvaBinding().dependencies(),
+    dependencies: PreTareosUvaBinding().dependencies,
     widget: PreTareosUvaPage(),
   ),
   titles.esparrago: NavigationItem(
@@ -65,7 +66,7 @@ Map<titles, NavigationItem> NAVIGATIONS = {
     icon: Icons.person_pin_outlined,
     title: 'Asistencias',
     value: 8,
-    dependencies: () {},
+    dependencies: AsistenciaBinding().dependencies,
     widget: HomeAsistenciaPage(),
   ),
   titles.configuracion: NavigationItem(

@@ -337,7 +337,6 @@ class NuevaTareaController extends GetxController {
           'tarea': nuevaTarea,
         });
     if (result != null) {
-      print('regreso');
       nuevaTarea.personal.add(result);
       update(['personal']);
     }

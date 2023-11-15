@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_grupo_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_grupo_entity.dart';
@@ -94,9 +95,7 @@ class ListadoPersonasSeleccionController extends GetxController
         update(['validando']);
         personal = await _getPersonalsEmpresaBySubdivisionUseCase
             .execute(PreferenciasUsuario().idSede);
-        print(personal.first.nrodocumento);
-        print(personal.last.nrodocumento);
-        validando = false;
+        validando = BOOLEAN_FALSE_VALUE;
         update(['validando']);
       }
     }
@@ -110,24 +109,19 @@ class ListadoPersonasSeleccionController extends GetxController
     sunmiBarcodePlugin = SunmiBarcodePlugin();
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
-      print('es valido');
       sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
         await setCodeBar(event, true);
       });
     } else {
-      print('no es valido SUNMI');
       initHoneyScanner();
     }
   }
 
   Future<void> initPlatformState() async {
-    String modelVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      modelVersion = (await sunmiBarcodePlugin.getScannerModel()).toString();
-      print(modelVersion);
+      await sunmiBarcodePlugin.getScannerModel();
     } on PlatformException {
-      modelVersion = 'Failed to get model version.';
+      print('Failed to get model version.');
     }
   }
 

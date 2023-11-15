@@ -79,7 +79,6 @@ class PreTareosController extends GetxController {
 
   void goExcel(int index) async {
     await _exportDataToExcelUseCase.execute(preTareos[index]);
-    print('exportando');
   }
 
   void goAprobar(int index) async {
@@ -197,7 +196,6 @@ class PreTareosController extends GetxController {
     if (resultados != null && resultados.isNotEmpty) {
       preTareos[index].detalles = resultados;
       await _updatePreTareoProcesoUseCase.execute(preTareos[index], index);
-      print(resultados.first.toJson());
       update(['tareas']);
     }
   }
@@ -233,12 +231,10 @@ class PreTareosController extends GetxController {
 
   Future<void> editarTarea(int index) async {
     NuevaPreTareaBinding().dependencies();
-    print(preTareos[index].horafin);
     final result = await Get.to<PreTareoProcesoEntity>(
         () => NuevaPreTareaPage(),
         arguments: {'tarea': preTareos[index]});
     if (result != null) {
-      print(result.horafin);
       result.idusuario = PreferenciasUsuario().idUsuario;
       preTareos[index] = result;
       await _updatePreTareoProcesoUseCase.execute(preTareos[index], index);

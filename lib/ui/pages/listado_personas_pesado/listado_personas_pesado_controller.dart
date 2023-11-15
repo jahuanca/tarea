@@ -120,7 +120,6 @@ class ListadoPersonasPesadoController extends GetxController
     sunmiBarcodePlugin = SunmiBarcodePlugin();
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
-      print('es valido');
       sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
         await setCodeBar(event, true);
       });
@@ -130,13 +129,10 @@ class ListadoPersonasPesadoController extends GetxController
   }
 
   Future<void> initPlatformState() async {
-    String modelVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      modelVersion = (await sunmiBarcodePlugin.getScannerModel()).toString();
-      print(modelVersion);
+      await sunmiBarcodePlugin.getScannerModel();
     } on PlatformException {
-      modelVersion = 'Failed to get model version.';
+      print('Failed to get model version.');
     }
   }
 

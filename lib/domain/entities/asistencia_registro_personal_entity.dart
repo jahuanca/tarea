@@ -27,6 +27,7 @@ class AsistenciaRegistroPersonalEntity {
     this.estadoLocal,
     this.key,
     this.personal,
+    this.idasistenciaturno,
   });
 
   @HiveField(0)
@@ -61,6 +62,8 @@ class AsistenciaRegistroPersonalEntity {
   int key;
   @HiveField(15)
   PersonalEmpresaEntity personal;
+  @HiveField(16)
+  int idasistenciaturno;
 
   Color get colorEstado {
     switch (estadoLocal) {
@@ -79,31 +82,48 @@ class AsistenciaRegistroPersonalEntity {
     }
   }
 
+  get getId => this.idasistencia;
+
+  set setId(value) => this.idasistencia = value;
+
   factory AsistenciaRegistroPersonalEntity.fromJson(
           Map<String, dynamic> json) =>
       AsistenciaRegistroPersonalEntity(
         idasistencia:
             json["idasistencia"] == null ? null : json["idasistencia"],
+        idasistenciaturno: json["idasistenciaturno"] == null
+            ? null
+            : json["idasistenciaturno"],
         codigoempresa:
             json["codigoempresa"] == null ? null : json["codigoempresa"],
         tipomovimiento:
             json["tipomovimiento"] == null ? null : json["tipomovimiento"],
-        fechaentrada:
-            json["fechaentrada"] == null ? null : json["fechaentrada"],
-        horaentrada: json["horaentrada"] == null ? null : json["horaentrada"],
+        fechaentrada: json["fechaentrada"] == null
+            ? null
+            : DateTime.parse(json["fechaentrada"]),
+        horaentrada: json["horaentrada"] == null
+            ? null
+            : DateTime.parse(json["horaentrada"]),
         idubicacionentrada: json["idubicacionentrada"] == null
             ? null
             : json["idubicacionentrada"],
-        fechasalida: json["fechasalida"] == null ? null : json["fechasalida"],
-        horasalida: json["horasalida"] == null ? null : json["horasalida"],
+        fechasalida: json["fechasalida"] == null
+            ? null
+            : DateTime.parse(json["fechasalida"]),
+        horasalida: json["horasalida"] == null
+            ? null
+            : DateTime.parse(json["horasalida"]),
         idubicacionsalida: json["idubicacionsalida"] == null
             ? null
             : json["idubicacionsalida"],
         idturno: json["idturno"] == null ? null : json["idturno"],
-        fechaturno: json["fechaturno"] == null ? null : json["fechaturno"],
+        fechaturno: json["fechaturno"] == null
+            ? null
+            : DateTime.parse(json["fechaturno"]),
         idusuario: json["idusuario"] == null ? null : json["idusuario"],
-        fechamod: json["fechamod"] == null ? null : json["fechamod"],
-        estadoLocal: json["estadoLocal"] == null ? null : json["estadoLocal"],
+        fechamod:
+            json["fechamod"] == null ? null : DateTime.parse(json["fechamod"]),
+        estadoLocal: json["estado"] == null ? null : json["estado"],
         key: json["key"] == null ? null : json["key"],
         personal: json["personal"] == null
             ? null
@@ -112,32 +132,37 @@ class AsistenciaRegistroPersonalEntity {
 
   Map<String, dynamic> toJson() => {
         "idasistencia": idasistencia == null ? null : idasistencia,
+        "idasistenciaturno":
+            idasistenciaturno == null ? null : idasistenciaturno,
         "codigoempresa": codigoempresa == null ? null : codigoempresa,
         "tipomovimiento": tipomovimiento == null ? null : tipomovimiento,
-        "fechaentrada": fechaentrada == null ? null : fechaentrada,
-        "horaentrada": horaentrada == null ? null : horaentrada,
+        "fechaentrada":
+            fechaentrada == null ? null : fechaentrada.toIso8601String(),
+        "horaentrada":
+            horaentrada == null ? null : horaentrada.toIso8601String(),
         "idubicacionentrada":
             idubicacionentrada == null ? null : idubicacionentrada,
-        "fechasalida": fechasalida == null ? null : fechasalida,
-        "horasalida": horasalida == null ? null : horasalida,
+        "fechasalida":
+            fechasalida == null ? null : fechasalida.toIso8601String(),
+        "horasalida": horasalida == null ? null : horasalida.toIso8601String(),
         "idubicacionsalida":
             idubicacionsalida == null ? null : idubicacionsalida,
         "idturno": idturno == null ? null : idturno,
-        "fechaturno": fechaturno == null ? null : fechaturno,
+        "fechaturno": fechaturno == null ? null : fechaturno.toIso8601String(),
         "idusuario": idusuario == null ? null : idusuario,
-        "fechamod": fechamod == null ? null : fechamod,
-        "estadoLocal": estadoLocal == null ? null : estadoLocal,
+        "fechamod": fechamod == null ? null : fechamod.toIso8601String(),
+        "estado": estadoLocal == null ? null : estadoLocal,
         "key": key == null ? null : key,
         "personal": personal == null ? null : personal.toJson(),
       };
 }
 
-List<AsistenciaRegistroPersonalEntity> asistenciaUbicacionEntityFromJson(
+List<AsistenciaRegistroPersonalEntity> asistenciaRegistroPersonalEntityFromJson(
         String str) =>
     List<AsistenciaRegistroPersonalEntity>.from(json
         .decode(str)
         .map((x) => AsistenciaRegistroPersonalEntity.fromJson(x)));
 
-String asistenciaUbicacionEntityToJson(
+String asistenciaRegistroPersonalEntityToJson(
         List<AsistenciaRegistroPersonalEntity> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));

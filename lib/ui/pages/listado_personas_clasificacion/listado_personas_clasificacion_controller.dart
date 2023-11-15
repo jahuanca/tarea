@@ -113,12 +113,10 @@ class ListadoPersonasClasificacionController extends GetxController {
     sunmiBarcodePlugin = SunmiBarcodePlugin();
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
-      print('es valido');
       sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
         await setCodeBar(event, true);
       });
     } else {
-      print('no es valido SUNMI');
       initHoneyScanner();
     }
   }

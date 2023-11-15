@@ -38,3 +38,35 @@ AppBar getAppBar(String titulo, List<Widget> actions, [bool bandera = false]) {
     actions: actions,
   );
 }
+
+AppBar getAppBarWidget(Widget titulo, List<Widget> actions,
+    [bool bandera = false]) {
+  return AppBar(
+    automaticallyImplyLeading: bandera,
+    iconTheme: IconThemeData(
+      color: (PreferenciasUsuario().modoDark) ? Colors.white : Colors.black,
+    ),
+    title: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        titulo,
+        Container(
+          alignment: Alignment.bottomLeft,
+          padding: EdgeInsets.only(left: 10),
+          child: Text(
+            '${PreferenciasUsuario().lastVersion} - ${PreferenciasUsuario().lastVersionDate}',
+            style: TextStyle(
+                fontSize: 10,
+                color: PreferenciasUsuario().modoDark
+                    ? Colors.white
+                    : Colors.grey),
+          ),
+        ),
+      ],
+    ),
+    backgroundColor: PreferenciasUsuario().modoDark ? cardColorDark : cardColor,
+    shadowColor: PreferenciasUsuario().modoDark ? borderColorDark : borderColor,
+    actions: actions,
+  );
+}

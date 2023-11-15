@@ -113,7 +113,6 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
     sunmiBarcodePlugin = SunmiBarcodePlugin();
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
-      print('es valido');
       sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
         if (preTarea?.estadoLocal != 'A') {
           await setCodeBar(event, true);
@@ -127,13 +126,10 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
   }
 
   Future<void> initPlatformState() async {
-    String modelVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      modelVersion = (await sunmiBarcodePlugin.getScannerModel()).toString();
-      print(modelVersion);
+      await sunmiBarcodePlugin.getScannerModel();
     } on PlatformException {
-      modelVersion = 'Failed to get model version.';
+      print('Failed to get model version.');
     }
   }
 
@@ -267,15 +263,12 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
     if (barcode != null && barcode != '-1') {
       List<String> codigos = barcode.toString().trim().split('_');
       if (barcode.toString().trim().toUpperCase()[0] == 'A') {
-        print('Es apertura');
-
         if (codigos.length < 6) {
           toast(
               type: TypeToast.ERROR,
               message: 'Etiqueta de apertura, con datos incompletos.');
           return;
         }
-
         /*int index=personalSeleccionado.indexWhere((e) => e.codigotkcaja == barcode.toString().trim());
 
         if(index != -1){
@@ -367,8 +360,6 @@ class ListadoPersonasPreTareaEsparragoController extends GetxController
               message: 'Etiqueta de cierre, con datos incompletos.');
           return;
         }
-
-        print('Es cierre');
 
         int index =
             personalSeleccionado.indexWhere((e) => e.esperandoCierre == true);

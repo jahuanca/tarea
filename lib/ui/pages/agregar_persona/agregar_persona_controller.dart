@@ -253,7 +253,6 @@ class AgregarPersonaController extends GetxController {
   }
 
   void changeCantidadAvance(String value) {
-    print(value);
     if ([null, ''].contains(value)) {
       errorCantidadAvance = null;
       update(['cantidad_avance']);

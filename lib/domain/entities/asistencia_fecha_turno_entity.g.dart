@@ -33,13 +33,15 @@ class AsistenciaFechaTurnoEntityAdapter
       sizeDetails: fields[12] as int,
       pathUrl: fields[13] as String,
       firmaSupervisor: fields[14] as String,
+      sizeEntradas: fields[15] as int,
+      sizeSalidas: fields[16] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, AsistenciaFechaTurnoEntity obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.key)
       ..writeByte(1)
@@ -69,7 +71,11 @@ class AsistenciaFechaTurnoEntityAdapter
       ..writeByte(13)
       ..write(obj.pathUrl)
       ..writeByte(14)
-      ..write(obj.firmaSupervisor);
+      ..write(obj.firmaSupervisor)
+      ..writeByte(15)
+      ..write(obj.sizeEntradas)
+      ..writeByte(16)
+      ..write(obj.sizeSalidas);
   }
 
   @override

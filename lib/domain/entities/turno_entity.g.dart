@@ -18,7 +18,7 @@ class TurnoEntityAdapter extends TypeAdapter<TurnoEntity> {
     };
     return TurnoEntity(
       idturno: fields[0] as int,
-      detalleturno: fields[1] as String,
+      detallebreve: fields[1] as String,
       turno: fields[2] as String,
     );
   }
@@ -30,7 +30,7 @@ class TurnoEntityAdapter extends TypeAdapter<TurnoEntity> {
       ..writeByte(0)
       ..write(obj.idturno)
       ..writeByte(1)
-      ..write(obj.detalleturno)
+      ..write(obj.detallebreve)
       ..writeByte(2)
       ..write(obj.turno);
   }

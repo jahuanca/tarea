@@ -1,6 +1,8 @@
+import 'package:flutter_tareo/data/control_asistencia/datastores/api_rest/asistencia_registro_datastore_implementation.dart';
 import 'package:flutter_tareo/data/control_asistencia/repositories/asistencia_registro_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/personal_empresa_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/pre_tarea_esparrago_detalles_grupo_repository_implementation.dart';
+import 'package:flutter_tareo/domain/control_asistencia/datastores/asistencia_registro_data_store.dart';
 import 'package:flutter_tareo/domain/control_asistencia/repositories/asistencia_registro_repository.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/listado_registros_asistencias/create_asistencia_registro_use_case.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/listado_registros_asistencias/delete_asistencia_registro_use_case.dart';
@@ -12,16 +14,19 @@ import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_
 import 'package:flutter_tareo/ui/control_asistencia/listado_asistencia_registro/listado_asistencia_registro_controller.dart';
 import 'package:get/get.dart';
 
-class ListadoRegistroAsistenciaBinding extends Bindings {
+class ListadoAsistenciaRegistroBinding extends Bindings {
   @override
   void dependencies() {
+    Get.lazyPut<AsistenciaRegistroDataStore>(
+        () => AsistenciaRegistroDataStoreImplementation());
+
     Get.lazyPut<PersonalEmpresaRepository>(
         () => PersonalEmpresaRepositoryImplementation());
     Get.lazyPut<PreTareaEsparragoDetallesGrupoRepository>(
         () => PreTareaEsparragoDetallesGrupoRepositoryImplementation());
 
     Get.lazyPut<AsistenciaRegistroRepository>(
-        () => AsistenciaRegistroRepositoryImplementation());
+        () => AsistenciaRegistroRepositoryImplementation(Get.find()));
 
     Get.lazyPut<GetPersonalsEmpresaBySubdivisionUseCase>(
         () => GetPersonalsEmpresaBySubdivisionUseCase(Get.find()));

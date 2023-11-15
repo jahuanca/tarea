@@ -6,6 +6,7 @@ import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/ui/control_asistencia/listado_asistencia_registro/listado_asistencia_registro_controller.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/strings.dart';
+import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
@@ -27,17 +28,27 @@ class ListadoRegistroAsistenciaPage extends StatelessWidget {
         child: Stack(
           children: [
             Scaffold(
-              appBar: getAppBar(
-                  '${_.registrosSeleccionados.length}',
+              appBar: getAppBarWidget(
+                  GetBuilder<ListadoAsistenciaRegistroController>(
+                    id: CONTADOR_ID,
+                    builder: (_) => Text(
+                      '${_.registrosSeleccionados.length}',
+                      style: TextStyle(
+                          fontSize: 17,
+                          color: PreferenciasUsuario().modoDark
+                              ? Colors.white
+                              : Colors.black),
+                    ),
+                  ),
                   [
-                    IconButton(
-                        onPressed: _.goLectorCode, icon: Icon(Icons.qr_code))
+                    if (_.asistencia.estadoLocal == 'P')
+                      IconButton(
+                          onPressed: _.goLectorCode, icon: Icon(Icons.qr_code))
                   ],
                   BOOLEAN_TRUE_VALUE),
               backgroundColor: secondColor,
               body: RefreshIndicator(
-                onRefresh: () async =>
-                    _.update([LISTADO_ASISTENCIA_REGISTRO_ID]),
+                onRefresh: _.getDetalles,
                 child: GetBuilder<ListadoAsistenciaRegistroController>(
                   id: SELECCIONADO_ID,
                   builder: (_) => Column(
@@ -56,14 +67,18 @@ class ListadoRegistroAsistenciaPage extends StatelessWidget {
                           builder: (_) => _.registrosSeleccionados.isEmpty
                               ? EmptyDataWidget(
                                   titulo: EMPTY_REGISTROS_ASISTENCIAS_STRING,
-                                  onPressed: () => _
-                                      .update([LISTADO_ASISTENCIA_REGISTRO_ID]),
+                                  onPressed: _.getDetalles,
                                   size: size)
                               : ListView.builder(
                                   itemCount: _.registrosSeleccionados.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) =>
-                                          itemActividad(size, context, index),
+                                  itemBuilder: (BuildContext context,
+                                          int index) =>
+                                      GetBuilder<
+                                              ListadoAsistenciaRegistroController>(
+                                          id:
+                                              '${LISTADO_ASISTENCIA_REGISTRO_ID}_${_.registrosSeleccionados[index].getId}',
+                                          builder: (_) => itemActividad(
+                                              size, context, index)),
                                 ),
                         ),
                       ),
@@ -95,9 +110,10 @@ class ListadoRegistroAsistenciaPage extends StatelessWidget {
     return GetBuilder<ListadoAsistenciaRegistroController>(
         id: SELECCIONADO_ID,
         builder: (_) => GestureDetector(
-              onLongPress: _.seleccionados.length > 0
-                  ? null
-                  : () => _.seleccionar(index),
+              onLongPress:
+                  _.seleccionados.length > 0 || _.asistencia.estadoLocal != 'P'
+                      ? null
+                      : () => _.seleccionar(index),
               onTap: _.seleccionados.length > 0
                   ? () => _.seleccionar(index)
                   : null,
@@ -146,7 +162,8 @@ class ListadoRegistroAsistenciaPage extends StatelessWidget {
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                   child: Container(
-                                    child: _.seleccionados.length > 0
+                                    child: _.seleccionados.length > 0 ||
+                                            _.asistencia.estadoLocal != 'P'
                                         ? Container()
                                         : DropdownBelow(
                                             itemWidth: 200,
@@ -182,7 +199,7 @@ class ListadoRegistroAsistenciaPage extends StatelessWidget {
                                                     _
                                                         .registrosSeleccionados[
                                                             index]
-                                                        .key),
+                                                        .getId),
                                           ),
                                   ),
                                   flex: 5),
@@ -218,7 +235,7 @@ class ListadoRegistroAsistenciaPage extends StatelessWidget {
                                       style: TextStyle(
                                           color:
                                               (_.registrosSeleccionados[index]
-                                                          .horaentrada ==
+                                                          .horasalida ==
                                                       null)
                                                   ? dangerColor
                                                   : Colors.black87)),
@@ -239,7 +256,9 @@ class ListadoRegistroAsistenciaPage extends StatelessWidget {
                               Expanded(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text((index + 1).toString()),
+                                  child: Text(
+                                      (_.registrosSeleccionados.length - index)
+                                          .toString()),
                                 ),
                                 flex: 2,
                               ),
@@ -272,7 +291,7 @@ class ListadoRegistroAsistenciaPage extends StatelessWidget {
     final items = [
       {'key': 1, 'value': 'Seleccionar todos'},
       {'key': 2, 'value': 'Quitar todos'},
-      {'key': 3, 'value': 'Actualizar datos'},
+      {'key': 3, 'value': 'Eliminar'},
     ];
 
     return GetBuilder<ListadoAsistenciaRegistroController>(

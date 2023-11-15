@@ -250,7 +250,6 @@ class NuevaPreTareaUvaController extends GetxController {
   }
 
   void changeCentroCosto(String id) {
-    print('codigo: $id');
     errorCentroCosto = validatorUtilText(id, 'Centro de costo', {
       'required': '',
     });
@@ -258,9 +257,7 @@ class NuevaPreTareaUvaController extends GetxController {
         centrosCosto.indexWhere((e) => e.idcentrocosto == int.parse(id));
     if (errorCentroCosto == null && index != -1) {
       nuevaPreTarea.centroCosto = centrosCosto[index];
-      print('CENTRO: ${nuevaPreTarea.centroCosto.toJson()}');
       nuevaPreTarea.idcentrocosto = int.parse(id);
-      print('CENTRO CODIGO: ${nuevaPreTarea.idcentrocosto}');
     } else {
       nuevaPreTarea.centroCosto = null;
       nuevaPreTarea.idcentrocosto = null;

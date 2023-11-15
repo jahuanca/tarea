@@ -34,13 +34,14 @@ class AsistenciaRegistroPersonalEntityAdapter
       estadoLocal: fields[13] as String,
       key: fields[14] as int,
       personal: fields[15] as PersonalEmpresaEntity,
+      idasistenciaturno: fields[16] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, AsistenciaRegistroPersonalEntity obj) {
     writer
-      ..writeByte(16)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.idasistencia)
       ..writeByte(1)
@@ -72,7 +73,9 @@ class AsistenciaRegistroPersonalEntityAdapter
       ..writeByte(14)
       ..write(obj.key)
       ..writeByte(15)
-      ..write(obj.personal);
+      ..write(obj.personal)
+      ..writeByte(16)
+      ..write(obj.idasistenciaturno);
   }
 
   @override

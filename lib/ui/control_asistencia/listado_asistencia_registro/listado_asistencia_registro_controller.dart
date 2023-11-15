@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_tareo/domain/entities/asistencia_fecha_turno_entity.dart
 import 'package:flutter_tareo/domain/entities/asistencia_registro_personal_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/contants.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
@@ -49,8 +52,12 @@ class ListadoAsistenciaRegistroController extends GetxController
   );
 
   Future<void> getDetalles() async {
+    validando = BOOLEAN_TRUE_VALUE;
+    update([VALIDANDO_ID]);
     registrosSeleccionados =
-        await _getAllAsistenciaRegistroUseCase.execute(asistencia.key);
+        await _getAllAsistenciaRegistroUseCase.execute(asistencia.getId);
+    validando = BOOLEAN_FALSE_VALUE;
+    update([VALIDANDO_ID]);
     update(['personal_seleccionado']);
   }
 
@@ -60,19 +67,14 @@ class ListadoAsistenciaRegistroController extends GetxController
     if (Get.arguments != null) {
       if (Get.arguments['asistencia'] != null) {
         asistencia = Get.arguments['asistencia'] as AsistenciaFechaTurnoEntity;
-        print(asistencia.toJson());
-        await getDetalles();
       }
-
       if (Get.arguments['personal'] != null) {
         personal = Get.arguments['personal'] as List<PersonalEmpresaEntity>;
         update(['personal']);
       } else {
-        validando = true;
-        update([VALIDANDO_ID]);
-        personal = await _getPersonalsEmpresaBySubdivisionUseCase
-            .execute(PreferenciasUsuario().idSede);
-        validando = false;
+        await _getAll();
+        print(personal.first.nrodocumento);
+        print(personal.last.nrodocumento);
         update([VALIDANDO_ID]);
       }
     }
@@ -87,11 +89,23 @@ class ListadoAsistenciaRegistroController extends GetxController
     if (await sunmiBarcodePlugin.isScannerAvailable()) {
       initPlatformState();
       sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
-        await setCodeBar(event, true);
+        await setCodeBar(event, BOOLEAN_TRUE_VALUE);
       });
     } else {
       initHoneyScanner();
     }
+  }
+
+  Future<void> _getAll() async {
+    validando = BOOLEAN_TRUE_VALUE;
+    update([VALIDANDO_ID]);
+    registrosSeleccionados =
+        await _getAllAsistenciaRegistroUseCase.execute(asistencia.getId);
+    personal = await _getPersonalsEmpresaBySubdivisionUseCase
+        .execute(PreferenciasUsuario().idSede);
+    validando = BOOLEAN_FALSE_VALUE;
+    update([VALIDANDO_ID]);
+    update(['personal_seleccionado']);
   }
 
   Future<void> initPlatformState() async {
@@ -206,8 +220,12 @@ class ListadoAsistenciaRegistroController extends GetxController
       message: '¿Desea eliminar el registro?',
       onPressed: () async {
         Get.back();
-        registrosSeleccionados.removeWhere((e) => e.key == key);
-        await _deleteAsistenciaRegistroUseCase.execute(asistencia.key, key);
+        registrosSeleccionados.removeWhere((e) => e.getId == key);
+        validando = BOOLEAN_TRUE_VALUE;
+        update([VALIDANDO_ID]);
+        await _deleteAsistenciaRegistroUseCase.execute(asistencia.getId, key);
+        validando = BOOLEAN_FALSE_VALUE;
+        update([VALIDANDO_ID]);
         update(['seleccionados', 'personal_seleccionado']);
       },
       onCancel: () => Get.back(),
@@ -228,16 +246,19 @@ class ListadoAsistenciaRegistroController extends GetxController
     if (barcode != null && barcode != '-1' && buscando == false) {
       buscando = BOOLEAN_TRUE_VALUE;
 
-      int indexEncontrado = registrosSeleccionados.indexWhere((e) =>
+      int indexEncontrado = registrosSeleccionados.lastIndexWhere((e) =>
           e.personal.nrodocumento.toString().trim() ==
           barcode.toString().trim());
-      if (indexEncontrado != -1) {
+
+      if (indexEncontrado != -1 &&
+          registrosSeleccionados[indexEncontrado].tipomovimiento == 'I') {
         AsistenciaRegistroPersonalEntity newDetalle =
             AsistenciaRegistroPersonalEntity.fromJson(
                 registrosSeleccionados[indexEncontrado].toJson());
         if (!newDetalle.horaentrada
-            .add(Duration(minutes: 5))
+            .add(WAITING_INTERVAL)
             .isBefore(DateTime.now())) {
+          buscando = BOOLEAN_FALSE_VALUE;
           byLector
               ? toast(type: TypeToast.ERROR, message: 'Debe esperar 5 minutos.')
               : await _showNotification(
@@ -245,24 +266,26 @@ class ListadoAsistenciaRegistroController extends GetxController
           return;
         }
         newDetalle.horasalida = DateTime.now();
+        newDetalle.fechasalida = DateTime.now();
+        newDetalle.fechamod = DateTime.now();
+        newDetalle.tipomovimiento = 'S';
+        validando = BOOLEAN_TRUE_VALUE;
+        update([VALIDANDO_ID]);
         await _updateAsistenciaRegistroUseCase.execute(
-          asistencia.key,
-          newDetalle.key,
+          asistencia.getId,
+          newDetalle.getId,
           newDetalle,
         );
+        validando = BOOLEAN_FALSE_VALUE;
+        update([VALIDANDO_ID]);
+        registrosSeleccionados[indexEncontrado] = newDetalle;
+        buscando = BOOLEAN_FALSE_VALUE;
+        update([LISTADO_ASISTENCIA_REGISTRO_ID, CONTADOR_ID]);
         byLector
             ? toast(type: TypeToast.SUCCESS, message: 'Registro cerrado.')
             : await _showNotification(BOOLEAN_TRUE_VALUE, 'Registro cerrado.');
-        update(['${LISTADO_ASISTENCIA_REGISTRO_ID}_${newDetalle.key}']);
         return;
       }
-      /*if (indexEncontrado != -1) {
-        byLector
-            ? toast(type: TypeToast.ERROR, message: 'Ya se encuentra registrado')
-            : await _showNotification(false, 'Ya se encuentra registrado');
-        buscando = false;
-        return;
-      }*/
 
       int index = personal.indexWhere(
           (e) => e.nrodocumento.trim() == barcode.toString().trim());
@@ -272,13 +295,24 @@ class ListadoAsistenciaRegistroController extends GetxController
           codigoempresa: personal[index].codigoempresa,
           fechaentrada: DateTime.now(),
           horaentrada: DateTime.now(),
+          fechamod: DateTime.now(),
+          fechaturno: asistencia.fecha,
+          idturno: asistencia.idturno,
+          idubicacionentrada: asistencia.idubicacion,
+          idubicacionsalida: asistencia.idubicacion,
+          idasistenciaturno: asistencia?.idasistenciaturno,
+          tipomovimiento: 'I',
           idusuario: PreferenciasUsuario().idUsuario,
         );
+        validando = BOOLEAN_TRUE_VALUE;
+        update([VALIDANDO_ID]);
         int key =
-            await _createAsistenciaRegistroUseCase.execute(asistencia.key, d);
-        d.key = key;
-        registrosSeleccionados.add(d);
-        update(['personal_seleccionado']);
+            await _createAsistenciaRegistroUseCase.execute(asistencia.getId, d);
+        validando = BOOLEAN_FALSE_VALUE;
+        update([VALIDANDO_ID]);
+        d.setId = key;
+        registrosSeleccionados.insert(ZERO_INT_VALUE, d);
+        update([LISTADO_ASISTENCIA_REGISTRO_ID, CONTADOR_ID]);
         byLector
             ? toast(type: TypeToast.SUCCESS, message: 'Registrado con exito')
             : await _showNotification(true, 'Registrado con exito');
