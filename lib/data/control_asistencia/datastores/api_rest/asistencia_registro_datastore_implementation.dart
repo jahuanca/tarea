@@ -4,6 +4,11 @@ import 'package:flutter_tareo/core/utils/strings/hiveDB.dart';
 import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/control_asistencia/datastores/asistencia_registro_data_store.dart';
 import 'package:flutter_tareo/domain/entities/asistencia_registro_personal_entity.dart';
+import 'package:flutter_tareo/domain/entities/message_entity.dart';
+import 'package:flutter_tareo/domain/utils/failure.dart';
+import 'package:flutter_tareo/domain/utils/result_type.dart';
+import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
+import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:hive/hive.dart';
 
 class AsistenciaRegistroDataStoreImplementation
@@ -21,14 +26,14 @@ class AsistenciaRegistroDataStoreImplementation
   }
 
   @override
-  Future<int> create(int key, AsistenciaRegistroPersonalEntity detalle) async {
+  Future<AsistenciaRegistroPersonalEntity> create(
+      int key, AsistenciaRegistroPersonalEntity detalle) async {
     final AppHttpManager http = AppHttpManager();
 
     final res =
         await http.post(url: '${urlModule}/create', body: detalle.toJson());
 
-    return AsistenciaRegistroPersonalEntity.fromJson(jsonDecode(res))
-        .idasistencia;
+    return AsistenciaRegistroPersonalEntity.fromJson(jsonDecode(res));
   }
 
   @override
@@ -52,14 +57,32 @@ class AsistenciaRegistroDataStoreImplementation
   }
 
   @override
-  Future<void> update(
+  Future<bool> update(
       int keyBox, int key, AsistenciaRegistroPersonalEntity detalle) async {
     final AppHttpManager http = AppHttpManager();
 
     final res =
         await http.put(url: '${urlModule}/update', body: detalle.toJson());
 
-    return AsistenciaRegistroPersonalEntity.fromJson(jsonDecode(res))
-        .idasistencia;
+    if (res is MessageEntity) {
+      toast(type: TypeToast.ERROR, message: res.message);
+      return false;
+    }
+    return true;
+  }
+
+  @override
+  Future<ResultType<AsistenciaRegistroPersonalEntity, Failure>> registrar(
+      AsistenciaRegistroPersonalEntity data) async {
+    final AppHttpManager http = AppHttpManager();
+
+    final res =
+        await http.post(url: '${urlModule}/registrar', body: data.toJson());
+
+    if (res is MessageEntity) {
+      return new Error(error: res);
+    }
+    return new Success(
+        data: AsistenciaRegistroPersonalEntity.fromJson(jsonDecode(res)));
   }
 }

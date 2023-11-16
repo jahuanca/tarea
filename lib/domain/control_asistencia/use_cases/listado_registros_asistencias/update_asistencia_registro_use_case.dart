@@ -6,7 +6,7 @@ class UpdateAsistenciaRegistroUseCase {
 
   UpdateAsistenciaRegistroUseCase(this._repository);
 
-  Future<void> execute(
+  Future<bool> execute(
       int keyBox, int key, AsistenciaRegistroPersonalEntity detalle) async {
     return await _repository.update(keyBox, key, detalle);
   }

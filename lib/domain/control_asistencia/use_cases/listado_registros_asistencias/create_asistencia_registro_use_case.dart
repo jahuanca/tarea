@@ -6,7 +6,8 @@ class CreateAsistenciaRegistroUseCase {
 
   CreateAsistenciaRegistroUseCase(this._repository);
 
-  Future<int> execute(int key, AsistenciaRegistroPersonalEntity detalle) async {
+  Future<AsistenciaRegistroPersonalEntity> execute(
+      int key, AsistenciaRegistroPersonalEntity detalle) async {
     return await _repository.create(key, detalle);
   }
 }

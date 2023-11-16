@@ -22,7 +22,7 @@ class AppHttpManager implements HttpManager {
   }) async {
     try {
       print('Api Get request url $url');
-      log(query.toString());
+      log('Query: ${query.toString()}');
       final response = await http
           .get(Uri.parse(_queryBuilder(url, query)),
               headers: await _headerBuilder(headers))
@@ -138,16 +138,16 @@ class AppHttpManager implements HttpManager {
 
     switch (response.statusCode) {
       case 400:
-      //throw BadRequestException();
-      //return null;
+        //throw BadRequestException();
+        return mensaje;
       case 401:
       case 403:
         //throw UnauthorisedException();
-        return null;
+        return mensaje;
       case 500:
-        return null;
+        return mensaje;
       default:
-        return null;
+        return mensaje;
       //throw ServerException();
     }
 

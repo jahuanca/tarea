@@ -12,7 +12,10 @@ class StorageRepositoryImplementation implements StorageRepository {
   @override
   Future<void> clearAllData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    sharedPreferences.clear();
+    sharedPreferences.remove(_pref_token);
+    sharedPreferences.remove('permanentSession');
+    sharedPreferences.remove('id_usuario');
+    //sharedPreferences.clear();
   }
 
   @override

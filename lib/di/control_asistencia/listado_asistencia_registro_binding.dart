@@ -7,6 +7,7 @@ import 'package:flutter_tareo/domain/control_asistencia/repositories/asistencia_
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/listado_registros_asistencias/create_asistencia_registro_use_case.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/listado_registros_asistencias/delete_asistencia_registro_use_case.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/listado_registros_asistencias/get_all_asistencia_registro_use_case.dart';
+import 'package:flutter_tareo/domain/control_asistencia/use_cases/listado_registros_asistencias/registrar_asistencia_registro_use_case.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/listado_registros_asistencias/update_asistencia_registro_use_case.dart';
 import 'package:flutter_tareo/domain/repositories/personal_empresa_repository.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tarea_esparrago_detalles_grupo_repository.dart';
@@ -38,9 +39,11 @@ class ListadoAsistenciaRegistroBinding extends Bindings {
         () => UpdateAsistenciaRegistroUseCase(Get.find()));
     Get.lazyPut<DeleteAsistenciaRegistroUseCase>(
         () => DeleteAsistenciaRegistroUseCase(Get.find()));
+    Get.lazyPut<RegistrarAsistenciaRegistroUseCase>(
+        () => RegistrarAsistenciaRegistroUseCase(Get.find()));
 
     Get.lazyPut<ListadoAsistenciaRegistroController>(() =>
         ListadoAsistenciaRegistroController(
-            Get.find(), Get.find(), Get.find(), Get.find(), Get.find()));
+            Get.find(), Get.find(), Get.find(), Get.find()));
   }
 }

@@ -1,8 +1,13 @@
 import 'dart:async';
 
+import 'package:flutter_tareo/core/utils/numbers.dart';
+import 'package:flutter_tareo/data/repositories/storage_repository_implementation.dart';
+import 'package:flutter_tareo/di/login/login_binding.dart';
 import 'package:flutter_tareo/ui/home/utils/dynamics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
+import 'package:flutter_tareo/ui/login/pages/login_page.dart';
 import 'package:flutter_tareo/ui/pages/search/search_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:get/get.dart';
@@ -16,16 +21,18 @@ class NavigationController extends GetxController {
     super.onReady();
   }
 
-  int indexWidget = 0;
+  int indexWidget = ZERO_INT_VALUE;
   String titulo = NAVIGATIONS[titles.start].title;
 
   List<Widget> actions = [];
 
   void eventos(int value, GlobalKey<ScaffoldState> scaffoldKey) {
     titles currentTitle = getTitle(value);
-    actions.clear();
-    titulo = NAVIGATIONS[currentTitle].title;
-    indexWidget = NAVIGATIONS[currentTitle].value;
+    if (NAVIGATIONS[currentTitle].widget != null) {
+      indexWidget = NAVIGATIONS[currentTitle].value;
+      titulo = NAVIGATIONS[currentTitle].title;
+      actions.clear();
+    }
     scaffoldKey.currentState.openEndDrawer();
     switch (currentTitle) {
       case titles.start:
@@ -35,20 +42,6 @@ class NavigationController extends GetxController {
         actions
             .add(IconButton(onPressed: showSearch, icon: Icon(Icons.search)));
         break;
-
-      /*case titles.aprobacion:
-        actions.add(IconButton(
-            onPressed: () => Get.to(() => SearchPage()),
-            icon: Icon(Icons.search)));
-        break;
-
-      case titles.migracion:
-        actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
-        break;
-
-      case titles.arandano:
-        actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
-        break;*/
 
       case titles.packing:
         actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
@@ -62,10 +55,23 @@ class NavigationController extends GetxController {
 
       case titles.asistencias:
         break;
+      case titles.logout:
+        basicDialog(
+          context: Get.overlayContext,
+          message: '¿Esta seguro de cerrar sesión?',
+          onPressed: () {
+            Get.back();
+            StorageRepositoryImplementation().clearAllData();
+            LoginBinding().dependencies();
+            Get.offAll(() => LoginPage());
+          },
+          onCancel: () => Get.back(),
+        );
+        break;
       default:
         break;
     }
-    update(['bottom_navigation']);
+    update([HOME_PAGE_ID_BOTTOM_NAVIGATION]);
   }
 
   void showSearch() {
@@ -82,6 +88,14 @@ class NavigationController extends GetxController {
   }
 
   Future<bool> goBack() async {
+    if (indexWidget != ZERO_INT_VALUE) {
+      indexWidget = ZERO_INT_VALUE;
+      indexWidget = NAVIGATIONS[titles.start].value;
+      titulo = NAVIGATIONS[titles.start].title;
+      update([HOME_PAGE_ID_BOTTOM_NAVIGATION]);
+      return false;
+    }
+
     return await basicDialog(
       context: Get.overlayContext,
       message: 'Saldra de la aplicación, ¿esta seguro?',

@@ -100,19 +100,19 @@ class AsistenciaRegistroPersonalEntity {
             json["tipomovimiento"] == null ? null : json["tipomovimiento"],
         fechaentrada: json["fechaentrada"] == null
             ? null
-            : DateTime.parse(json["fechaentrada"]),
+            : DateTime.tryParse(json["fechaentrada"]),
         horaentrada: json["horaentrada"] == null
             ? null
-            : DateTime.parse(json["horaentrada"]),
+            : DateTime.tryParse(json["horaentrada"]),
         idubicacionentrada: json["idubicacionentrada"] == null
             ? null
             : json["idubicacionentrada"],
         fechasalida: json["fechasalida"] == null
             ? null
-            : DateTime.parse(json["fechasalida"]),
+            : DateTime.tryParse(json["fechasalida"]),
         horasalida: json["horasalida"] == null
             ? null
-            : DateTime.parse(json["horasalida"]),
+            : DateTime.tryParse(json["horasalida"]),
         idubicacionsalida: json["idubicacionsalida"] == null
             ? null
             : json["idubicacionsalida"],

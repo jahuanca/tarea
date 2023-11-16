@@ -81,6 +81,6 @@ Map<titles, NavigationItem> NAVIGATIONS = {
     title: 'Cerrar sesión',
     value: 10,
     dependencies: () {},
-    widget: Container(),
+    widget: null,
   ),
 };

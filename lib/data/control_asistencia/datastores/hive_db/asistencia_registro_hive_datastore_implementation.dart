@@ -1,6 +1,8 @@
 import 'package:flutter_tareo/core/utils/strings/hiveDB.dart';
 import 'package:flutter_tareo/domain/control_asistencia/datastores/asistencia_registro_data_store.dart';
 import 'package:flutter_tareo/domain/entities/asistencia_registro_personal_entity.dart';
+import 'package:flutter_tareo/domain/utils/result_type.dart';
+import 'package:flutter_tareo/domain/utils/failure.dart';
 import 'package:hive/hive.dart';
 
 class AsistenciaRegistroHiveDataStoreImplementation
@@ -17,7 +19,8 @@ class AsistenciaRegistroHiveDataStoreImplementation
   }
 
   @override
-  Future<int> create(int key, AsistenciaRegistroPersonalEntity detalle) async {
+  Future<AsistenciaRegistroPersonalEntity> create(
+      int key, AsistenciaRegistroPersonalEntity detalle) async {
     Box<AsistenciaRegistroPersonalEntity> tareas =
         await Hive.openBox<AsistenciaRegistroPersonalEntity>(
             '${REGISTRO_ASISTENCIA_HIVE_STRING}_$key');
@@ -25,7 +28,7 @@ class AsistenciaRegistroHiveDataStoreImplementation
     detalle.key = id;
     await tareas.put(id, detalle);
     await tareas.close();
-    return id;
+    return detalle;
   }
 
   @override
@@ -48,13 +51,19 @@ class AsistenciaRegistroHiveDataStoreImplementation
   }
 
   @override
-  Future<void> update(
+  Future<bool> update(
       int keyBox, int key, AsistenciaRegistroPersonalEntity detalle) async {
     Box<AsistenciaRegistroPersonalEntity> tareas =
         await Hive.openBox<AsistenciaRegistroPersonalEntity>(
             '${REGISTRO_ASISTENCIA_HIVE_STRING}_$keyBox');
     await tareas.put(key, detalle);
     await tareas.close();
-    return;
+    return true;
+  }
+
+  @override
+  Future<ResultType<AsistenciaRegistroPersonalEntity, Failure>> registrar(
+      AsistenciaRegistroPersonalEntity data) {
+    throw UnimplementedError();
   }
 }

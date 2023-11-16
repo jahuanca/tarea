@@ -1,18 +1,16 @@
-import 'dart:developer';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_tareo/core/utils/numbers.dart';
-import 'package:flutter_tareo/domain/control_asistencia/use_cases/listado_registros_asistencias/create_asistencia_registro_use_case.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/listado_registros_asistencias/delete_asistencia_registro_use_case.dart';
 import 'package:flutter_tareo/domain/control_asistencia/use_cases/listado_registros_asistencias/get_all_asistencia_registro_use_case.dart';
-import 'package:flutter_tareo/domain/control_asistencia/use_cases/listado_registros_asistencias/update_asistencia_registro_use_case.dart';
+import 'package:flutter_tareo/domain/control_asistencia/use_cases/listado_registros_asistencias/registrar_asistencia_registro_use_case.dart';
 import 'package:flutter_tareo/domain/entities/asistencia_fecha_turno_entity.dart';
 import 'package:flutter_tareo/domain/entities/asistencia_registro_personal_entity.dart';
+import 'package:flutter_tareo/domain/entities/message_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
-import 'package:flutter_tareo/ui/control_asistencia/utils/contants.dart';
+import 'package:flutter_tareo/domain/utils/result_type.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
@@ -32,12 +30,12 @@ class ListadoAsistenciaRegistroController extends GetxController
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
   final GetAllAsistenciaRegistroUseCase _getAllAsistenciaRegistroUseCase;
-  final CreateAsistenciaRegistroUseCase _createAsistenciaRegistroUseCase;
-  final UpdateAsistenciaRegistroUseCase _updateAsistenciaRegistroUseCase;
   final DeleteAsistenciaRegistroUseCase _deleteAsistenciaRegistroUseCase;
+  final RegistrarAsistenciaRegistroUseCase _registrarAsistenciaRegistroUseCase;
 
   bool validando = BOOLEAN_FALSE_VALUE;
   bool editando = BOOLEAN_FALSE_VALUE;
+  bool buscando = BOOLEAN_FALSE_VALUE;
   HoneywellScanner honeywellScanner;
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -46,9 +44,8 @@ class ListadoAsistenciaRegistroController extends GetxController
   ListadoAsistenciaRegistroController(
     this._getPersonalsEmpresaBySubdivisionUseCase,
     this._getAllAsistenciaRegistroUseCase,
-    this._createAsistenciaRegistroUseCase,
-    this._updateAsistenciaRegistroUseCase,
     this._deleteAsistenciaRegistroUseCase,
+    this._registrarAsistenciaRegistroUseCase,
   );
 
   Future<void> getDetalles() async {
@@ -74,6 +71,9 @@ class ListadoAsistenciaRegistroController extends GetxController
       } else {
         await _getAll();
         print(personal.first.nrodocumento);
+        print(personal[1].nrodocumento);
+        print(personal[2].nrodocumento);
+        print(personal[3].nrodocumento);
         print(personal.last.nrodocumento);
         update([VALIDANDO_ID]);
       }
@@ -236,96 +236,74 @@ class ListadoAsistenciaRegistroController extends GetxController
     FlutterBarcodeScanner.getBarcodeStreamReceiver(
             "#ff6666", CANCEL_STRING, BOOLEAN_FALSE_VALUE, ScanMode.DEFAULT)
         .listen((barcode) async {
+      print(barcode);
       await setCodeBar(barcode);
     });
   }
 
-  bool buscando = BOOLEAN_FALSE_VALUE;
+  Future<void> _registrar(
+      AsistenciaRegistroPersonalEntity detalle, bool byLector) async {
+    final res = await _registrarAsistenciaRegistroUseCase.execute(detalle);
+    if (res is Success) {
+      AsistenciaRegistroPersonalEntity d = res.data;
+      String message = '';
+      if (d.tipomovimiento == 'I') {
+        message = 'Se ha creado un ingreso';
+        registrosSeleccionados.insert(ZERO_INT_VALUE, d);
+        update([LISTADO_ASISTENCIA_REGISTRO_ID, CONTADOR_ID]);
+      } else {
+        message = 'Se ha generado una salida';
+        int index = registrosSeleccionados
+            .indexWhere((e) => e.idasistencia == d.idasistencia);
+        registrosSeleccionados[index].horasalida = d.horasalida;
+        update([LISTADO_ASISTENCIA_REGISTRO_ID, CONTADOR_ID]);
+      }
+      validando = BOOLEAN_FALSE_VALUE;
+      update([VALIDANDO_ID]);
+      byLector
+          ? toast(type: TypeToast.SUCCESS, message: message)
+          : _showNotification(true, message);
+      ;
+    } else {
+      validando = BOOLEAN_FALSE_VALUE;
+      update([VALIDANDO_ID]);
+      byLector
+          ? toast(
+              type: TypeToast.ERROR,
+              message: (res.error as MessageEntity).message)
+          : _showNotification(false, (res.error as MessageEntity).message);
+    }
+    validando = BOOLEAN_FALSE_VALUE;
+    update([VALIDANDO_ID]);
+  }
 
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
-    if (barcode != null && barcode != '-1' && buscando == false) {
+    if (barcode != null && barcode != '-1' && buscando == BOOLEAN_FALSE_VALUE) {
       buscando = BOOLEAN_TRUE_VALUE;
 
-      int indexEncontrado = registrosSeleccionados.lastIndexWhere((e) =>
-          e.personal.nrodocumento.toString().trim() ==
-          barcode.toString().trim());
-
-      if (indexEncontrado != -1 &&
-          registrosSeleccionados[indexEncontrado].tipomovimiento == 'I') {
-        AsistenciaRegistroPersonalEntity newDetalle =
-            AsistenciaRegistroPersonalEntity.fromJson(
-                registrosSeleccionados[indexEncontrado].toJson());
-        if (!newDetalle.horaentrada
-            .add(WAITING_INTERVAL)
-            .isBefore(DateTime.now())) {
-          buscando = BOOLEAN_FALSE_VALUE;
-          byLector
-              ? toast(type: TypeToast.ERROR, message: 'Debe esperar 5 minutos.')
-              : await _showNotification(
-                  BOOLEAN_FALSE_VALUE, 'Debe esperar 5 minutos.');
-          return;
-        }
-        newDetalle.horasalida = DateTime.now();
-        newDetalle.fechasalida = DateTime.now();
-        newDetalle.fechamod = DateTime.now();
-        newDetalle.tipomovimiento = 'S';
-        validando = BOOLEAN_TRUE_VALUE;
-        update([VALIDANDO_ID]);
-        await _updateAsistenciaRegistroUseCase.execute(
-          asistencia.getId,
-          newDetalle.getId,
-          newDetalle,
-        );
-        validando = BOOLEAN_FALSE_VALUE;
-        update([VALIDANDO_ID]);
-        registrosSeleccionados[indexEncontrado] = newDetalle;
-        buscando = BOOLEAN_FALSE_VALUE;
-        update([LISTADO_ASISTENCIA_REGISTRO_ID, CONTADOR_ID]);
-        byLector
-            ? toast(type: TypeToast.SUCCESS, message: 'Registro cerrado.')
-            : await _showNotification(BOOLEAN_TRUE_VALUE, 'Registro cerrado.');
-        return;
-      }
-
+      /** */
       int index = personal.indexWhere(
           (e) => e.nrodocumento.trim() == barcode.toString().trim());
       if (index != -1) {
-        AsistenciaRegistroPersonalEntity d = AsistenciaRegistroPersonalEntity(
-          personal: personal[index],
-          codigoempresa: personal[index].codigoempresa,
-          fechaentrada: DateTime.now(),
-          horaentrada: DateTime.now(),
-          fechamod: DateTime.now(),
-          fechaturno: asistencia.fecha,
-          idturno: asistencia.idturno,
-          idubicacionentrada: asistencia.idubicacion,
-          idubicacionsalida: asistencia.idubicacion,
-          idasistenciaturno: asistencia?.idasistenciaturno,
-          tipomovimiento: 'I',
-          idusuario: PreferenciasUsuario().idUsuario,
-        );
         validando = BOOLEAN_TRUE_VALUE;
         update([VALIDANDO_ID]);
-        int key =
-            await _createAsistenciaRegistroUseCase.execute(asistencia.getId, d);
-        validando = BOOLEAN_FALSE_VALUE;
-        update([VALIDANDO_ID]);
-        d.setId = key;
-        registrosSeleccionados.insert(ZERO_INT_VALUE, d);
-        update([LISTADO_ASISTENCIA_REGISTRO_ID, CONTADOR_ID]);
-        byLector
-            ? toast(type: TypeToast.SUCCESS, message: 'Registrado con exito')
-            : await _showNotification(true, 'Registrado con exito');
-        buscando = false;
-        return;
-      } else {
-        byLector
-            ? toast(
-                type: TypeToast.ERROR, message: 'No se encuentra en la lista')
-            : await _showNotification(false, 'No se encuentra en la lista');
-        buscando = false;
-        return;
+        await _registrar(
+            AsistenciaRegistroPersonalEntity(
+              personal: personal[index],
+              codigoempresa: personal[index].codigoempresa,
+              fechamod: DateTime.now(),
+              fechaturno: asistencia.fecha,
+              idturno: asistencia.idturno,
+              idubicacionentrada: asistencia.idubicacion,
+              idubicacionsalida: asistencia.idubicacion,
+              idasistenciaturno: asistencia?.idasistenciaturno,
+              idusuario: PreferenciasUsuario().idUsuario,
+            ),
+            byLector);
       }
+      buscando = BOOLEAN_FALSE_VALUE;
+      /** */
+      return;
     }
   }
 }

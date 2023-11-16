@@ -4,7 +4,7 @@ abstract class HiveManager {
   Future<List<dynamic>> getAllByValues(
       {String keyPath, Map<String, dynamic> values});
 
-  Future<int> create({String keyPath, dynamic value});
+  Future<dynamic> create({String keyPath, dynamic value});
 
   Future<void> update({String keyPath, dynamic value});
 

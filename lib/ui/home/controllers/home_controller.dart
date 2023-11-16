@@ -1,5 +1,6 @@
 import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/di/sincronizar/sincronizar_binding.dart';
+import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/pages/sincronizar/sincronizar_page.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:get/get.dart';
@@ -26,12 +27,12 @@ class HomeController extends GetxController {
     lastVersion = PreferenciasUsuario().lastVersion;
     lastVersionDate = PreferenciasUsuario().lastVersionDate;
     modo = (PreferenciasUsuario().offLine) ? ZERO_INT_VALUE : ONE_INT_VALUE;
-    update(['version', 'modo']);
+    update([HOME_PAGE_ID_VERSION, HOME_PAGE_ID_MODE]);
   }
 
   void changeModo(dynamic value) {
     modo = value;
-    update(['modo', 'refresh']);
+    update([HOME_PAGE_ID_MODE, HOME_PAGE_ID_REFRESH]);
   }
 
   void setModo() {

@@ -244,7 +244,7 @@ class HomeAsistenciaPage extends StatelessWidget {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
                                     child: Text(
-                                        (_.asistencias[index].sizeSalidas ?? 0)
+                                        (_.asistencias[index].sizeEntradas ?? 0)
                                             .toString())),
                                 Icon(
                                   Icons.info_outline,
