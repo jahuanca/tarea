@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/di/asignacion_personal/buscar_linea_mesa_binding.dart';
 import 'package:flutter_tareo/di/control_asistencia/asistencias_binding.dart';
 import 'package:flutter_tareo/di/esparragos_binding.dart';
 import 'package:flutter_tareo/di/home/home_binding.dart';
 import 'package:flutter_tareo/di/pre_tareos_uva_binding.dart';
 import 'package:flutter_tareo/di/tareas_binding.dart';
+import 'package:flutter_tareo/ui/asignacion_personal/buscar_linea_mesa/buscar_linea_mesa_page.dart';
 import 'package:flutter_tareo/ui/control_asistencia/home_asistencia/home_asistencia_page.dart';
 import 'package:flutter_tareo/ui/home/pages/home_page.dart';
 import 'package:flutter_tareo/ui/home/utils/navigation.dart';
@@ -21,6 +23,7 @@ enum titles {
   asistencias,
   configuracion,
   logout,
+  asignacionPersonal,
 }
 
 titles getTitle(int value) =>
@@ -68,6 +71,14 @@ Map<titles, NavigationItem> NAVIGATIONS = {
     value: 8,
     dependencies: AsistenciaBinding().dependencies,
     widget: HomeAsistenciaPage(),
+  ),
+  titles.asignacionPersonal: NavigationItem(
+    icon: Icons.person_pin_outlined,
+    title: 'Asignación de Personal',
+    description: 'Elegir mesa',
+    value: 11,
+    dependencies: BuscarLineaMesaBinding().dependencies,
+    widget: BuscarLineaMesaPage(),
   ),
   titles.configuracion: NavigationItem(
     icon: Icons.settings,

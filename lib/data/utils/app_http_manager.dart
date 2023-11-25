@@ -115,7 +115,7 @@ class AppHttpManager implements HttpManager {
         buffer.write('?');
       }
       query.forEach((key, value) {
-        buffer.write('$key=$value&');
+        if (value != null) buffer.write('$key=$value&');
       });
     }
     print(buffer.toString());

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 class NavigationItem {
   String title;
+  String description;
   int value;
   dynamic icon;
   void Function() dependencies;
@@ -9,6 +10,7 @@ class NavigationItem {
 
   NavigationItem({
     @required this.title,
+    this.description,
     @required this.icon,
     @required this.value,
     @required this.dependencies,

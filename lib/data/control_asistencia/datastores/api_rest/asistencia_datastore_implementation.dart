@@ -19,7 +19,6 @@ class AsistenciaDataStoreImplementation extends AsistenciaDataStore {
 
     final res = await http.get(
         url: urlModule, query: {'idusuario': PreferenciasUsuario().idUsuario});
-
     return asistenciaFechaTurnoEntityFromJson(res);
   }
 

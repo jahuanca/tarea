@@ -210,12 +210,12 @@ class HomeAsistenciaController extends GetxController {
     });
 
     if (resultado != null) {
-      validando = true;
+      /*validando = BOOLEAN_TRUE_VALUE;
       update([VALIDANDO_ID]);
       asistencias[index].sizeDetails = resultado;
       //await _updateAsistenciaUseCase.execute(asistencias[index], asistencias[index].getId);
-      validando = false;
-      update(['validando', LISTADO_ASISTENCIAS_ID]);
+      validando = BOOLEAN_FALSE_VALUE;
+      update(['validando', LISTADO_ASISTENCIAS_ID]);*/
     }
   }
 

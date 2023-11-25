@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -11,6 +15,7 @@ import 'package:flutter_tareo/domain/entities/message_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/utils/result_type.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/contants.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
@@ -64,17 +69,18 @@ class ListadoAsistenciaRegistroController extends GetxController
     if (Get.arguments != null) {
       if (Get.arguments['asistencia'] != null) {
         asistencia = Get.arguments['asistencia'] as AsistenciaFechaTurnoEntity;
+        log('idasistenciaturno : ${asistencia.getId}');
       }
       if (Get.arguments['personal'] != null) {
         personal = Get.arguments['personal'] as List<PersonalEmpresaEntity>;
         update(['personal']);
       } else {
         await _getAll();
-        print(personal.first.nrodocumento);
+        /*print(personal.first.nrodocumento);
         print(personal[1].nrodocumento);
         print(personal[2].nrodocumento);
         print(personal[3].nrodocumento);
-        print(personal.last.nrodocumento);
+        print(personal.last.nrodocumento);*/
         update([VALIDANDO_ID]);
       }
     }
@@ -248,8 +254,11 @@ class ListadoAsistenciaRegistroController extends GetxController
       AsistenciaRegistroPersonalEntity d = res.data;
       String message = '';
       if (d.tipomovimiento == 'I') {
+        detalle.idasistencia = d.idasistencia;
+        detalle.horaentrada = d.horaentrada;
+        detalle.fechaentrada = d.fechaentrada;
         message = 'Se ha creado un ingreso';
-        registrosSeleccionados.insert(ZERO_INT_VALUE, d);
+        registrosSeleccionados.insert(ZERO_INT_VALUE, detalle);
         update([LISTADO_ASISTENCIA_REGISTRO_ID, CONTADOR_ID]);
       } else {
         message = 'Se ha generado una salida';
@@ -262,7 +271,7 @@ class ListadoAsistenciaRegistroController extends GetxController
       update([VALIDANDO_ID]);
       byLector
           ? toast(type: TypeToast.SUCCESS, message: message)
-          : _showNotification(true, message);
+          : _showNotification(BOOLEAN_TRUE_VALUE, message);
       ;
     } else {
       validando = BOOLEAN_FALSE_VALUE;
@@ -271,7 +280,8 @@ class ListadoAsistenciaRegistroController extends GetxController
           ? toast(
               type: TypeToast.ERROR,
               message: (res.error as MessageEntity).message)
-          : _showNotification(false, (res.error as MessageEntity).message);
+          : _showNotification(
+              BOOLEAN_FALSE_VALUE, (res.error as MessageEntity).message);
     }
     validando = BOOLEAN_FALSE_VALUE;
     update([VALIDANDO_ID]);
@@ -296,11 +306,14 @@ class ListadoAsistenciaRegistroController extends GetxController
               idturno: asistencia.idturno,
               idubicacionentrada: asistencia.idubicacion,
               idubicacionsalida: asistencia.idubicacion,
-              idasistenciaturno: asistencia?.idasistenciaturno,
+              idasistenciaturno: asistencia.idasistenciaturno,
               idusuario: PreferenciasUsuario().idUsuario,
             ),
             byLector);
       }
+      (!byLector)
+          ? await sleep(WAITING_INTERVAL_CAMERA)
+          : await sleep(WAITING_INTERVAL_PDA);
       buscando = BOOLEAN_FALSE_VALUE;
       /** */
       return;

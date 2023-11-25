@@ -30,7 +30,8 @@ class NavigationController extends GetxController {
     titles currentTitle = getTitle(value);
     if (NAVIGATIONS[currentTitle].widget != null) {
       indexWidget = NAVIGATIONS[currentTitle].value;
-      titulo = NAVIGATIONS[currentTitle].title;
+      titulo = NAVIGATIONS[currentTitle].description ??
+          NAVIGATIONS[currentTitle].title;
       actions.clear();
     }
     scaffoldKey.currentState.openEndDrawer();
