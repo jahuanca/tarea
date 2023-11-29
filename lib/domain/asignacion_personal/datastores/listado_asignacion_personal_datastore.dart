@@ -9,6 +9,6 @@ abstract class ListadoAsignacionPersonalDatastore {
   Future<ResultType<EsparragoAgrupaPersonalDetalleEntity, Failure>> addDetalle(
       EsparragoAgrupaPersonalEntity asignacion,
       EsparragoAgrupaPersonalDetalleEntity detalle);
-  Future<EsparragoAgrupaPersonalDetalleEntity> removeDetalle(
-      EsparragoAgrupaPersonalDetalleEntity detalle);
+  Future<ResultType<EsparragoAgrupaPersonalDetalleEntity, Failure>>
+      removeDetalle(int id);
 }

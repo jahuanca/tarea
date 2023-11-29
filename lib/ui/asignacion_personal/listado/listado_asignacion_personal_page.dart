@@ -161,45 +161,37 @@ class ListadoAsignacionPersonalPage extends StatelessWidget {
                               Flexible(child: Container(), flex: 1),
                               Flexible(
                                   child: Container(
-                                    child: _.seleccionados.length > 0 ||
-                                            _.asignacion.estadoLocal != 'P'
-                                        ? Container()
-                                        : DropdownBelow(
-                                            itemWidth: 200,
-                                            itemTextstyle: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.black),
-                                            boxTextstyle: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                                color: cardColor),
-                                            boxPadding: EdgeInsets.fromLTRB(
-                                                13, 12, 0, 12),
-                                            boxHeight: 45,
-                                            boxWidth: 150,
-                                            icon: Icon(
-                                              Icons.more_horiz,
-                                              color: primaryColor,
-                                            ),
-                                            value: 2,
-                                            items: items == null
-                                                ? []
-                                                : items
-                                                    .map((e) =>
-                                                        DropdownMenuItem(
-                                                            value: e['key'],
-                                                            child: Text(
-                                                                e['value'])))
-                                                    .toList(),
-                                            onChanged: (value) =>
-                                                _.changeOptions(
-                                                    value,
-                                                    _
-                                                        .registrosSeleccionados[
-                                                            index]
-                                                        .getId),
-                                          ),
+                                    child: DropdownBelow(
+                                      itemWidth: 200,
+                                      itemTextstyle: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black),
+                                      boxTextstyle: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: cardColor),
+                                      boxPadding:
+                                          EdgeInsets.fromLTRB(13, 12, 0, 12),
+                                      boxHeight: 45,
+                                      boxWidth: 150,
+                                      icon: Icon(
+                                        Icons.more_horiz,
+                                        color: primaryColor,
+                                      ),
+                                      value: 2,
+                                      items: items == null
+                                          ? []
+                                          : items
+                                              .map((e) => DropdownMenuItem(
+                                                  value: e['key'],
+                                                  child: Text(e['value'])))
+                                              .toList(),
+                                      onChanged: (value) => _.changeOptions(
+                                          value,
+                                          _.registrosSeleccionados[index]
+                                              .getId),
+                                    ),
                                   ),
                                   flex: 5),
                               Flexible(child: Container(), flex: 1),
@@ -216,8 +208,8 @@ class ListadoAsignacionPersonalPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(formatoHora(
-                                      _.registrosSeleccionados[index].fecha)),
+                                  child: Text(
+                                      'Linea : ${_.registrosSeleccionados[index].linea}'),
                                 ),
                                 flex: 10,
                               ),
@@ -226,17 +218,7 @@ class ListadoAsignacionPersonalPage extends StatelessWidget {
                                 child: Container(
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                      formatoHora(_
-                                              .registrosSeleccionados[index]
-                                              .fecha) ??
-                                          'Salida pendiente',
-                                      style: TextStyle(
-                                          color:
-                                              (_.registrosSeleccionados[index]
-                                                          .fecha ==
-                                                      null)
-                                                  ? dangerColor
-                                                  : Colors.black87)),
+                                      'Mesa : ${_.registrosSeleccionados[index].grupo}'),
                                 ),
                                 flex: 10,
                               ),

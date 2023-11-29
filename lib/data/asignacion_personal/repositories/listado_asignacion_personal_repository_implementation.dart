@@ -24,9 +24,8 @@ class ListadoAsignacionPersonalRepositoryImplementation
   }
 
   @override
-  Future<EsparragoAgrupaPersonalDetalleEntity> removeDetalle(
-      EsparragoAgrupaPersonalDetalleEntity detalle) {
-    // TODO: implement removeDetalle
-    throw UnimplementedError();
+  Future<ResultType<EsparragoAgrupaPersonalDetalleEntity, Failure>>
+      removeDetalle(int id) async {
+    return await _datastore.removeDetalle(id);
   }
 }

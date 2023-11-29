@@ -2,11 +2,14 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_tareo/core/utils/numbers.dart';
+import 'package:flutter_tareo/domain/asignacion_personal/use_cases/listado_asignacion_personal/add_personal_asignacion_use_case.dart';
+import 'package:flutter_tareo/domain/asignacion_personal/use_cases/listado_asignacion_personal/delete_personal_asignacion_use_case.dart';
 import 'package:flutter_tareo/domain/asignacion_personal/use_cases/listado_asignacion_personal/get_all_personal_asignacion_use_case.dart';
-import 'package:flutter_tareo/domain/entities/asistencia_registro_personal_entity.dart';
 import 'package:flutter_tareo/domain/entities/esparrago_agrupa_personal_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/esparrago_agrupa_personal_entity.dart';
+import 'package:flutter_tareo/domain/entities/message_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
+import 'package:flutter_tareo/domain/utils/result_type.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/contants.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/utils/GetxScannerController.dart';
@@ -25,18 +28,19 @@ class ListadoAsignacionPersonalController extends GetxScannerController {
   bool buscando = BOOLEAN_FALSE_VALUE;
 
   final GetAllPersonalAsignacionUseCase _getAllPersonalAsignacionUse;
+  final AddPersonalAsignacionUseCase _addPersonalAsignacionUseCase;
+  final DeletePersonalAsignacionUseCase _deletePersonalAsignacionUseCase;
 
   ListadoAsignacionPersonalController(
     this._getAllPersonalAsignacionUse,
-    /*this._getPersonalsEmpresaBySubdivisionUseCase,
-    this._getAllAsistenciaRegistroUseCase,
-    this._deleteAsistenciaRegistroUseCase,
-    this._registrarAsistenciaRegistroUseCase,*/
+    this._addPersonalAsignacionUseCase,
+    this._deletePersonalAsignacionUseCase,
   );
 
   Future<void> getDetalles() async {
     validando = BOOLEAN_TRUE_VALUE;
     update([VALIDANDO_ID]);
+    registrosSeleccionados.clear();
     registrosSeleccionados.addAll(await _getAllPersonalAsignacionUse
         .execute(asignacion?.itemagruparpersonal));
     validando = BOOLEAN_FALSE_VALUE;
@@ -54,25 +58,7 @@ class ListadoAsignacionPersonalController extends GetxScannerController {
             Get.arguments['asignacion'] as EsparragoAgrupaPersonalEntity;
         getDetalles();
       }
-      if (Get.arguments['personal'] != null) {
-        personal = Get.arguments['personal'] as List<PersonalEmpresaEntity>;
-        update(['personal']);
-      } else {
-        await _getAll();
-        update([VALIDANDO_ID]);
-      }
     }
-  }
-
-  Future<void> _getAll() async {
-    validando = BOOLEAN_TRUE_VALUE;
-    update([VALIDANDO_ID]);
-
-    /*personal = await _getPersonalsEmpresaBySubdivisionUseCase
-        .execute(PreferenciasUsuario().idSede);*/
-    validando = BOOLEAN_FALSE_VALUE;
-    update([VALIDANDO_ID]);
-    update(['personal_seleccionado']);
   }
 
   void seleccionar(int index) {
@@ -124,10 +110,10 @@ class ListadoAsignacionPersonalController extends GetxScannerController {
       message: '¿Desea eliminar el registro?',
       onPressed: () async {
         Get.back();
-        //registrosSeleccionados.removeWhere((e) => e.getId == key);
+        registrosSeleccionados.removeWhere((e) => e.getId == key);
         validando = BOOLEAN_TRUE_VALUE;
         update([VALIDANDO_ID]);
-        //await _deleteAsistenciaRegistroUseCase.execute(asignacion.getId, key);
+        await _deletePersonalAsignacionUseCase.execute(key);
         validando = BOOLEAN_FALSE_VALUE;
         update([VALIDANDO_ID]);
         update(['seleccionados', 'personal_seleccionado']);
@@ -137,66 +123,68 @@ class ListadoAsignacionPersonalController extends GetxScannerController {
   }
 
   Future<void> _registrar(
-      AsistenciaRegistroPersonalEntity detalle, bool byLector) async {
-    /*final res = await _registrarAsistenciaRegistroUseCase.execute(detalle);
+      EsparragoAgrupaPersonalDetalleEntity detalle, bool byLector) async {
+    final res =
+        await _addPersonalAsignacionUseCase.execute(asignacion, detalle);
     if (res is Success) {
-      AsistenciaRegistroPersonalEntity d = res.data;
-      String message = '';
-      if (d.tipomovimiento == 'I') {
-        detalle.idasistencia = d.idasistencia;
-        detalle.horaentrada = d.horaentrada;
-        detalle.fechaentrada = d.fechaentrada;
-        message = 'Se ha creado un ingreso';
-        registrosSeleccionados.insert(ZERO_INT_VALUE, detalle);
-        update([LISTADO_ASISTENCIA_REGISTRO_ID, CONTADOR_ID]);
-      } else {
-        message = 'Se ha generado una salida';
-        int index = registrosSeleccionados
-            .indexWhere((e) => e.idasistencia == d.idasistencia);
-        registrosSeleccionados[index].horasalida = d.horasalida;
-        update([LISTADO_ASISTENCIA_REGISTRO_ID, CONTADOR_ID]);
-      }
+      EsparragoAgrupaPersonalDetalleEntity d = res.data;
+      detalle.setId = d.getId;
+      detalle.personal = d.personal;
+      /*detalle.horaentrada = d.horaentrada;
+      detalle.fechaentrada = d.fechaentrada;*/
+      registrosSeleccionados.insert(ZERO_INT_VALUE, detalle);
+      update([LISTADO_ASISTENCIA_REGISTRO_ID, CONTADOR_ID]);
+
       validando = BOOLEAN_FALSE_VALUE;
       update([VALIDANDO_ID]);
-      byLector
-          ? toast(type: TypeToast.SUCCESS, message: message)
-          : showNotification(BOOLEAN_TRUE_VALUE, message);
-      ;
+      _showNotification(
+          byLector: byLector,
+          isSuccess: BOOLEAN_TRUE_VALUE,
+          message: 'Registro exitoso.');
     } else {
       validando = BOOLEAN_FALSE_VALUE;
       update([VALIDANDO_ID]);
-      byLector
-          ? toast(
-              type: TypeToast.ERROR,
-              message: (res.error as MessageEntity).message)
-          : showNotification(
-              BOOLEAN_FALSE_VALUE, (res.error as MessageEntity).message);
-    }*/
-    validando = BOOLEAN_FALSE_VALUE;
-    update([VALIDANDO_ID]);
+      _showNotification(
+          byLector: byLector,
+          isSuccess: BOOLEAN_FALSE_VALUE,
+          message: (res.error as MessageEntity).message);
+    }
+  }
+
+  Future<void> _showNotification(
+      {bool byLector = BOOLEAN_TRUE_VALUE,
+      bool isSuccess,
+      String message}) async {
+    if (byLector) {
+      super.showToast(isSuccess, message);
+    } else {
+      super.showNotification(isSuccess, message);
+    }
   }
 
   @override
   Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
+    print(barcode);
     if (barcode != null && barcode != '-1' && buscando == BOOLEAN_FALSE_VALUE) {
       buscando = BOOLEAN_TRUE_VALUE;
 
       /** */
-      int index = personal.indexWhere(
-          (e) => e.nrodocumento.trim() == barcode.toString().trim());
-      if (index != -1) {
-        validando = BOOLEAN_TRUE_VALUE;
-        update([VALIDANDO_ID]);
-        await _registrar(
-            AsistenciaRegistroPersonalEntity(
-              personal: personal[index],
-              codigoempresa: personal[index].codigoempresa,
+
+      validando = BOOLEAN_TRUE_VALUE;
+      update([VALIDANDO_ID]);
+      await _registrar(
+          EsparragoAgrupaPersonalDetalleEntity(
+              itemagruparpersonal: asignacion.itemagruparpersonal,
+              codigoempresa: barcode.toString().trim(),
               fechamod: DateTime.now(),
-              fechaturno: asignacion.fecha,
               idusuario: PreferenciasUsuario().idUsuario,
-            ),
-            byLector);
-      }
+              linea: asignacion.linea,
+              grupo: asignacion.grupo,
+              turno: asignacion.turno,
+              fecha: asignacion.fecha,
+              estado: 'A'),
+          byLector);
+
       (!byLector)
           ? await sleep(WAITING_INTERVAL_CAMERA)
           : await sleep(WAITING_INTERVAL_PDA);

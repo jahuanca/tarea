@@ -5,8 +5,6 @@ import 'dart:io';
 import 'package:flutter_tareo/core/utils/config.dart';
 import 'package:flutter_tareo/domain/entities/message_entity.dart';
 import 'package:flutter_tareo/domain/utils/http_manager.dart';
-import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
-import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_tareo/domain/utils/app_exceptions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -134,7 +132,7 @@ class AppHttpManager implements HttpManager {
     }
 
     MessageEntity mensaje = MessageEntity.fromJson(jsonDecode(responseJson));
-    if (mostrarError) toast(type: TypeToast.ERROR, message: mensaje.message);
+    //if (mostrarError) toast(type: TypeToast.ERROR, message: mensaje.message);
 
     switch (response.statusCode) {
       case 400:

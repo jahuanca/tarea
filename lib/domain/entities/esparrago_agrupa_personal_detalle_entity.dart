@@ -15,7 +15,7 @@ class EsparragoAgrupaPersonalDetalleEntity {
     this.fecha,
     this.idestado,
     this.documento,
-    this.estadoLocal,
+    this.estado,
     this.personal,
   });
 
@@ -30,10 +30,11 @@ class EsparragoAgrupaPersonalDetalleEntity {
   DateTime fecha;
   int idestado;
   String documento;
-  String estadoLocal;
+  String estado;
   PersonalEmpresaEntity personal;
 
   get getId => this.itemagruparpersonaldetalle;
+  set setId(value) => this.itemagruparpersonaldetalle = value;
 
   factory EsparragoAgrupaPersonalDetalleEntity.fromJson(
           Map<String, dynamic> json) =>
@@ -54,7 +55,7 @@ class EsparragoAgrupaPersonalDetalleEntity {
         fecha: json["fecha"] == null ? null : DateTime.parse(json["fecha"]),
         idestado: json["idestado"] == null ? null : json["idestado"],
         documento: json["documento"] == null ? null : json["documento"],
-        estadoLocal: json["estadoLocal"] == null ? null : json["estadoLocal"],
+        estado: json["estado"] == null ? null : json["estado"],
         personal: json["personal"] == null
             ? null
             : PersonalEmpresaEntity.fromJson(json["personal"]),
@@ -77,7 +78,7 @@ class EsparragoAgrupaPersonalDetalleEntity {
             : "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
         "idestado": idestado == null ? null : idestado,
         "documento": documento == null ? null : documento,
-        "estadoLocal": estadoLocal == null ? null : estadoLocal,
+        "estado": estado == null ? null : estado,
         "personal": personal == null ? null : personal.toJson(),
       };
 }

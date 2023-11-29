@@ -17,13 +17,23 @@ class ListadoAsignacionPersonalDatastoreImplementation
       EsparragoAgrupaPersonalDetalleEntity detalle) async {
     final http = new AppHttpManager();
     final res = await http.post(
-        url: ADD_DETALLE_ASIGNACION_URL, query: {}, body: detalle.toJson());
+        url: ADD_DETALLE_ASIGNACION_URL,
+        query: {
+          'fechaturno': asignacion.fecha,
+          'codigoempresa': detalle.codigoempresa,
+          'idturno': asignacion.turno == 'D' ? 1 : 2,
+          /*'fechaturno': '2023-11-16',
+          'codigoempresa': '10040620',
+          'idturno': 1,*/
+        },
+        body: detalle.toJson());
 
     if (res is MessageEntity) {
       return new Error(error: res);
+    } else {
+      return new Success(
+          data: EsparragoAgrupaPersonalDetalleEntity.fromJson(jsonDecode(res)));
     }
-    return new Success(
-        data: EsparragoAgrupaPersonalDetalleEntity.fromJson(jsonDecode(res)));
   }
 
   @override
@@ -37,9 +47,17 @@ class ListadoAsignacionPersonalDatastoreImplementation
   }
 
   @override
-  Future<EsparragoAgrupaPersonalDetalleEntity> removeDetalle(
-      EsparragoAgrupaPersonalDetalleEntity detalle) {
-    // TODO: implement removeDetalle
-    throw UnimplementedError();
+  Future<ResultType<EsparragoAgrupaPersonalDetalleEntity, Failure>>
+      removeDetalle(int id) async {
+    final http = new AppHttpManager();
+    final res = await http.delete(
+      url: '${DELETE_DETALLE_ASIGNACION_URL}/$id',
+    );
+    if (res is MessageEntity) {
+      return Error(error: res.message);
+    } else {
+      return Success(
+          data: EsparragoAgrupaPersonalDetalleEntity.fromJson(jsonDecode(res)));
+    }
   }
 }

@@ -4,12 +4,14 @@ class BuscarLineaMesaEntity {
     this.grupo,
     this.linea,
     this.turno,
+    this.sizeDetails,
   });
 
   DateTime fecha;
   String turno;
   int linea;
   int grupo;
+  int sizeDetails;
 
   Map<String, dynamic> toJson() => {
         "fecha": fecha == null ? null : '2022-12-26',

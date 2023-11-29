@@ -87,7 +87,9 @@ class BuscarLineaMesaController extends GetxController {
     int index = mesas?.indexWhere((e) => e.grupo.toString().trim() == id);
 
     if (errorMesa == null && index != -1) {
+      print('Mesa #${id}:  ${mesas[index].itemagruparpersonal}');
       query.grupo = mesas[index].grupo;
+      query.sizeDetails = mesas[index].sizeDetails;
       asignacionSelected = mesas[index];
     } else {
       query.grupo = null;
@@ -105,9 +107,11 @@ class BuscarLineaMesaController extends GetxController {
           .toList()
           .unique((EsparragoAgrupaPersonalEntity x) => x.linea);
       mesas = [];
+      query.grupo = null;
       update([LINEAS_ID, MESAS_ID]);
     } else {
       mesas = (await _getLineaMesaUseCase.execute(query)).toList();
+      query.grupo = null;
       update([MESAS_ID]);
     }
     validando = BOOLEAN_FALSE_VALUE;

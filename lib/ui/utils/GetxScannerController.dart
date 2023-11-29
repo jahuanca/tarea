@@ -86,6 +86,12 @@ abstract class GetxScannerController extends GetxController
     });
   }
 
+  void showToast(bool isSuccess, String message) {
+    toast(
+        type: isSuccess ? TypeToast.SUCCESS : TypeToast.ERROR,
+        message: message);
+  }
+
   Future<void> showNotification(bool success, String mensaje) async {
     final android = AndroidNotificationDetails(
         'channel id', 'channel name', 'channel description',

@@ -59,6 +59,7 @@ void toast(
   Get.snackbar(
     title ?? typesToast[type].title,
     message,
+    instantInit: false,
     snackPosition: typesToast[type].snackPosition,
     backgroundColor: typesToast[type].backgroundColor,
     colorText: typesToast[type].colorText,
