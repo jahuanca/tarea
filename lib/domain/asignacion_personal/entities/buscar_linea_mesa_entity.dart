@@ -14,8 +14,10 @@ class BuscarLineaMesaEntity {
   int sizeDetails;
 
   Map<String, dynamic> toJson() => {
-        "fecha": fecha == null ? null : '2022-12-26',
-        //: "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
+        //"fecha": fecha == null ? null : '2022-12-26',
+        "fecha": fecha == null
+            ? null
+            : "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
         "turno": turno == null ? null : turno,
         "linea": linea == null ? null : linea,
       };

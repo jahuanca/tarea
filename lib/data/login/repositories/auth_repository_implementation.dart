@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_tareo/core/utils/strings/hiveDB.dart';
 import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/usuario_entity.dart';
 import 'package:flutter_tareo/domain/repositories/auth_repository.dart';
@@ -15,7 +16,7 @@ class AuthRepositoryImplementation extends AuthRepository {
   Future<UsuarioEntity> login(UsuarioEntity usuarioEntity) async {
     if (PreferenciasUsuario().offLine) {
       Box<UsuarioEntity> usuariosHive =
-          await Hive.openBox<UsuarioEntity>('usuarios_sincronizar');
+          await Hive.openBox<UsuarioEntity>(USUARIO_HIVE_STRING);
 
       List<UsuarioEntity> usuarios = usuariosHive.values.toList();
       await usuariosHive.compact();

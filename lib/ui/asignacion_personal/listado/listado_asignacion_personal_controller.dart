@@ -9,6 +9,7 @@ import 'package:flutter_tareo/domain/entities/esparrago_agrupa_personal_detalle_
 import 'package:flutter_tareo/domain/entities/esparrago_agrupa_personal_entity.dart';
 import 'package:flutter_tareo/domain/entities/message_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
+import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/utils/result_type.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/contants.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
@@ -22,6 +23,8 @@ class ListadoAsignacionPersonalController extends GetxScannerController {
   List<PersonalEmpresaEntity> personal = [];
   List<EsparragoAgrupaPersonalDetalleEntity> registrosSeleccionados = [];
   EsparragoAgrupaPersonalEntity asignacion;
+  final GetPersonalsEmpresaBySubdivisionUseCase
+      _getPersonalsEmpresaBySubdivisionUseCase;
 
   bool validando = BOOLEAN_FALSE_VALUE;
   bool editando = BOOLEAN_FALSE_VALUE;
@@ -32,12 +35,25 @@ class ListadoAsignacionPersonalController extends GetxScannerController {
   final DeletePersonalAsignacionUseCase _deletePersonalAsignacionUseCase;
 
   ListadoAsignacionPersonalController(
+    this._getPersonalsEmpresaBySubdivisionUseCase,
     this._getAllPersonalAsignacionUse,
     this._addPersonalAsignacionUseCase,
     this._deletePersonalAsignacionUseCase,
   );
 
+  Future<void> _getAll() async {
+    personal = await _getPersonalsEmpresaBySubdivisionUseCase
+        .execute(PreferenciasUsuario().idSede);
+    /*print('Personal ${personal.length}');
+    print(personal.first.nrodocumento);
+    print(personal[1].nrodocumento);
+    print(personal[2].nrodocumento);
+    print(personal[3].nrodocumento);
+    print(personal.last.nrodocumento);*/
+  }
+
   Future<void> getDetalles() async {
+    print('buscando');
     validando = BOOLEAN_TRUE_VALUE;
     update([VALIDANDO_ID]);
     registrosSeleccionados.clear();
@@ -45,20 +61,21 @@ class ListadoAsignacionPersonalController extends GetxScannerController {
         .execute(asignacion?.itemagruparpersonal));
     validando = BOOLEAN_FALSE_VALUE;
     update([VALIDANDO_ID]);
-    update(['personal_seleccionado']);
+    update([PERSONAL_SELECCIONADO_ID]);
   }
 
   @override
-  void onReady() async {
-    super.onReady();
+  void onInit() async {
     if (Get.arguments != null) {
       if (Get.arguments['asignacion'] != null) {
         print('asignacion');
         asignacion =
             Get.arguments['asignacion'] as EsparragoAgrupaPersonalEntity;
-        getDetalles();
+        await _getAll();
+        await getDetalles();
       }
     }
+    super.onInit();
   }
 
   void seleccionar(int index) {
@@ -83,11 +100,11 @@ class ListadoAsignacionPersonalController extends GetxScannerController {
         for (var i = 0; i < registrosSeleccionados.length; i++) {
           seleccionados.add(i);
         }
-        update(['seleccionados', 'personal_seleccionado']);
+        update(['seleccionados', PERSONAL_SELECCIONADO_ID]);
         break;
       case 2:
         seleccionados.clear();
-        update(['seleccionados', 'personal_seleccionado']);
+        update([SELECCIONADO_ID, PERSONAL_SELECCIONADO_ID]);
         break;
       default:
         break;
@@ -130,6 +147,7 @@ class ListadoAsignacionPersonalController extends GetxScannerController {
       EsparragoAgrupaPersonalDetalleEntity d = res.data;
       detalle.setId = d.getId;
       detalle.personal = d.personal;
+      detalle.codigoempresa = d.codigoempresa;
       /*detalle.horaentrada = d.horaentrada;
       detalle.fechaentrada = d.fechaentrada;*/
       registrosSeleccionados.insert(ZERO_INT_VALUE, detalle);
@@ -167,24 +185,32 @@ class ListadoAsignacionPersonalController extends GetxScannerController {
     print(barcode);
     if (barcode != null && barcode != '-1' && buscando == BOOLEAN_FALSE_VALUE) {
       buscando = BOOLEAN_TRUE_VALUE;
-
-      /** */
-
       validando = BOOLEAN_TRUE_VALUE;
       update([VALIDANDO_ID]);
-      await _registrar(
-          EsparragoAgrupaPersonalDetalleEntity(
-              itemagruparpersonal: asignacion.itemagruparpersonal,
-              codigoempresa: barcode.toString().trim(),
-              fechamod: DateTime.now(),
-              idusuario: PreferenciasUsuario().idUsuario,
-              linea: asignacion.linea,
-              grupo: asignacion.grupo,
-              turno: asignacion.turno,
-              fecha: asignacion.fecha,
-              estado: 'A'),
-          byLector);
-
+      int index = personal.indexWhere(
+          (e) => e.nrodocumento.trim() == barcode.toString().trim());
+      if (index != -1) {
+        await _registrar(
+            EsparragoAgrupaPersonalDetalleEntity(
+                itemagruparpersonal: asignacion.itemagruparpersonal,
+                documento: barcode.toString().trim(),
+                codigoempresa: personal[index].codigoempresa,
+                fechamod: DateTime.now(),
+                idusuario: PreferenciasUsuario().idUsuario,
+                linea: asignacion.linea,
+                grupo: asignacion.grupo,
+                turno: asignacion.turno,
+                fecha: asignacion.fecha,
+                estado: 'A'),
+            byLector);
+      } else {
+        validando = BOOLEAN_FALSE_VALUE;
+        update([VALIDANDO_ID]);
+        _showNotification(
+            byLector: byLector,
+            isSuccess: BOOLEAN_FALSE_VALUE,
+            message: 'Personal no se encuentra en esta subdivision');
+      }
       (!byLector)
           ? await sleep(WAITING_INTERVAL_CAMERA)
           : await sleep(WAITING_INTERVAL_PDA);

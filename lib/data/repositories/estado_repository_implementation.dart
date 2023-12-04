@@ -1,3 +1,4 @@
+import 'package:flutter_tareo/core/utils/strings/hiveDB.dart';
 import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/estado_entity.dart';
 import 'package:flutter_tareo/domain/repositories/estado_repository.dart';
@@ -10,7 +11,7 @@ class EstadoRepositoryImplementation extends EstadoRepository {
   @override
   Future<List<EstadoEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
-      Box dataHive = await Hive.openBox<EstadoEntity>('estados_sincronizar');
+      Box dataHive = await Hive.openBox<EstadoEntity>(ESTADOS_HIVE_STRING);
       List<EstadoEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       await dataHive.compact();
@@ -31,7 +32,7 @@ class EstadoRepositoryImplementation extends EstadoRepository {
   Future<List<EstadoEntity>> getAllByValue(Map<String, dynamic> valores) async {
     if (PreferenciasUsuario().offLine) {
       Box<EstadoEntity> dataHive =
-          await Hive.openBox<EstadoEntity>('estados_sincronizar');
+          await Hive.openBox<EstadoEntity>(ESTADOS_HIVE_STRING);
       List<EstadoEntity> local = [];
 
       dataHive.values.forEach((e) {

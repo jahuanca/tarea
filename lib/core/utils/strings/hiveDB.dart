@@ -8,3 +8,12 @@ const String ASISTENCIA_HIVE_STRING =
 const String REGISTRO_ASISTENCIA_HIVE_STRING =
     'asistencia_registro_personal_${PROJECT_ID}_sincronizar';
 const String ACTIVIDAD_HIVE_STRING = 'actividad_${PROJECT_ID}_sincronizar';
+const String SEDE_HIVE_STRING = 'sede_${PROJECT_ID}_sincronizar';
+const String LABOR_HIVE_STRING = 'labor_${PROJECT_ID}_sincronizar';
+const String CALIBRES_HIVE_STRING = 'calibre_${PROJECT_ID}_sincronizar';
+const String ESTADOS_HIVE_STRING = 'estado_${PROJECT_ID}_sincronizar';
+const String CLIENTES_HIVE_STRING = 'cliente_${PROJECT_ID}_sincronizar';
+const String CULTIVOS_HIVE_STRING = 'cultivo_${PROJECT_ID}_sincronizar';
+const String USUARIO_HIVE_STRING = 'usuario_${PROJECT_ID}_sincronizar';
+const String CENTRO_COSTOS_HIVE_STRING =
+    'centro_costos_${PROJECT_ID}_sincronizar';

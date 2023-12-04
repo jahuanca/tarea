@@ -1,3 +1,4 @@
+import 'package:flutter_tareo/core/utils/strings/hiveDB.dart';
 import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/repositories/centro_costo_repository.dart';
@@ -11,7 +12,7 @@ class CentroCostoRepositoryImplementation extends CentroCostoRepository {
   Future<List<CentroCostoEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
       Box sedesHive =
-          await Hive.openBox<CentroCostoEntity>('centros_costo_sincronizar');
+          await Hive.openBox<CentroCostoEntity>(CENTRO_COSTOS_HIVE_STRING);
       List<CentroCostoEntity> local = [];
       sedesHive.toMap().forEach((key, value) => local.add(value));
       await sedesHive.compact();
@@ -32,7 +33,7 @@ class CentroCostoRepositoryImplementation extends CentroCostoRepository {
       Map<String, dynamic> valores) async {
     if (PreferenciasUsuario().offLine) {
       Box<CentroCostoEntity> dataHive =
-          await Hive.openBox<CentroCostoEntity>('centros_costo_sincronizar');
+          await Hive.openBox<CentroCostoEntity>(CENTRO_COSTOS_HIVE_STRING);
       List<CentroCostoEntity> local = [];
 
       dataHive.values.forEach((e) {

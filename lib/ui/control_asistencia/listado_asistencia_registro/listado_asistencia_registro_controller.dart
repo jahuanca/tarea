@@ -76,11 +76,6 @@ class ListadoAsistenciaRegistroController extends GetxController
         update(['personal']);
       } else {
         await _getAll();
-        /*print(personal.first.nrodocumento);
-        print(personal[1].nrodocumento);
-        print(personal[2].nrodocumento);
-        print(personal[3].nrodocumento);
-        print(personal.last.nrodocumento);*/
         update([VALIDANDO_ID]);
       }
     }
@@ -291,7 +286,7 @@ class ListadoAsistenciaRegistroController extends GetxController
     if (barcode != null && barcode != '-1' && buscando == BOOLEAN_FALSE_VALUE) {
       buscando = BOOLEAN_TRUE_VALUE;
 
-      /** */
+      /** **/
       int index = personal.indexWhere(
           (e) => e.nrodocumento.trim() == barcode.toString().trim());
       if (index != -1) {

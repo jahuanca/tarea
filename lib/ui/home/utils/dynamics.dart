@@ -21,9 +21,9 @@ enum titles {
   esparrago,
   herramientas,
   asistencias,
+  asignacionPersonal,
   configuracion,
   logout,
-  asignacionPersonal,
 }
 
 titles getTitle(int value) =>
@@ -73,24 +73,24 @@ Map<titles, NavigationItem> NAVIGATIONS = {
     widget: HomeAsistenciaPage(),
   ),
   titles.asignacionPersonal: NavigationItem(
-    icon: Icons.person_pin_outlined,
+    icon: Icons.people,
     title: 'Asignación de Personal',
     description: 'Elegir mesa',
-    value: 11,
+    value: 9,
     dependencies: BuscarLineaMesaBinding().dependencies,
     widget: BuscarLineaMesaPage(),
   ),
   titles.configuracion: NavigationItem(
     icon: Icons.settings,
     title: 'Configuración',
-    value: 9,
+    value: 10,
     dependencies: () {},
     widget: Container(),
   ),
   titles.logout: NavigationItem(
     icon: Icons.exit_to_app,
     title: 'Cerrar sesión',
-    value: 10,
+    value: 11,
     dependencies: () {},
     widget: null,
   ),

@@ -1,3 +1,4 @@
+import 'package:flutter_tareo/core/utils/strings/hiveDB.dart';
 import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/calibre_entity.dart';
 import 'package:flutter_tareo/domain/repositories/calibre_repository.dart';
@@ -10,7 +11,7 @@ class CalibreRepositoryImplementation extends CalibreRepository {
   @override
   Future<List<CalibreEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
-      Box dataHive = await Hive.openBox<CalibreEntity>('calibres_sincronizar');
+      Box dataHive = await Hive.openBox<CalibreEntity>(CALIBRES_HIVE_STRING);
       List<CalibreEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       await dataHive.compact();
@@ -32,7 +33,7 @@ class CalibreRepositoryImplementation extends CalibreRepository {
       Map<String, dynamic> valores) async {
     if (PreferenciasUsuario().offLine) {
       Box<CalibreEntity> dataHive =
-          await Hive.openBox<CalibreEntity>('calibres_sincronizar');
+          await Hive.openBox<CalibreEntity>(CALIBRES_HIVE_STRING);
       List<CalibreEntity> local = [];
 
       dataHive.values.forEach((e) {

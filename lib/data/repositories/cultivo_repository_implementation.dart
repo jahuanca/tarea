@@ -1,3 +1,4 @@
+import 'package:flutter_tareo/core/utils/strings/hiveDB.dart';
 import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/repositories/cultivo_repository.dart';
@@ -10,7 +11,7 @@ class CultivoRepositoryImplementation extends CultivoRepository {
   @override
   Future<List<CultivoEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
-      Box dataHive = await Hive.openBox<CultivoEntity>('cultivos_sincronizar');
+      Box dataHive = await Hive.openBox<CultivoEntity>(CULTIVOS_HIVE_STRING);
       List<CultivoEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       await dataHive.close();
@@ -31,7 +32,7 @@ class CultivoRepositoryImplementation extends CultivoRepository {
       Map<String, dynamic> valores) async {
     if (PreferenciasUsuario().offLine) {
       Box<CultivoEntity> dataHive =
-          await Hive.openBox<CultivoEntity>('cultivos_sincronizar');
+          await Hive.openBox<CultivoEntity>(CULTIVOS_HIVE_STRING);
       List<CultivoEntity> local = [];
 
       dataHive.values.forEach((e) {

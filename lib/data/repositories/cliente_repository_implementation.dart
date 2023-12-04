@@ -1,3 +1,4 @@
+import 'package:flutter_tareo/core/utils/strings/hiveDB.dart';
 import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/cliente_entity.dart';
 import 'package:flutter_tareo/domain/repositories/cliente_repository.dart';
@@ -10,7 +11,7 @@ class ClienteRepositoryImplementation extends ClienteRepository {
   @override
   Future<List<ClienteEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
-      Box dataHive = await Hive.openBox<ClienteEntity>('clientes_sincronizar');
+      Box dataHive = await Hive.openBox<ClienteEntity>(CLIENTES_HIVE_STRING);
       List<ClienteEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       await dataHive.compact();
@@ -32,7 +33,7 @@ class ClienteRepositoryImplementation extends ClienteRepository {
       Map<String, dynamic> valores) async {
     if (PreferenciasUsuario().offLine) {
       Box<ClienteEntity> dataHive =
-          await Hive.openBox<ClienteEntity>('clientes_sincronizar');
+          await Hive.openBox<ClienteEntity>(CLIENTES_HIVE_STRING);
       List<ClienteEntity> local = [];
 
       dataHive.values.forEach((e) {

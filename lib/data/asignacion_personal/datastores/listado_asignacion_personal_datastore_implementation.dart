@@ -8,6 +8,7 @@ import 'package:flutter_tareo/domain/entities/esparrago_agrupa_personal_entity.d
 import 'package:flutter_tareo/domain/entities/message_entity.dart';
 import 'package:flutter_tareo/domain/utils/failure.dart';
 import 'package:flutter_tareo/domain/utils/result_type.dart';
+import 'package:flutter_tareo/ui/utils/extensions.dart';
 
 class ListadoAsignacionPersonalDatastoreImplementation
     extends ListadoAsignacionPersonalDatastore {
@@ -19,7 +20,7 @@ class ListadoAsignacionPersonalDatastoreImplementation
     final res = await http.post(
         url: ADD_DETALLE_ASIGNACION_URL,
         query: {
-          'fechaturno': asignacion.fecha,
+          'fechaturno': asignacion.fecha.toOnlyDate(),
           'codigoempresa': detalle.codigoempresa,
           'idturno': asignacion.turno == 'D' ? 1 : 2,
           /*'fechaturno': '2023-11-16',

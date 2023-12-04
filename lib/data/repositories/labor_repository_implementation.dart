@@ -1,3 +1,4 @@
+import 'package:flutter_tareo/core/utils/strings/hiveDB.dart';
 import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/repositories/labor_repository.dart';
@@ -10,7 +11,7 @@ class LaborRepositoryImplementation extends LaborRepository {
   @override
   Future<List<LaborEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
-      Box dataHive = await Hive.openBox<LaborEntity>('labores_sincronizar');
+      Box dataHive = await Hive.openBox<LaborEntity>(LABOR_HIVE_STRING);
       List<LaborEntity> local = [];
       dataHive.toMap().forEach((key, value) => local.add(value));
       await dataHive.close();
@@ -30,7 +31,7 @@ class LaborRepositoryImplementation extends LaborRepository {
   Future<List<LaborEntity>> getAllByValue(Map<String, dynamic> valores) async {
     if (PreferenciasUsuario().offLine) {
       Box<LaborEntity> dataHive =
-          await Hive.openBox<LaborEntity>('labores_sincronizar');
+          await Hive.openBox<LaborEntity>(LABOR_HIVE_STRING);
       List<LaborEntity> local = [];
 
       dataHive.values.forEach((e) {

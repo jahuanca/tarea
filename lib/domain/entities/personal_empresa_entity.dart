@@ -23,6 +23,7 @@ class PersonalEmpresaEntity {
     this.bloqueado,
     this.fechacese,
     this.idusuario,
+    //this.personalEmpresaSubdivisions,
     this.personalEmpresaSubdivision,
   });
 
@@ -72,6 +73,12 @@ class PersonalEmpresaEntity {
             ? null
             : PersonalEmpresaSubdivisionEntity.fromJson(
                 json["PersonalEmpresa_Subdivision"]),
+        /*personalEmpresaSubdivisions: json["PersonalEmpresa_Subdivisions"] ==
+                null
+            ? null
+            : List<PersonalEmpresaSubdivisionEntity>.from(
+                json["PersonalEmpresa_Subdivisions"]
+                    .map((x) => PersonalEmpresaSubdivisionEntity.fromJson(x))),*/
       );
 
   String get nombreCompleto {
@@ -95,6 +102,10 @@ class PersonalEmpresaEntity {
             : "${fechacese?.year.toString().padLeft(4, '0')}-${fechacese.month.toString().padLeft(2, '0')}-${fechacese.day.toString().padLeft(2, '0')}",
         "idusuario": idusuario,
         "PersonalEmpresa_Subdivision": personalEmpresaSubdivision?.toJson(),
+        /*"PersonalEmpresa_Subdivision": personalEmpresaSubdivisions == null
+            ? null
+            : List<dynamic>.from(
+                personalEmpresaSubdivisions.map((x) => x.toJson())),*/
       };
 }
 

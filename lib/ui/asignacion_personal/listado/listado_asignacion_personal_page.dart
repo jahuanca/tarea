@@ -22,7 +22,7 @@ class ListadoAsignacionPersonalPage extends StatelessWidget {
 
     return GetBuilder<ListadoAsignacionPersonalController>(
       init: controller,
-      id: 'personal_seleccionado',
+      id: PERSONAL_SELECCIONADO_ID,
       builder: (_) => WillPopScope(
         onWillPop: _.onWillPop,
         child: Stack(
@@ -65,7 +65,7 @@ class ListadoAsignacionPersonalPage extends StatelessWidget {
                           id: LISTADO_ASISTENCIA_REGISTRO_ID,
                           builder: (_) => _.registrosSeleccionados.isEmpty
                               ? EmptyDataWidget(
-                                  titulo: EMPTY_REGISTROS_ASISTENCIAS_STRING,
+                                  titulo: EMPTY_REGISTROS_ASIGNACION_STRING,
                                   onPressed: _.getDetalles,
                                   size: size)
                               : ListView.builder(
@@ -109,10 +109,9 @@ class ListadoAsignacionPersonalPage extends StatelessWidget {
     return GetBuilder<ListadoAsignacionPersonalController>(
         id: SELECCIONADO_ID,
         builder: (_) => GestureDetector(
-              onLongPress:
-                  _.seleccionados.length > 0 || _.asignacion.estadoLocal != 'P'
-                      ? null
-                      : () => _.seleccionar(index),
+              onLongPress: _.seleccionados.length > 0
+                  ? null
+                  : () => _.seleccionar(index),
               onTap: _.seleccionados.length > 0
                   ? () => _.seleccionar(index)
                   : null,

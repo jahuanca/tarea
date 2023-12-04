@@ -124,6 +124,7 @@ class NuevaSeleccionController extends GetxController {
     update(['validando']);
     supervisors =
         await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
+
     if (!editando) {
       if (supervisors.isNotEmpty) {
         nuevaSeleccion.supervisor = supervisors[0];
@@ -131,8 +132,8 @@ class NuevaSeleccionController extends GetxController {
       }
     }
 
-    changeSupervisor(nuevaSeleccion.supervisor.codigoempresa);
-    changeDigitador(nuevaSeleccion.digitador.codigoempresa);
+    changeSupervisor(nuevaSeleccion.supervisor?.codigoempresa);
+    changeDigitador(nuevaSeleccion.digitador?.codigoempresa);
 
     update(['supervisors', 'digitadors']);
     validando = false;
