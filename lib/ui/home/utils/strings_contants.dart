@@ -28,3 +28,4 @@ const String SUCCESS_STRING = "Éxito";
 const String ERROR_STRING = "Error";
 const String WARNING_STRING = "Advertencia";
 const String INFO_STRING = "Información";
+const String TURNO_DIA_CHAR = "D";

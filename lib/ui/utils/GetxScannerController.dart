@@ -4,7 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
-import 'package:flutter_tareo/ui/utils/constants.dart';
+import 'package:flutter_tareo/ui/utils/constants_scanner.dart';
 import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
@@ -26,7 +26,7 @@ abstract class GetxScannerController extends GetxController
 
   @override
   void onDecoded(String result) async {
-    await setCodeBar(result, true);
+    await setCodeBar(result, BOOLEAN_TRUE_VALUE);
   }
 
   @override
@@ -47,11 +47,15 @@ abstract class GetxScannerController extends GetxController
     return;
   }
 
-  void _initHoneyScanner() {
+  Future<void> _initHoneyScanner() async {
     _honeywellScanner = HoneywellScanner();
     _honeywellScanner.setScannerCallBack(this);
-    _honeywellScanner.setProperties(getPropertiesHoneyWell);
-    _honeywellScanner.startScanner();
+    await _honeywellScanner.setProperties(getPropertiesHoneyWell);
+    if (await _honeywellScanner.startScanner()) {
+      print('Se pudo inicializar HoneyWell');
+    } else {
+      print('No se pudo inicializar HoneyWell');
+    }
   }
 
   Future<void> _initPlatformState() async {
@@ -65,17 +69,20 @@ abstract class GetxScannerController extends GetxController
   Future<void> _initScanner() async {
     _sunmiBarcodePlugin = SunmiBarcodePlugin();
     if (await _sunmiBarcodePlugin.isScannerAvailable()) {
-      _initPlatformState();
+      await _initPlatformState();
       _sunmiBarcodePlugin.onBarcodeScanned().listen((event) async {
         await setCodeBar(event, BOOLEAN_TRUE_VALUE);
+        print('Inicializado');
       });
     } else {
-      _initHoneyScanner();
+      await _initHoneyScanner();
     }
   }
 
   Future<void> setCodeBar(dynamic barcode,
-      [bool byLector = BOOLEAN_FALSE_VALUE]) async {}
+      [bool byLector = BOOLEAN_FALSE_VALUE]) async {
+    print(barcode ?? 'valor');
+  }
 
   void goLectorCode() {
     FlutterBarcodeScanner.getBarcodeStreamReceiver(

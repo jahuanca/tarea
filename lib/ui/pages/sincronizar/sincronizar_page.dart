@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/pages/sincronizar/sincronizar_controller.dart';

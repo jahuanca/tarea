@@ -76,6 +76,8 @@ class ListadoAsistenciaRegistroController extends GetxController
         update(['personal']);
       } else {
         await _getAll();
+        print(personal.first.nrodocumento);
+
         update([VALIDANDO_ID]);
       }
     }
@@ -295,6 +297,7 @@ class ListadoAsistenciaRegistroController extends GetxController
         await _registrar(
             AsistenciaRegistroPersonalEntity(
               personal: personal[index],
+              //nrodocumento: personal[index].nrodocumento,
               codigoempresa: personal[index].codigoempresa,
               fechamod: DateTime.now(),
               fechaturno: asistencia.fecha,

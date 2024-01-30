@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DatePickerWidget {
@@ -47,7 +46,8 @@ class DatePickerWidget {
     return null;
   }
 
-  Future<DateTime> _selectTime(BuildContext context, DateTime selectedDate) async {
+  Future<DateTime> _selectTime(
+      BuildContext context, DateTime selectedDate) async {
     TimeOfDay picked;
     picked = await showTimePicker(
       context: context,

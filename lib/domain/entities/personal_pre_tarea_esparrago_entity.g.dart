@@ -43,13 +43,14 @@ class PersonalPreTareaEsparragoEntityAdapter
       viaEnvio: fields[21] as ViaEnvioEntity,
       idcalibre: fields[22] as int,
       idSQLitePreTareaEsparrago: fields[24] as int,
+      keyParent: fields[25] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, PersonalPreTareaEsparragoEntity obj) {
     writer
-      ..writeByte(25)
+      ..writeByte(26)
       ..writeByte(0)
       ..write(obj.itempersonalpretareaesparrago)
       ..writeByte(1)
@@ -99,7 +100,9 @@ class PersonalPreTareaEsparragoEntityAdapter
       ..writeByte(23)
       ..write(obj.idSQLite)
       ..writeByte(24)
-      ..write(obj.idSQLitePreTareaEsparrago);
+      ..write(obj.idSQLitePreTareaEsparrago)
+      ..writeByte(25)
+      ..write(obj.keyParent);
   }
 
   @override

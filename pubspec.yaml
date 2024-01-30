@@ -40,7 +40,8 @@ dependencies:
   dropdown_search: ^0.6.3
   hive: ^2.0.4
   modal_bottom_sheet: ^2.0.0
-  #image_editor_pro: ^1.1.0
+  awesome_select: ^5.1.0
+  #image_editor_pro: 
   image_editor_pro: 
     git: 
       url: https://github.com/jahuanca/image_editor_pro_layer360.git
@@ -66,7 +67,7 @@ dependencies:
   #cupertino_icons: ^1.0.2
 
 dev_dependencies:
-  flutter_launcher_icons: "^0.9.2"
+  flutter_launcher_icons:
   flutter_test:
     sdk: flutter
   hive_generator: 

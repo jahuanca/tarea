@@ -18,7 +18,7 @@ class PreTareaEsparragoVariosEntityAdapter
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return PreTareaEsparragoVariosEntity(
-      itempretareaesparragosvarios: fields[0] as int,
+      itempretareaesparragovarios: fields[0] as int,
       fecha: fields[1] as DateTime,
       horainicio: fields[2] as DateTime,
       horafin: fields[3] as DateTime,
@@ -43,12 +43,12 @@ class PreTareaEsparragoVariosEntityAdapter
       imei: fields[28] as String,
       fechamod: fields[29] as DateTime,
       idSQLite: fields[30] as int,
+      supervisor: fields[19] as PersonalEmpresaEntity,
+      digitador: fields[20] as PersonalEmpresaEntity,
     )
       ..sede = fields[13] as SubdivisionEntity
       ..pathUrl = fields[14] as String
-      ..estadoLocal = fields[15] as String
-      ..supervisor = fields[19] as PersonalEmpresaEntity
-      ..digitador = fields[20] as PersonalEmpresaEntity;
+      ..estadoLocal = fields[15] as String;
   }
 
   @override
@@ -56,7 +56,7 @@ class PreTareaEsparragoVariosEntityAdapter
     writer
       ..writeByte(30)
       ..writeByte(0)
-      ..write(obj.itempretareaesparragosvarios)
+      ..write(obj.itempretareaesparragovarios)
       ..writeByte(1)
       ..write(obj.fecha)
       ..writeByte(2)

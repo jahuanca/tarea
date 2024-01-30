@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/di/listado_cajas_binding.dart';
 import 'package:flutter_tareo/di/listado_personas_clasificacion_binding.dart';

@@ -1,6 +1,5 @@
 import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/domain/entities/esparrago_agrupa_personal_entity.dart';
-import 'package:flutter_tareo/domain/entities/estado_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/log_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
@@ -20,7 +19,6 @@ import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_ubicacion
 import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_usuarios_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_current_time_world_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_esparrago_agrupa_personal_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/sincronizar/get_estados_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_labores_cultivo_packing_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_pre_tareo_procesos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_tipo_tareas_use_case.dart';

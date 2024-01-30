@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter_tareo/core/utils/config.dart';
+import 'package:flutter_tareo/core/utils/strings/hiveDB.dart';
 import 'package:flutter_tareo/data/utils/app_http_manager.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
@@ -20,12 +21,17 @@ class PreTareoProcesoUvaRepositoryImplementation
   Future<List<PreTareoProcesoUvaEntity>> getAll() async {
     if (PreferenciasUsuario().offLine) {
       Box<PreTareoProcesoUvaEntity> dataHive =
-          await Hive.openBox<PreTareoProcesoUvaEntity>(
-              'pre_tareos_uva_sincronizar');
-      List<PreTareoProcesoUvaEntity> local = [];
-      dataHive.toMap().forEach((key, value) => local.add(value));
-      local.sort((a, b) => b.fechamod.compareTo(a.fechamod));
+          await Hive.openBox<PreTareoProcesoUvaEntity>(PACKING_HIVE_STRING);
+      List<PreTareoProcesoUvaEntity> local = dataHive.values.toList();
       await dataHive.close();
+      for (var value in local) {
+        Box<PreTareoProcesoUvaDetalleEntity> detailsHive =
+            await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(
+                '$PACKING_PERSONAL_INIT_HIVE_STRING${value.key}');
+        value.sizeDetails = detailsHive.length;
+        await detailsHive.close();
+      }
+      local.sort((a, b) => b.fechamod.compareTo(a.fechamod));
       return local;
     }
 
@@ -43,8 +49,7 @@ class PreTareoProcesoUvaRepositoryImplementation
       Map<String, dynamic> valores) async {
     if (PreferenciasUsuario().offLine) {
       Box<PreTareoProcesoUvaEntity> dataHive =
-          await Hive.openBox<PreTareoProcesoUvaEntity>(
-              'pre_tareos_uva_sincronizar');
+          await Hive.openBox<PreTareoProcesoUvaEntity>(PACKING_HIVE_STRING);
       List<PreTareoProcesoUvaEntity> local = [];
 
       dataHive.values.forEach((e) {
@@ -66,8 +71,8 @@ class PreTareoProcesoUvaRepositoryImplementation
 
   @override
   Future<int> create(PreTareoProcesoUvaEntity preTareaProcesoUvaEntity) async {
-    var tareas = await Hive.openBox<PreTareoProcesoUvaEntity>(
-        'pre_tareos_uva_sincronizar');
+    var tareas =
+        await Hive.openBox<PreTareoProcesoUvaEntity>(PACKING_HIVE_STRING);
     int id = await tareas.add(preTareaProcesoUvaEntity);
     preTareaProcesoUvaEntity.key = id;
     await tareas.put(id, preTareaProcesoUvaEntity);
@@ -79,8 +84,7 @@ class PreTareoProcesoUvaRepositoryImplementation
   @override
   Future<void> delete(int key) async {
     Box<PreTareoProcesoUvaEntity> tareas =
-        await Hive.openBox<PreTareoProcesoUvaEntity>(
-            'pre_tareos_uva_sincronizar');
+        await Hive.openBox<PreTareoProcesoUvaEntity>(PACKING_HIVE_STRING);
     await tareas.delete(key);
     await tareas.close();
 
@@ -95,8 +99,7 @@ class PreTareoProcesoUvaRepositoryImplementation
   Future<void> update(
       PreTareoProcesoUvaEntity preTareaProcesoUvaEntity, int id) async {
     Box<PreTareoProcesoUvaEntity> tareas =
-        await Hive.openBox<PreTareoProcesoUvaEntity>(
-            'pre_tareos_uva_sincronizar');
+        await Hive.openBox<PreTareoProcesoUvaEntity>(PACKING_HIVE_STRING);
     await tareas.put(id, preTareaProcesoUvaEntity);
 
     await tareas.close();
@@ -106,8 +109,7 @@ class PreTareoProcesoUvaRepositoryImplementation
   @override
   Future<PreTareoProcesoUvaEntity> migrar(int key) async {
     Box<PreTareoProcesoUvaEntity> tareas =
-        await Hive.openBox<PreTareoProcesoUvaEntity>(
-            'pre_tareos_uva_sincronizar');
+        await Hive.openBox<PreTareoProcesoUvaEntity>(PACKING_HIVE_STRING);
     PreTareoProcesoUvaEntity data = await tareas.get(key);
     if (data.detalles == null) data.detalles = [];
     await tareas.close();

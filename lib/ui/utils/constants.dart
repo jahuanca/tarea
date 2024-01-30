@@ -1,15 +1,19 @@
-import 'package:flutter_tareo/core/utils/numbers.dart';
-import 'package:honeywell_scanner/code_format.dart';
+const TURNOS_ARRAY = [
+  {
+    'name': 'Dia',
+    '_id': 'D',
+  },
+  {
+    'name': 'Noche',
+    '_id': 'N',
+  },
+];
 
-List<CodeFormat> _getCodeFormats() {
-  List<CodeFormat> codeFormats = [];
-  codeFormats.addAll(CodeFormatUtils.ALL_1D_FORMATS);
-  codeFormats.addAll(CodeFormatUtils.ALL_2D_FORMATS);
-  return codeFormats;
-}
-
-Map<String, dynamic> getPropertiesHoneyWell = {
-  ...CodeFormatUtils.getAsPropertiesComplement(_getCodeFormats()),
-  'DEC_CODABAR_START_STOP_TRANSMIT': BOOLEAN_TRUE_VALUE,
-  'DEC_EAN13_CHECK_DIGIT_TRANSMIT': BOOLEAN_TRUE_VALUE,
-};
+const EMPTY_ARRAY = [];
+const EMPTY_ARRAY_LENGTH = 0;
+const FIRST_INDEX_ARRAY_VALUE = 0;
+const EMPTY_STRING = '';
+const ELEMENT_NOT_FOUND = -1;
+const KEY_BOX_HIVE = 'keyBoxHive';
+const QUERY_MESA = 'mesa';
+const QUERY_LINEA = 'linea';

@@ -14,7 +14,7 @@ part 'pre_tarea_esparrago_varios_entity.g.dart';
 @HiveType(typeId: 21)
 class PreTareaEsparragoVariosEntity {
   PreTareaEsparragoVariosEntity({
-    this.itempretareaesparragosvarios,
+    this.itempretareaesparragovarios,
     this.fecha,
     this.horainicio,
     this.horafin,
@@ -40,12 +40,14 @@ class PreTareaEsparragoVariosEntity {
     this.imei,
     this.fechamod,
     this.idSQLite,
+    this.supervisor,
+    this.digitador,
   }) {
     estadoLocal = 'P';
   }
 
   @HiveField(0)
-  int itempretareaesparragosvarios;
+  int itempretareaesparragovarios;
   @HiveField(1)
   DateTime fecha;
   @HiveField(2)
@@ -122,6 +124,8 @@ class PreTareaEsparragoVariosEntity {
         DateFormat('hh:mm a').format(horainicio);
   }
 
+  get getId => this.itempretareaesparragovarios;
+
   Color get colorEstado {
     switch (estadoLocal) {
       case 'P':
@@ -141,10 +145,9 @@ class PreTareaEsparragoVariosEntity {
 
   factory PreTareaEsparragoVariosEntity.fromJson(Map<String, dynamic> json) =>
       PreTareaEsparragoVariosEntity(
-        itempretareaesparragosvarios:
-            json["itempretareaesparragosvarios"] == null
-                ? null
-                : json["itempretareaesparragosvarios"],
+        itempretareaesparragovarios: json["itempretareaesparragovarios"] == null
+            ? null
+            : json["itempretareaesparragovarios"],
         fecha: json["fecha"] == null ? null : DateTime.tryParse(json["fecha"]),
         fechamod: json["fechamod"] == null
             ? null
@@ -165,6 +168,12 @@ class PreTareaEsparragoVariosEntity {
             json["idcentrocosto"] == null ? null : json["idcentrocosto"],
         codigosupervisor:
             json["codigosupervisor"] == null ? null : json["codigosupervisor"],
+        supervisor: json["Supervisor"] == null
+            ? null
+            : PersonalEmpresaEntity.fromJson(json["Supervisor"]),
+        digitador: json["Digitador"] == null
+            ? null
+            : PersonalEmpresaEntity.fromJson(json["Digitador"]),
         codigodigitador:
             json["codigodigitador"] == null ? null : json["codigodigitador"],
         firmaSupervisor:
@@ -195,9 +204,9 @@ class PreTareaEsparragoVariosEntity {
       );
 
   Map<String, dynamic> toJson() => {
-        "itempretareaesparragosvarios": itempretareaesparragosvarios == null
+        "itempretareaesparragovarios": itempretareaesparragovarios == null
             ? null
-            : itempretareaesparragosvarios,
+            : itempretareaesparragovarios,
         "fecha": fecha == null
             ? null
             : "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
@@ -222,15 +231,17 @@ class PreTareaEsparragoVariosEntity {
         "firmasupervisor": firmaSupervisor == null ? null : firmaSupervisor,
         "diasiguiente": diasiguiente == null ? null : diasiguiente,
         "idusuario": idusuario == null ? null : idusuario,
+        "Supervisor": supervisor == null ? null : supervisor.toJson(),
+        "Digitador": digitador == null ? null : digitador.toJson(),
         "Personal_Pre_Tarea_Esparrago": detalles == null
             ? null
             : List<dynamic>.from(detalles.map((x) => x.toJson())),
       };
 
   Map<String, dynamic> toDB() => {
-        "itempretareaesparragosvarios": itempretareaesparragosvarios == null
+        "itempretareaesparragovarios": itempretareaesparragovarios == null
             ? null
-            : itempretareaesparragosvarios,
+            : itempretareaesparragovarios,
         "fecha": fecha == null
             ? null
             : "${fecha.year.toString().padLeft(4, '0')}-${fecha.month.toString().padLeft(2, '0')}-${fecha.day.toString().padLeft(2, '0')}",
@@ -250,6 +261,8 @@ class PreTareaEsparragoVariosEntity {
         "key": key == null ? null : key,
         "idtipotarea": idtipotarea == null ? null : idtipotarea,
         "diasiguiente": diasiguiente == null ? null : diasiguiente,
+        "Supervisor": supervisor == null ? null : supervisor.toJson(),
+        "Digitador": digitador == null ? null : digitador.toJson()
       };
 }
 

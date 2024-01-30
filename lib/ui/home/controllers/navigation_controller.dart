@@ -4,7 +4,6 @@ import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/data/repositories/storage_repository_implementation.dart';
 import 'package:flutter_tareo/di/login/login_binding.dart';
 import 'package:flutter_tareo/ui/home/utils/dynamics.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/login/pages/login_page.dart';

@@ -10,9 +10,9 @@ class AsignacionPersonalDataStoreImplementation
   Future<List<EsparragoAgrupaPersonalEntity>> getLineaMesas(
       BuscarLineaMesaEntity query) async {
     final http = AppHttpManager();
-
+    query;
     final res = await http.get(url: GET_LINEAMESA_URL, query: query.toJson());
-
+    //TODO: agregar resultype para errores
     return esparragoAgrupaPersonalEntityFromJson(res);
   }
 }

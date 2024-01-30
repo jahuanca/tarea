@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
-import 'package:flutter_tareo/core/utils/dimens.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/strings.dart';
+import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/pages/nueva_pesado/nueva_pesado_controller.dart';
+import 'package:flutter_tareo/ui/utils/constants.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
 import 'package:flutter_tareo/ui/widgets/date_picker_widget.dart';
@@ -25,7 +28,7 @@ class NuevaPesadoPage extends StatelessWidget {
             appBar: getAppBar(
                 controller.editando ? 'Editando Pesado' : 'Nuevo Pesado',
                 [],
-                true),
+                BOOLEAN_TRUE_VALUE),
             backgroundColor: secondColor,
             floatingActionButton: FloatingActionButton(
               onPressed: controller.goBack,
@@ -42,7 +45,7 @@ class NuevaPesadoPage extends StatelessWidget {
                           error: _.errorFecha,
                           onTap: () async {
                             _.fecha = await DatePickerWidget(
-                              onlyDate: true,
+                              onlyDate: BOOLEAN_TRUE_VALUE,
                               minDate:
                                   DateTime.now().subtract(Duration(days: 10)),
                               dateSelected: DateTime.now(),
@@ -53,7 +56,7 @@ class NuevaPesadoPage extends StatelessWidget {
                           textEditingController: TextEditingController(
                               text: formatoFecha(_.fecha)),
                           label: 'Fecha',
-                          enabled: false,
+                          enabled: BOOLEAN_FALSE_VALUE,
                           hintText: 'Fecha'),
                     ),
                     SizedBox(
@@ -74,7 +77,7 @@ class NuevaPesadoPage extends StatelessWidget {
                                 '_id': _.nuevaPreTarea.tipoTarea.idtipotarea,
                               },
                         onChanged: _.changeTipoTarea,
-                        items: controller.tiposTarea.length == 0
+                        items: controller.tiposTarea.length == ZERO_INT_VALUE
                             ? []
                             : controller.tiposTarea
                                 .map((e) => {
@@ -100,15 +103,16 @@ class NuevaPesadoPage extends StatelessWidget {
                                     _.nuevaPreTarea.centroCosto?.idcentrocosto,
                               },
                         onChanged: _.changeCentroCosto,
-                        items: controller.centrosCosto.length == 0
-                            ? []
-                            : controller.centrosCosto
-                                .map((e) => {
-                                      'name':
-                                          '${e.detallecentrocosto?.trim()} ${e.codigoempresa}',
-                                      '_id': e.idcentrocosto,
-                                    })
-                                .toList(),
+                        items:
+                            controller.centrosCosto.length == EMPTY_ARRAY_LENGTH
+                                ? []
+                                : controller.centrosCosto
+                                    .map((e) => {
+                                          'name':
+                                              '${e.detallecentrocosto?.trim()} ${e.codigoempresa}',
+                                          '_id': e.idcentrocosto,
+                                        })
+                                    .toList(),
                       ),
                     ),
                     GetBuilder<NuevaPesadoController>(
@@ -127,7 +131,7 @@ class NuevaPesadoPage extends StatelessWidget {
                                   '_id':
                                       _.nuevaPreTarea.supervisor.codigoempresa,
                                 },
-                          items: _.supervisors.length == 0
+                          items: _.supervisors.length == EMPTY_ARRAY_LENGTH
                               ? []
                               : _.supervisors
                                   .map((e) => {
@@ -141,7 +145,7 @@ class NuevaPesadoPage extends StatelessWidget {
                       id: 'digitadors',
                       builder: (_) => DropdownSearchWidget(
                           label: 'Digitador',
-                          labelText: 'name',
+                          labelText: NAME_LABEL,
                           labelValue: 'codigoempresa',
                           error: _.errorDigitador,
                           onChanged: _.changeDigitador,
@@ -153,7 +157,7 @@ class NuevaPesadoPage extends StatelessWidget {
                                   '_id':
                                       _.nuevaPreTarea.digitador.codigoempresa,
                                 },
-                          items: _.supervisors.length == 0
+                          items: _.supervisors.length == EMPTY_ARRAY_LENGTH
                               ? []
                               : _.supervisors
                                   .map((e) => {
@@ -167,25 +171,16 @@ class NuevaPesadoPage extends StatelessWidget {
                       id: 'turno',
                       builder: (_) => DropdownSearchWidget(
                           label: 'Turno',
-                          labelText: 'name',
-                          labelValue: '_id',
+                          labelText: NAME_LABEL,
+                          labelValue: ID_LABEL,
                           selectedItem: {
-                            'name': _.nuevaPreTarea.turnotareo == 'D'
+                            'name': _.nuevaPreTarea.turnotareo == TURNO_DIA_CHAR
                                 ? 'Dia'
                                 : 'Noche',
                             '_id': _.nuevaPreTarea.turnotareo
                           },
                           onChanged: _.changeTurno,
-                          items: [
-                            {
-                              'name': 'Dia',
-                              '_id': 'D',
-                            },
-                            {
-                              'name': 'Noche',
-                              '_id': 'N',
-                            },
-                          ]),
+                          items: TURNOS_ARRAY),
                     ),
                     GetBuilder<NuevaPesadoController>(
                       id: 'dia_siguiente',
@@ -195,17 +190,18 @@ class NuevaPesadoPage extends StatelessWidget {
                         label: 'Dia siguiente',
                         tituloTrue: 'Es dia siguiente',
                         tituloFalse: 'No es dia siguiente',
-                        value: _.nuevaPreTarea.diasiguiente ?? false,
+                        value:
+                            _.nuevaPreTarea.diasiguiente ?? BOOLEAN_FALSE_VALUE,
                       ),
                     ),
                     GetBuilder<NuevaPesadoController>(
                       id: 'hora_inicio',
                       builder: (_) => InputLabelWidget(
-                          enabled: false,
+                          enabled: BOOLEAN_FALSE_VALUE,
                           error: _.errorHoraInicio,
                           onTap: () async {
                             _.nuevaPreTarea.horainicio = await DatePickerWidget(
-                              onlyDate: true,
+                              onlyDate: BOOLEAN_TRUE_VALUE,
                               dateSelected: DateTime.now(),
                             ).selectTime(context, _.nuevaPreTarea.horainicio);
                             _.changeHoraInicio();
@@ -221,11 +217,11 @@ class NuevaPesadoPage extends StatelessWidget {
                     GetBuilder<NuevaPesadoController>(
                       id: 'hora_fin',
                       builder: (_) => InputLabelWidget(
-                          enabled: false,
+                          enabled: BOOLEAN_FALSE_VALUE,
                           error: _.errorHoraFin,
                           onTap: () async {
                             _.nuevaPreTarea.horafin = await DatePickerWidget(
-                              onlyDate: true,
+                              onlyDate: BOOLEAN_TRUE_VALUE,
                               //minDate: _.nuevaPreTarea?.turnotareo=='D' ?  _.nuevaPreTarea.horainicio : null,
                               minDate: null,
                               dateSelected:
@@ -253,7 +249,7 @@ class NuevaPesadoPage extends StatelessWidget {
                                       onTap: () async {
                                         _.nuevaPreTarea.pausainicio =
                                             await DatePickerWidget(
-                                          onlyDate: true,
+                                          onlyDate: BOOLEAN_TRUE_VALUE,
                                           dateSelected:
                                               _.nuevaPreTarea?.pausainicio ??
                                                   DateTime.now(),
@@ -285,7 +281,7 @@ class NuevaPesadoPage extends StatelessWidget {
                                 onTap: () async {
                                   _.nuevaPreTarea.pausafin =
                                       await DatePickerWidget(
-                                    onlyDate: true,
+                                    onlyDate: BOOLEAN_TRUE_VALUE,
                                     dateSelected: DateTime.now(),
                                     //minDate: _.nuevaPreTarea.horainicio,
                                     minDate: null,
@@ -299,15 +295,8 @@ class NuevaPesadoPage extends StatelessWidget {
                                 hintText: 'Fin de pausa')
                             : Container()),
                     SizedBox(
-                      height: size.height * 0.05,
-                    ),
-                    _agregarMultimedia(size, context),
-                    SizedBox(
-                      height: size.height * 0.05,
-                    ),
-                    SizedBox(
-                      height: size.height * 0.05,
-                    ),
+                      height: size.height * 0.15,
+                    )
                   ],
                 ),
               ),
@@ -322,75 +311,6 @@ class NuevaPesadoPage extends StatelessWidget {
                   )
                 : Container(),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _agregarMultimedia(Size size, BuildContext context) {
-    return Container(
-      height: size.height * 0.17,
-      decoration: BoxDecoration(
-          border: Border.all(
-            color: primaryColor,
-          ),
-          borderRadius: BorderRadius.circular(borderRadius),
-          color: primaryColor.withAlpha(50)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Flexible(child: Container(), flex: 1),
-          Flexible(
-              child: GetBuilder<NuevaPesadoController>(
-                id: 'personal',
-                builder: (_) => Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    '${_.nuevaPreTarea.detalles.length} personas',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w300,
-                    ),
-                  ),
-                ),
-              ),
-              flex: 2),
-          Flexible(child: Container(), flex: 1),
-          Flexible(
-            flex: 3,
-            child: Row(
-              children: [
-                Flexible(
-                  child: Container(),
-                  flex: 1,
-                ),
-                Flexible(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: Icon(Icons.search, size: 40),
-                    ),
-                    flex: 1),
-                Flexible(
-                  child: Container(),
-                  flex: 1,
-                ),
-                /* Flexible(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: IconButton(
-                        onPressed: controller.goAgregarPersona,
-                        icon: Icon(Icons.person_add, size: 40),
-                      ),
-                    ),
-                    flex: 1),
-                Flexible(
-                  child: Container(),
-                  flex: 1,
-                ), */
-              ],
-            ),
-          ),
-          Flexible(child: Container(), flex: 1),
         ],
       ),
     );

@@ -1,5 +1,4 @@
 import 'package:dropdown_below/dropdown_below.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/core/utils/dimens.dart';
@@ -131,7 +130,7 @@ class HomeAsistenciaPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              formatoFechaHora(_.asistencias[index].fecha),
+                              formatoFechaHora(_.asistencias[index].fechamod),
                               style: TextStyle(
                                   fontWeight: FontWeight.normal, fontSize: 14),
                             ),

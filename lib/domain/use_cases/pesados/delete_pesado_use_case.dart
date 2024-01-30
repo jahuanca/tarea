@@ -1,13 +1,15 @@
+import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
+import 'package:flutter_tareo/domain/esparrago/repositories/esparrago_pesado_repository.dart';
+import 'package:flutter_tareo/domain/utils/failure.dart';
+import 'package:flutter_tareo/domain/utils/result_type.dart';
 
-import 'package:flutter_tareo/domain/repositories/pre_tarea_esparrago_varios_repository.dart';
-
-class DeletePesadoUseCase{
-  final PreTareaEsparragoVariosRepository _repository;
+class DeletePesadoUseCase {
+  final EsparragoPesadoRepository _repository;
 
   DeletePesadoUseCase(this._repository);
 
-  Future<void> execute(int key) async{
-    return await _repository.delete(key);
+  Future<ResultType<PreTareaEsparragoVariosEntity, Failure>> execute(
+      PreTareaEsparragoVariosEntity detalle) async {
+    return await _repository.deletePesado(detalle);
   }
-
 }

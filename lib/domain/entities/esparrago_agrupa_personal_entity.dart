@@ -16,6 +16,7 @@ class EsparragoAgrupaPersonalEntity {
     this.idestado,
     this.estadoLocal,
     this.sizeDetails,
+    this.sizePersonalMesa,
   });
 
   @HiveField(0)
@@ -36,6 +37,7 @@ class EsparragoAgrupaPersonalEntity {
   int idestado;
   String estadoLocal;
   int sizeDetails;
+  int sizePersonalMesa;
 
   get getId => this.itemagruparpersonal;
 
@@ -49,6 +51,8 @@ class EsparragoAgrupaPersonalEntity {
         grupo: json["grupo"] == null ? null : json["grupo"],
         turno: json["turno"] == null ? null : json["turno"],
         sizeDetails: json["sizeDetails"] == null ? null : json["sizeDetails"],
+        sizePersonalMesa:
+            json["sizePersonalMesa"] == null ? null : json["sizePersonalMesa"],
         fechamod:
             json["fechamod"] == null ? null : DateTime.parse(json["fechamod"]),
         idusuario: json["idusuario"] == null ? null : json["idusuario"],
@@ -65,6 +69,7 @@ class EsparragoAgrupaPersonalEntity {
         "grupo": grupo == null ? null : grupo,
         "turno": turno == null ? null : turno,
         "sizeDetails": sizeDetails == null ? null : sizeDetails,
+        "sizePersonalMesa": sizePersonalMesa == null ? null : sizePersonalMesa,
         "fechamod": fechamod == null ? null : fechamod.toIso8601String(),
         "idusuario": idusuario == null ? null : idusuario,
         "idestado": idestado == null ? null : idestado,

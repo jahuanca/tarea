@@ -81,7 +81,7 @@ class SincronizarRepositoryImplementation extends SincronizarRepository {
       url: '/personal_empresa/count',
     );
     int count = int.parse(resCount);
-    int limit = 8000;
+    int limit = 6000;
     int times = (count / limit).ceil();
 
     List<PersonalEmpresaEntity> personal = [];

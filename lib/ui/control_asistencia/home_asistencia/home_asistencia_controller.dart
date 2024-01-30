@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/di/control_asistencia/listado_asistencia_registro_binding.dart';
@@ -27,7 +26,7 @@ class HomeAsistenciaController extends GetxController {
   List<int> seleccionados = [];
   List<AsistenciaFechaTurnoEntity> asistencias = [];
 
-  bool validando = false;
+  bool validando = BOOLEAN_FALSE_VALUE;
 
   final CreateAsistenciaUseCase _createAsistenciaUseCase;
   final GetAllAsistenciaUseCase _getAllAsistenciaUseCase;
@@ -76,7 +75,7 @@ class HomeAsistenciaController extends GetxController {
       validando = BOOLEAN_TRUE_VALUE;
       update([VALIDANDO_ID]);
       result.idusuario = PreferenciasUsuario().idUsuario;
-      result.setId = await _createAsistenciaUseCase.execute(result);
+      result.idasistenciaturno = await _createAsistenciaUseCase.execute(result);
       validando = BOOLEAN_FALSE_VALUE;
       update([VALIDANDO_ID]);
       asistencias.insert(ZERO_INT_VALUE, result);

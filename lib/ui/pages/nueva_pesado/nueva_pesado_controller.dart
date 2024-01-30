@@ -1,7 +1,9 @@
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
+import 'package:flutter_tareo/domain/entities/message_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
@@ -9,10 +11,15 @@ import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/tipo_tarea_entity.dart';
+import 'package:flutter_tareo/domain/use_cases/pesados/create_pesado_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_tipo_tareas_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
+import 'package:flutter_tareo/domain/utils/failure.dart';
+import 'package:flutter_tareo/domain/utils/result_type.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
+import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo_uva/listado_personas_pre_tareo_uva_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -26,6 +33,7 @@ class NuevaPesadoController extends GetxController {
       _getPersonalsEmpresaBySubdivisionUseCase;
   final GetCentroCostosUseCase _getCentroCostosUseCase;
   final GetTipoTareasUseCase _getTipoTareasUseCase;
+  final CreatePesadoUseCase _createPesadoUseCase;
 
   DateTime fecha = DateTime.now();
   String errorActividad,
@@ -43,8 +51,8 @@ class NuevaPesadoController extends GetxController {
 
   PreTareaEsparragoVariosEntity nuevaPreTarea;
 
-  bool validando = false;
-  bool editando = false;
+  bool validando = BOOLEAN_FALSE_VALUE;
+  bool editando = BOOLEAN_FALSE_VALUE;
 
   List<ActividadEntity> actividades = [];
   List<LaborEntity> labores = [];
@@ -56,6 +64,7 @@ class NuevaPesadoController extends GetxController {
   List<PersonalEmpresaEntity> supervisors = [];
 
   NuevaPesadoController(
+      this._createPesadoUseCase,
       this._getSubdivisonsUseCase,
       this._getPersonalsEmpresaBySubdivisionUseCase,
       this._getTipoTareasUseCase,
@@ -66,7 +75,7 @@ class NuevaPesadoController extends GetxController {
     super.onInit();
     if (Get.arguments != null) {
       if (Get.arguments['tarea'] != null) {
-        editando = true;
+        editando = BOOLEAN_TRUE_VALUE;
         nuevaPreTarea = Get.arguments['tarea'] as PreTareaEsparragoVariosEntity;
         fecha = nuevaPreTarea.fecha;
         if (nuevaPreTarea.detalles == null) nuevaPreTarea.detalles = [];
@@ -89,14 +98,14 @@ class NuevaPesadoController extends GetxController {
   @override
   void onReady() async {
     super.onReady();
-    validando = true;
+    validando = BOOLEAN_TRUE_VALUE;
     update(['validando']);
 
     await getTiposTarea();
     await getCentrosCosto();
     await getSupervisors(PreferenciasUsuario().idSede);
-    changeTurno(editando ? nuevaPreTarea.turnotareo : 'D');
-    validando = false;
+    changeTurno(editando ? nuevaPreTarea.turnotareo : TURNO_DIA_CHAR);
+    validando = BOOLEAN_FALSE_VALUE;
     update(['validando']);
 
     setEditValues();
@@ -105,18 +114,18 @@ class NuevaPesadoController extends GetxController {
   Future<void> getSupervisors(int idSubdivision) async {
     nuevaPreTarea.sede = (await _getSubdivisonsUseCase.execute())
         .firstWhere((e) => e.idsubdivision == idSubdivision);
-    validando = true;
+    validando = BOOLEAN_TRUE_VALUE;
     update(['validando']);
     supervisors =
         await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
-    if (supervisors.length > 0) {
-      nuevaPreTarea.supervisor = supervisors[0];
-      nuevaPreTarea.digitador = supervisors[0];
+    if (supervisors.length > ZERO_INT_VALUE) {
+      nuevaPreTarea.supervisor = supervisors.first;
+      nuevaPreTarea.digitador = supervisors.first;
       changeSupervisor(nuevaPreTarea.supervisor.codigoempresa);
       changeDigitador(nuevaPreTarea.digitador.codigoempresa);
     }
     update(['supervisors', 'digitadors']);
-    validando = false;
+    validando = BOOLEAN_FALSE_VALUE;
     update(['validando']);
   }
 
@@ -127,7 +136,7 @@ class NuevaPesadoController extends GetxController {
         nuevaPreTarea.centroCosto = centrosCosto.first;
       }
     }
-    changeCentroCosto(nuevaPreTarea.centroCosto.idcentrocosto.toString());
+    changeCentroCosto(nuevaPreTarea.centroCosto?.idcentrocosto.toString());
     update(['centro_costo']);
   }
 
@@ -144,7 +153,7 @@ class NuevaPesadoController extends GetxController {
 
   void changeTurno(String id) {
     nuevaPreTarea.turnotareo = id;
-    if (id == 'D') {
+    if (id == TURNO_DIA_CHAR) {
       nuevaPreTarea.pausainicio = null;
       nuevaPreTarea.pausafin = null;
       update(['inicio_pausa', 'fin_pausa']);
@@ -264,14 +273,23 @@ class NuevaPesadoController extends GetxController {
     update(['tipo_tarea']);
   }
 
-  void goBack() {
+  Future<void> goBack() async {
     String mensaje = validar();
     if (mensaje == null) {
       nuevaPreTarea.idusuario = PreferenciasUsuario().idUsuario;
       nuevaPreTarea.imei = PreferenciasUsuario().imei;
       nuevaPreTarea.estadoLocal = 'PC';
-
-      Get.back(result: nuevaPreTarea);
+      validando = BOOLEAN_TRUE_VALUE;
+      update([VALIDANDO_ID]);
+      PreTareaEsparragoVariosEntity result =
+          switchResult(await _createPesadoUseCase.execute(nuevaPreTarea));
+      validando = BOOLEAN_FALSE_VALUE;
+      update([VALIDANDO_ID]);
+      if (result != null) {
+        nuevaPreTarea.itempretareaesparragovarios =
+            result.itempretareaesparragovarios;
+        Get.back(result: nuevaPreTarea);
+      }
     } else {
       toast(type: TypeToast.ERROR, message: mensaje);
     }
@@ -310,7 +328,7 @@ class NuevaPesadoController extends GetxController {
     changeCentroCosto(nuevaPreTarea.idcentrocosto.toString());
     changeSupervisor(nuevaPreTarea.codigosupervisor.toString());
     changeHoraInicio();
-    changeDiaSiguiente(nuevaPreTarea.diasiguiente ?? false);
+    changeDiaSiguiente(nuevaPreTarea.diasiguiente ?? BOOLEAN_FALSE_VALUE);
     changeHoraFin();
 
     if (errorActividad != null) return errorActividad;
@@ -334,5 +352,17 @@ class NuevaPesadoController extends GetxController {
 
     //PUEDEN SER NULOS: inicioPausa y finPausa (00:00:00)
     return null;
+  }
+
+  dynamic switchResult(
+      ResultType<PreTareaEsparragoVariosEntity, Failure> result) {
+    if (result is Success) {
+      return result.data;
+    }
+    if (result is Failure) {
+      toast(
+          type: TypeToast.ERROR,
+          message: (result.data as MessageEntity).message);
+    }
   }
 }

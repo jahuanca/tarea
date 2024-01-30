@@ -120,7 +120,7 @@ class BuscarLineaMesaPage extends StatelessWidget {
                                   ? null
                                   : {
                                       NAME_LABEL:
-                                          '#${_.query.grupo} --> ${_.query.sizeDetails} personas.',
+                                          '#${_.query.grupo} --> ${_.query.sizePersonalMesa ?? 0} personas.',
                                       ID_LABEL: _.query.grupo,
                                     },
                               items: controller.mesas.length == 0
@@ -128,7 +128,7 @@ class BuscarLineaMesaPage extends StatelessWidget {
                                   : controller.mesas
                                       .map((e) => {
                                             NAME_LABEL:
-                                                '#${e.grupo} --> ${e.sizeDetails} personas.',
+                                                '#${e.grupo} --> ${e.sizePersonalMesa ?? 0} personas.',
                                             ID_LABEL: e.grupo,
                                           })
                                       .toList(),

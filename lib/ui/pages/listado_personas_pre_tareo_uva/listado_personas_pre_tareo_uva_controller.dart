@@ -2,7 +2,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_tareo/core/utils/numbers.dart';
-import 'package:flutter_tareo/core/utils/tarea.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
@@ -13,12 +12,14 @@ import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/cr
 import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/delete_uva_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/get_all_uva_detalles_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
+import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/pages/agregar_persona/agregar_persona_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
+import 'package:flutter_tareo/ui/utils/constants.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
 import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
 
@@ -76,13 +77,13 @@ class ListadoPersonasPreTareoUvaController extends GetxController
         personal = Get.arguments['personal'] as List<PersonalEmpresaEntity>;
         update(['personal']);
       } else {
-        validando = true;
-        update(['validando']);
+        validando = BOOLEAN_TRUE_VALUE;
+        update([VALIDANDO_ID]);
         personal = await _getPersonalsEmpresaBySubdivisionUseCase
             .execute(PreferenciasUsuario().idSede);
 
-        validando = false;
-        update(['validando']);
+        validando = BOOLEAN_FALSE_VALUE;
+        update([VALIDANDO_ID]);
       }
     }
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -137,45 +138,6 @@ class ListadoPersonasPreTareoUvaController extends GetxController
           .execute('uva_detalle_${otrasPreTareas[i].key}');
     }
     update(['personal_seleccionado']);
-    //setValues();
-  }
-
-  Future<void> setValues() async {
-    Stopwatch stopwatch = new Stopwatch();
-    stopwatch.start();
-
-    var tareas1 =
-        await Hive.openBox<PreTareoProcesoUvaDetalleEntity>('detalles');
-    await tareas1.deleteFromDisk();
-    PreTareoProcesoUvaEntity data =
-        new PreTareoProcesoUvaEntity.fromJson(TAREAJSON);
-    for (var i = 0; i < data.detalles.length; i++) {
-      var d = data.detalles[i];
-      if (preTarea.detalles == null) {
-        preTarea.detalles = [];
-      }
-      preTarea.detalles.add(d);
-      /* await _updatePreTareoProcesoUvaUseCase.execute(preTarea, preTarea.key); */
-
-      var tareas =
-          await Hive.openBox<PreTareoProcesoUvaDetalleEntity>('detalles');
-      int key = await tareas.add(d);
-      d.itempretareoprocesouvadetalle = key;
-      await tareas.put(key, d);
-      await tareas.close();
-
-      /* d.itempretareoprocesouvadetalle=key;
-      await tareas.put(key, d); */
-      if (i % 100 == 0) {
-        update(['seleccionados', 'personal_seleccionado']);
-        print(i);
-        print('Demora ' + (stopwatch.elapsedMilliseconds / 1000).toString());
-      }
-    }
-    stopwatch.stop();
-    print('Demora ' + (stopwatch.elapsedMilliseconds / 1000).toString());
-//    await tareas.close();
-    return;
   }
 
   Future<void> getLabores() async {
@@ -224,7 +186,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
 
   void seleccionar(int index) {
     int i = seleccionados.indexWhere((element) => element == index);
-    if (i == -1) {
+    if (i == ELEMENT_NOT_FOUND) {
       seleccionados.add(index);
     } else {
       seleccionados.removeAt(i);
@@ -306,7 +268,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
             });
         if (result != null) {
           int index = personalSeleccionado.indexWhere((e) => e.key == key);
-          if (index != -1) personalSeleccionado[index] = result;
+          if (index != ELEMENT_NOT_FOUND) personalSeleccionado[index] = result;
           update(['personal_seleccionado']);
         }
         break;
@@ -337,43 +299,46 @@ class ListadoPersonasPreTareoUvaController extends GetxController
 
   void goLectorCode() {
     FlutterBarcodeScanner.getBarcodeStreamReceiver(
-            "#ff6666", "Cancelar", false, ScanMode.DEFAULT)
+            "#ff6666", CANCEL_STRING, BOOLEAN_FALSE_VALUE, ScanMode.QR)
         .listen((barcode) async {
       await setCodeBar(barcode);
     });
   }
 
-  bool buscando = false;
+  bool buscando = BOOLEAN_FALSE_VALUE;
 
-  Future<void> setCodeBar(dynamic barcode, [bool byLector = false]) async {
-    if (barcode != null && barcode != '-1' && buscando == false) {
-      buscando = true;
+  Future<void> setCodeBar(dynamic barcode,
+      [bool byLector = BOOLEAN_FALSE_VALUE]) async {
+    if (barcode != null && barcode != '-1' && buscando == BOOLEAN_FALSE_VALUE) {
+      buscando = BOOLEAN_TRUE_VALUE;
       for (var element in otrasPreTareas) {
         int indexOtra = element.detalles.indexWhere(
             (e) => e.codigotk.toString().trim() == barcode.toString().trim());
-        if (indexOtra != -1) {
+        if (indexOtra != ELEMENT_NOT_FOUND) {
           byLector
               ? toast(
                   type: TypeToast.ERROR, message: 'Se encuentra en otra tarea')
-              : _showNotification(false, 'Se encuentra en otra tarea');
-          buscando = false;
+              : _showNotification(
+                  BOOLEAN_FALSE_VALUE, 'Se encuentra en otra tarea');
+          buscando = BOOLEAN_FALSE_VALUE;
           return;
         }
       }
 
       int indexEncontrado = personalSeleccionado
           .indexWhere((e) => e.codigotk.trim() == barcode.toString().trim());
-      if (indexEncontrado != -1) {
+      if (indexEncontrado != ELEMENT_NOT_FOUND) {
         byLector
             ? toast(
                 type: TypeToast.ERROR, message: 'Ya se encuentra registrado')
-            : await _showNotification(false, 'Ya se encuentra registrado');
-        buscando = false;
+            : await _showNotification(
+                BOOLEAN_FALSE_VALUE, 'Ya se encuentra registrado');
+        buscando = BOOLEAN_FALSE_VALUE;
         return;
       }
       List<String> valores = barcode.toString().split('_');
       int index = personal.indexWhere((e) => e.codigoempresa == valores[0]);
-      if (index != -1) {
+      if (index != ELEMENT_NOT_FOUND) {
         LaborEntity labor =
             labores?.firstWhere((e) => e.idlabor == int.parse(valores[1]));
 
@@ -402,15 +367,17 @@ class ListadoPersonasPreTareoUvaController extends GetxController
         update(['personal_seleccionado']);
         byLector
             ? toast(type: TypeToast.SUCCESS, message: 'Registrado con exito')
-            : await _showNotification(true, 'Registrado con exito');
-        buscando = false;
+            : await _showNotification(
+                BOOLEAN_TRUE_VALUE, 'Registrado con exito');
+        buscando = BOOLEAN_FALSE_VALUE;
         return;
       } else {
         byLector
             ? toast(
                 type: TypeToast.ERROR, message: 'No se encuentra en la lista')
-            : await _showNotification(false, 'No se encuentra en la lista');
-        buscando = false;
+            : await _showNotification(
+                BOOLEAN_FALSE_VALUE, 'No se encuentra en la lista');
+        buscando = BOOLEAN_FALSE_VALUE;
         return;
       }
     }

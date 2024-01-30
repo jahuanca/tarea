@@ -12,33 +12,33 @@ part 'personal_pre_tarea_esparrago_entity.g.dart';
 
 @HiveType(typeId: 35)
 class PersonalPreTareaEsparragoEntity {
-  PersonalPreTareaEsparragoEntity({
-    this.idSQLite,
-    this.itempersonalpretareaesparrago,
-    this.fecha,
-    this.hora,
-    this.idestado,
-    this.itempretareaesparragovarios,
-    this.codigotkcaja,
-    this.idlabor,
-    this.idcliente,
-    this.idvia,
-    this.correlativocaja,
-    this.codigotkmesa,
-    this.mesa,
-    this.linea,
-    this.correlativomesa,
-    this.idusuario,
-    this.fechamod,
-    this.key,
-    this.esperandoCierre,
-    this.cliente,
-    this.labor,
-    this.calibre,
-    this.viaEnvio,
-    this.idcalibre,
-    this.idSQLitePreTareaEsparrago,
-  });
+  PersonalPreTareaEsparragoEntity(
+      {this.idSQLite,
+      this.itempersonalpretareaesparrago,
+      this.fecha,
+      this.hora,
+      this.idestado,
+      this.itempretareaesparragovarios,
+      this.codigotkcaja,
+      this.idlabor,
+      this.idcliente,
+      this.idvia,
+      this.correlativocaja,
+      this.codigotkmesa,
+      this.mesa,
+      this.linea,
+      this.correlativomesa,
+      this.idusuario,
+      this.fechamod,
+      this.key,
+      this.esperandoCierre,
+      this.cliente,
+      this.labor,
+      this.calibre,
+      this.viaEnvio,
+      this.idcalibre,
+      this.idSQLitePreTareaEsparrago,
+      this.keyParent});
 
   @HiveField(0)
   int itempersonalpretareaesparrago;
@@ -90,6 +90,8 @@ class PersonalPreTareaEsparragoEntity {
   int idSQLite;
   @HiveField(24)
   int idSQLitePreTareaEsparrago;
+  @HiveField(25)
+  int keyParent;
 
   String keyString() {
     String f = '${fecha.day}/${fecha.month}/${fecha.year}';
@@ -120,6 +122,7 @@ class PersonalPreTareaEsparragoEntity {
         idcliente: json["idcliente"] == null ? null : json["idcliente"],
         idcalibre: json["idcalibre"] == null ? null : json["idcalibre"],
         idvia: json["idvia"] == null ? null : json["idvia"],
+        keyParent: json["keyParent"] == null ? null : json["keyParent"],
         correlativocaja:
             json["correlativocaja"] == null ? null : json["correlativocaja"],
         codigotkmesa:
@@ -158,6 +161,7 @@ class PersonalPreTareaEsparragoEntity {
             ? null
             : idSQLitePreTareaEsparrago,
         "esperandoCierre": esperandoCierre == null ? null : esperandoCierre,
+        "keyParent": keyParent == null ? null : keyParent,
         "itempretareaesparragovarios": itempretareaesparragovarios == null
             ? null
             : itempretareaesparragovarios,

@@ -55,14 +55,16 @@ void toast(
     {@required TypeToast type,
     String title,
     @required String message,
-    int duration = 800}) {
+    int duration}) {
   Get.snackbar(
     title ?? typesToast[type].title,
     message,
-    instantInit: false,
+    //instantInit: BOOLEAN_FALSE_VALUE,
     snackPosition: typesToast[type].snackPosition,
     backgroundColor: typesToast[type].backgroundColor,
     colorText: typesToast[type].colorText,
-    duration: Duration(milliseconds: duration),
+    duration: (duration != null)
+        ? Duration(milliseconds: duration)
+        : typesToast[type].duration,
   );
 }

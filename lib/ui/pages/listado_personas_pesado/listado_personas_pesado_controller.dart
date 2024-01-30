@@ -353,7 +353,7 @@ class ListadoPersonasPesadoController extends GetxController
                 idusuario: PreferenciasUsuario().idUsuario,
                 itemtipotk: esCaja ? 1 : 2,
                 itempretareaesparragovarios:
-                    preTarea.itempretareaesparragosvarios);
+                    preTarea.itempretareaesparragovarios);
         update(['personal_seleccionado']);
 
         /* esCaja

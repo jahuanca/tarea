@@ -1,14 +1,16 @@
 import 'package:dropdown_below/dropdown_below.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/core/utils/dimens.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/pages/pre_tareos_uva/pre_tareos_uva_controller.dart';
+import 'package:flutter_tareo/ui/utils/constants.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
 
 class PreTareosUvaPage extends StatelessWidget {
-  final PreTareosUvaController controller = Get.find<PreTareosUvaController>();
+  final PreTareosUvaController controller = PreTareosUvaController(Get.find(),
+      Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find());
 
   @override
   Widget build(BuildContext context) {
@@ -16,15 +18,16 @@ class PreTareosUvaPage extends StatelessWidget {
 
     return GetBuilder<PreTareosUvaController>(
       init: controller,
+      id: ALL_PAGE_ID,
       builder: (_) => Stack(
         children: [
           Scaffold(
             backgroundColor: secondColor,
             body: GetBuilder<PreTareosUvaController>(
-              id: 'seleccionado',
+              id: EVENT_CHOOSE_ELEMENT_ID,
               builder: (_) => Column(
                 children: [
-                  if (_.seleccionados.length > 0)
+                  if (_.seleccionados.length > EMPTY_ARRAY_LENGTH)
                     Expanded(
                       flex: 1,
                       child: AnimatedContainer(
@@ -34,9 +37,9 @@ class PreTareosUvaPage extends StatelessWidget {
                   Expanded(
                     flex: 8,
                     child: RefreshIndicator(
-                      onRefresh: _.getTareas,
+                      onRefresh: () async => _.getTareas(),
                       child: GetBuilder<PreTareosUvaController>(
-                        id: 'tareas',
+                        id: ALL_LIST_ID,
                         builder: (_) => _.preTareosUva.isEmpty
                             ? EmptyDataWidget(
                                 titulo: 'No existen actividades.',
@@ -60,7 +63,7 @@ class PreTareosUvaPage extends StatelessWidget {
             ),
           ),
           GetBuilder<PreTareosUvaController>(
-            id: 'validando',
+            id: VALIDANDO_ID,
             builder: (_) => _.validando
                 ? Container(
                     color: Colors.black45,
@@ -75,14 +78,13 @@ class PreTareosUvaPage extends StatelessWidget {
 
   Widget itemActividad(Size size, BuildContext context, int index) {
     final items = [
-      /* {'key': 1, 'value': 'Seleccionar'}, */
       {'key': 1, 'value': 'Sincronizar'},
       {'key': 3, 'value': 'Eliminar'},
       {'key': 4, 'value': 'Exportar a EXCEL'},
     ];
 
     return GetBuilder<PreTareosUvaController>(
-      id: 'seleccionado',
+      id: '$ELEMENT_OF_LIST_ID${controller.preTareosUva[index].key}',
       builder: (_) => GestureDetector(
         onLongPress: () => _.seleccionar(index),
         child: Container(
@@ -138,7 +140,7 @@ class PreTareosUvaPage extends StatelessWidget {
                             alignment: Alignment.centerLeft,
                             child: Text(
                               _.preTareosUva[index]?.cultivo?.detallecultivo ??
-                                  '',
+                                  EMPTY_STRING,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
                               ),
@@ -175,8 +177,8 @@ class PreTareosUvaPage extends StatelessWidget {
                                               value: e['key'],
                                               child: Text(e['value'])))
                                           .toList(),
-                                  onChanged: (value) async =>
-                                      _.onChangedMenu(value, index)),
+                                  onChanged: (value) async => _.onChangedMenu(
+                                      value, _.preTareosUva[index].key)),
                             ),
                             flex: 5),
                         Flexible(child: Container(), flex: 1),
@@ -190,22 +192,12 @@ class PreTareosUvaPage extends StatelessWidget {
                     child: Row(
                       children: [
                         Flexible(child: Container(), flex: 1),
-                        /* Flexible(
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                                _.preTareosUva[index]?.presentacion?.descripcion ??
-                                    ''),
-                          ),
-                          flex: 10,
-                        ),
-                        Flexible(child: Container(), flex: 1), */
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(_.preTareosUva[index].centroCosto
                                     ?.detallecentrocosto ??
-                                ''),
+                                EMPTY_STRING),
                           ),
                           flex: 20,
                         ),
@@ -229,7 +221,8 @@ class PreTareosUvaPage extends StatelessWidget {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
                                     child: Text(
-                                        (_.preTareosUva[index].sizeDetails ?? 0)
+                                        (_.preTareosUva[index].sizeDetails ??
+                                                EMPTY_ARRAY_LENGTH)
                                             .toString())),
                                 Icon(
                                   Icons.people,
@@ -246,7 +239,7 @@ class PreTareosUvaPage extends StatelessWidget {
                             alignment: Alignment.centerLeft,
                             child: Text(_.preTareosUva[index].sede
                                     ?.detallesubdivision ??
-                                ''),
+                                EMPTY_STRING),
                           ),
                           flex: 10,
                         ),
@@ -271,7 +264,8 @@ class PreTareosUvaPage extends StatelessWidget {
                                     child: CircleAvatar(
                                       backgroundColor: infoColor,
                                       child: IconButton(
-                                          onPressed: () => _.goMigrar(index),
+                                          onPressed: () => _.goMigrar(
+                                              _.preTareosUva[index].key),
                                           icon: Icon(
                                             Icons.sync,
                                             color: Colors.white,
@@ -302,7 +296,8 @@ class PreTareosUvaPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: dangerColor,
                                     child: IconButton(
-                                      onPressed: () => _.goEliminar(index),
+                                      onPressed: () => _.goEliminar(
+                                          _.preTareosUva[index].key),
                                       icon: Icon(Icons.delete),
                                       color: Colors.white,
                                     ),
@@ -320,8 +315,8 @@ class PreTareosUvaPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: infoColor,
                                     child: IconButton(
-                                        onPressed: () =>
-                                            _.goListadoPersonas(index),
+                                        onPressed: () => _.goListadoPersonas(
+                                            _.preTareosUva[index].key),
                                         icon: Icon(
                                           Icons.search,
                                           color: Colors.white,
@@ -337,7 +332,8 @@ class PreTareosUvaPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: successColor,
                                     child: IconButton(
-                                      onPressed: () => _.goAprobar(index),
+                                      onPressed: () => _
+                                          .goAprobar(_.preTareosUva[index].key),
                                       icon: Icon(Icons.check_rounded),
                                       color: Colors.white,
                                     ),
@@ -354,7 +350,9 @@ class PreTareosUvaPage extends StatelessWidget {
                                     child: CircleAvatar(
                                       backgroundColor: alertColor,
                                       child: IconButton(
-                                        onPressed: () => _.goEditar(index),
+                                        onPressed: () => _.goEditar(
+                                          _.preTareosUva[index].key,
+                                        ),
                                         icon: Icon(Icons.edit),
                                         color: Colors.white,
                                       ),
@@ -388,7 +386,7 @@ class PreTareosUvaPage extends StatelessWidget {
     ];
 
     return GetBuilder<PreTareosUvaController>(
-      id: 'seleccionado',
+      id: EVENT_CHOOSE_ELEMENT_ID,
       builder: (_) => Container(
         decoration: BoxDecoration(color: Colors.white, border: Border.all()),
         child: Row(

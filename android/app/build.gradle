@@ -32,7 +32,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -52,8 +52,8 @@ android {
         applicationId "com.example.flutter_tareo"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 38
-        versionName '3.1.1'
+        versionCode 41
+        versionName '3.2.1'
     }
 
     signingConfigs {

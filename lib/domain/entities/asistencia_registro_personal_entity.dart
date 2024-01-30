@@ -28,6 +28,7 @@ class AsistenciaRegistroPersonalEntity {
     this.key,
     this.personal,
     this.idasistenciaturno,
+    this.nrodocumento,
   });
 
   @HiveField(0)
@@ -64,6 +65,8 @@ class AsistenciaRegistroPersonalEntity {
   PersonalEmpresaEntity personal;
   @HiveField(16)
   int idasistenciaturno;
+  @HiveField(17)
+  String nrodocumento;
 
   Color get colorEstado {
     switch (estadoLocal) {
@@ -125,6 +128,8 @@ class AsistenciaRegistroPersonalEntity {
             json["fechamod"] == null ? null : DateTime.parse(json["fechamod"]),
         estadoLocal: json["estado"] == null ? null : json["estado"],
         key: json["key"] == null ? null : json["key"],
+        nrodocumento:
+            json["nrodocumento"] == null ? null : json["nrodocumento"],
         personal: json["personal"] == null
             ? null
             : PersonalEmpresaEntity.fromJson(json["personal"]),
@@ -148,6 +153,7 @@ class AsistenciaRegistroPersonalEntity {
         "idubicacionsalida":
             idubicacionsalida == null ? null : idubicacionsalida,
         "idturno": idturno == null ? null : idturno,
+        "nrodocumento": nrodocumento == null ? null : nrodocumento,
         "fechaturno": fechaturno == null ? null : fechaturno.toIso8601String(),
         "idusuario": idusuario == null ? null : idusuario,
         "fechamod": fechamod == null ? null : fechamod.toIso8601String(),

@@ -17,3 +17,9 @@ const String CULTIVOS_HIVE_STRING = 'cultivo_${PROJECT_ID}_sincronizar';
 const String USUARIO_HIVE_STRING = 'usuario_${PROJECT_ID}_sincronizar';
 const String CENTRO_COSTOS_HIVE_STRING =
     'centro_costos_${PROJECT_ID}_sincronizar';
+
+const String PERSONAL_PESADO_INIT_HIVE_STRING =
+    'personal_pesado_${PROJECT_ID}_sincronizar_';
+
+const String PACKING_HIVE_STRING = 'pre_tareos_uva_sincronizar';
+const String PACKING_PERSONAL_INIT_HIVE_STRING = 'uva_detalle_';

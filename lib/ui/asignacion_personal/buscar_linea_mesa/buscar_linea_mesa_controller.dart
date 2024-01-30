@@ -89,7 +89,7 @@ class BuscarLineaMesaController extends GetxController {
     if (errorMesa == null && index != -1) {
       print('Mesa #${id}:  ${mesas[index].itemagruparpersonal}');
       query.grupo = mesas[index].grupo;
-      query.sizeDetails = mesas[index].sizeDetails;
+      query.sizePersonalMesa = mesas[index].sizePersonalMesa;
       asignacionSelected = mesas[index];
     } else {
       query.grupo = null;

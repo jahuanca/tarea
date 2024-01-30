@@ -2,7 +2,6 @@ import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/core/utils/styles.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class InputLoginWidget extends StatelessWidget {

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/ui/pages/herramientas/herramientas_controller.dart';

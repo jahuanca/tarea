@@ -1,6 +1,5 @@
 import 'package:flutter_tareo/data/repositories/current_time_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/esparrago_agrupa_personal_repository_implementation.dart';
-import 'package:flutter_tareo/data/repositories/estado_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/labores_cultivo_packing_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/pre_tareo_proceso_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/tipo_tarea_repository_implementation.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_tareo/data/repositories/via_envio_repository_implementat
 import 'package:flutter_tareo/data/sincronizar/repositories/sincronizar_repository_implementation.dart';
 import 'package:flutter_tareo/domain/repositories/current_time_repository.dart';
 import 'package:flutter_tareo/domain/repositories/esparrago_agrupa_personal_repository.dart';
-import 'package:flutter_tareo/domain/repositories/estado_repository.dart';
 import 'package:flutter_tareo/domain/repositories/labores_cultivo_packing_repository.dart';
 import 'package:flutter_tareo/domain/repositories/pre_tareo_proceso_repository.dart';
 import 'package:flutter_tareo/domain/repositories/tipo_tarea_repository.dart';
@@ -28,7 +26,6 @@ import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_ubicacion
 import 'package:flutter_tareo/domain/sincronizar/use_cases/sincronizar_usuarios_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_current_time_world_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_esparrago_agrupa_personal_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/sincronizar/get_estados_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_labores_cultivo_packing_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_pre_tareo_procesos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_tipo_tareas_use_case.dart';
