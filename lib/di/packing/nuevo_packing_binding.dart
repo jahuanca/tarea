@@ -1,4 +1,3 @@
-
 import 'package:flutter_tareo/data/repositories/centro_costo_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/cultivo_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/personal_empresa_repository_implementation.dart';
@@ -11,10 +10,10 @@ import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
-import 'package:flutter_tareo/ui/pages/nueva_pre_tarea_uva/nueva_pre_tarea_uva_controller.dart';
+import 'package:flutter_tareo/ui/packing/nuevo_packing/nuevo_packing_controller.dart';
 import 'package:get/get.dart';
 
-class NuevaPreTareaUvaBinding extends Bindings {
+class NuevoPackingBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut<SubdivisionRepository>(
@@ -33,7 +32,7 @@ class NuevaPreTareaUvaBinding extends Bindings {
     Get.lazyReplace<GetCentroCostosUseCase>(
         () => GetCentroCostosUseCase(Get.find()));
 
-    Get.lazyPut<NuevaPreTareaUvaController>(() => NuevaPreTareaUvaController(
+    Get.lazyPut<NuevoPackingController>(() => NuevoPackingController(
           Get.find(),
           Get.find(),
           Get.find(),

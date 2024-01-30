@@ -76,9 +76,7 @@ class PesadosPage extends StatelessWidget {
 
   Widget itemActividad(Size size, BuildContext context, int index) {
     final items = [
-      /* {'key': 1, 'value': 'Seleccionar'}, */
       {'key': 1, 'value': 'Sincronizar'},
-      /* {'key': 2, 'value': 'Copiar tarea'}, */
       {'key': 3, 'value': 'Eliminar'},
       {'key': 4, 'value': 'Exportar a EXCEL'},
     ];

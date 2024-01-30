@@ -10,9 +10,9 @@ import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_grupo_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';
+import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_detalle_entity.dart';
+import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:flutter_tareo/domain/repositories/export_data_repository.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/listas.dart';

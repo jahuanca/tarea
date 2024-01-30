@@ -4,17 +4,16 @@ import 'dart:io';
 import 'package:flutter_tareo/core/utils/config.dart';
 import 'package:flutter_tareo/core/utils/strings/hiveDB.dart';
 import 'package:flutter_tareo/data/utils/app_http_manager.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
-import 'package:flutter_tareo/domain/repositories/pre_tareo_proceso_uva_repository.dart';
+import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_detalle_entity.dart';
+import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_entity.dart';
+import 'package:flutter_tareo/domain/packing/repositories/packing_repository.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:hive/hive.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
-class PreTareoProcesoUvaRepositoryImplementation
-    extends PreTareoProcesoUvaRepository {
+class PreTareoProcesoUvaRepositoryImplementation extends PackingRepository {
   final urlModule = '/pre_tareo_proceso_uva';
 
   @override

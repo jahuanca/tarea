@@ -44,7 +44,7 @@ class NavigationController extends GetxController {
         break;
 
       case titles.packing:
-        actions.add(IconButton(onPressed: () {}, icon: Icon(Icons.search)));
+        actions.clear();
         break;
 
       case titles.esparrago:

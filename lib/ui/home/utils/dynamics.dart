@@ -3,15 +3,15 @@ import 'package:flutter_tareo/di/asignacion_personal/buscar_linea_mesa_binding.d
 import 'package:flutter_tareo/di/control_asistencia/asistencias_binding.dart';
 import 'package:flutter_tareo/di/esparrago_varios/esparragos_binding.dart';
 import 'package:flutter_tareo/di/home/home_binding.dart';
-import 'package:flutter_tareo/di/pre_tareos_uva_binding.dart';
+import 'package:flutter_tareo/di/packing/packing_binding.dart';
 import 'package:flutter_tareo/di/tareas_binding.dart';
 import 'package:flutter_tareo/ui/asignacion_personal/buscar_linea_mesa/buscar_linea_mesa_page.dart';
 import 'package:flutter_tareo/ui/control_asistencia/home_asistencia/home_asistencia_page.dart';
 import 'package:flutter_tareo/ui/esparrago_varios/esparragos/esparragos_page.dart';
 import 'package:flutter_tareo/ui/home/pages/home_page.dart';
 import 'package:flutter_tareo/ui/home/utils/navigation.dart';
+import 'package:flutter_tareo/ui/packing/home_packing/home_packing_page.dart';
 import 'package:flutter_tareo/ui/pages/herramientas/herramientas_page.dart';
-import 'package:flutter_tareo/ui/pages/pre_tareos_uva/pre_tareos_uva_page.dart';
 import 'package:flutter_tareo/ui/pages/tareas/tareas_page.dart';
 
 enum titles {
@@ -48,8 +48,8 @@ Map<titles, NavigationItem> NAVIGATIONS = {
     icon: 'assets/images/uva_icon.png',
     title: 'Packing',
     value: 5,
-    dependencies: PreTareosUvaBinding().dependencies,
-    widget: PreTareosUvaPage(),
+    dependencies: PackingBinding().dependencies,
+    widget: HomePackingPage(),
   ),
   titles.esparrago: NavigationItem(
     icon: 'assets/images/arandano_icon.png',

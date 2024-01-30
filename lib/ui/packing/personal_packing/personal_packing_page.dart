@@ -2,21 +2,22 @@ import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/core/utils/dimens.dart';
-import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo_uva/listado_personas_pre_tareo_uva_controller.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
+import 'package:flutter_tareo/ui/packing/personal_packing/personal_packing_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
 
-class ListadoPersonasPreTareoUvaPage extends StatelessWidget {
-  final ListadoPersonasPreTareoUvaController controller =
-      Get.find<ListadoPersonasPreTareoUvaController>();
+class PersonalPackingPage extends StatelessWidget {
+  final PersonalPackingController controller =
+      Get.find<PersonalPackingController>();
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
-    return GetBuilder<ListadoPersonasPreTareoUvaController>(
+    return GetBuilder<PersonalPackingController>(
       init: controller,
       id: 'personal_seleccionado',
       builder: (_) => WillPopScope(
@@ -29,13 +30,12 @@ class ListadoPersonasPreTareoUvaPage extends StatelessWidget {
                   [
                     IconButton(
                         onPressed: _.goLectorCode, icon: Icon(Icons.qr_code)),
-                    IconButton(onPressed: () {}, icon: Icon(Icons.search)),
                   ],
-                  true),
+                  BOOLEAN_TRUE_VALUE),
               backgroundColor: secondColor,
               body: RefreshIndicator(
                 onRefresh: () async => _.update(['listado']),
-                child: GetBuilder<ListadoPersonasPreTareoUvaController>(
+                child: GetBuilder<PersonalPackingController>(
                   id: 'seleccionado',
                   builder: (_) => Column(
                     children: [
@@ -48,7 +48,7 @@ class ListadoPersonasPreTareoUvaPage extends StatelessWidget {
                         ),
                       Flexible(
                         flex: 8,
-                        child: GetBuilder<ListadoPersonasPreTareoUvaController>(
+                        child: GetBuilder<PersonalPackingController>(
                           id: 'listado',
                           builder: (_) => _.personalSeleccionado.isEmpty
                               ? EmptyDataWidget(
@@ -73,7 +73,7 @@ class ListadoPersonasPreTareoUvaPage extends StatelessWidget {
                     icon: Icon(Icons.add)),
               ), */
             ),
-            GetBuilder<ListadoPersonasPreTareoUvaController>(
+            GetBuilder<PersonalPackingController>(
               id: 'validando',
               builder: (_) => _.validando
                   ? Container(
@@ -94,7 +94,7 @@ class ListadoPersonasPreTareoUvaPage extends StatelessWidget {
       {'key': 2, 'value': 'Eliminar'},
     ];
 
-    return GetBuilder<ListadoPersonasPreTareoUvaController>(
+    return GetBuilder<PersonalPackingController>(
         id: 'seleccionado',
         builder: (_) => GestureDetector(
               onLongPress: _.seleccionados.length > 0
@@ -280,7 +280,7 @@ class ListadoPersonasPreTareoUvaPage extends StatelessWidget {
       {'key': 3, 'value': 'Actualizar datos'},
     ];
 
-    return GetBuilder<ListadoPersonasPreTareoUvaController>(
+    return GetBuilder<PersonalPackingController>(
       id: 'seleccionado',
       builder: (_) => Container(
         decoration: BoxDecoration(color: Colors.white, border: Border.all()),

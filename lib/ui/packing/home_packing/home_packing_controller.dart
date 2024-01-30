@@ -1,20 +1,20 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/numbers.dart';
-import 'package:flutter_tareo/di/listado_personas_pre_tareo_uva_binding.dart';
-import 'package:flutter_tareo/di/nueva_pre_tarea_uva_binding.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
+import 'package:flutter_tareo/di/personal_packing_binding.dart';
+import 'package:flutter_tareo/di/packing/nuevo_packing_binding.dart';
+import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_entity.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/create_packing_use_case.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/delete_packing_use_case.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/get_all_packing_use_case.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/migrar_all_packing_use_case.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/update_packing_use_case.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/upload_file_of_packing_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_packing_to_excel_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/create_pre_tareo_proceso_uva_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/delete_pre_tareo_proceso_uva_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/get_all_pre_tareo_proceso_uva_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/migrar_all_pre_tareo_uva_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/update_pre_tareo_proceso_uva_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/upload_file_of_pre_tareo_uva_use_case.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/strings.dart';
-import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo_uva/listado_personas_pre_tareo_uva_page.dart';
-import 'package:flutter_tareo/ui/pages/nueva_pre_tarea_uva/nueva_pre_tarea_uva_page.dart';
+import 'package:flutter_tareo/ui/packing/nuevo_packing/nuevo_packing_page.dart';
+import 'package:flutter_tareo/ui/packing/personal_packing/personal_packing_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/constants.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -22,26 +22,26 @@ import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
 import 'package:image_editor_pro/image_editor_pro.dart';
 
-class PreTareosUvaController extends GetxController {
-  final CreatePreTareoProcesoUvaUseCase _createPreTareoProcesoUvaUseCase;
-  final GetAllPreTareoProcesoUvaUseCase _getAllPreTareoProcesoUvaUseCase;
-  final UpdatePreTareoProcesoUvaUseCase _updatePreTareoProcesoUvaUseCase;
-  final DeletePreTareoProcesoUvaUseCase _deletePreTareoProcesoUvaUseCase;
-  final MigrarAllPreTareoUvaUseCase _migrarAllPreTareoUvaUseCase;
-  final UploadFileOfPreTareoUvaUseCase _uploadFileOfPreTareoUvaUseCase;
+class HomePackingController extends GetxController {
+  final CreatePackingUseCase _createPackingUseCase;
+  final GetAllPackingUseCase _getAllPackingUseCase;
+  final UpdatePackingUseCase _updatePackingUseCase;
+  final DeletePackingUseCase _deletePackingUseCase;
+  final MigrarAllPackingUseCase _migrarAllPackingUseCase;
+  final UploadFileOfPackingUseCase _uploadFileOfPackingUseCase;
   final ExportPackingToExcelUseCase _exportPackingToExcelUseCase;
 
   bool validando = BOOLEAN_FALSE_VALUE;
   List<int> seleccionados = [];
   List<PreTareoProcesoUvaEntity> preTareosUva = [];
 
-  PreTareosUvaController(
-    this._createPreTareoProcesoUvaUseCase,
-    this._getAllPreTareoProcesoUvaUseCase,
-    this._updatePreTareoProcesoUvaUseCase,
-    this._deletePreTareoProcesoUvaUseCase,
-    this._migrarAllPreTareoUvaUseCase,
-    this._uploadFileOfPreTareoUvaUseCase,
+  HomePackingController(
+    this._createPackingUseCase,
+    this._getAllPackingUseCase,
+    this._updatePackingUseCase,
+    this._deletePackingUseCase,
+    this._migrarAllPackingUseCase,
+    this._uploadFileOfPackingUseCase,
     this._exportPackingToExcelUseCase,
   );
 
@@ -58,7 +58,7 @@ class PreTareosUvaController extends GetxController {
 
   Future<void> getTareas() async {
     preTareosUva.clear();
-    preTareosUva.addAll(await _getAllPreTareoProcesoUvaUseCase.execute());
+    preTareosUva.addAll(await _getAllPackingUseCase.execute());
     update([ALL_PAGE_ID]);
   }
 
@@ -135,7 +135,7 @@ class PreTareosUvaController extends GetxController {
 
         preTareosUva[index].pathUrl = _image.path;
         preTareosUva[index].estadoLocal = 'A';
-        await _updatePreTareoProcesoUvaUseCase.execute(
+        await _updatePackingUseCase.execute(
             preTareosUva[index], preTareosUva[index].key);
         update(['$ELEMENT_OF_LIST_ID${preTareosUva[index].key}']);
       }
@@ -183,18 +183,18 @@ class PreTareosUvaController extends GetxController {
     validando = BOOLEAN_TRUE_VALUE;
     update([VALIDANDO_ID]);
     PreTareoProcesoUvaEntity tareaMigrada =
-        await _migrarAllPreTareoUvaUseCase.execute(preTareosUva[index].key);
+        await _migrarAllPackingUseCase.execute(preTareosUva[index].key);
     if (tareaMigrada != null) {
       toast(type: TypeToast.SUCCESS, message: 'Tarea migrada con exito');
       preTareosUva[index].estadoLocal = 'M';
       preTareosUva[index].itempretareaprocesouva =
           tareaMigrada.itempretareaprocesouva;
-      await _updatePreTareoProcesoUvaUseCase.execute(
+      await _updatePackingUseCase.execute(
           preTareosUva[index], preTareosUva[index].key);
-      tareaMigrada = await _uploadFileOfPreTareoUvaUseCase.execute(
+      tareaMigrada = await _uploadFileOfPackingUseCase.execute(
           preTareosUva[index], File(preTareosUva[index].pathUrl));
       preTareosUva[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
-      await _updatePreTareoProcesoUvaUseCase.execute(
+      await _updatePackingUseCase.execute(
           preTareosUva[index], preTareosUva[index].key);
     }
     validando = BOOLEAN_FALSE_VALUE;
@@ -211,9 +211,9 @@ class PreTareosUvaController extends GetxController {
     if (indexElement != ELEMENT_NOT_FOUND) {
       otras.addAll(preTareosUva);
       otras.removeAt(indexElement);
-      ListadoPersonasPreTareoUvaBinding().dependencies();
+      PersonalPackingBinding().dependencies();
       int resultado =
-          await Get.to<int>(() => ListadoPersonasPreTareoUvaPage(), arguments: {
+          await Get.to<int>(() => PersonalPackingPage(), arguments: {
         'otras': otras,
         'tarea': preTareosUva[indexElement],
         'index': indexElement,
@@ -229,8 +229,7 @@ class PreTareosUvaController extends GetxController {
   Future<void> _delete(int key) async {
     int indexElement = preTareosUva.indexWhere((e) => e.key == key);
     if (indexElement != ELEMENT_NOT_FOUND) {
-      await _deletePreTareoProcesoUvaUseCase
-          .execute(preTareosUva[indexElement].key);
+      await _deletePackingUseCase.execute(preTareosUva[indexElement].key);
       preTareosUva.removeAt(indexElement);
       update([ALL_LIST_ID]);
     } else {
@@ -251,11 +250,11 @@ class PreTareosUvaController extends GetxController {
   }
 
   Future<void> goNuevaPreTarea() async {
-    NuevaPreTareaUvaBinding().dependencies();
+    NuevoPackingBinding().dependencies();
     final result =
-        await Get.to<PreTareoProcesoUvaEntity>(() => NuevaPreTareaUvaPage());
+        await Get.to<PreTareoProcesoUvaEntity>(() => NuevoPackingPage());
     if (result != null) {
-      int id = await _createPreTareoProcesoUvaUseCase.execute(result);
+      int id = await _createPackingUseCase.execute(result);
       result.key = id;
       preTareosUva.insert(FIRST_INDEX_ARRAY_VALUE, result);
       update([ALL_LIST_ID]);
@@ -265,15 +264,14 @@ class PreTareosUvaController extends GetxController {
   Future<void> _editarTarea(int key) async {
     int indexElement = preTareosUva.indexWhere((e) => e.key == key);
     if (indexElement != ELEMENT_NOT_FOUND) {
-      NuevaPreTareaUvaBinding().dependencies();
+      NuevoPackingBinding().dependencies();
       final result = await Get.to<PreTareoProcesoUvaEntity>(
-          () => NuevaPreTareaUvaPage(),
+          () => NuevoPackingPage(),
           arguments: {'tarea': preTareosUva[indexElement]});
       if (result != null) {
         result.idusuario = PreferenciasUsuario().idUsuario;
         preTareosUva[indexElement] = result;
-        await _updatePreTareoProcesoUvaUseCase.execute(
-            preTareosUva[indexElement], key);
+        await _updatePackingUseCase.execute(preTareosUva[indexElement], key);
         //FIXME: buscar actualizar solo el elemento que se edito
         update([ALL_LIST_ID]);
       }
@@ -287,13 +285,13 @@ class PreTareosUvaController extends GetxController {
   Future<void> _copiarTarea(int key) async {
     int indexElement = preTareosUva.indexWhere((e) => e.key == key);
     if (indexElement != ELEMENT_NOT_FOUND) {
-      NuevaPreTareaUvaBinding().dependencies();
+      NuevoPackingBinding().dependencies();
       final result = await Get.to<PreTareoProcesoUvaEntity>(
-          () => NuevaPreTareaUvaPage(),
+          () => NuevoPackingPage(),
           arguments: {'tarea': preTareosUva[indexElement]});
       if (result != null) {
         result.idusuario = PreferenciasUsuario().idUsuario;
-        int id = await _createPreTareoProcesoUvaUseCase.execute(result);
+        int id = await _createPackingUseCase.execute(result);
         result.key = id;
         preTareosUva.add(result);
         update([ALL_LIST_ID]);

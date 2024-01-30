@@ -5,10 +5,11 @@ import 'package:flutter_tareo/core/utils/detalles.dart';
 import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/core/utils/strings/sqLiteDB.dart';
 import 'package:flutter_tareo/core/utils/tarea.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
-import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/create_uva_all_detalle_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/pre_tareos_uva/create_pre_tareo_proceso_uva_use_case.dart';
+import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_detalle_entity.dart';
+import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_entity.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/create_packing_use_case.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/personal_packing/create_uva_all_detalle_use_case.dart';
+
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
@@ -22,7 +23,7 @@ class HerramientasController extends GetxController {
   bool validando = false;
   String texto = '';
 
-  final CreatePreTareoProcesoUvaUseCase _createPreTareoProcesoUvaUseCase;
+  final CreatePackingUseCase _createPreTareoProcesoUvaUseCase;
   final CreateUvaAllDetalleUseCase _createUvaAllDetalleUseCase;
 
   HerramientasController(

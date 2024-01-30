@@ -1,26 +1,23 @@
-import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
+import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
-import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo_uva/listado_personas_pre_tareo_uva_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 
-class NuevaPreTareaUvaController extends GetxController {
+class NuevoPackingController extends GetxController {
   final GetSubdivisonsUseCase _getSubdivisonsUseCase;
   final GetPersonalsEmpresaBySubdivisionUseCase
       _getPersonalsEmpresaBySubdivisionUseCase;
@@ -55,7 +52,7 @@ class NuevaPreTareaUvaController extends GetxController {
   List<PresentacionLineaEntity> presentaciones = [];
   List<PersonalEmpresaEntity> supervisors = [];
 
-  NuevaPreTareaUvaController(
+  NuevoPackingController(
       this._getSubdivisonsUseCase,
       this._getPersonalsEmpresaBySubdivisionUseCase,
       this._getCultivosUseCase,
@@ -288,18 +285,6 @@ class NuevaPreTareaUvaController extends GetxController {
       Get.back(result: nuevaPreTarea);
     } else {
       toast(type: TypeToast.ERROR, message: mensaje);
-    }
-  }
-
-  Future<void> goListadoPersonas() async {
-    ListadoPersonasBinding().dependencies();
-    final resultados = await Get.to<List<PreTareoProcesoUvaDetalleEntity>>(
-        () => ListadoPersonasPreTareoUvaPage(),
-        arguments: {'tarea': nuevaPreTarea, 'personal': supervisors});
-
-    if (resultados != null) {
-      nuevaPreTarea.detalles = resultados;
-      update(['personal']);
     }
   }
 

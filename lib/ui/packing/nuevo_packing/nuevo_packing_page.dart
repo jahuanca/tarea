@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
-import 'package:flutter_tareo/ui/pages/nueva_pre_tarea_uva/nueva_pre_tarea_uva_controller.dart';
+import 'package:flutter_tareo/ui/packing/nuevo_packing/nuevo_packing_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
 import 'package:flutter_tareo/ui/widgets/date_picker_widget.dart';
@@ -9,15 +9,14 @@ import 'package:flutter_tareo/ui/widgets/input_label_widget.dart';
 import 'package:flutter_tareo/ui/widgets/item_configuracion_swicth_widget.dart';
 import 'package:get/get.dart';
 
-class NuevaPreTareaUvaPage extends StatelessWidget {
-  final NuevaPreTareaUvaController controller =
-      Get.find<NuevaPreTareaUvaController>();
+class NuevoPackingPage extends StatelessWidget {
+  final NuevoPackingController controller = Get.find<NuevoPackingController>();
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
-    return GetBuilder<NuevaPreTareaUvaController>(
+    return GetBuilder<NuevoPackingController>(
       init: controller,
       builder: (_) => Stack(
         children: [
@@ -36,7 +35,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: size.width * 0.05),
                 child: Column(
                   children: [
-                    GetBuilder<NuevaPreTareaUvaController>(
+                    GetBuilder<NuevoPackingController>(
                       id: 'fecha',
                       builder: (_) => InputLabelWidget(
                           error: _.errorFecha,
@@ -85,7 +84,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                                 .toList(),
                       ),
                     ), */
-                    GetBuilder<NuevaPreTareaUvaController>(
+                    GetBuilder<NuevoPackingController>(
                       id: 'cultivo',
                       builder: (_) => DropdownSearchWidget(
                         label: 'Cultivo',
@@ -111,7 +110,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                                 .toList(),
                       ),
                     ),
-                    GetBuilder<NuevaPreTareaUvaController>(
+                    GetBuilder<NuevoPackingController>(
                       id: 'centro_costo',
                       builder: (_) => DropdownSearchWidget(
                         label: 'Centro',
@@ -187,7 +186,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                                 .toList(),
                       ),
                     ), */
-                    GetBuilder<NuevaPreTareaUvaController>(
+                    GetBuilder<NuevoPackingController>(
                       id: 'supervisors',
                       builder: (_) => DropdownSearchWidget(
                           label: 'Supervisor',
@@ -213,7 +212,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                                       })
                                   .toList()),
                     ),
-                    GetBuilder<NuevaPreTareaUvaController>(
+                    GetBuilder<NuevoPackingController>(
                       id: 'digitadors',
                       builder: (_) => DropdownSearchWidget(
                           label: 'Digitador',
@@ -239,7 +238,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                                       })
                                   .toList()),
                     ),
-                    GetBuilder<NuevaPreTareaUvaController>(
+                    GetBuilder<NuevoPackingController>(
                       id: 'turno',
                       builder: (_) => DropdownSearchWidget(
                           label: 'Turno',
@@ -263,7 +262,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                             },
                           ]),
                     ),
-                    GetBuilder<NuevaPreTareaUvaController>(
+                    GetBuilder<NuevoPackingController>(
                       id: 'dia_siguiente',
                       builder: (_) => ItemConfiguracionSwitchWidget(
                         onChanged: _.changeDiaSiguiente,
@@ -274,7 +273,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                         value: _.nuevaPreTarea.diasiguiente ?? false,
                       ),
                     ),
-                    GetBuilder<NuevaPreTareaUvaController>(
+                    GetBuilder<NuevoPackingController>(
                       id: 'hora_inicio',
                       builder: (_) => InputLabelWidget(
                           enabled: false,
@@ -294,7 +293,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                     SizedBox(
                       height: size.height * 0.01,
                     ),
-                    GetBuilder<NuevaPreTareaUvaController>(
+                    GetBuilder<NuevoPackingController>(
                       id: 'hora_fin',
                       builder: (_) => InputLabelWidget(
                           enabled: false,
@@ -315,7 +314,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                               text: formatoHora(_.nuevaPreTarea.horafin)),
                           hintText: 'Hora fin'),
                     ),
-                    GetBuilder<NuevaPreTareaUvaController>(
+                    GetBuilder<NuevoPackingController>(
                         id: 'inicio_pausa',
                         builder: (_) => (_.nuevaPreTarea.horainicio != null &&
                                 _.nuevaPreTarea.horafin != null)
@@ -349,7 +348,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
                                 ],
                               )
                             : Container()),
-                    GetBuilder<NuevaPreTareaUvaController>(
+                    GetBuilder<NuevoPackingController>(
                         id: 'fin_pausa',
                         builder: (_) => (_.nuevaPreTarea.horainicio != null &&
                                 _.nuevaPreTarea.horafin != null)
@@ -389,7 +388,7 @@ class NuevaPreTareaUvaPage extends StatelessWidget {
               ),
             ),
           ),
-          GetBuilder<NuevaPreTareaUvaController>(
+          GetBuilder<NuevoPackingController>(
             id: 'validando',
             builder: (_) => _.validando
                 ? Container(

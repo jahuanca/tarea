@@ -1,11 +1,9 @@
 import 'package:flutter_tareo/core/utils/numbers.dart';
-import 'package:flutter_tareo/di/listado_personas_binding.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/labores_cultivo_packing_entity.dart';
 import 'package:flutter_tareo/domain/entities/message_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_detalle_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
@@ -20,7 +18,6 @@ import 'package:flutter_tareo/domain/utils/failure.dart';
 import 'package:flutter_tareo/domain/utils/result_type.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
-import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo_uva/listado_personas_pre_tareo_uva_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/type_toast.dart';
@@ -292,18 +289,6 @@ class NuevaPesadoController extends GetxController {
       }
     } else {
       toast(type: TypeToast.ERROR, message: mensaje);
-    }
-  }
-
-  Future<void> goListadoPersonas() async {
-    ListadoPersonasBinding().dependencies();
-    final resultados = await Get.to<List<PreTareaEsparragoDetalleVariosEntity>>(
-        () => ListadoPersonasPreTareoUvaPage(),
-        arguments: {'tarea': nuevaPreTarea, 'personal': supervisors});
-
-    if (resultados != null) {
-      /* nuevaPreTarea.detalles = resultados; */
-      update(['personal']);
     }
   }
 

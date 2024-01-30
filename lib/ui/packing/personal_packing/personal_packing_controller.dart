@@ -5,12 +5,12 @@ import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/di/agregar_persona_binding.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
+import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_detalle_entity.dart';
+import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_entity.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/personal_packing/create_uva_detalle_use_case.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/personal_packing/delete_uva_detalle_use_case.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/personal_packing/get_all_uva_detalles_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_labors_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/create_uva_detalle_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/delete_uva_detalle_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/get_all_uva_detalles_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
@@ -23,7 +23,7 @@ import 'package:get/get.dart';
 import 'package:honeywell_scanner/honeywell_scanner.dart';
 import 'package:sunmi_barcode_plugin/sunmi_barcode_plugin.dart';
 
-class ListadoPersonasPreTareoUvaController extends GetxController
+class PersonalPackingController extends GetxController
     implements ScannerCallBack {
   List<int> seleccionados = [];
   List<LaborEntity> labores = [];
@@ -45,7 +45,7 @@ class ListadoPersonasPreTareoUvaController extends GetxController
 
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
-  ListadoPersonasPreTareoUvaController(
+  PersonalPackingController(
     this._getLaborsUseCase,
     this._getPersonalsEmpresaBySubdivisionUseCase,
     this._createUvaDetalleUseCase,

@@ -3,27 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
-import 'package:flutter_tareo/ui/pages/pre_tareos_uva/pre_tareos_uva_controller.dart';
+import 'package:flutter_tareo/ui/packing/home_packing/home_packing_controller.dart';
 import 'package:flutter_tareo/ui/utils/constants.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
 import 'package:get/get.dart';
 
-class PreTareosUvaPage extends StatelessWidget {
-  final PreTareosUvaController controller = PreTareosUvaController(Get.find(),
+class HomePackingPage extends StatelessWidget {
+  final HomePackingController controller = HomePackingController(Get.find(),
       Get.find(), Get.find(), Get.find(), Get.find(), Get.find(), Get.find());
 
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
 
-    return GetBuilder<PreTareosUvaController>(
+    return GetBuilder<HomePackingController>(
       init: controller,
       id: ALL_PAGE_ID,
       builder: (_) => Stack(
         children: [
           Scaffold(
             backgroundColor: secondColor,
-            body: GetBuilder<PreTareosUvaController>(
+            body: GetBuilder<HomePackingController>(
               id: EVENT_CHOOSE_ELEMENT_ID,
               builder: (_) => Column(
                 children: [
@@ -38,7 +38,7 @@ class PreTareosUvaPage extends StatelessWidget {
                     flex: 8,
                     child: RefreshIndicator(
                       onRefresh: () async => _.getTareas(),
-                      child: GetBuilder<PreTareosUvaController>(
+                      child: GetBuilder<HomePackingController>(
                         id: ALL_LIST_ID,
                         builder: (_) => _.preTareosUva.isEmpty
                             ? EmptyDataWidget(
@@ -62,7 +62,7 @@ class PreTareosUvaPage extends StatelessWidget {
               child: Icon(Icons.add),
             ),
           ),
-          GetBuilder<PreTareosUvaController>(
+          GetBuilder<HomePackingController>(
             id: VALIDANDO_ID,
             builder: (_) => _.validando
                 ? Container(
@@ -83,7 +83,7 @@ class PreTareosUvaPage extends StatelessWidget {
       {'key': 4, 'value': 'Exportar a EXCEL'},
     ];
 
-    return GetBuilder<PreTareosUvaController>(
+    return GetBuilder<HomePackingController>(
       id: '$ELEMENT_OF_LIST_ID${controller.preTareosUva[index].key}',
       builder: (_) => GestureDetector(
         onLongPress: () => _.seleccionar(index),
@@ -385,7 +385,7 @@ class PreTareosUvaPage extends StatelessWidget {
       {'key': 3, 'value': 'Exportar en excel'},
     ];
 
-    return GetBuilder<PreTareosUvaController>(
+    return GetBuilder<HomePackingController>(
       id: EVENT_CHOOSE_ELEMENT_ID,
       builder: (_) => Container(
         decoration: BoxDecoration(color: Colors.white, border: Border.all()),

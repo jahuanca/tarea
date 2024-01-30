@@ -1,24 +1,24 @@
 import 'package:flutter_tareo/data/repositories/labor_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/personal_empresa_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/pre_tareo_proceso_uva_detalles_repository_implementation.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/personal_packing/create_uva_detalle_use_case.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/personal_packing/delete_uva_detalle_use_case.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/personal_packing/get_all_uva_detalles_use_case.dart';
 import 'package:flutter_tareo/domain/repositories/labor_repository.dart';
 import 'package:flutter_tareo/domain/repositories/personal_empresa_repository.dart';
-import 'package:flutter_tareo/domain/repositories/pre_tareo_proceso_uva_detalles_repository.dart';
+import 'package:flutter_tareo/domain/packing/repositories/personal_packing_repository.dart';
 import 'package:flutter_tareo/domain/use_cases/sincronizar/get_labors_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/create_uva_detalle_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/delete_uva_detalle_use_case.dart';
-import 'package:flutter_tareo/domain/use_cases/listado_personas_pre_tareo_uva/get_all_uva_detalles_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
-import 'package:flutter_tareo/ui/pages/listado_personas_pre_tareo_uva/listado_personas_pre_tareo_uva_controller.dart';
+import 'package:flutter_tareo/ui/packing/personal_packing/personal_packing_controller.dart';
 import 'package:get/get.dart';
 
-class ListadoPersonasPreTareoUvaBinding extends Bindings {
+class PersonalPackingBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut<PersonalEmpresaRepository>(
         () => PersonalEmpresaRepositoryImplementation());
     Get.lazyPut<LaborRepository>(() => LaborRepositoryImplementation());
-    Get.lazyPut<PreTareoProcesoUvaDetallesRepository>(
+    Get.lazyPut<PersonalPackingRepository>(
         () => PreTareoProcesoUvaDetallesRepositoryImplementation());
 
     Get.lazyPut<GetPersonalsEmpresaBySubdivisionUseCase>(
@@ -31,8 +31,7 @@ class ListadoPersonasPreTareoUvaBinding extends Bindings {
     Get.lazyPut<GetAllUvaDetallesUseCase>(
         () => GetAllUvaDetallesUseCase(Get.find()));
 
-    Get.lazyPut<ListadoPersonasPreTareoUvaController>(() =>
-        ListadoPersonasPreTareoUvaController(
-            Get.find(), Get.find(), Get.find(), Get.find(), Get.find()));
+    Get.lazyPut<PersonalPackingController>(() => PersonalPackingController(
+        Get.find(), Get.find(), Get.find(), Get.find(), Get.find()));
   }
 }

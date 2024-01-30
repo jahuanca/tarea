@@ -4,6 +4,8 @@ import 'package:flutter_tareo/domain/entities/asistencia_fecha_turno_entity.dart
 import 'package:flutter_tareo/domain/entities/asistencia_registro_personal_entity.dart';
 import 'package:flutter_tareo/domain/entities/asistencia_ubicacion_entity.dart';
 import 'package:flutter_tareo/domain/entities/turno_entity.dart';
+import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_detalle_entity.dart';
+import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
@@ -29,8 +31,6 @@ import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_formato_entity
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_grupo_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tarea_esparrago_varios_entity.dart';
 import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_detalle_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_entity.dart';
-import 'package:flutter_tareo/domain/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/tarea_proceso_entity.dart';

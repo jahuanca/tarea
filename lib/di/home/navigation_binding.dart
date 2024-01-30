@@ -6,7 +6,7 @@ import 'package:flutter_tareo/di/herramientas_binding.dart';
 import 'package:flutter_tareo/di/home/home_binding.dart';
 import 'package:flutter_tareo/di/migrar_binding.dart';
 import 'package:flutter_tareo/di/pre_tareos_binding.dart';
-import 'package:flutter_tareo/di/pre_tareos_uva_binding.dart';
+import 'package:flutter_tareo/di/packing/packing_binding.dart';
 import 'package:flutter_tareo/di/tareas_binding.dart';
 import 'package:flutter_tareo/ui/home/controllers/navigation_controller.dart';
 import 'package:get/get.dart';
@@ -19,7 +19,7 @@ class NavigationBinding extends Bindings {
     AprobarBinding().dependencies();
     MigrarBinding().dependencies();
     PreTareosBinding().dependencies();
-    PreTareosUvaBinding().dependencies();
+    PackingBinding().dependencies();
     EsparragosBinding().dependencies();
     HerramientasBinding().dependencies();
     AsistenciaBinding().dependencies();
