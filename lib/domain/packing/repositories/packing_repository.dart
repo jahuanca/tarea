@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_entity.dart';
 
 abstract class PackingRepository {
@@ -12,4 +13,6 @@ abstract class PackingRepository {
   Future<void> update(
       PreTareoProcesoUvaEntity preTareaProcesoUvaEntity, int key);
   Future<void> delete(int key);
+  Future<Map<int, List<PreTareoProcesoUvaDetalleEntity>>> getReportByDocument(
+      String code, PreTareoProcesoUvaEntity header);
 }

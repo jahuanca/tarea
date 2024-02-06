@@ -15,6 +15,7 @@ import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/strings.dart';
 import 'package:flutter_tareo/ui/packing/nuevo_packing/nuevo_packing_page.dart';
 import 'package:flutter_tareo/ui/packing/personal_packing/personal_packing_page.dart';
+import 'package:flutter_tareo/ui/packing/reporte_packing/reporte_packing_page.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/constants.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
@@ -33,7 +34,7 @@ class HomePackingController extends GetxController {
 
   bool validando = BOOLEAN_FALSE_VALUE;
   List<int> seleccionados = [];
-  List<PreTareoProcesoUvaEntity> preTareosUva = [];
+  List<PreTareoProcesoUvaEntity> packings = [];
 
   HomePackingController(
     this._createPackingUseCase,
@@ -57,8 +58,8 @@ class HomePackingController extends GetxController {
   }
 
   Future<void> getTareas() async {
-    preTareosUva.clear();
-    preTareosUva.addAll(await _getAllPackingUseCase.execute());
+    packings.clear();
+    packings.addAll(await _getAllPackingUseCase.execute());
     update([ALL_PAGE_ID]);
   }
 
@@ -81,7 +82,7 @@ class HomePackingController extends GetxController {
   }
 
   Future<void> goExcel(int key) async {
-    int indexElement = preTareosUva.indexWhere((e) => e.key == key);
+    int indexElement = packings.indexWhere((e) => e.key == key);
     if (indexElement != ELEMENT_NOT_FOUND) {
       validando = BOOLEAN_TRUE_VALUE;
       update([VALIDANDO_ID]);
@@ -96,7 +97,7 @@ class HomePackingController extends GetxController {
   }
 
   void goAprobar(int key) async {
-    int indexElement = preTareosUva.indexWhere((e) => e.key == key);
+    int indexElement = packings.indexWhere((e) => e.key == key);
     if (indexElement != ELEMENT_NOT_FOUND) {
       String mensaje = await _validarParaAprobar(indexElement);
       if (mensaje != null) {
@@ -133,11 +134,11 @@ class HomePackingController extends GetxController {
       if (geteditimage != null) {
         File _image = geteditimage[0];
 
-        preTareosUva[index].pathUrl = _image.path;
-        preTareosUva[index].estadoLocal = 'A';
+        packings[index].pathUrl = _image.path;
+        packings[index].estadoLocal = 'A';
         await _updatePackingUseCase.execute(
-            preTareosUva[index], preTareosUva[index].key);
-        update(['$ELEMENT_OF_LIST_ID${preTareosUva[index].key}']);
+            packings[index], packings[index].key);
+        update(['$ELEMENT_OF_LIST_ID${packings[index].key}']);
       }
     }).catchError((er) {
       print(er);
@@ -145,7 +146,7 @@ class HomePackingController extends GetxController {
   }
 
   Future<String> _validarParaAprobar(int index) async {
-    PreTareoProcesoUvaEntity tarea = preTareosUva[index];
+    PreTareoProcesoUvaEntity tarea = packings[index];
     if (tarea.sizeDetails == null || tarea.sizeDetails == EMPTY_ARRAY_LENGTH) {
       return 'No se puede aprobar una actividad que no tiene personal';
     }
@@ -153,9 +154,9 @@ class HomePackingController extends GetxController {
   }
 
   Future<void> goMigrar(int key) async {
-    int indexElement = preTareosUva.indexWhere((e) => e.key == key);
+    int indexElement = packings.indexWhere((e) => e.key == key);
     if (indexElement != ELEMENT_NOT_FOUND) {
-      if (preTareosUva[indexElement].estadoLocal == 'A') {
+      if (packings[indexElement].estadoLocal == 'A') {
         basicDialog(
           context: Get.overlayContext,
           message: '¿Desea migrar esta actividad?',
@@ -183,22 +184,20 @@ class HomePackingController extends GetxController {
     validando = BOOLEAN_TRUE_VALUE;
     update([VALIDANDO_ID]);
     PreTareoProcesoUvaEntity tareaMigrada =
-        await _migrarAllPackingUseCase.execute(preTareosUva[index].key);
+        await _migrarAllPackingUseCase.execute(packings[index].key);
     if (tareaMigrada != null) {
       toast(type: TypeToast.SUCCESS, message: 'Tarea migrada con exito');
-      preTareosUva[index].estadoLocal = 'M';
-      preTareosUva[index].itempretareaprocesouva =
+      packings[index].estadoLocal = 'M';
+      packings[index].itempretareaprocesouva =
           tareaMigrada.itempretareaprocesouva;
-      await _updatePackingUseCase.execute(
-          preTareosUva[index], preTareosUva[index].key);
+      await _updatePackingUseCase.execute(packings[index], packings[index].key);
       tareaMigrada = await _uploadFileOfPackingUseCase.execute(
-          preTareosUva[index], File(preTareosUva[index].pathUrl));
-      preTareosUva[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
-      await _updatePackingUseCase.execute(
-          preTareosUva[index], preTareosUva[index].key);
+          packings[index], File(packings[index].pathUrl));
+      packings[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
+      await _updatePackingUseCase.execute(packings[index], packings[index].key);
     }
     validando = BOOLEAN_FALSE_VALUE;
-    update(['$ELEMENT_OF_LIST_ID${preTareosUva[index].key}']);
+    update(['$ELEMENT_OF_LIST_ID${packings[index].key}']);
   }
 
   /* Future<void> goMigrarPreTareo(int index) async {
@@ -207,30 +206,30 @@ class HomePackingController extends GetxController {
 
   Future<void> goListadoPersonas(int key) async {
     List<PreTareoProcesoUvaEntity> otras = [];
-    int indexElement = preTareosUva.indexWhere((e) => e.key == key);
+    int indexElement = packings.indexWhere((e) => e.key == key);
     if (indexElement != ELEMENT_NOT_FOUND) {
-      otras.addAll(preTareosUva);
+      otras.addAll(packings);
       otras.removeAt(indexElement);
       PersonalPackingBinding().dependencies();
       int resultado =
           await Get.to<int>(() => PersonalPackingPage(), arguments: {
         'otras': otras,
-        'tarea': preTareosUva[indexElement],
+        'tarea': packings[indexElement],
         'index': indexElement,
       });
 
       if (resultado != null) {
-        preTareosUva[indexElement].sizeDetails = resultado;
-        update(['$ELEMENT_OF_LIST_ID${preTareosUva[indexElement].key}']);
+        packings[indexElement].sizeDetails = resultado;
+        update(['$ELEMENT_OF_LIST_ID${packings[indexElement].key}']);
       }
     }
   }
 
   Future<void> _delete(int key) async {
-    int indexElement = preTareosUva.indexWhere((e) => e.key == key);
+    int indexElement = packings.indexWhere((e) => e.key == key);
     if (indexElement != ELEMENT_NOT_FOUND) {
-      await _deletePackingUseCase.execute(preTareosUva[indexElement].key);
-      preTareosUva.removeAt(indexElement);
+      await _deletePackingUseCase.execute(packings[indexElement].key);
+      packings.removeAt(indexElement);
       update([ALL_LIST_ID]);
     } else {
       toast(
@@ -256,22 +255,22 @@ class HomePackingController extends GetxController {
     if (result != null) {
       int id = await _createPackingUseCase.execute(result);
       result.key = id;
-      preTareosUva.insert(FIRST_INDEX_ARRAY_VALUE, result);
+      packings.insert(FIRST_INDEX_ARRAY_VALUE, result);
       update([ALL_LIST_ID]);
     }
   }
 
   Future<void> _editarTarea(int key) async {
-    int indexElement = preTareosUva.indexWhere((e) => e.key == key);
+    int indexElement = packings.indexWhere((e) => e.key == key);
     if (indexElement != ELEMENT_NOT_FOUND) {
       NuevoPackingBinding().dependencies();
       final result = await Get.to<PreTareoProcesoUvaEntity>(
           () => NuevoPackingPage(),
-          arguments: {'tarea': preTareosUva[indexElement]});
+          arguments: {'tarea': packings[indexElement]});
       if (result != null) {
         result.idusuario = PreferenciasUsuario().idUsuario;
-        preTareosUva[indexElement] = result;
-        await _updatePackingUseCase.execute(preTareosUva[indexElement], key);
+        packings[indexElement] = result;
+        await _updatePackingUseCase.execute(packings[indexElement], key);
         //FIXME: buscar actualizar solo el elemento que se edito
         update([ALL_LIST_ID]);
       }
@@ -283,17 +282,17 @@ class HomePackingController extends GetxController {
   }
 
   Future<void> _copiarTarea(int key) async {
-    int indexElement = preTareosUva.indexWhere((e) => e.key == key);
+    int indexElement = packings.indexWhere((e) => e.key == key);
     if (indexElement != ELEMENT_NOT_FOUND) {
       NuevoPackingBinding().dependencies();
       final result = await Get.to<PreTareoProcesoUvaEntity>(
           () => NuevoPackingPage(),
-          arguments: {'tarea': preTareosUva[indexElement]});
+          arguments: {'tarea': packings[indexElement]});
       if (result != null) {
         result.idusuario = PreferenciasUsuario().idUsuario;
         int id = await _createPackingUseCase.execute(result);
         result.key = id;
-        preTareosUva.add(result);
+        packings.add(result);
         update([ALL_LIST_ID]);
       }
     } else {
@@ -337,5 +336,15 @@ class HomePackingController extends GetxController {
       },
       onCancel: () => Get.back(),
     );
+  }
+
+  void goReporte(int key) {
+    int indexElement = packings.indexWhere((e) => e.key == key);
+    if (indexElement != null) {
+      Get.to(() => ReportePackingPage(),
+          arguments: {'packing': packings[indexElement]});
+    } else {
+      toast(type: TypeToast.ERROR, message: 'No se encuentro el archivo');
+    }
   }
 }

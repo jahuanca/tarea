@@ -40,13 +40,13 @@ class HomePackingPage extends StatelessWidget {
                       onRefresh: () async => _.getTareas(),
                       child: GetBuilder<HomePackingController>(
                         id: ALL_LIST_ID,
-                        builder: (_) => _.preTareosUva.isEmpty
+                        builder: (_) => _.packings.isEmpty
                             ? EmptyDataWidget(
                                 titulo: 'No existen actividades.',
                                 size: size,
                                 onPressed: _.getTareas)
                             : ListView.builder(
-                                itemCount: _.preTareosUva.length,
+                                itemCount: _.packings.length,
                                 itemBuilder:
                                     (BuildContext context, int index) =>
                                         itemActividad(size, context, index),
@@ -84,7 +84,7 @@ class HomePackingPage extends StatelessWidget {
     ];
 
     return GetBuilder<HomePackingController>(
-      id: '$ELEMENT_OF_LIST_ID${controller.preTareosUva[index].key}',
+      id: '$ELEMENT_OF_LIST_ID${controller.packings[index].key}',
       builder: (_) => GestureDetector(
         onLongPress: () => _.seleccionar(index),
         child: Container(
@@ -118,7 +118,7 @@ class HomePackingPage extends StatelessWidget {
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: 5),
                               child: Container(
-                                color: _.preTareosUva[index].colorEstado,
+                                color: _.packings[index].colorEstado,
                               ),
                             ),
                             flex: 1),
@@ -127,7 +127,7 @@ class HomePackingPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              _.preTareosUva[index].fechaHora,
+                              _.packings[index].fechaHora,
                               style: TextStyle(
                                   fontWeight: FontWeight.normal, fontSize: 14),
                             ),
@@ -139,7 +139,7 @@ class HomePackingPage extends StatelessWidget {
                           child: Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              _.preTareosUva[index]?.cultivo?.detallecultivo ??
+                              _.packings[index]?.cultivo?.detallecultivo ??
                                   EMPTY_STRING,
                               style: TextStyle(
                                 fontWeight: FontWeight.w500,
@@ -178,7 +178,7 @@ class HomePackingPage extends StatelessWidget {
                                               child: Text(e['value'])))
                                           .toList(),
                                   onChanged: (value) async => _.onChangedMenu(
-                                      value, _.preTareosUva[index].key)),
+                                      value, _.packings[index].key)),
                             ),
                             flex: 5),
                         Flexible(child: Container(), flex: 1),
@@ -195,7 +195,7 @@ class HomePackingPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.preTareosUva[index].centroCosto
+                            child: Text(_.packings[index].centroCosto
                                     ?.detallecentrocosto ??
                                 EMPTY_STRING),
                           ),
@@ -221,7 +221,7 @@ class HomePackingPage extends StatelessWidget {
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 5),
                                     child: Text(
-                                        (_.preTareosUva[index].sizeDetails ??
+                                        (_.packings[index].sizeDetails ??
                                                 EMPTY_ARRAY_LENGTH)
                                             .toString())),
                                 Icon(
@@ -237,9 +237,9 @@ class HomePackingPage extends StatelessWidget {
                         Flexible(
                           child: Container(
                             alignment: Alignment.centerLeft,
-                            child: Text(_.preTareosUva[index].sede
-                                    ?.detallesubdivision ??
-                                EMPTY_STRING),
+                            child: Text(
+                                _.packings[index].sede?.detallesubdivision ??
+                                    EMPTY_STRING),
                           ),
                           flex: 10,
                         ),
@@ -253,19 +253,19 @@ class HomePackingPage extends StatelessWidget {
                 Flexible(
                   child: Container(
                     child: Row(
-                      children: (_.preTareosUva[index].estadoLocal != 'P' &&
-                              _.preTareosUva[index].estadoLocal != 'PC')
+                      children: (_.packings[index].estadoLocal != 'P' &&
+                              _.packings[index].estadoLocal != 'PC')
                           ? [
                               Flexible(child: Container(), flex: 1),
-                              if (_.preTareosUva[index].estadoLocal != 'M')
+                              if (_.packings[index].estadoLocal != 'M')
                                 Flexible(
                                   child: Container(
                                     alignment: Alignment.center,
                                     child: CircleAvatar(
                                       backgroundColor: infoColor,
                                       child: IconButton(
-                                          onPressed: () => _.goMigrar(
-                                              _.preTareosUva[index].key),
+                                          onPressed: () =>
+                                              _.goMigrar(_.packings[index].key),
                                           icon: Icon(
                                             Icons.sync,
                                             color: Colors.white,
@@ -296,8 +296,8 @@ class HomePackingPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: dangerColor,
                                     child: IconButton(
-                                      onPressed: () => _.goEliminar(
-                                          _.preTareosUva[index].key),
+                                      onPressed: () =>
+                                          _.goEliminar(_.packings[index].key),
                                       icon: Icon(Icons.delete),
                                       color: Colors.white,
                                     ),
@@ -316,7 +316,7 @@ class HomePackingPage extends StatelessWidget {
                                     backgroundColor: infoColor,
                                     child: IconButton(
                                         onPressed: () => _.goListadoPersonas(
-                                            _.preTareosUva[index].key),
+                                            _.packings[index].key),
                                         icon: Icon(
                                           Icons.search,
                                           color: Colors.white,
@@ -332,8 +332,8 @@ class HomePackingPage extends StatelessWidget {
                                   child: CircleAvatar(
                                     backgroundColor: successColor,
                                     child: IconButton(
-                                      onPressed: () => _
-                                          .goAprobar(_.preTareosUva[index].key),
+                                      onPressed: () =>
+                                          _.goAprobar(_.packings[index].key),
                                       icon: Icon(Icons.check_rounded),
                                       color: Colors.white,
                                     ),
@@ -341,9 +341,9 @@ class HomePackingPage extends StatelessWidget {
                                 ),
                                 flex: 7,
                               ),
-                              if (_.preTareosUva[index].estadoLocal == 'PC')
+                              if (_.packings[index].estadoLocal == 'PC')
                                 Flexible(child: Container(), flex: 1),
-                              if (_.preTareosUva[index].estadoLocal == 'PC')
+                              if (_.packings[index].estadoLocal == 'PC')
                                 Flexible(
                                   child: Container(
                                     alignment: Alignment.center,
@@ -351,7 +351,7 @@ class HomePackingPage extends StatelessWidget {
                                       backgroundColor: alertColor,
                                       child: IconButton(
                                         onPressed: () => _.goEditar(
-                                          _.preTareosUva[index].key,
+                                          _.packings[index].key,
                                         ),
                                         icon: Icon(Icons.edit),
                                         color: Colors.white,
@@ -361,6 +361,23 @@ class HomePackingPage extends StatelessWidget {
                                   flex: 7,
                                 ),
                               Flexible(child: Container(), flex: 1),
+                              Flexible(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: CircleAvatar(
+                                    backgroundColor:
+                                        Color.fromARGB(255, 180, 30, 138),
+                                    child: IconButton(
+                                      onPressed: () => _.goReporte(
+                                        _.packings[index].key,
+                                      ),
+                                      icon: Icon(Icons.analytics),
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                flex: 7,
+                              ),
                             ],
                     ),
                   ),

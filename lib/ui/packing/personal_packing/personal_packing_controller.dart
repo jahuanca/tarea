@@ -132,6 +132,7 @@ class PersonalPackingController extends GetxController
     super.onReady();
     personalSeleccionado =
         await _getAllUvaDetallesUseCase.execute('uva_detalle_${preTarea.key}');
+    print(personalSeleccionado.first.toJson());
     for (var i = 0; i < otrasPreTareas.length; i++) {
       if (otrasPreTareas[i].detalles == null) otrasPreTareas[i].detalles = [];
       otrasPreTareas[i].detalles = await _getAllUvaDetallesUseCase

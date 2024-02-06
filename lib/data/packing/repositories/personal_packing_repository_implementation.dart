@@ -2,7 +2,7 @@ import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_deta
 import 'package:flutter_tareo/domain/packing/repositories/personal_packing_repository.dart';
 import 'package:hive/hive.dart';
 
-class PreTareoProcesoUvaDetallesRepositoryImplementation
+class PersonalPackingRepositoryImplementation
     extends PersonalPackingRepository {
   @override
   Future<List<PreTareoProcesoUvaDetalleEntity>> getAll(String box) async {
@@ -62,5 +62,10 @@ class PreTareoProcesoUvaDetallesRepositoryImplementation
 
     await tareas.close();
     return;
+  }
+
+  @override
+  Future<void> getReportByDocument(String code) {
+    throw UnimplementedError();
   }
 }

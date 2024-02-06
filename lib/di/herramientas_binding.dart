@@ -1,5 +1,5 @@
-import 'package:flutter_tareo/data/repositories/pre_tareo_proceso_uva_detalles_repository_implementation.dart';
-import 'package:flutter_tareo/data/repositories/pre_tareo_proceso_uva_repository_implementation.dart';
+import 'package:flutter_tareo/data/packing/repositories/personal_packing_repository_implementation.dart';
+import 'package:flutter_tareo/data/packing/repositories/packing_repository_implementation.dart';
 import 'package:flutter_tareo/domain/packing/use_cases/create_packing_use_case.dart';
 import 'package:flutter_tareo/domain/packing/repositories/personal_packing_repository.dart';
 import 'package:flutter_tareo/domain/packing/repositories/packing_repository.dart';
@@ -10,10 +10,9 @@ import 'package:get/get.dart';
 class HerramientasBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<PackingRepository>(
-        () => PreTareoProcesoUvaRepositoryImplementation());
+    Get.lazyPut<PackingRepository>(() => PackingRepositoryImplementation());
     Get.lazyPut<PersonalPackingRepository>(
-        () => PreTareoProcesoUvaDetallesRepositoryImplementation());
+        () => PersonalPackingRepositoryImplementation());
     Get.lazyPut<CreatePackingUseCase>(() => CreatePackingUseCase(Get.find()));
     Get.lazyPut<CreateUvaAllDetalleUseCase>(
         () => CreateUvaAllDetalleUseCase(Get.find()));

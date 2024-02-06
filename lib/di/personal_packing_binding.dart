@@ -1,6 +1,6 @@
 import 'package:flutter_tareo/data/repositories/labor_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/personal_empresa_repository_implementation.dart';
-import 'package:flutter_tareo/data/repositories/pre_tareo_proceso_uva_detalles_repository_implementation.dart';
+import 'package:flutter_tareo/data/packing/repositories/personal_packing_repository_implementation.dart';
 import 'package:flutter_tareo/domain/packing/use_cases/personal_packing/create_uva_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/packing/use_cases/personal_packing/delete_uva_detalle_use_case.dart';
 import 'package:flutter_tareo/domain/packing/use_cases/personal_packing/get_all_uva_detalles_use_case.dart';
@@ -19,7 +19,7 @@ class PersonalPackingBinding extends Bindings {
         () => PersonalEmpresaRepositoryImplementation());
     Get.lazyPut<LaborRepository>(() => LaborRepositoryImplementation());
     Get.lazyPut<PersonalPackingRepository>(
-        () => PreTareoProcesoUvaDetallesRepositoryImplementation());
+        () => PersonalPackingRepositoryImplementation());
 
     Get.lazyPut<GetPersonalsEmpresaBySubdivisionUseCase>(
         () => GetPersonalsEmpresaBySubdivisionUseCase(Get.find()));

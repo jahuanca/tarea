@@ -84,6 +84,15 @@ abstract class GetxScannerController extends GetxController
     print(barcode ?? 'valor');
   }
 
+  Future<String> goOnlyOneRead() async {
+    try {
+      return await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', CANCEL_STRING, BOOLEAN_TRUE_VALUE, ScanMode.QR);
+    } on PlatformException {
+      return null;
+    }
+  }
+
   void goLectorCode() {
     FlutterBarcodeScanner.getBarcodeStreamReceiver(
             "#ff6666", CANCEL_STRING, BOOLEAN_FALSE_VALUE, ScanMode.DEFAULT)

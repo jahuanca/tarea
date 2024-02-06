@@ -13,7 +13,7 @@ import 'package:mime_type/mime_type.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
-class PreTareoProcesoUvaRepositoryImplementation extends PackingRepository {
+class PackingRepositoryImplementation extends PackingRepository {
   final urlModule = '/pre_tareo_proceso_uva';
 
   @override
@@ -177,4 +177,30 @@ class PreTareoProcesoUvaRepositoryImplementation extends PackingRepository {
       return null;
     }
   }
+
+  @override
+  Future<Map<int, List<PreTareoProcesoUvaDetalleEntity>>> getReportByDocument(
+      String code, PreTareoProcesoUvaEntity header) async {
+    Box<PreTareoProcesoUvaEntity> tareas =
+        await Hive.openBox<PreTareoProcesoUvaEntity>(PACKING_HIVE_STRING);
+    PreTareoProcesoUvaEntity data = await tareas.get(header.key);
+    if (data.detalles == null) data.detalles = [];
+    await tareas.close();
+
+    Box<PreTareoProcesoUvaDetalleEntity> detalles =
+        await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(
+            'uva_detalle_${header.key}');
+    data.detalles = detalles.values.toList();
+    await detalles.close();
+    data.detalles.removeWhere((e) => e.codigoempresa != code);
+    final releaseDateMap = data.detalles.groupBy((m) => m.idlabor);
+    return releaseDateMap;
+  }
+}
+
+extension IterableBase<E> on Iterable<E> {
+  Map<K, List<E>> groupBy<K>(K Function(E) keyFunction) => fold(
+      <K, List<E>>{},
+      (Map<K, List<E>> map, E element) =>
+          map..putIfAbsent(keyFunction(element), () => <E>[]).add(element));
 }
