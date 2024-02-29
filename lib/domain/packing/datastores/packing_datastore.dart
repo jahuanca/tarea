@@ -4,7 +4,7 @@ import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_enti
 import 'package:flutter_tareo/domain/utils/failure.dart';
 import 'package:flutter_tareo/domain/utils/result_type.dart';
 
-abstract class PackingRepository {
+abstract class PackingDataStore {
   Future<ResultType<List<PreTareoProcesoUvaEntity>, Failure>> getAll();
   Future<ResultType<List<PreTareoProcesoUvaEntity>, Failure>> getAllByValue(
       Map<String, dynamic> valores);

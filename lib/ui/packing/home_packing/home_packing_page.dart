@@ -2,7 +2,9 @@ import 'package:dropdown_below/dropdown_below.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/core/utils/dimens.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
+import 'package:flutter_tareo/ui/packing/home_packing/extension_packing.dart';
 import 'package:flutter_tareo/ui/packing/home_packing/home_packing_controller.dart';
 import 'package:flutter_tareo/ui/utils/constants.dart';
 import 'package:flutter_tareo/ui/widgets/empty_data_widget.dart';
@@ -77,14 +79,10 @@ class HomePackingPage extends StatelessWidget {
   }
 
   Widget itemActividad(Size size, BuildContext context, int index) {
-    final items = [
-      {'key': 1, 'value': 'Sincronizar'},
-      {'key': 3, 'value': 'Eliminar'},
-      {'key': 4, 'value': 'Exportar a EXCEL'},
-    ];
+    final items = ExtensionHomePacking().getItemsSingle(index, controller);
 
     return GetBuilder<HomePackingController>(
-      id: '$ELEMENT_OF_LIST_ID${controller.packings[index].key}',
+      id: '$ELEMENT_OF_LIST_ID${controller.packings[index].getId}',
       builder: (_) => GestureDetector(
         onLongPress: () => _.seleccionar(index),
         child: Container(
@@ -169,16 +167,18 @@ class HomePackingPage extends StatelessWidget {
                                     Icons.more_horiz,
                                     color: primaryColor,
                                   ),
-                                  value: 1,
+                                  value: items.first['key'],
                                   items: items == null
                                       ? []
                                       : items
+                                          .where((e) => e['isShow'])
+                                          .toList()
                                           .map((e) => DropdownMenuItem(
                                               value: e['key'],
                                               child: Text(e['value'])))
                                           .toList(),
                                   onChanged: (value) async => _.onChangedMenu(
-                                      value, _.packings[index].key)),
+                                      value, _.packings[index].getId)),
                             ),
                             flex: 5),
                         Flexible(child: Container(), flex: 1),
@@ -252,135 +252,9 @@ class HomePackingPage extends StatelessWidget {
                 Flexible(child: Container(), flex: 1),
                 Flexible(
                   child: Container(
-                    child: Row(
-                      children: (_.packings[index].estadoLocal != 'P' &&
-                              _.packings[index].estadoLocal != 'PC')
-                          ? [
-                              Flexible(child: Container(), flex: 1),
-                              if (_.packings[index].estadoLocal != 'M')
-                                Flexible(
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    child: CircleAvatar(
-                                      backgroundColor: infoColor,
-                                      child: IconButton(
-                                          onPressed: () =>
-                                              _.goMigrar(_.packings[index].key),
-                                          icon: Icon(
-                                            Icons.sync,
-                                            color: Colors.white,
-                                          )),
-                                    ),
-                                  ),
-                                  flex: 7,
-                                ),
-                              Flexible(child: Container(), flex: 1),
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: successColor,
-                                    child: IconButton(
-                                      onPressed: null,
-                                      // ()=> _.goAprobar(index),
-                                      icon: Icon(Icons.remove_red_eye),
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                flex: 7,
-                              ),
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: dangerColor,
-                                    child: IconButton(
-                                      onPressed: () =>
-                                          _.goEliminar(_.packings[index].key),
-                                      icon: Icon(Icons.delete),
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                flex: 7,
-                              ),
-                              Flexible(child: Container(), flex: 1),
-                            ]
-                          : [
-                              Flexible(child: Container(), flex: 1),
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: infoColor,
-                                    child: IconButton(
-                                        onPressed: () => _.goListadoPersonas(
-                                            _.packings[index].key),
-                                        icon: Icon(
-                                          Icons.search,
-                                          color: Colors.white,
-                                        )),
-                                  ),
-                                ),
-                                flex: 7,
-                              ),
-                              Flexible(child: Container(), flex: 1),
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor: successColor,
-                                    child: IconButton(
-                                      onPressed: () =>
-                                          _.goAprobar(_.packings[index].key),
-                                      icon: Icon(Icons.check_rounded),
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                flex: 7,
-                              ),
-                              if (_.packings[index].estadoLocal == 'PC')
-                                Flexible(child: Container(), flex: 1),
-                              if (_.packings[index].estadoLocal == 'PC')
-                                Flexible(
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    child: CircleAvatar(
-                                      backgroundColor: alertColor,
-                                      child: IconButton(
-                                        onPressed: () => _.goEditar(
-                                          _.packings[index].key,
-                                        ),
-                                        icon: Icon(Icons.edit),
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  flex: 7,
-                                ),
-                              Flexible(child: Container(), flex: 1),
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  child: CircleAvatar(
-                                    backgroundColor:
-                                        Color.fromARGB(255, 180, 30, 138),
-                                    child: IconButton(
-                                      onPressed: () => _.goReporte(
-                                        _.packings[index].key,
-                                      ),
-                                      icon: Icon(Icons.analytics),
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                flex: 7,
-                              ),
-                            ],
-                    ),
-                  ),
+                      child: Row(
+                    children: ExtensionHomePacking().getActions(index, _),
+                  )),
                   flex: 4,
                 ),
                 Flexible(
@@ -396,11 +270,7 @@ class HomePackingPage extends StatelessWidget {
   }
 
   Widget _opcionesSeleccionados() {
-    final items = [
-      {'key': 1, 'value': 'Seleccionar todos'},
-      {'key': 2, 'value': 'Quitar todos'},
-      {'key': 3, 'value': 'Exportar en excel'},
-    ];
+    final itemsGenerals = ExtensionHomePacking().getItemsGenerals();
 
     return GetBuilder<HomePackingController>(
       id: EVENT_CHOOSE_ELEMENT_ID,
@@ -423,32 +293,36 @@ class HomePackingPage extends StatelessWidget {
             Flexible(
               child: Container(
                 alignment: Alignment.center,
-                child: DropdownBelow(
-                  itemWidth: 200,
-                  itemTextstyle: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black),
-                  boxTextstyle: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: cardColor),
-                  boxPadding: EdgeInsets.fromLTRB(13, 12, 0, 12),
-                  boxHeight: 45,
-                  boxWidth: 150,
-                  icon: Icon(
-                    Icons.more_horiz,
-                    color: primaryColor,
-                  ),
-                  value: 1,
-                  items: items == null
-                      ? []
-                      : items
-                          .map((e) => DropdownMenuItem(
-                              value: e['key'], child: Text(e['value'])))
-                          .toList(),
-                  onChanged: (value) {},
-                ),
+                child: itemsGenerals.isBlank
+                    ? Container()
+                    : DropdownBelow(
+                        itemWidth: 200,
+                        itemTextstyle: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black),
+                        boxTextstyle: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: cardColor),
+                        boxPadding: EdgeInsets.fromLTRB(13, 12, 0, 12),
+                        boxHeight: 45,
+                        boxWidth: 150,
+                        icon: Icon(
+                          Icons.more_horiz,
+                          color: primaryColor,
+                        ),
+                        value: itemsGenerals.first['key'],
+                        items: itemsGenerals == null
+                            ? []
+                            : itemsGenerals
+                                .where((e) => e['isShow'] == BOOLEAN_TRUE_VALUE)
+                                .toList()
+                                .map((e) => DropdownMenuItem(
+                                    value: e['key'], child: Text(e['value'])))
+                                .toList(),
+                        onChanged: (value) {},
+                      ),
               ),
               flex: 4,
             ),

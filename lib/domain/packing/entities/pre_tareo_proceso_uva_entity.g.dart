@@ -39,7 +39,7 @@ class PreTareoProcesoUvaEntityAdapter
       idcultivo: fields[24] as int,
       cultivo: fields[25] as CultivoEntity,
       key: fields[26] as int,
-      estadoLocal: fields[16] as String,
+      estado: fields[16] as String,
       sizeDetails: fields[27] as int,
     )
       ..sede = fields[14] as SubdivisionEntity
@@ -83,7 +83,7 @@ class PreTareoProcesoUvaEntityAdapter
       ..writeByte(15)
       ..write(obj.pathUrl)
       ..writeByte(16)
-      ..write(obj.estadoLocal)
+      ..write(obj.estado)
       ..writeByte(17)
       ..write(obj.firmaSupervisor)
       ..writeByte(18)

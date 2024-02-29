@@ -22,3 +22,5 @@ const String ERROR_NOT_FOUNT_ELEMENT_TO_MIGRATE_STRING =
     'No se encontró el elemento a migrar.';
 const String ERROR_NOT_FOUNT_ELEMENT_TO_CHECK_STRING =
     'No se encontró el elemento a aprobar.';
+const String ERROR_TRY_CATCH =
+    'Ocurrio un error contacte con el departamento de informática';

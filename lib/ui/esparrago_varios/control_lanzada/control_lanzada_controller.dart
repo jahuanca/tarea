@@ -14,6 +14,7 @@ import 'package:flutter_tareo/ui/pages/personal_esparrago_pesado/personal_esparr
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/constants.dart';
 import 'package:flutter_tareo/ui/utils/type_toast.dart';
+import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 import 'package:flutter_tareo/ui/utils/extensions.dart';
 
@@ -66,25 +67,30 @@ class ControlLanzadaController extends GetxController {
   Future<void> getListadoDia() async {
     validando = BOOLEAN_TRUE_VALUE;
     update([VALIDANDO_ID]);
-    listadoDiaTurno = (await _getLineaMesaUseCase.execute(BuscarLineaMesaEntity(
+    List<EsparragoAgrupaPersonalEntity> result =
+        switchResult(await _getLineaMesaUseCase.execute(BuscarLineaMesaEntity(
       itempretareaesparragovarios: itempretareaesparragovarios,
       fecha: fecha,
       turno: turnoSelected['_id'],
     )));
-    lineas = listadoDiaTurno
-        .toList()
-        .unique((EsparragoAgrupaPersonalEntity x) => x.linea);
-    lineas.sort((a, b) => a.linea.compareTo(b.linea));
-    if (lineas.isEmpty) {
-      currentList = [];
-      mesas = [];
-    } else {
-      lineaSelected = lineas.first;
-      mesas =
-          listadoDiaTurno.where((e) => e.linea == lineaSelected.linea).toList();
-      mesas.sort(((a, b) => a.grupo.compareTo(b.grupo)));
-      currentList = mesas;
-      mesaSelected = lineas.first;
+    if (result != null) {
+      listadoDiaTurno = result;
+      lineas = listadoDiaTurno
+          .toList()
+          .unique((EsparragoAgrupaPersonalEntity x) => x.linea);
+      lineas.sort((a, b) => a.linea.compareTo(b.linea));
+      if (lineas.isEmpty) {
+        currentList = [];
+        mesas = [];
+      } else {
+        lineaSelected = lineas.first;
+        mesas = listadoDiaTurno
+            .where((e) => e.linea == lineaSelected.linea)
+            .toList();
+        mesas.sort(((a, b) => a.grupo.compareTo(b.grupo)));
+        currentList = mesas;
+        mesaSelected = lineas.first;
+      }
     }
     validando = BOOLEAN_FALSE_VALUE;
     update([VALIDANDO_ID, 'listado', SELECCIONADO_ID]);
@@ -128,14 +134,18 @@ class ControlLanzadaController extends GetxController {
   Future<void> getResumenMesaLinea() async {
     validando = BOOLEAN_TRUE_VALUE;
     update([VALIDANDO_ID]);
-    currentList = await _getLineaMesaUseCase.execute(BuscarLineaMesaEntity(
+    List<EsparragoAgrupaPersonalEntity> result =
+        switchResult(await _getLineaMesaUseCase.execute(BuscarLineaMesaEntity(
       itempretareaesparragovarios: itempretareaesparragovarios,
       fecha: fecha.subtract(Duration(days: 1)),
       turno: turnoSelected['_id'],
-    ));
-    lineas = currentList
-        .toList()
-        .unique((EsparragoAgrupaPersonalEntity x) => x.linea);
+    )));
+    if (result != null) {
+      currentList = result;
+      lineas = currentList
+          .toList()
+          .unique((EsparragoAgrupaPersonalEntity x) => x.linea);
+    }
     /*swithResult(await _getResumenLanzaUseCase
         .execute(itempretareaesparragovarios ?? 27));*/
     validando = BOOLEAN_FALSE_VALUE;

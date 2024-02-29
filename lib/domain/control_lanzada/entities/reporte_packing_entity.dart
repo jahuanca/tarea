@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_entity.dart';
@@ -18,17 +19,18 @@ class ReportePackingEntity {
   PreTareoProcesoUvaEntity header;
   PersonalEmpresaEntity personal;
   Map<int, List<PreTareoProcesoUvaDetalleEntity>> labors;
+  List<LaborEntity> laborsOnline;
 
-  ReportePackingEntity({
-    this.header,
-    this.personal,
-    this.labors,
-  });
+  ReportePackingEntity(
+      {this.header, this.personal, this.labors, this.laborsOnline});
 
   factory ReportePackingEntity.fromJson(Map<String, dynamic> json) =>
       ReportePackingEntity(
         header: PreTareoProcesoUvaEntity.fromJson(json["header"]),
         personal: PersonalEmpresaEntity.fromJson(json["personal"]),
+        laborsOnline: json['laborsOnline'] == null
+            ? null
+            : laborEntityFromJson(json['labornOnline']),
         labors: Map<int, List<PreTareoProcesoUvaDetalleEntity>>.from(
             json["labors"]
                 .map((x) => PreTareoProcesoUvaDetalleEntity.fromJson(x))),
@@ -38,6 +40,7 @@ class ReportePackingEntity {
         "header": header.toJson(),
         "personal": personal.toJson(),
         "labors": labors,
+        "laborOnLine": laborsOnline
       };
 }
 

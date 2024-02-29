@@ -1,206 +1,59 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
-import 'package:flutter_tareo/core/utils/config.dart';
-import 'package:flutter_tareo/core/utils/strings/hiveDB.dart';
-import 'package:flutter_tareo/data/utils/app_http_manager.dart';
-import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_detalle_entity.dart';
+import 'package:flutter_tareo/domain/entities/labor_entity.dart';
+import 'package:flutter_tareo/domain/packing/datastores/packing_datastore.dart';
 import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:flutter_tareo/domain/packing/repositories/packing_repository.dart';
-import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
-import 'package:hive/hive.dart';
-import 'package:mime_type/mime_type.dart';
-import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
+import 'package:flutter_tareo/domain/utils/result_type.dart';
+import 'package:flutter_tareo/domain/utils/failure.dart';
 
 class PackingRepositoryImplementation extends PackingRepository {
-  final urlModule = '/pre_tareo_proceso_uva';
+  PackingDataStore dataStore;
+  PackingRepositoryImplementation(this.dataStore);
 
   @override
-  Future<List<PreTareoProcesoUvaEntity>> getAll() async {
-    if (PreferenciasUsuario().offLine) {
-      Box<PreTareoProcesoUvaEntity> dataHive =
-          await Hive.openBox<PreTareoProcesoUvaEntity>(PACKING_HIVE_STRING);
-      List<PreTareoProcesoUvaEntity> local = dataHive.values.toList();
-      await dataHive.close();
-      for (var value in local) {
-        Box<PreTareoProcesoUvaDetalleEntity> detailsHive =
-            await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(
-                '$PACKING_PERSONAL_INIT_HIVE_STRING${value.key}');
-        value.sizeDetails = detailsHive.length;
-        await detailsHive.close();
-      }
-      local.sort((a, b) => b.fechamod.compareTo(a.fechamod));
-      return local;
-    }
-
-    final AppHttpManager http = AppHttpManager();
-
-    final res = await http.get(
-      url: urlModule,
-    );
-
-    return preTareoProcesoUvaEntityFromJson((res));
+  Future<ResultType<PreTareoProcesoUvaEntity, Failure>> create(
+      PreTareoProcesoUvaEntity packing) async {
+    return await dataStore.create(packing);
   }
 
   @override
-  Future<List<PreTareoProcesoUvaEntity>> getAllByValue(
+  Future<ResultType<PreTareoProcesoUvaEntity, Failure>> delete(
+      PreTareoProcesoUvaEntity packing) async {
+    return await dataStore.delete(packing);
+  }
+
+  @override
+  Future<ResultType<List<PreTareoProcesoUvaEntity>, Failure>> getAll() async {
+    return await dataStore.getAll();
+  }
+
+  @override
+  Future<ResultType<List<PreTareoProcesoUvaEntity>, Failure>> getAllByValue(
       Map<String, dynamic> valores) async {
-    if (PreferenciasUsuario().offLine) {
-      Box<PreTareoProcesoUvaEntity> dataHive =
-          await Hive.openBox<PreTareoProcesoUvaEntity>(PACKING_HIVE_STRING);
-      List<PreTareoProcesoUvaEntity> local = [];
-
-      dataHive.values.forEach((e) {
-        bool guardar = true;
-        valores.forEach((key, value) {
-          if (e.toJson()[key] != value) {
-            guardar = false;
-          }
-        });
-        if (guardar) local.add(e);
-      });
-      await dataHive.compact();
-      await dataHive.close();
-      return local;
-    }
-
-    return [];
+    return await dataStore.getAllByValue(valores);
   }
 
   @override
-  Future<int> create(PreTareoProcesoUvaEntity preTareaProcesoUvaEntity) async {
-    var tareas =
-        await Hive.openBox<PreTareoProcesoUvaEntity>(PACKING_HIVE_STRING);
-    int id = await tareas.add(preTareaProcesoUvaEntity);
-    preTareaProcesoUvaEntity.key = id;
-    await tareas.put(id, preTareaProcesoUvaEntity);
-
-    await tareas.close();
-    return id;
-  }
-
-  @override
-  Future<void> delete(int key) async {
-    Box<PreTareoProcesoUvaEntity> tareas =
-        await Hive.openBox<PreTareoProcesoUvaEntity>(PACKING_HIVE_STRING);
-    await tareas.delete(key);
-    await tareas.close();
-
-    Box<PreTareoProcesoUvaDetalleEntity> detalles =
-        await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(
-            'uva_detalle_${key}');
-    await detalles.deleteFromDisk();
-    return;
-  }
-
-  @override
-  Future<void> update(
-      PreTareoProcesoUvaEntity preTareaProcesoUvaEntity, int id) async {
-    Box<PreTareoProcesoUvaEntity> tareas =
-        await Hive.openBox<PreTareoProcesoUvaEntity>(PACKING_HIVE_STRING);
-    await tareas.put(id, preTareaProcesoUvaEntity);
-
-    await tareas.close();
-    return;
-  }
-
-  @override
-  Future<PreTareoProcesoUvaEntity> migrar(int key) async {
-    Box<PreTareoProcesoUvaEntity> tareas =
-        await Hive.openBox<PreTareoProcesoUvaEntity>(PACKING_HIVE_STRING);
-    PreTareoProcesoUvaEntity data = await tareas.get(key);
-    if (data.detalles == null) data.detalles = [];
-    await tareas.close();
-
-    Box<PreTareoProcesoUvaDetalleEntity> detalles =
-        await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(
-            'uva_detalle_${key}');
-    data.detalles = detalles.values.toList();
-    await detalles.close();
-
-    final AppHttpManager http = AppHttpManager();
-    final res = await http.post(
-      url: '$urlModule/createAll',
-      body: data.toJson(),
-    );
-
-    return res == null
-        ? null
-        : PreTareoProcesoUvaEntity.fromJson(jsonDecode(res));
-  }
-
-  @override
-  Future<PreTareoProcesoUvaEntity> uploadFile(
-      PreTareoProcesoUvaEntity preTareaProcesoUvaEntity, File fileLocal) async {
-    http.MultipartFile file;
-    final mimeType = mime(fileLocal.path).split('/');
-    file = await http.MultipartFile.fromPath('file', fileLocal.path,
-        contentType: MediaType(mimeType[0], mimeType[1]));
-    print(file.contentType.toString());
-    try {
-      var request = http.MultipartRequest(
-          'PUT', Uri.http(URL_SERVER_SHORT, '$urlModule/updateFile'));
-      request.files.add(file);
-      request.headers[HttpHeaders.acceptHeader] = 'application/json';
-      request.headers[HttpHeaders.contentTypeHeader] = 'multipart/form-data';
-      //request.headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
-
-      for (var i = 0;
-          i < preTareaProcesoUvaEntity.toJson().entries.length;
-          i++) {
-        MapEntry map = preTareaProcesoUvaEntity.toJson().entries.elementAt(i);
-        request.fields.addAll({map.key: map.value.toString()});
-      }
-
-      print("Fields: ${request.fields.toString()}");
-
-      print("Api ${request.method} request ${request.url}, with");
-      if (SHOW_LOG) {
-        log(request.toString());
-      }
-      http.Response response =
-          await http.Response.fromStream(await request.send());
-      if (SHOW_LOG) {
-        print("Result: ${response.statusCode}");
-        log(response.body);
-      }
-      PreTareoProcesoUvaEntity respuesta =
-          PreTareoProcesoUvaEntity.fromJson(jsonDecode(response.body));
-      preTareaProcesoUvaEntity.firmaSupervisor = respuesta.firmaSupervisor;
-      return preTareaProcesoUvaEntity;
-    } catch (e) {
-      if (SHOW_LOG) {
-        print('Error');
-        log(e.toString());
-      }
-      return null;
-    }
-  }
-
-  @override
-  Future<Map<int, List<PreTareoProcesoUvaDetalleEntity>>> getReportByDocument(
+  Future<ResultType<List<LaborEntity>, Failure>> getReportByDocument(
       String code, PreTareoProcesoUvaEntity header) async {
-    Box<PreTareoProcesoUvaEntity> tareas =
-        await Hive.openBox<PreTareoProcesoUvaEntity>(PACKING_HIVE_STRING);
-    PreTareoProcesoUvaEntity data = await tareas.get(header.key);
-    if (data.detalles == null) data.detalles = [];
-    await tareas.close();
-
-    Box<PreTareoProcesoUvaDetalleEntity> detalles =
-        await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(
-            'uva_detalle_${header.key}');
-    data.detalles = detalles.values.toList();
-    await detalles.close();
-    data.detalles.removeWhere((e) => e.codigoempresa != code);
-    final releaseDateMap = data.detalles.groupBy((m) => m.idlabor);
-    return releaseDateMap;
+    return await dataStore.getReportByDocument(code, header);
   }
-}
 
-extension IterableBase<E> on Iterable<E> {
-  Map<K, List<E>> groupBy<K>(K Function(E) keyFunction) => fold(
-      <K, List<E>>{},
-      (Map<K, List<E>> map, E element) =>
-          map..putIfAbsent(keyFunction(element), () => <E>[]).add(element));
+  @override
+  Future<ResultType<PreTareoProcesoUvaEntity, Failure>> migrar(
+      PreTareoProcesoUvaEntity packing) async {
+    return await dataStore.migrar(packing);
+  }
+
+  @override
+  Future<ResultType<PreTareoProcesoUvaEntity, Failure>> update(
+      PreTareoProcesoUvaEntity packing) async {
+    return await dataStore.update(packing);
+  }
+
+  @override
+  Future<ResultType<PreTareoProcesoUvaEntity, Failure>> uploadFile(
+      PreTareoProcesoUvaEntity packing, File fileLocal) async {
+    return await dataStore.uploadFile(packing, fileLocal);
+  }
 }

@@ -5,6 +5,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/config.dart';
 import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
@@ -41,10 +42,10 @@ class PreTareoProcesoUvaEntity {
     this.idcultivo,
     this.cultivo,
     this.key,
-    this.estadoLocal,
+    this.estado,
     this.sizeDetails,
   }) {
-    estadoLocal ??= 'P';
+    estado ??= 'P';
   }
 
   @HiveField(0)
@@ -80,7 +81,7 @@ class PreTareoProcesoUvaEntity {
   @HiveField(15)
   String pathUrl;
   @HiveField(16)
-  String estadoLocal;
+  String estado;
   @HiveField(17)
   String firmaSupervisor;
   @HiveField(18)
@@ -104,6 +105,14 @@ class PreTareoProcesoUvaEntity {
   @HiveField(27)
   int sizeDetails;
 
+  int get getId {
+    return IS_ONLINE ? itempretareaprocesouva : key;
+  }
+
+  set setId(int value) {
+    IS_ONLINE ? itempretareaprocesouva = value : key = value;
+  }
+
   String get fechaHora {
     if (fecha == null || horainicio == null) {
       fecha = DateTime.now();
@@ -119,7 +128,7 @@ class PreTareoProcesoUvaEntity {
   }
 
   Color get colorEstado {
-    switch (estadoLocal) {
+    switch (estado) {
       case 'P':
         return alertColor;
         break;
@@ -172,7 +181,7 @@ class PreTareoProcesoUvaEntity {
             json["diasiguiente"] == null ? null : json["diasiguiente"],
         turnotareo: json["turnotareo"] == null ? null : json["turnotareo"],
         key: json["key"] == null ? null : json["key"],
-        estadoLocal: json["estadoLocal"] == null ? null : json["estadoLocal"],
+        estado: json["estado"] == null ? null : json["estado"],
         centroCosto: json['Centro_Costo'] == null
             ? null
             : CentroCostoEntity.fromJson(json['Centro_Costo']),
@@ -210,7 +219,7 @@ class PreTareoProcesoUvaEntity {
         "activo": activo == null ? null : activo,
         "turnotareo": turnotareo == null ? null : turnotareo,
         "key": key == null ? null : key,
-        "estadoLocal": estadoLocal == null ? null : estadoLocal,
+        "estado": estado == null ? null : estado,
         "firmasupervisor": firmaSupervisor == null ? null : firmaSupervisor,
         "diasiguiente": diasiguiente == null ? null : diasiguiente,
         "idusuario": idusuario == null ? null : idusuario,

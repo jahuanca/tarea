@@ -3,7 +3,7 @@ import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_enti
 import 'package:flutter_tareo/domain/utils/failure.dart';
 import 'package:flutter_tareo/domain/utils/result_type.dart';
 
-abstract class PersonalPackingRepository {
+abstract class PersonalPackingDatastore {
   Future<ResultType<List<PreTareoProcesoUvaDetalleEntity>, Failure>> getAll(
       PreTareoProcesoUvaEntity header);
   Future<ResultType<PreTareoProcesoUvaDetalleEntity, Failure>> create(

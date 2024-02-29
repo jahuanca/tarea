@@ -1,3 +1,4 @@
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/domain/entities/actividad_entity.dart';
 import 'package:flutter_tareo/domain/entities/centro_costo_entity.dart';
 import 'package:flutter_tareo/domain/entities/cultivo_entity.dart';
@@ -7,10 +8,13 @@ import 'package:flutter_tareo/domain/entities/presentacion_linea_entity.dart';
 import 'package:flutter_tareo/domain/entities/subdivision_entity.dart';
 import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_entity.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/create_packing_use_case.dart';
+import 'package:flutter_tareo/domain/packing/use_cases/update_packing_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_centro_costos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_cultivos_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_personal_empresa_by_subdivision_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/nueva_tarea/get_subdivisions_use_case.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/type_toast.dart';
@@ -23,6 +27,8 @@ class NuevoPackingController extends GetxController {
       _getPersonalsEmpresaBySubdivisionUseCase;
   final GetCentroCostosUseCase _getCentroCostosUseCase;
   final GetCultivosUseCase _getCultivosUseCase;
+  final CreatePackingUseCase _createPackingUseCase;
+  final UpdatePackingUseCase _updatePackingUseCase;
 
   DateTime fecha = DateTime.now();
   String errorActividad,
@@ -40,8 +46,8 @@ class NuevoPackingController extends GetxController {
 
   PreTareoProcesoUvaEntity nuevaPreTarea;
 
-  bool validando = false;
-  bool editando = false;
+  bool validando = BOOLEAN_FALSE_VALUE;
+  bool editando = BOOLEAN_FALSE_VALUE;
 
   List<ActividadEntity> actividades = [];
   List<LaborEntity> labores = [];
@@ -53,6 +59,8 @@ class NuevoPackingController extends GetxController {
   List<PersonalEmpresaEntity> supervisors = [];
 
   NuevoPackingController(
+      this._createPackingUseCase,
+      this._updatePackingUseCase,
       this._getSubdivisonsUseCase,
       this._getPersonalsEmpresaBySubdivisionUseCase,
       this._getCultivosUseCase,
@@ -63,7 +71,7 @@ class NuevoPackingController extends GetxController {
     super.onInit();
     if (Get.arguments != null) {
       if (Get.arguments['tarea'] != null) {
-        editando = true;
+        editando = BOOLEAN_TRUE_VALUE;
         nuevaPreTarea = Get.arguments['tarea'] as PreTareoProcesoUvaEntity;
         if (nuevaPreTarea.detalles == null) nuevaPreTarea.detalles = [];
       }
@@ -84,14 +92,14 @@ class NuevoPackingController extends GetxController {
   void onReady() async {
     super.onReady();
     validando = true;
-    update(['validando']);
+    update([VALIDANDO_ID]);
 
     await getCultivos();
     await getCentrosCosto();
     await getSupervisors(PreferenciasUsuario().idSede);
     changeTurno(editando ? nuevaPreTarea.turnotareo : 'D');
-    validando = false;
-    update(['validando']);
+    validando = BOOLEAN_FALSE_VALUE;
+    update([VALIDANDO_ID]);
 
     setEditValues();
   }
@@ -100,7 +108,7 @@ class NuevoPackingController extends GetxController {
     nuevaPreTarea.sede = (await _getSubdivisonsUseCase.execute())
         .firstWhere((e) => e.idsubdivision == idSubdivision);
     validando = true;
-    update(['validando']);
+    update([VALIDANDO_ID]);
     supervisors =
         await _getPersonalsEmpresaBySubdivisionUseCase.execute(idSubdivision);
     if (supervisors.length > 0) {
@@ -110,8 +118,8 @@ class NuevoPackingController extends GetxController {
       changeDigitador(nuevaPreTarea.digitador.codigoempresa);
     }
     update(['supervisors', 'digitadors']);
-    validando = false;
-    update(['validando']);
+    validando = BOOLEAN_FALSE_VALUE;
+    update([VALIDANDO_ID]);
   }
 
   Future<void> getCentrosCosto() async {
@@ -160,41 +168,10 @@ class NuevoPackingController extends GetxController {
   }
 
   void changeInicioPausa() {
-    /* if (nuevaPreTarea.pausainicio != null) {
-      if (nuevaPreTarea.turnotareo == 'N') {
-        update(['inicio_pausa']);
-        return;
-      }
-      if (nuevaPreTarea.pausainicio.isBefore(nuevaPreTarea.horainicio) ||
-          nuevaPreTarea.pausainicio.isAfter(nuevaPreTarea.horafin)) {
-        mostrarDialog(
-            'La hora seleccionada no se encuentra en el rango de inicio y fin');
-        nuevaPreTarea.pausainicio = null;
-      }
-      update(['inicio_pausa']);
-    } */
     update(['inicio_pausa']);
   }
 
   void changeFinPausa() {
-    /* if (nuevaPreTarea.pausafin != null && nuevaPreTarea.turnotareo == 'D') {
-      if (nuevaPreTarea.turnotareo == 'N') {
-        update(['inicio_pausa']);
-        return;
-      }
-      if (nuevaPreTarea.pausafin.isBefore(nuevaPreTarea.horainicio) ||
-          nuevaPreTarea.pausafin.isAfter(nuevaPreTarea.horafin)) {
-        mostrarDialog(
-            'La hora seleccionada no se encuentra en el rango de inicio y fin');
-        nuevaPreTarea.pausafin = null;
-      }
-      if (nuevaPreTarea.pausainicio != null &&
-          nuevaPreTarea.pausainicio.isAfter(nuevaPreTarea?.pausafin)) {
-        mostrarDialog('La hora debe ser mayor a la hora de pausa');
-        nuevaPreTarea.pausafin = null;
-      }
-      update(['fin_pausa']);
-    } */
     update(['fin_pausa']);
   }
 
@@ -277,12 +254,28 @@ class NuevoPackingController extends GetxController {
     update(['cultivo']);
   }
 
-  void goBack() {
+  Future<void> goBack() async {
     String mensaje = validar();
     if (mensaje == null) {
+      validando = BOOLEAN_TRUE_VALUE;
+      update([VALIDANDO_ID]);
       nuevaPreTarea.idusuario = PreferenciasUsuario().idUsuario;
-      nuevaPreTarea.estadoLocal = 'PC';
-      Get.back(result: nuevaPreTarea);
+      //nuevaPreTarea.estado = 'PC';
+      nuevaPreTarea.estado = 'P';
+      PreTareoProcesoUvaEntity result;
+      if (editando) {
+        result =
+            await switchFuture(_updatePackingUseCase.execute(nuevaPreTarea));
+      } else {
+        result =
+            await switchFuture(_createPackingUseCase.execute(nuevaPreTarea));
+      }
+      if (result != null) {
+        nuevaPreTarea.setId = result.getId;
+        Get.back(result: nuevaPreTarea);
+      }
+      validando = BOOLEAN_FALSE_VALUE;
+      update([VALIDANDO_ID]);
     } else {
       toast(type: TypeToast.ERROR, message: mensaje);
     }
@@ -309,7 +302,7 @@ class NuevoPackingController extends GetxController {
     changeCentroCosto(nuevaPreTarea.idcentrocosto.toString());
     changeSupervisor(nuevaPreTarea.codigoempresasupervisor.toString());
     changeHoraInicio();
-    changeDiaSiguiente(nuevaPreTarea.diasiguiente ?? false);
+    changeDiaSiguiente(nuevaPreTarea.diasiguiente ?? BOOLEAN_FALSE_VALUE);
     changeHoraFin();
     if (errorActividad != null) return errorActividad;
     if (errorCultivo != null) return errorCultivo;

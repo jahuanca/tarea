@@ -10,16 +10,16 @@ part 'labor_entity.g.dart';
 
 @HiveType(typeId: 12)
 class LaborEntity {
-  LaborEntity({
-    this.idlabor,
-    this.idactividad,
-    this.labor,
-    this.descripcion,
-    this.activo,
-    this.idusuario,
-    this.fechamod,
-    this.actividad,
-  });
+  LaborEntity(
+      {this.idlabor,
+      this.idactividad,
+      this.labor,
+      this.descripcion,
+      this.activo,
+      this.idusuario,
+      this.fechamod,
+      this.actividad,
+      this.size});
 
   @HiveField(0)
   int idlabor;
@@ -37,6 +37,7 @@ class LaborEntity {
   DateTime fechamod;
   @HiveField(7)
   ActividadEntity actividad;
+  int size;
 
   factory LaborEntity.fromJson(Map<String, dynamic> json) => LaborEntity(
         idlabor: json["idlabor"],
@@ -44,9 +45,13 @@ class LaborEntity {
         labor: json["labor"],
         descripcion: json["descripcion"],
         activo: json["activo"],
-        idusuario: json["idusuario"],
-        fechamod: DateTime?.parse(json["fechamod"]),
-        actividad: json["Actividad"] == null ? null : ActividadEntity.fromJson(json['Actividad']),
+        size: json["size"] == null ? null : json['size'],
+        idusuario: json['usuario'] == null ? null : json["idusuario"],
+        fechamod:
+            json['fechamod'] == null ? null : DateTime?.parse(json["fechamod"]),
+        actividad: json["Actividad"] == null
+            ? null
+            : ActividadEntity.fromJson(json['Actividad']),
       );
 
   Map<String, dynamic> toJson() => {
@@ -55,6 +60,7 @@ class LaborEntity {
         "labor": labor,
         "descripcion": descripcion,
         "activo": activo,
+        "size": size == null ? null : size,
         "idusuario": idusuario,
         "fechamod": fechamod?.toIso8601String(),
         "Actividad": actividad?.toJson(),

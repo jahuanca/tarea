@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/ui/home/utils/strings_contants.dart';
 import 'package:flutter_tareo/ui/utils/type_toast.dart';
 import 'package:get/get.dart';
@@ -51,15 +52,16 @@ Future<dynamic> basicAlert(
   );
 }
 
-void toast(
+Future<void> toast(
     {@required TypeToast type,
     String title,
     @required String message,
-    int duration}) {
+    int duration}) async {
   Get.snackbar(
     title ?? typesToast[type].title,
     message,
-    //instantInit: BOOLEAN_FALSE_VALUE,
+    isDismissible: BOOLEAN_TRUE_VALUE,
+    //instantInit: BOOLEAN_TRUE_VALUE,
     snackPosition: typesToast[type].snackPosition,
     backgroundColor: typesToast[type].backgroundColor,
     colorText: typesToast[type].colorText,

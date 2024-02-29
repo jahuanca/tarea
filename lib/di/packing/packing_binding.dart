@@ -1,3 +1,4 @@
+import 'package:flutter_tareo/data/packing/datastores/packing_datastore_implementation.dart';
 import 'package:flutter_tareo/data/repositories/export_data_repository_implementation.dart';
 import 'package:flutter_tareo/data/packing/repositories/packing_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/personal_empresa_repository_implementation.dart';
@@ -18,7 +19,10 @@ import 'package:get/get.dart';
 class PackingBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<PackingRepository>(() => PackingRepositoryImplementation());
+    /*Get.lazyPut<PackingRepository>(() =>
+        PackingRepositoryImplementation(PackingDataStoreHiveImplementation()));*/
+    Get.lazyPut<PackingRepository>(() =>
+        PackingRepositoryImplementation(PackingDataStoreImplementation()));
     Get.lazyPut<ExportDataRepository>(
         () => ExportDataRepositoryImplementation());
     Get.lazyPut<PersonalEmpresaRepository>(

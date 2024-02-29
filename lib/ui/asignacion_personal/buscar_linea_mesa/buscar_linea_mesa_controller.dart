@@ -103,16 +103,24 @@ class BuscarLineaMesaController extends GetxController {
     validando = BOOLEAN_TRUE_VALUE;
     update([VALIDANDO_ID]);
     if (!isMesa) {
-      lineas = (await _getLineaMesaUseCase.execute(query))
-          .toList()
-          .unique((EsparragoAgrupaPersonalEntity x) => x.linea);
-      mesas = [];
-      query.grupo = null;
-      update([LINEAS_ID, MESAS_ID]);
+      List<EsparragoAgrupaPersonalEntity> result =
+          switchResult(await _getLineaMesaUseCase.execute(query));
+      if (result != null) {
+        lineas = result
+            .toList()
+            .unique((EsparragoAgrupaPersonalEntity x) => x.linea);
+        mesas = [];
+        query.grupo = null;
+        update([LINEAS_ID, MESAS_ID]);
+      }
     } else {
-      mesas = (await _getLineaMesaUseCase.execute(query)).toList();
-      query.grupo = null;
-      update([MESAS_ID]);
+      List<EsparragoAgrupaPersonalEntity> result =
+          switchResult(await _getLineaMesaUseCase.execute(query));
+      if (result != null) {
+        mesas = result.toList();
+        query.grupo = null;
+        update([MESAS_ID]);
+      }
     }
     validando = BOOLEAN_FALSE_VALUE;
     update([

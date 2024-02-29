@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/di/personal_packing_binding.dart';
 import 'package:flutter_tareo/di/packing/nuevo_packing_binding.dart';
+import 'package:flutter_tareo/domain/entities/message_entity.dart';
 import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:flutter_tareo/domain/packing/use_cases/create_packing_use_case.dart';
 import 'package:flutter_tareo/domain/packing/use_cases/delete_packing_use_case.dart';
@@ -11,6 +12,8 @@ import 'package:flutter_tareo/domain/packing/use_cases/migrar_all_packing_use_ca
 import 'package:flutter_tareo/domain/packing/use_cases/update_packing_use_case.dart';
 import 'package:flutter_tareo/domain/packing/use_cases/upload_file_of_packing_use_case.dart';
 import 'package:flutter_tareo/domain/use_cases/others/export_packing_to_excel_use_case.dart';
+import 'package:flutter_tareo/domain/utils/failure.dart';
+import 'package:flutter_tareo/domain/utils/result_type.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/strings.dart';
 import 'package:flutter_tareo/ui/packing/nuevo_packing/nuevo_packing_page.dart';
@@ -58,35 +61,43 @@ class HomePackingController extends GetxController {
   }
 
   Future<void> getTareas() async {
-    packings.clear();
-    packings.addAll(await _getAllPackingUseCase.execute());
-    update([ALL_PAGE_ID]);
+    validando = BOOLEAN_TRUE_VALUE;
+    update([VALIDANDO_ID]);
+    List<PreTareoProcesoUvaEntity> result =
+        _switchResult(await _getAllPackingUseCase.execute());
+    if (result != null) {
+      packings.clear();
+      packings.addAll(result);
+      update([ALL_PAGE_ID]);
+    }
+    validando = BOOLEAN_FALSE_VALUE;
+    update([VALIDANDO_ID]);
   }
 
-  Future<void> onChangedMenu(dynamic value, int key) async {
+  Future<void> onChangedMenu(dynamic value, int id) async {
     switch (value.toInt()) {
       case 1:
         break;
       case 2:
-        goCopiar(key);
+        goCopiar(id);
         break;
       case 3:
-        goEliminar(key);
+        goEliminar(id);
         break;
       case 4:
-        await goExcel(key);
+        await goExcel(id);
         break;
       default:
         break;
     }
   }
 
-  Future<void> goExcel(int key) async {
-    int indexElement = packings.indexWhere((e) => e.key == key);
+  Future<void> goExcel(int id) async {
+    int indexElement = packings.indexWhere((e) => e.getId == id);
     if (indexElement != ELEMENT_NOT_FOUND) {
       validando = BOOLEAN_TRUE_VALUE;
       update([VALIDANDO_ID]);
-      await _exportPackingToExcelUseCase.execute(key);
+      await _exportPackingToExcelUseCase.execute(id);
       validando = BOOLEAN_FALSE_VALUE;
       update([VALIDANDO_ID]);
     } else {
@@ -96,8 +107,8 @@ class HomePackingController extends GetxController {
     }
   }
 
-  void goAprobar(int key) async {
-    int indexElement = packings.indexWhere((e) => e.key == key);
+  void goAprobar(int id) async {
+    int indexElement = packings.indexWhere((e) => e.getId == id);
     if (indexElement != ELEMENT_NOT_FOUND) {
       String mensaje = await _validarParaAprobar(indexElement);
       if (mensaje != null) {
@@ -135,10 +146,9 @@ class HomePackingController extends GetxController {
         File _image = geteditimage[0];
 
         packings[index].pathUrl = _image.path;
-        packings[index].estadoLocal = 'A';
-        await _updatePackingUseCase.execute(
-            packings[index], packings[index].key);
-        update(['$ELEMENT_OF_LIST_ID${packings[index].key}']);
+        packings[index].estado = 'A';
+        await _updatePackingUseCase.execute(packings[index]);
+        update(['$ELEMENT_OF_LIST_ID${packings[index].getId}']);
       }
     }).catchError((er) {
       print(er);
@@ -153,10 +163,10 @@ class HomePackingController extends GetxController {
     return null;
   }
 
-  Future<void> goMigrar(int key) async {
-    int indexElement = packings.indexWhere((e) => e.key == key);
+  Future<void> goMigrar(int id) async {
+    int indexElement = packings.indexWhere((e) => e.getId == id);
     if (indexElement != ELEMENT_NOT_FOUND) {
-      if (packings[indexElement].estadoLocal == 'A') {
+      if (packings[indexElement].estado == 'A') {
         basicDialog(
           context: Get.overlayContext,
           message: '¿Desea migrar esta actividad?',
@@ -184,29 +194,31 @@ class HomePackingController extends GetxController {
     validando = BOOLEAN_TRUE_VALUE;
     update([VALIDANDO_ID]);
     PreTareoProcesoUvaEntity tareaMigrada =
-        await _migrarAllPackingUseCase.execute(packings[index].key);
+        _switchResult(await _migrarAllPackingUseCase.execute(packings[index]));
     if (tareaMigrada != null) {
       toast(type: TypeToast.SUCCESS, message: 'Tarea migrada con exito');
-      packings[index].estadoLocal = 'M';
+      packings[index].estado = 'M';
       packings[index].itempretareaprocesouva =
           tareaMigrada.itempretareaprocesouva;
-      await _updatePackingUseCase.execute(packings[index], packings[index].key);
-      tareaMigrada = await _uploadFileOfPackingUseCase.execute(
-          packings[index], File(packings[index].pathUrl));
-      packings[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
-      await _updatePackingUseCase.execute(packings[index], packings[index].key);
+      await _updatePackingUseCase.execute(packings[index]);
+      tareaMigrada = _switchResult(await _uploadFileOfPackingUseCase.execute(
+          packings[index], File(packings[index].pathUrl)));
+      if (tareaMigrada != null) {
+        packings[index].firmaSupervisor = tareaMigrada?.firmaSupervisor;
+        await _updatePackingUseCase.execute(packings[index]);
+      }
     }
     validando = BOOLEAN_FALSE_VALUE;
-    update(['$ELEMENT_OF_LIST_ID${packings[index].key}']);
+    update(['$ELEMENT_OF_LIST_ID${packings[index].getId}']);
   }
 
   /* Future<void> goMigrarPreTareo(int index) async {
     await _migrarAllPreTareoUseCase.execute(preTareos[index]);
   } */
 
-  Future<void> goListadoPersonas(int key) async {
+  Future<void> goListadoPersonas(int id) async {
     List<PreTareoProcesoUvaEntity> otras = [];
-    int indexElement = packings.indexWhere((e) => e.key == key);
+    int indexElement = packings.indexWhere((e) => e.getId == id);
     if (indexElement != ELEMENT_NOT_FOUND) {
       otras.addAll(packings);
       otras.removeAt(indexElement);
@@ -220,22 +232,29 @@ class HomePackingController extends GetxController {
 
       if (resultado != null) {
         packings[indexElement].sizeDetails = resultado;
-        update(['$ELEMENT_OF_LIST_ID${packings[indexElement].key}']);
+        update(['$ELEMENT_OF_LIST_ID${packings[indexElement].getId}']);
       }
     }
   }
 
-  Future<void> _delete(int key) async {
-    int indexElement = packings.indexWhere((e) => e.key == key);
+  Future<void> _delete(int id) async {
+    validando = BOOLEAN_TRUE_VALUE;
+    update([VALIDANDO_ID]);
+    int indexElement = packings.indexWhere((e) => e.getId == id);
     if (indexElement != ELEMENT_NOT_FOUND) {
-      await _deletePackingUseCase.execute(packings[indexElement].key);
-      packings.removeAt(indexElement);
-      update([ALL_LIST_ID]);
+      PreTareoProcesoUvaEntity result = _switchResult(
+          await _deletePackingUseCase.execute(packings[indexElement]));
+      if (result != null) {
+        packings.removeAt(indexElement);
+        update([ALL_LIST_ID]);
+      }
     } else {
       toast(
           type: TypeToast.ERROR,
           message: ERROR_NOT_FOUNT_ELEMENT_TO_DELETE_STRING);
     }
+    validando = BOOLEAN_FALSE_VALUE;
+    update([VALIDANDO_ID]);
   }
 
   void seleccionar(int index) {
@@ -253,15 +272,13 @@ class HomePackingController extends GetxController {
     final result =
         await Get.to<PreTareoProcesoUvaEntity>(() => NuevoPackingPage());
     if (result != null) {
-      int id = await _createPackingUseCase.execute(result);
-      result.key = id;
       packings.insert(FIRST_INDEX_ARRAY_VALUE, result);
       update([ALL_LIST_ID]);
     }
   }
 
-  Future<void> _editarTarea(int key) async {
-    int indexElement = packings.indexWhere((e) => e.key == key);
+  Future<void> _editarTarea(int id) async {
+    int indexElement = packings.indexWhere((e) => e.getId == id);
     if (indexElement != ELEMENT_NOT_FOUND) {
       NuevoPackingBinding().dependencies();
       final result = await Get.to<PreTareoProcesoUvaEntity>(
@@ -270,8 +287,6 @@ class HomePackingController extends GetxController {
       if (result != null) {
         result.idusuario = PreferenciasUsuario().idUsuario;
         packings[indexElement] = result;
-        await _updatePackingUseCase.execute(packings[indexElement], key);
-        //FIXME: buscar actualizar solo el elemento que se edito
         update([ALL_LIST_ID]);
       }
     } else {
@@ -281,8 +296,8 @@ class HomePackingController extends GetxController {
     }
   }
 
-  Future<void> _copiarTarea(int key) async {
-    int indexElement = packings.indexWhere((e) => e.key == key);
+  Future<void> _copiarTarea(int id) async {
+    int indexElement = packings.indexWhere((e) => e.getId == id);
     if (indexElement != ELEMENT_NOT_FOUND) {
       NuevoPackingBinding().dependencies();
       final result = await Get.to<PreTareoProcesoUvaEntity>(
@@ -290,10 +305,13 @@ class HomePackingController extends GetxController {
           arguments: {'tarea': packings[indexElement]});
       if (result != null) {
         result.idusuario = PreferenciasUsuario().idUsuario;
-        int id = await _createPackingUseCase.execute(result);
-        result.key = id;
-        packings.add(result);
-        update([ALL_LIST_ID]);
+        PreTareoProcesoUvaEntity newPacking =
+            _switchResult(await _createPackingUseCase.execute(result));
+        if (newPacking != null) {
+          result.setId = newPacking.getId;
+          packings.add(result);
+          update([ALL_LIST_ID]);
+        }
       }
     } else {
       toast(
@@ -302,44 +320,46 @@ class HomePackingController extends GetxController {
     }
   }
 
-  void goEliminar(int key) {
-    basicDialog(
+  void goEliminar(int id) async {
+    bool result = await basicDialog(
       context: Get.overlayContext,
       message: '¿Esta seguro de eliminar esta tarea?',
       onPressed: () async {
-        await _delete(key);
-        Get.back();
+        Get.back(result: BOOLEAN_TRUE_VALUE);
       },
-      onCancel: () => Get.back(),
+      onCancel: () => Get.back(result: BOOLEAN_FALSE_VALUE),
     );
+    if (result) {
+      await _delete(id);
+    }
   }
 
-  void goCopiar(int key) {
+  void goCopiar(int id) {
     basicDialog(
       context: Get.overlayContext,
       message: '¿Esta seguro de copiar la siguiente tarea?',
       onPressed: () async {
         Get.back();
-        await _copiarTarea(key);
+        await _copiarTarea(id);
       },
       onCancel: () => Get.back(),
     );
   }
 
-  void goEditar(int key) {
+  void goEditar(int id) {
     basicDialog(
       context: Get.overlayContext,
       message: '¿Esta seguro de editar la actividad?',
       onPressed: () async {
         Get.back();
-        await _editarTarea(key);
+        await _editarTarea(id);
       },
       onCancel: () => Get.back(),
     );
   }
 
-  void goReporte(int key) {
-    int indexElement = packings.indexWhere((e) => e.key == key);
+  void goReporte(int id) {
+    int indexElement = packings.indexWhere((e) => e.getId == id);
     if (indexElement != null) {
       Get.to(() => ReportePackingPage(),
           arguments: {'packing': packings[indexElement]});
@@ -347,4 +367,18 @@ class HomePackingController extends GetxController {
       toast(type: TypeToast.ERROR, message: 'No se encuentro el archivo');
     }
   }
+
+  dynamic _switchResult(ResultType<dynamic, Failure> result) {
+    if (result is Success) {
+      return result.data;
+    }
+    if (result is Error) {
+      toast(
+          type: TypeToast.ERROR,
+          message: (result.error as MessageEntity).message);
+    }
+  }
+
+  bool isActive(int index) =>
+      packings[index].estado != 'P' && packings[index].estado != 'PC';
 }

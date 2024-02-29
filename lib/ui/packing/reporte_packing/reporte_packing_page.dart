@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
+import 'package:flutter_tareo/core/utils/config.dart';
 import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/packing/reporte_packing/reporte_packing_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
@@ -53,7 +54,7 @@ class ReportePackingPage extends StatelessWidget {
         children: [
           Expanded(
             child: Container(
-              child: Text(title),
+              child: Text(title ?? '---'),
             ),
             flex: 1,
           ),
@@ -104,11 +105,17 @@ class ReportePackingPage extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
-          Column(
-              children: _.reporte.labors.values
-                  .map((e) => _itemTitle(
-                      e.first.labor.descripcion, e.length.toString()))
-                  .toList())
+          (IS_ONLINE)
+              ? Column(
+                  children: _.reporte.laborsOnline
+                      .map((e) => _itemTitle(e.descripcion, e.size.toString()))
+                      .toList(),
+                )
+              : Column(
+                  children: _.reporte.labors.values
+                      .map((e) => _itemTitle(
+                          e.first.labor.descripcion, e.length.toString()))
+                      .toList())
         ],
       ),
     );

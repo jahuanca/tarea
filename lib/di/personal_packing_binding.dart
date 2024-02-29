@@ -1,3 +1,4 @@
+import 'package:flutter_tareo/data/packing/datastores/personal_packing_datastore_implementation.dart';
 import 'package:flutter_tareo/data/repositories/labor_repository_implementation.dart';
 import 'package:flutter_tareo/data/repositories/personal_empresa_repository_implementation.dart';
 import 'package:flutter_tareo/data/packing/repositories/personal_packing_repository_implementation.dart';
@@ -18,8 +19,13 @@ class PersonalPackingBinding extends Bindings {
     Get.lazyPut<PersonalEmpresaRepository>(
         () => PersonalEmpresaRepositoryImplementation());
     Get.lazyPut<LaborRepository>(() => LaborRepositoryImplementation());
-    Get.lazyPut<PersonalPackingRepository>(
-        () => PersonalPackingRepositoryImplementation());
+
+    /*Get.lazyPut<PersonalPackingRepository>(() =>
+        PersonalPackingRepositoryImplementation(
+            PersonalPackingDataStoreHiveImplementation()));*/
+    Get.lazyPut<PersonalPackingRepository>(() =>
+        PersonalPackingRepositoryImplementation(
+            PersonalPackingDataStoreImplementation()));
 
     Get.lazyPut<GetPersonalsEmpresaBySubdivisionUseCase>(
         () => GetPersonalsEmpresaBySubdivisionUseCase(Get.find()));

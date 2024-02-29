@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tareo/core/utils/colors.dart';
 import 'package:flutter_tareo/core/utils/dimens.dart';
 import 'package:flutter_tareo/core/utils/numbers.dart';
+import 'package:flutter_tareo/ui/control_asistencia/utils/ids.dart';
 import 'package:flutter_tareo/ui/packing/personal_packing/personal_packing_controller.dart';
 import 'package:flutter_tareo/ui/utils/string_formats.dart';
 import 'package:flutter_tareo/ui/widgets/app_bar_widget.dart';
@@ -34,7 +35,7 @@ class PersonalPackingPage extends StatelessWidget {
                   BOOLEAN_TRUE_VALUE),
               backgroundColor: secondColor,
               body: RefreshIndicator(
-                onRefresh: () async => _.update(['listado']),
+                onRefresh: () async => _.getPersonal(),
                 child: GetBuilder<PersonalPackingController>(
                   id: 'seleccionado',
                   builder: (_) => Column(
@@ -53,7 +54,7 @@ class PersonalPackingPage extends StatelessWidget {
                           builder: (_) => _.personalSeleccionado.isEmpty
                               ? EmptyDataWidget(
                                   titulo: 'No existe equipo asociado.',
-                                  onPressed: () => _.update(['listado']),
+                                  onPressed: () async => await _.getPersonal(),
                                   size: size)
                               : ListView.builder(
                                   itemCount: _.personalSeleccionado.length,
@@ -74,7 +75,7 @@ class PersonalPackingPage extends StatelessWidget {
               ), */
             ),
             GetBuilder<PersonalPackingController>(
-              id: 'validando',
+              id: VALIDANDO_ID,
               builder: (_) => _.validando
                   ? Container(
                       color: Colors.black45,
@@ -183,7 +184,7 @@ class PersonalPackingPage extends StatelessWidget {
                                                     _
                                                         .personalSeleccionado[
                                                             index]
-                                                        .key),
+                                                        .getId),
                                           ),
                                   ),
                                   flex: 5),
@@ -201,9 +202,9 @@ class PersonalPackingPage extends StatelessWidget {
                               Flexible(
                                 child: Container(
                                   alignment: Alignment.centerLeft,
-                                  child: Text(formatoFechaHora(
-                                          _.personalSeleccionado[index].hora) ??
-                                      '-Sin fecha-'),
+                                  child: Text(
+                                      '${formatoFechaExplore(_.personalSeleccionado[index].fecha, 0, 0)} ${formatoHora(_.personalSeleccionado[index].hora)}' ??
+                                          '-Sin fecha-'),
                                 ),
                                 flex: 10,
                               ),

@@ -1,71 +1,49 @@
+import 'package:flutter_tareo/domain/packing/datastores/personal_packing_datastore.dart';
 import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_detalle_entity.dart';
+import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_entity.dart';
 import 'package:flutter_tareo/domain/packing/repositories/personal_packing_repository.dart';
-import 'package:hive/hive.dart';
+import 'package:flutter_tareo/domain/utils/result_type.dart';
+import 'package:flutter_tareo/domain/utils/failure.dart';
 
 class PersonalPackingRepositoryImplementation
     extends PersonalPackingRepository {
+  PersonalPackingDatastore datastore;
+
+  PersonalPackingRepositoryImplementation(this.datastore);
+
   @override
-  Future<List<PreTareoProcesoUvaDetalleEntity>> getAll(String box) async {
-    Box<PreTareoProcesoUvaDetalleEntity> dataHive =
-        await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(box);
-    List<PreTareoProcesoUvaDetalleEntity> local = [];
-    dataHive.toMap().forEach((key, value) => local.add(value));
-    await dataHive.close();
-    return local;
+  Future<ResultType<PreTareoProcesoUvaDetalleEntity, Failure>> create(
+      PreTareoProcesoUvaDetalleEntity detalle) async {
+    return await datastore.create(detalle);
   }
 
   @override
-  Future<int> create(
-      String box, PreTareoProcesoUvaDetalleEntity detalle) async {
-    Box<PreTareoProcesoUvaDetalleEntity> tareas =
-        await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(box);
-    int id = await tareas.add(detalle);
-    detalle.key = id;
-    await tareas.put(id, detalle);
-    await tareas.close();
-    return id;
-  }
-
-  @override
-  Future<void> createAll(
+  Future<ResultType<PreTareoProcesoUvaDetalleEntity, Failure>> createAll(
       String box, List<PreTareoProcesoUvaDetalleEntity> detalles) async {
-    Box<PreTareoProcesoUvaDetalleEntity> tareas =
-        await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(box);
-    await tareas.addAll(detalles);
-    await tareas.close();
-    return;
+    return await datastore.createAll(box, detalles);
   }
 
   @override
-  Future<void> delete(String box, int key) async {
-    var tareas = await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(box);
-    await tareas.delete(key);
-
-    await tareas.close();
-    return;
+  Future<ResultType<PreTareoProcesoUvaDetalleEntity, Failure>> delete(
+      PreTareoProcesoUvaDetalleEntity detalle) async {
+    return await datastore.delete(detalle);
   }
 
   @override
-  Future<void> deleteAll(String box) async {
-    var tareas = await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(box);
-    await tareas.deleteFromDisk();
-
-    await tareas.close();
-    return;
+  Future<ResultType<PreTareoProcesoUvaEntity, Failure>> deleteAll(
+      PreTareoProcesoUvaEntity header) async {
+    return await datastore.deleteAll(header);
   }
 
   @override
-  Future<void> update(
-      String box, int key, PreTareoProcesoUvaDetalleEntity detalle) async {
-    var tareas = await Hive.openBox<PreTareoProcesoUvaDetalleEntity>(box);
-    await tareas.put(key, detalle);
-
-    await tareas.close();
-    return;
+  Future<ResultType<List<PreTareoProcesoUvaDetalleEntity>, Failure>> getAll(
+      PreTareoProcesoUvaEntity header) async {
+    return await datastore.getAll(header);
   }
 
   @override
-  Future<void> getReportByDocument(String code) {
-    throw UnimplementedError();
+  Future<ResultType<PreTareoProcesoUvaDetalleEntity, Failure>> update(
+      PreTareoProcesoUvaDetalleEntity detalle) async {
+    return await datastore.update(detalle);
   }
 }

@@ -56,7 +56,7 @@ class HerramientasController extends GetxController {
     update(['validando']);
     PreTareoProcesoUvaEntity data =
         new PreTareoProcesoUvaEntity.fromJson(TAREAJSON);
-    data.estadoLocal = 'PC';
+    data.estado = 'PC';
     texto = 'Creando detalles';
     update(['validando']);
     await _createPreTareoProcesoUvaUseCase.execute(data);
@@ -106,7 +106,7 @@ class HerramientasController extends GetxController {
       texto = 'Obteniendo no migrados';
       update(['validando']);
       List<PreTareoProcesoUvaEntity> lista =
-          dataHive.values.where((e) => e?.estadoLocal != 'M').toList();
+          dataHive.values.where((e) => e?.estado != 'M').toList();
       for (var i = 0; i < lista.length; i++) {
         texto = 'Escribiendo ${(i + 1)} de ${lista.length}';
         update(['validando']);

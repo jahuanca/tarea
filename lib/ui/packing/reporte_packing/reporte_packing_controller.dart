@@ -1,5 +1,7 @@
+import 'package:flutter_tareo/core/utils/config.dart';
 import 'package:flutter_tareo/core/utils/numbers.dart';
 import 'package:flutter_tareo/domain/control_lanzada/entities/reporte_packing_entity.dart';
+import 'package:flutter_tareo/domain/entities/labor_entity.dart';
 import 'package:flutter_tareo/domain/entities/personal_empresa_entity.dart';
 import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_detalle_entity.dart';
 import 'package:flutter_tareo/domain/packing/entities/pre_tareo_proceso_uva_entity.dart';
@@ -10,6 +12,7 @@ import 'package:flutter_tareo/ui/utils/GetxScannerController.dart';
 import 'package:flutter_tareo/ui/utils/alert_dialogs.dart';
 import 'package:flutter_tareo/ui/utils/preferencias_usuario.dart';
 import 'package:flutter_tareo/ui/utils/type_toast.dart';
+import 'package:flutter_tareo/ui/utils/validators_utils.dart';
 import 'package:get/get.dart';
 
 class ReportePackingController extends GetxScannerController {
@@ -53,17 +56,29 @@ class ReportePackingController extends GetxScannerController {
     if (result != null) {
       validando = BOOLEAN_TRUE_VALUE;
       update([VALIDANDO_ID]);
-      PersonalEmpresaEntity persona =
-          personal.firstWhere((e) => e.nrodocumento == result);
+      PersonalEmpresaEntity persona = personal
+          ?.firstWhere((e) => e.nrodocumento == result, orElse: () => null);
       if (persona != null) {
-        Map<int, List<PreTareoProcesoUvaDetalleEntity>> result =
-            await _getReportByDocumentUseCase.execute(
-                persona.codigoempresa, header);
-        reporte = ReportePackingEntity();
-        reporte.personal = persona;
-        reporte.header = header;
-        reporte.labors = result;
-        toast(type: TypeToast.SUCCESS, message: 'Reporte generado.');
+        Map<int, List<PreTareoProcesoUvaDetalleEntity>> result;
+        List<LaborEntity> resultOnline;
+        if (IS_ONLINE) {
+          resultOnline = await switchFuture(_getReportByDocumentUseCase.execute(
+              persona.codigoempresa, header));
+        } else {
+          result = await switchFuture(_getReportByDocumentUseCase.execute(
+              persona.codigoempresa, header));
+        }
+        if (result != null || resultOnline != null) {
+          reporte = ReportePackingEntity();
+          reporte.personal = persona;
+          reporte.header = header;
+          if (IS_ONLINE) {
+            reporte.laborsOnline = resultOnline;
+          } else {
+            reporte.labors = result;
+          }
+          toast(type: TypeToast.SUCCESS, message: 'Reporte generado.');
+        }
       } else {
         toast(
             type: TypeToast.ERROR,
